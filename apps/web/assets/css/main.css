@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand palette — section 4.1 of the plan. Stable across themes. */
+:root {
+  --laterite: #B8472A;
+  --laterite-deep: #7A2E1A;
+  --ink: #0F1410;
+  --char: #1A1F1B;
+  --parchment: #F5F1EA;
+  --bone: #E5DDD0;
+  --bone-warm: #D9C9B0;
+  --forest: #1A4030;
+  --forest-pale: #A8B89E;
+  --amber: #C4926B;
+  --ease: cubic-bezier(0.2, 0.7, 0, 1);
+}
+
+/* Light mode is the default for the dashboard (outdoor users in Ghana). */
+:root,
+.light {
+  --surface-canvas: var(--parchment);
+  --surface-rail:   var(--parchment);
+  --surface-fg:     var(--ink);
+  --surface-muted:  rgba(15, 20, 16, 0.6);
+  --surface-line:   var(--bone);
+
+  /* Map overlay tweaks (light mode) */
+  --report-pin-fill: var(--laterite-deep);
+  --report-pin-ring: var(--parchment);
+  --sar-fill-alpha: 0.25;
+  --forest-fill-alpha: 0.25;
+}
+
+/* Dark mode for indoor / newsroom use, opt-in via theme toggle. */
+.dark {
+  --surface-canvas: var(--ink);
+  --surface-rail:   var(--char);
+  --surface-fg:     var(--parchment);
+  --surface-muted:  rgba(245, 241, 234, 0.6);
+  --surface-line:   rgba(229, 221, 208, 0.10);
+
+  /* Map overlay tweaks (dark mode) */
+  --report-pin-fill: var(--bone-warm);
+  --report-pin-ring: var(--ink);
+  --sar-fill-alpha: 0.35;
+  --forest-fill-alpha: 0.35;
+}
+
+html, body { background: var(--surface-canvas); color: var(--surface-fg); }
+
+/* Fraunces variable axes utility — used for hero display text */
+.font-display-hero {
+  font-family: 'Fraunces', Georgia, serif;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+  font-weight: 900;
+}
+
+/* Staggered fadein for rail elements */
+.animate-fadein-0   { animation: fadein 600ms var(--ease) 0ms   both; }
+.animate-fadein-80  { animation: fadein 600ms var(--ease) 80ms  both; }
+.animate-fadein-160 { animation: fadein 600ms var(--ease) 160ms both; }
+.animate-fadein-240 { animation: fadein 600ms var(--ease) 240ms both; }
+.animate-fadein-320 { animation: fadein 600ms var(--ease) 320ms both; }
+.animate-fadein-400 { animation: fadein 600ms var(--ease) 400ms both; }
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Detail panel slide-in from right */
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+  transition: transform 320ms var(--ease);
+}
+.panel-slide-enter-from,
+.panel-slide-leave-to {
+  transform: translateX(100%);
+}
+
+/* MapLibre canvas resets */
+.maplibregl-map { position: absolute; inset: 0; }
+.maplibregl-ctrl-group {
+  background: var(--surface-rail);
+  border: 1px solid var(--surface-line);
+  border-radius: 0;
+}
+.maplibregl-ctrl-group button { color: var(--surface-fg); }

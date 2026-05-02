@@ -1,0 +1,67 @@
+# Environment
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Node
+node_modules/
+.pnpm-store/
+dist/
+.output/
+.nuxt/
+.nitro/
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.uv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Local mockup (not shipped)
+apps/web/mockup/
+
+# Data files (large, generated)
+*.pmtiles
+*.tif
+*.geojson.bz2
+
+# Playwright
+.playwright-mcp/
+playwright-report/
+test-results/
+
+# Vercel
+.vercel/
+
+# Local dev guidance (machine-specific paths — never commit)
+CLAUDE.md
