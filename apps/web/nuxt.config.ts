@@ -11,26 +11,23 @@ export default defineNuxtConfig({
         // padding-bottom: env(safe-area-inset-bottom) in main.css)
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
       ],
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        // @nuxtjs/google-fonts cannot produce the correct variable-font URL for Fraunces
+        // (axes object serialises as "[object Object]"). Direct link is more reliable.
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Public+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap',
+        },
+      ],
     },
   },
 
   modules: [
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/google-fonts',
     'nuxt-maplibre',
   ],
-
-  googleFonts: {
-    families: {
-      // Variable font: axes config intentionally uses object shape not in @nuxtjs/google-fonts types
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Fraunces: { axes: { opsz: [9, 144], wght: [300, 900], SOFT: [0, 100] } } as any,
-      'Public Sans': [300, 400, 500, 700],
-      'JetBrains Mono': [400, 500],
-    },
-    display: 'swap',
-    preconnect: true,
-  },
 
   css: ['~/assets/css/main.css'],
 
@@ -55,7 +52,7 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: false,  // run separately via `pnpm typecheck` / vue-tsc
   },
 
   devtools: { enabled: true },

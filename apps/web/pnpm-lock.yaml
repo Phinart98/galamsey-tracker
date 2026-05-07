@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@nuxtjs/google-fonts':
-        specifier: ^3.2.0
-        version: 3.2.0(magicast@0.5.2)
       '@nuxtjs/tailwindcss':
         specifier: ^6.12.0
         version: 6.14.0(magicast@0.5.2)(yaml@2.8.4)
@@ -46,8 +43,8 @@ importers:
         specifier: ^3.3.0
         version: 3.8.3
       tailwindcss:
-        specifier: ^4.2.4
-        version: 4.2.4
+        specifier: ^3.4.17
+        version: 3.4.19(yaml@2.8.4)
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
@@ -942,9 +939,6 @@ packages:
         optional: true
       rollup-plugin-visualizer:
         optional: true
-
-  '@nuxtjs/google-fonts@3.2.0':
-    resolution: {integrity: sha512-cGAjDJoeQ2jm6VJCo4AtSmKO6KjsbO9RSLj8q261fD0lMVNMZCxkCxBkg8L0/2Vfgp+5QBHWVXL71p1tiybJFw==}
 
   '@nuxtjs/tailwindcss@6.14.0':
     resolution: {integrity: sha512-30RyDK++LrUVRgc2A85MktGWIZoRQgeQKjE4CjjD64OXNozyl+4ScHnnYgqVToMM6Ch2ZG2W4wV2J0EN6F0zkQ==}
@@ -2895,9 +2889,6 @@ packages:
     resolution: {integrity: sha512-QrJia2qDf5BB/V6HYlDTs0I0lBahyjLzpGQg3KT7FnCdTonAyPy2RtY802m2k4ALx6Dp752f82WsOczEVr3l6Q==}
     engines: {node: '>=20'}
 
-  google-fonts-helper@3.7.4:
-    resolution: {integrity: sha512-LNq+i6DjgFfJkb+DN2aztI2Bv/QXKMTQAzwU0arxmK6OZjUY/OxqQJQVWf+31WZFJQzTGFvtaCrSiN+kUosNTw==}
-
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
@@ -4259,9 +4250,6 @@ packages:
     resolution: {integrity: sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ==}
     engines: {node: '>=14.0.0'}
     hasBin: true
-
-  tailwindcss@4.2.4:
-    resolution: {integrity: sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA==}
 
   tapable@2.3.3:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
@@ -5838,14 +5826,6 @@ snapshots:
       - vti
       - vue-tsc
       - yaml
-
-  '@nuxtjs/google-fonts@3.2.0(magicast@0.5.2)':
-    dependencies:
-      '@nuxt/kit': 3.21.4(magicast@0.5.2)
-      google-fonts-helper: 3.7.4
-      pathe: 1.1.2
-    transitivePeerDependencies:
-      - magicast
 
   '@nuxtjs/tailwindcss@6.14.0(magicast@0.5.2)(yaml@2.8.4)':
     dependencies:
@@ -7662,13 +7642,6 @@ snapshots:
       slash: 5.1.0
       unicorn-magic: 0.4.0
 
-  google-fonts-helper@3.7.4:
-    dependencies:
-      deepmerge: 4.3.1
-      hookable: 5.5.3
-      ofetch: 1.5.1
-      ufo: 1.6.4
-
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
@@ -9336,8 +9309,6 @@ snapshots:
     transitivePeerDependencies:
       - tsx
       - yaml
-
-  tailwindcss@4.2.4: {}
 
   tapable@2.3.3: {}
 
