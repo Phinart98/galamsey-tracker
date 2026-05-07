@@ -1,4 +1,19 @@
 export default defineNuxtConfig({
+  components: {
+    dirs: [{ path: '~/components', pathPrefix: false }],
+  },
+
+  app: {
+    head: {
+      meta: [
+        // viewport-fit=cover: extends layout into iPhone notch/safe-area so the
+        // rail handle doesn't sit under the home-bar gesture area (paired with
+        // padding-bottom: env(safe-area-inset-bottom) in main.css)
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+      ],
+    },
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
@@ -7,13 +22,9 @@ export default defineNuxtConfig({
 
   googleFonts: {
     families: {
-      Fraunces: {
-        axes: {
-          opsz: [9, 144],
-          wght: [300, 900],
-          SOFT: [0, 100],
-        },
-      },
+      // Variable font: axes config intentionally uses object shape not in @nuxtjs/google-fonts types
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Fraunces: { axes: { opsz: [9, 144], wght: [300, 900], SOFT: [0, 100] } } as any,
       'Public Sans': [300, 400, 500, 700],
       'JetBrains Mono': [400, 500],
     },
@@ -50,4 +61,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   compatibilityDate: '2025-01-01',
+
+  // $development block: merged only when NODE_ENV === 'development'.
+  // Nitro serves the HTML page (not Vite), so vite.server.headers doesn't help.
+  // Sending no-store on all dev routes prevents the browser from caching the
+  // SSR HTML with stale Vite chunk URLs, which causes a blank screen on Ctrl+R.
+  $development: {
+    routeRules: {
+      '/**': { headers: { 'cache-control': 'no-store' } },
+    },
+  },
 })

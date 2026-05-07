@@ -59,6 +59,7 @@ apps/web/mockup/
 .playwright-mcp/
 playwright-report/
 test-results/
+dashboard-*.png
 
 # Vercel
 .vercel/

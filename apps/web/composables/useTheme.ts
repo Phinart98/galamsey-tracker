@@ -6,14 +6,13 @@ const STORAGE_KEY = 'galamsey-theme'
 const isThemeMode = (v: string): v is ThemeMode =>
   (THEME_MODES as readonly string[]).includes(v)
 
+// Module-level so all useTheme() callers share one MQ object and one OS listener.
+const mq = import.meta.client
+  ? window.matchMedia('(prefers-color-scheme: dark)')
+  : null
+
 export const useTheme = () => {
   const mode = useState<ThemeMode>('theme-mode', () => 'system')
-
-  // Single MediaQueryList instance shared by resolvedTheme and the change listener.
-  // null on the server (import.meta.client is a compile-time constant per build target).
-  const mq = import.meta.client
-    ? window.matchMedia('(prefers-color-scheme: dark)')
-    : null
 
   const resolvedTheme = computed<'light' | 'dark'>(() => {
     if (mode.value !== 'system') return mode.value
@@ -22,11 +21,16 @@ export const useTheme = () => {
 
   const applyTheme = () => {
     if (!mq) return
-    const next = resolvedTheme.value
+    // Read mq.matches directly — Vue cannot track a plain DOM property, so the
+    // computed resolvedTheme is stale when the OS scheme changes at runtime.
+    const next: 'light' | 'dark' = mode.value !== 'system'
+      ? mode.value
+      : (mq.matches ? 'dark' : 'light')
     const html = document.documentElement
-    if (html.classList.contains(next)) return
+    if (html.classList.contains(next) && html.getAttribute('data-theme') === next) return
     html.classList.remove('light', 'dark')
     html.classList.add(next)
+    html.setAttribute('data-theme', next)
   }
 
   const setMode = (next: ThemeMode) => {
