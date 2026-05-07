@@ -1,0 +1,29 @@
+name: Ingest Concessions
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"  # Sunday 03:00 UTC
+  workflow_dispatch:       # allow manual triggers
+
+jobs:
+  scrape:
+    name: Scrape Minerals Commission cadastre
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install pipeline dependencies
+        run: uv sync --extra dev
+        working-directory: pipelines/concessions
+
+      - name: Run scraper
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: uv run python -m scrape
+        working-directory: pipelines/concessions
