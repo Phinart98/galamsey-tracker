@@ -32,9 +32,19 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Origins are env-driven so Cloud Run can adjust them without redeploying
+# the image. CORS_ORIGINS is comma-separated; CORS_ORIGIN_REGEX covers the
+# Vercel preview deploy pattern (web-*.vercel.app).
+_default_origins = "http://localhost:3000,https://galamseytracker.org"
+_origins = [
+    o.strip() for o in os.environ.get("CORS_ORIGINS", _default_origins).split(",") if o.strip()
+]
+_origin_regex = os.environ.get("CORS_ORIGIN_REGEX") or None
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://galamseytracker.org"],
+    allow_origins=_origins,
+    allow_origin_regex=_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

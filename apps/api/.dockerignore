@@ -1,0 +1,8 @@
+# Don't ship the local venv to Cloud Build (huge, will be re-created)
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+tests/
