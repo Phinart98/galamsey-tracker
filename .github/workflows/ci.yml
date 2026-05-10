@@ -100,14 +100,29 @@ jobs:
             sudo pg_createcluster 17 main
           fi
 
-          # pg_stat_statements and pg_cron must be in shared_preload_libraries
-          # before PostgreSQL starts -- this mirrors the Supabase Cloud setup.
+          # shared_preload_libraries must be set before PG starts, but
+          # pg_cron.database_name is intentionally NOT set: it defaults to
+          # 'postgres' which always exists. Setting it to a not-yet-created
+          # DB hangs PG startup (pg_cron bgworker can't reach its target DB).
+          # Migration 0001 still installs pg_cron in galamsey_test cleanly.
           echo "shared_preload_libraries = 'pg_stat_statements,pg_cron'" \
             | sudo tee -a /etc/postgresql/17/main/postgresql.conf
-          echo "pg_cron.database_name = 'galamsey_test'" \
-            | sudo tee -a /etc/postgresql/17/main/postgresql.conf
           sudo pg_ctlcluster 17 main start
-          until sudo -u postgres pg_isready -q; do sleep 1; done
+
+          # Hard 60s timeout with log dump so future failures don't hang the
+          # whole runner -- cancellation revealed the previous version could
+          # spin in the until-loop indefinitely if PG silently failed to bind.
+          for i in $(seq 1 60); do
+            if sudo -u postgres pg_isready -q; then
+              echo "PG ready in ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::PG never became ready in 60s. Last 30 lines of log:"
+          sudo tail -30 /var/log/postgresql/postgresql-17-main.log || \
+            sudo journalctl -u postgresql@17-main --no-pager -n 30
+          exit 1
 
       - name: Create test database and roles
         run: |
