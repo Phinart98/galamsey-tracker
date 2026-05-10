@@ -93,13 +93,20 @@ jobs:
           # Stop the pre-installed PG14 to free port 5432
           sudo systemctl stop postgresql || true
 
+          # Ubuntu 24.04 + PGDG: postgresql-17 install does NOT auto-create
+          # the main cluster when PG14 already holds port 5432. Create it
+          # explicitly. Idempotent: skip if already there from a prior step.
+          if [ ! -d /etc/postgresql/17/main ]; then
+            sudo pg_createcluster 17 main
+          fi
+
           # pg_stat_statements and pg_cron must be in shared_preload_libraries
-          # before PostgreSQL starts — this mirrors the Supabase Cloud setup.
+          # before PostgreSQL starts -- this mirrors the Supabase Cloud setup.
           echo "shared_preload_libraries = 'pg_stat_statements,pg_cron'" \
             | sudo tee -a /etc/postgresql/17/main/postgresql.conf
           echo "pg_cron.database_name = 'galamsey_test'" \
             | sudo tee -a /etc/postgresql/17/main/postgresql.conf
-          sudo systemctl start postgresql@17-main
+          sudo pg_ctlcluster 17 main start
           until sudo -u postgres pg_isready -q; do sleep 1; done
 
       - name: Create test database and roles
