@@ -1,0 +1,26 @@
+# Martin tile-server config for the Galamsey Tracker public alerts layer.
+#
+# SECURITY (NON-NEGOTIABLE):
+#   The connection_string MUST use the `anon` role or a dedicated read-only
+#   `martin_reader` role. NEVER service_role. The gfw_alerts_mvt function is
+#   GRANTed EXECUTE to anon -- if Martin connects as service_role, the public
+#   internet inherits service-role privileges through the MVT endpoint.
+
+listen_addresses: '0.0.0.0:3000'
+
+postgres:
+  connection_string: ${DATABASE_URL_POOLED}
+  pool_size: 10
+  default_srid: 4326
+  # Disable table auto-discovery: Supabase databases include many internal
+  # tables (auth, storage, realtime) and the bbox-discovery scan over them
+  # blocks startup for minutes. We only expose the explicit function below.
+  auto_publish:
+    tables: false
+  functions:
+    gfw_alerts_mvt:
+      schema: public
+      function: gfw_alerts_mvt
+      minzoom: 4
+      maxzoom: 14
+      bounds: [-3.26, 4.74, 1.20, 11.18]

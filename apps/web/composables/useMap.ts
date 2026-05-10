@@ -1,8 +1,9 @@
 // Inline type avoids top-level module resolution of maplibre-gl in SSR bundle.
 type MapLibreMap = import('maplibre-gl').Map
 
-import type { LayerKey, ThemeResolved } from '~/types/dashboard'
+import type { AlertTimeRange, LayerKey, ThemeResolved } from '~/types/dashboard'
 import { BASEMAP_URLS, generateAlerts, generateRivers, generateReserves } from '~/composables/useSyntheticData'
+import { useAlertsLayer } from '~/composables/useAlertsLayer'
 
 // Maps UI toggle keys to the MapLibre layer IDs they control.
 const LAYER_MAP: Record<LayerKey, string[]> = {
@@ -13,6 +14,8 @@ const LAYER_MAP: Record<LayerKey, string[]> = {
 }
 
 // Lazily initialised so the generators don't run during SSR module evaluation.
+// Real GFW alerts come from Martin via useAlertsLayer; the synthetic point set
+// here only feeds the citizen-dot layer until Phase 5 wires real reports.
 let _alertData:   ReturnType<typeof generateAlerts>   | null = null
 let _riverData:   ReturnType<typeof generateRivers>   | null = null
 let _reserveData: ReturnType<typeof generateReserves> | null = null
@@ -29,10 +32,11 @@ export const useMap = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = ref<any>(null)
   const ready  = ref(false)
+  const alerts = useAlertsLayer()
 
   function addSyntheticData(map: MapLibreMap, theme: ThemeResolved) {
     const citizenColor = theme === 'light' ? '#7A2E1A' : '#D9C9B0'
-    const { alerts, rivers, reserves } = getSyntheticData()
+    const { alerts: synthAlerts, rivers, reserves } = getSyntheticData()
 
     if (!map.getSource('reserves')) {
       map.addSource('reserves', { type: 'geojson', data: reserves })
@@ -74,42 +78,16 @@ export const useMap = () => {
       })
     }
 
-    if (!map.getSource('alerts')) {
-      map.addSource('alerts', { type: 'geojson', data: alerts })
-    }
-    if (!map.getLayer('alerts-glow')) {
-      map.addLayer({
-        id: 'alerts-glow',
-        type: 'circle',
-        source: 'alerts',
-        filter: ['==', ['get', 'kind'], 'alert'],
-        paint: {
-          'circle-radius': 10,
-          'circle-color': '#B8472A',
-          'circle-opacity': 0.15,
-          'circle-blur': 1,
-        },
-      })
-    }
-    if (!map.getLayer('alerts-dot')) {
-      map.addLayer({
-        id: 'alerts-dot',
-        type: 'circle',
-        source: 'alerts',
-        filter: ['==', ['get', 'kind'], 'alert'],
-        paint: {
-          'circle-radius': 4,
-          'circle-color': '#B8472A',
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#F5F1EA',
-        },
-      })
+    alerts.add(map)
+
+    if (!map.getSource('citizen-points')) {
+      map.addSource('citizen-points', { type: 'geojson', data: synthAlerts })
     }
     if (!map.getLayer('citizen-dot')) {
       map.addLayer({
         id: 'citizen-dot',
         type: 'circle',
-        source: 'alerts',
+        source: 'citizen-points',
         filter: ['==', ['get', 'kind'], 'citizen'],
         paint: {
           'circle-radius': 5,
@@ -183,6 +161,11 @@ export const useMap = () => {
     return mapRef.value as MapLibreMap | null
   }
 
+  function setAlertsTimeRange(range: AlertTimeRange): void {
+    if (!mapRef.value || !ready.value) return
+    alerts.setTimeRange(mapRef.value as MapLibreMap, range)
+  }
+
   onUnmounted(() => {
     if (mapRef.value) {
       (mapRef.value as MapLibreMap).remove()
@@ -191,5 +174,5 @@ export const useMap = () => {
     }
   })
 
-  return { ready, initMap, setBasemap, setLayerVisibility, getMap }
+  return { ready, initMap, setBasemap, setLayerVisibility, setAlertsTimeRange, getMap }
 }

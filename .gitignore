@@ -60,9 +60,14 @@ apps/web/mockup/
 playwright-report/
 test-results/
 dashboard-*.png
+dashboard-*.jpeg
+dashboard-*.jpg
 
 # Vercel
 .vercel/
 
 # Local dev guidance (machine-specific paths — never commit)
 CLAUDE.md
+
+# GFW API fetch dumps from live verification (regenerated each run, large)
+.gfw-fetch/

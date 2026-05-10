@@ -1,0 +1,30 @@
+name: Ingest GFW Alerts
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"  # Sunday 02:00 UTC (one hour before concessions)
+  workflow_dispatch:
+
+jobs:
+  ingest:
+    name: Pull GFW integrated alerts for Ghana
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install pipeline dependencies
+        run: uv sync --extra dev
+        working-directory: pipelines/gfw_alerts
+
+      - name: Run ingest
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GFW_API_KEY:  ${{ secrets.GFW_API_KEY }}
+        run: uv run python -m ingest
+        working-directory: pipelines/gfw_alerts

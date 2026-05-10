@@ -43,3 +43,23 @@ export interface RiverProperties {
 export interface ReserveProperties {
   name: string
 }
+
+export type TimeRangePill = '7d' | '30d' | '90d' | '365d'
+
+export interface AlertTimeRange {
+  pill: TimeRangePill
+  sliderVal: number
+}
+
+export type MinConfidence = 'low' | 'high' | 'highest'
+
+export interface RegionSparklineDay {
+  date: string
+  count: number
+}
+
+export interface RegionSparkline {
+  region_id: number
+  region_name: string
+  dates: RegionSparklineDay[]
+}

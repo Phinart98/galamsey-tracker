@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { LayerKey, HotspotId } from '~/types/dashboard'
+import type { AlertTimeRange, LayerKey, HotspotId, TimeRangePill } from '~/types/dashboard'
 import { HOTSPOTS, HERO_STATS, TIME_OPTIONS } from '~/composables/useSyntheticData'
+import { rangeToFromTo } from '~/composables/useTimeRange'
 
 const props = defineProps<{
   layers: Record<LayerKey, boolean>
@@ -13,6 +14,12 @@ const emit = defineEmits<{
   'select-hotspot': [id: HotspotId]
   'toggle-sheet': []
 }>()
+
+// Two-way bound from pages/index.vue. Default 30d window ending today
+// is the most useful first impression for a dashboard ("what's happening lately").
+const timeRange = defineModel<AlertTimeRange>('timeRange', {
+  default: () => ({ pill: '30d' as TimeRangePill, sliderVal: 1 }),
+})
 
 const { mode, setMode } = useTheme()
 const { isMobile } = useViewport()
@@ -45,21 +52,20 @@ if (import.meta.client) {
 
 // ── Time slider ────────────────────────────────────────────────────────────
 const sliderTrackRef = ref<HTMLElement | null>(null)
-const activePill = ref<string>('30d')
-const sliderVal  = ref(1)  // 0–1, right = most recent
 
-const sliderLabel = computed(() => {
-  const d = new Date()
-  const days: Record<string, number> = { '7d': 7, '30d': 30, '90d': 90, '365d': 365 }
-  const range = days[activePill.value] ?? 365
-  const from = new Date(d.getTime() - range * 24 * 60 * 60 * 1000 * (1 - sliderVal.value))
-  return from.toISOString().slice(0, 10)
-})
+const sliderLabel = computed(() => rangeToFromTo(timeRange.value).from)
+
+function setSliderVal(v: number) {
+  timeRange.value = { ...timeRange.value, sliderVal: Math.max(0, Math.min(1, v)) }
+}
+
+function setPill(p: TimeRangePill) {
+  timeRange.value = { ...timeRange.value, pill: p }
+}
 
 function onTrackClick(e: MouseEvent) {
-  const track = e.currentTarget as HTMLElement
-  const rect = track.getBoundingClientRect()
-  sliderVal.value = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  setSliderVal((e.clientX - rect.left) / rect.width)
 }
 
 let _dragRect: DOMRect | null = null
@@ -75,7 +81,7 @@ function startDrag(e: PointerEvent) {
 function onDrag(e: Event) {
   if (!_dragRect) return
   const pe = e as PointerEvent
-  sliderVal.value = Math.max(0, Math.min(1, (pe.clientX - _dragRect.left) / _dragRect.width))
+  setSliderVal((pe.clientX - _dragRect.left) / _dragRect.width)
 }
 
 function endDrag(e: Event) {
@@ -223,6 +229,8 @@ const THEME_MODES = [
             </div>
           </div>
         </div>
+        <!-- Inline methodology disclosure under the Satellite alerts group only -->
+        <MethodologyAlerts v-if="group.label === 'Satellite alerts'" />
       </div>
     </div>
 
@@ -236,8 +244,8 @@ const THEME_MODES = [
           v-for="opt in TIME_OPTIONS"
           :key="opt"
           class="time-pill"
-          :class="{ active: activePill === opt }"
-          @click="activePill = opt"
+          :class="{ active: timeRange.pill === opt }"
+          @click="setPill(opt as TimeRangePill)"
         >
           {{ opt }}
         </button>
@@ -249,11 +257,11 @@ const THEME_MODES = [
       >
         <div
           class="time-slider-fill"
-          :style="{ width: `${sliderVal * 100}%` }"
+          :style="{ width: `${timeRange.sliderVal * 100}%` }"
         />
         <div
           class="time-slider-thumb"
-          :style="{ left: `${sliderVal * 100}%` }"
+          :style="{ left: `${timeRange.sliderVal * 100}%` }"
           @pointerdown.prevent="startDrag"
         />
       </div>
@@ -261,6 +269,9 @@ const THEME_MODES = [
         {{ sliderLabel }}
       </div>
     </div>
+
+    <!-- Trend by region (one mini sparkline per Ghana region) -->
+    <RegionSparklines :time-range="timeRange" />
 
     <!-- Hotspots -->
     <div class="rail-section animate-fadein-320">

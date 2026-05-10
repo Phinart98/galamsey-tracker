@@ -51,14 +51,19 @@ Every migration is paired with a pgTAP test at
 
 ## Partitioning conventions
 
-`alerts_gfw` and `alerts_sar` use **declarative range partitioning by
-month** from migration 0003 onwards. `pg_partman` is NOT available on
-Supabase Cloud (verified 2025-05). Use the custom
-`ensure_alert_partitions()` pg_cron function defined in 0003 to create
-monthly child tables.
+`alerts_gfw` is a single non-partitioned table at Phase 2 (~50–100K rows
+per year for Ghana). `ensure_alert_partitions()` exists as a no-op
+placeholder scheduled monthly via `pg_cron`, so promoting to declarative
+range partitioning later is a body-only change to the function plus a
+re-declaration of `alerts_gfw` as `PARTITION BY RANGE (alert_date)`.
+Promote when row count crosses ~5M.
 
-Detach partitions older than 5 years and archive to Cloudflare R2 as
-Parquet (queryable via DuckDB). Run as a yearly pg_cron job.
+`pg_partman` is NOT available on Supabase Cloud (verified 2025-05) — the
+hand-rolled function approach is intentional, not a workaround.
+
+Future archival policy: detach partitions older than 5 years and archive
+to Cloudflare R2 as Parquet (queryable via DuckDB). Run as a yearly
+`pg_cron` job once partitioning is live.
 
 ---
 

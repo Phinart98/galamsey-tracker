@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { LayerKey, HotspotId } from '~/types/dashboard'
+import type { AlertTimeRange, LayerKey, HotspotId } from '~/types/dashboard'
 
 const { resolvedTheme } = useTheme()
-const { initMap, setBasemap, setLayerVisibility } = useMap()
+const { initMap, setBasemap, setLayerVisibility, setAlertsTimeRange } = useMap()
 const { isMobile } = useViewport()
 
 const mapContainerRef = ref<HTMLElement | null>(null)
@@ -15,6 +15,8 @@ const layers = ref<Record<LayerKey, boolean>>({
   turbidity: true,
   reserves:  true,
 })
+
+const timeRange = ref<AlertTimeRange>({ pill: '30d', sliderVal: 1 })
 
 const activeHotspot = ref<HotspotId | null>(null)
 
@@ -52,6 +54,9 @@ onMounted(async () => {
     },
     { deep: true },
   )
+
+  // Re-fetch Martin tiles when the time slider changes
+  watch(timeRange, r => setAlertsTimeRange(r), { deep: true })
 })
 </script>
 
@@ -61,6 +66,7 @@ onMounted(async () => {
     <!-- Left rail / mobile bottom sheet -->
     <TheRail
       v-model:layers="layers"
+      v-model:time-range="timeRange"
       :active-hotspot="activeHotspot"
       :expanded="sheetExpanded"
       @select-hotspot="activeHotspot = $event"

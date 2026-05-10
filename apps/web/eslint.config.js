@@ -4,7 +4,7 @@ import pluginVue from 'eslint-plugin-vue'
 
 export default [
   {
-    ignores: ['.nuxt/**', '.output/**', 'node_modules/**', 'dist/**'],
+    ignores: ['.nuxt/**', '.output/**', '.vercel/**', 'node_modules/**', 'dist/**'],
   },
 
   // Vue SFCs — use plugin's built-in flat config (handles parser automatically)
