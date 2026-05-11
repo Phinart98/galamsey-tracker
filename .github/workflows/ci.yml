@@ -100,12 +100,15 @@ jobs:
           # the 5433 reservation across drop/recreate otherwise.
           sudo pg_createcluster --port 5432 17 main
 
-          # shared_preload_libraries must be set before PG starts, but
-          # pg_cron.database_name is intentionally NOT set: it defaults to
-          # 'postgres' which always exists. Setting it to a not-yet-created
-          # DB hangs PG startup (pg_cron bgworker can't reach its target DB).
-          # Migration 0001 still installs pg_cron in galamsey_test cleanly.
+          # shared_preload_libraries must be set before PG starts; pg_cron also
+          # requires cron.database_name to point at the DB where extensions
+          # will be created. The bootstrap order:
+          #   1. boot PG with cron pointed at 'postgres' (always exists)
+          #   2. create galamsey_test
+          #   3. point cron at galamsey_test, restart PG, then install extensions
           echo "shared_preload_libraries = 'pg_stat_statements,pg_cron'" \
+            | sudo tee -a /etc/postgresql/17/main/postgresql.conf
+          echo "cron.database_name = 'postgres'" \
             | sudo tee -a /etc/postgresql/17/main/postgresql.conf
           sudo pg_ctlcluster 17 main start
 
@@ -132,6 +135,16 @@ jobs:
             CREATE ROLE authenticated NOINHERIT;
             CREATE ROLE service_role NOINHERIT BYPASSRLS;
           SQL
+
+          # Now repoint pg_cron at galamsey_test and restart so 0001's
+          # CREATE EXTENSION pg_cron in galamsey_test is allowed.
+          sudo sed -i "s/cron.database_name = 'postgres'/cron.database_name = 'galamsey_test'/" \
+            /etc/postgresql/17/main/postgresql.conf
+          sudo pg_ctlcluster 17 main restart
+          for i in $(seq 1 30); do
+            sudo -u postgres pg_isready -q && break
+            sleep 1
+          done
 
       - name: Apply migrations
         run: |
