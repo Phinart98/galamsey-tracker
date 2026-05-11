@@ -134,6 +134,10 @@ jobs:
             CREATE ROLE anon NOINHERIT;
             CREATE ROLE authenticated NOINHERIT;
             CREATE ROLE service_role NOINHERIT BYPASSRLS;
+            -- Supabase grants USAGE on public to these roles by default;
+            -- without it RLS-permissive SELECTs still fail with "permission
+            -- denied for schema public".
+            GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
           SQL
 
           # Now repoint pg_cron at galamsey_test and restart so 0001's
