@@ -158,8 +158,8 @@ jobs:
 
       - name: Run pgTAP tests
         run: |
-          pg_prove \
+          # sudo -u postgres so peer authentication for the postgres role works.
+          sudo -u postgres pg_prove \
             --dbname galamsey_test \
-            --username postgres \
             --verbose \
             infra/supabase/tests/*.sql
