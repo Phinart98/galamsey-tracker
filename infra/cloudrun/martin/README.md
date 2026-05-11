@@ -48,11 +48,13 @@ curl -I 'http://localhost:3001/gfw_alerts_mvt/4/7/7?from=2025-01-01&to=2025-12-3
 Manual for Phase 2 (no automation required for sign-off):
 
 ```bash
+# Note: --auto-bounds skip is baked into the Dockerfile CMD, so no
+# --command/--args overrides needed here. (And on Windows + Git Bash,
+# overriding --args mangles /config.yaml to C:/Program Files/Git/...)
 gcloud run deploy martin \
   --source infra/cloudrun/martin \
   --region $GCP_REGION \
   --set-env-vars DATABASE_URL_POOLED='postgresql://martin_reader.<ref>:<pw>@<region>.pooler.supabase.com:5432/postgres' \
-  --command=martin --args='--config,/config.yaml,--auto-bounds,skip' \
   --allow-unauthenticated
 ```
 

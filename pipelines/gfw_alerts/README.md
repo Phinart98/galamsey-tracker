@@ -35,14 +35,14 @@ export DATABASE_URL=postgres://...   # port 5432, direct/session mode
 # Dry run: fetch + normalise, no writes (works without DATABASE_URL)
 uv run python -m ingest --dry-run --max-pages 2
 
-# Limit pages for smoke testing
+# Limit pages for smoke testing (the integrated dataset returns one page anyway)
 uv run python -m ingest --max-pages 5
 
 # Default window: last 14 days (overlap with prior run is absorbed by ON CONFLICT)
 uv run python -m ingest
 
 # Custom window: backfill a specific date range
-uv run python -m ingest --from 2025-01-01 --to 2025-12-31 --page-size 10000
+uv run python -m ingest --from 2025-01-01 --to 2025-12-31
 ```
 
 ## Why the 14-day default window
@@ -55,10 +55,12 @@ the duplicates without touching the row.
 
 ## Verifying field names against the upstream API
 
-The SQL query in `ingest.py` references three column aliases:
-`gfw_integrated_alerts__date`, `gfw_integrated_alerts__confidence`,
-`gfw_integrated_alerts__source`. These are GFW's documented names for the
-integrated_alerts dataset as of May 2026.
+The SQL query in `ingest.py` references two column aliases:
+`gfw_integrated_alerts__date` and `gfw_integrated_alerts__confidence`.
+The integrated dataset has no per-source field exposed via the raster
+`/query` endpoint (detector provenance is implicit in the confidence value:
+`highest` means detected by 2+ systems). Migration 0004 widens the source
+CHECK to allow `'integrated'`, which is what this pipeline writes.
 
 If GFW renames or restructures fields, get the canonical names from
 <https://data-api.globalforestwatch.org/swagger> and update the SELECT clause
