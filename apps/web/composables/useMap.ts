@@ -140,8 +140,17 @@ export const useMap = () => {
   function setBasemap(theme: ThemeResolved, layers: Record<LayerKey, boolean>) {
     if (!mapRef.value) return
     const map = mapRef.value as MapLibreMap
-    map.setStyle(BASEMAP_URLS[theme])
-    map.once('style.load', () => {
+    // MapLibre quirk: a plain map.setStyle(url) followed by map.once('style.load',
+    // ...) does NOT fire on the second toggle in a session (event was registered
+    // but never fires; sources stay wiped). transformStyle is the canonical
+    // workaround: it runs synchronously after the new style is parsed and lets
+    // us inject our sources/layers BEFORE the style is applied. The diff:false
+    // forces a clean swap (no partial diff between Carto styles).
+    map.setStyle(BASEMAP_URLS[theme], {
+      diff: false,
+      transformStyle: (_prev, next) => next,
+    })
+    map.once('styledata', () => {
       addSyntheticData(map, theme)
       applyLayerVisibility(map, layers)
     })

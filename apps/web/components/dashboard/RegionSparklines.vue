@@ -144,13 +144,10 @@ const rows = computed<RegionRow[]>(() => {
   grid-template-columns: 90px 1fr 36px;
   align-items: center;
   gap: 10px;
-  padding: 6px 20px;
+  padding: 6px 0;
   cursor: pointer;
   font-size: 11px;
   color: var(--rail-text);
-}
-.region-spark-row:hover {
-  background: var(--row-hover);
 }
 .region-spark-name {
   white-space: nowrap;
@@ -173,14 +170,11 @@ const rows = computed<RegionRow[]>(() => {
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px 4px;
+  padding: 0;
   background: none;
   border: 0;
   cursor: pointer;
   color: inherit;
-}
-.region-spark-toggle .layer-group-label {
-  padding: 0;
 }
 .region-spark-chev {
   font-size: 14px;
