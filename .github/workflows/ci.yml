@@ -96,7 +96,9 @@ jobs:
           sudo systemctl stop postgresql || true
           sudo pg_dropcluster --stop 14 main || true
           sudo pg_dropcluster --stop 17 main || true
-          sudo pg_createcluster 17 main
+          # Explicitly request port 5432; the runner's pg_lsclusters persists
+          # the 5433 reservation across drop/recreate otherwise.
+          sudo pg_createcluster --port 5432 17 main
 
           # shared_preload_libraries must be set before PG starts, but
           # pg_cron.database_name is intentionally NOT set: it defaults to
