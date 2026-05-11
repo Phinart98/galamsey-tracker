@@ -90,12 +90,13 @@ jobs:
 
       - name: Configure and start PostgreSQL 17
         run: |
-          # Stop the pre-installed PG14 to free port 5432
+          # Drop the pre-installed PG14 cluster entirely so PG17 can claim
+          # port 5432. Stopping isn't enough: pg_createcluster sees the
+          # 5432 reservation in pg_lsclusters and assigns 5433 to PG17.
           sudo systemctl stop postgresql || true
+          sudo pg_dropcluster --stop 14 main || true
 
-          # Ubuntu 24.04 + PGDG: postgresql-17 install does NOT auto-create
-          # the main cluster when PG14 already holds port 5432. Create it
-          # explicitly. Idempotent: skip if already there from a prior step.
+          # Now PG17 main is created on 5432 (default).
           if [ ! -d /etc/postgresql/17/main ]; then
             sudo pg_createcluster 17 main
           fi
