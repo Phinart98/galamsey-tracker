@@ -8,6 +8,8 @@ const emit = defineEmits<{
   'region-click': [regionId: number]
 }>()
 
+const open = ref(true)
+
 interface RegionRow {
   region_id: number
   region_name: string
@@ -70,59 +72,69 @@ const rows = computed<RegionRow[]>(() => {
 
 <template>
   <div class="rail-section animate-fadein-280">
-    <div class="layer-group-label">
-      Trend by region
-    </div>
+    <button
+      class="region-spark-toggle"
+      :aria-expanded="open"
+      @click="open = !open"
+    >
+      <span class="layer-group-label">Trend by region</span>
+      <span
+        class="region-spark-chev"
+        :class="{ open }"
+      >&rsaquo;</span>
+    </button>
 
-    <div
-      v-if="loading && data.length === 0"
-      class="px-5 py-3 text-[11px] opacity-50"
-    >
-      Loading region trends&hellip;
-    </div>
-    <div
-      v-else-if="error"
-      class="px-5 py-3 text-[11px] opacity-60"
-    >
-      {{ error }}
-    </div>
-    <div
-      v-else-if="data.length === 0"
-      class="px-5 py-3 text-[11px] opacity-50"
-    >
-      No alerts in this window.
-    </div>
-
-    <div
-      v-for="r in rows"
-      :key="r.region_id"
-      class="region-spark-row"
-      :title="`${r.region_name}: ${r.total} alerts`"
-      @click="emit('region-click', r.region_id)"
-    >
-      <div class="region-spark-name">
-        {{ r.region_name }}
-      </div>
-      <svg
-        class="region-spark-svg"
-        viewBox="0 0 60 18"
-        preserveAspectRatio="none"
-        aria-hidden="true"
+    <template v-if="open">
+      <div
+        v-if="loading && data.length === 0"
+        class="px-5 py-3 text-[11px] opacity-50"
       >
-        <polyline
-          :points="r.points"
-          fill="none"
-          stroke="#B8472A"
-          stroke-width="1"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-          vector-effect="non-scaling-stroke"
-        />
-      </svg>
-      <div class="region-spark-count">
-        {{ r.total }}
+        Loading region trends&hellip;
       </div>
-    </div>
+      <div
+        v-else-if="error"
+        class="px-5 py-3 text-[11px] opacity-60"
+      >
+        {{ error }}
+      </div>
+      <div
+        v-else-if="data.length === 0"
+        class="px-5 py-3 text-[11px] opacity-50"
+      >
+        No alerts in this window.
+      </div>
+
+      <div
+        v-for="r in rows"
+        :key="r.region_id"
+        class="region-spark-row"
+        :title="`${r.region_name}: ${r.total} alerts`"
+        @click="emit('region-click', r.region_id)"
+      >
+        <div class="region-spark-name">
+          {{ r.region_name }}
+        </div>
+        <svg
+          class="region-spark-svg"
+          viewBox="0 0 60 18"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <polyline
+            :points="r.points"
+            fill="none"
+            stroke="#B8472A"
+            stroke-width="1"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+        <div class="region-spark-count">
+          {{ r.total }}
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -156,4 +168,24 @@ const rows = computed<RegionRow[]>(() => {
   font-variant-numeric: tabular-nums;
   color: var(--rail-text-muted);
 }
+.region-spark-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 4px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+.region-spark-toggle .layer-group-label {
+  padding: 0;
+}
+.region-spark-chev {
+  font-size: 14px;
+  color: var(--rail-text-muted);
+  transition: transform 160ms ease;
+}
+.region-spark-chev.open { transform: rotate(90deg); }
 </style>
