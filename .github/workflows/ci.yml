@@ -90,16 +90,13 @@ jobs:
 
       - name: Configure and start PostgreSQL 17
         run: |
-          # Drop the pre-installed PG14 cluster entirely so PG17 can claim
-          # port 5432. Stopping isn't enough: pg_createcluster sees the
-          # 5432 reservation in pg_lsclusters and assigns 5433 to PG17.
+          # apt install postgresql-17 already created a PG17 cluster, but
+          # because PG14 owned port 5432 at install time it got pinned to
+          # 5433. Drop both clusters and recreate PG17 fresh so it claims 5432.
           sudo systemctl stop postgresql || true
           sudo pg_dropcluster --stop 14 main || true
-
-          # Now PG17 main is created on 5432 (default).
-          if [ ! -d /etc/postgresql/17/main ]; then
-            sudo pg_createcluster 17 main
-          fi
+          sudo pg_dropcluster --stop 17 main || true
+          sudo pg_createcluster 17 main
 
           # shared_preload_libraries must be set before PG starts, but
           # pg_cron.database_name is intentionally NOT set: it defaults to
