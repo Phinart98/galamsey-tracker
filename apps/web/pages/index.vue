@@ -41,7 +41,11 @@ onMounted(async () => {
   await initMap(mapContainerRef.value, resolvedTheme.value, layers.value)
   mapReady.value = true
 
-  // Swap basemap when theme changes (re-adds synthetic data after style.load)
+  // Swap basemap when theme changes. setBasemap fully wipes and re-adds the
+  // map's sources/layers, and sar.add(map, theme) inside its styledata
+  // callback applies the correct light/dark opacity. No separate setSarTheme
+  // call is needed: setBasemap's diff:false always destroys the existing
+  // sar-fill layer first, so a synchronous setPaintProperty would no-op.
   watch(resolvedTheme, t => setBasemap(t, layers.value))
 
   // Toggle individual layers when switches change

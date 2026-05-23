@@ -7,7 +7,7 @@ const props = defineProps<{
 
 const LEGEND_ITEMS: { key: LayerKey; label: string; swatchClass: string; color?: string }[] = [
   { key: 'gfw',       label: 'GFW alert',       swatchClass: 'rounded-full',       color: '#B8472A' },
-  { key: 'sar',       label: 'Citizen report',   swatchClass: 'rounded-full',       color: 'var(--citizen-pin)' },
+  { key: 'sar',       label: 'SAR change polygon', swatchClass: 'legend-swatch poly', color: '#7A2E1A' },
   { key: 'turbidity', label: 'River turbidity',  swatchClass: 'legend-swatch line', color: '#C4926B' },
   { key: 'reserves',  label: 'Forest reserve',   swatchClass: 'legend-swatch poly', color: '#1A4030' },
 ]

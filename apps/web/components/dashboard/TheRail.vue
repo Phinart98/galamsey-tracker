@@ -95,7 +95,7 @@ const LAYER_GROUPS = [
     label: 'Satellite alerts',
     layers: [
       { key: 'gfw'  as LayerKey, name: 'GFW Integrated',  sub: 'Hansen + GLAD alerts',     color: '#B8472A', shape: 'circle',  peekLabel: 'GFW'       },
-      { key: 'sar'  as LayerKey, name: 'Sentinel-1 SAR',  sub: 'Citizen detections',        color: '#7A2E1A', shape: 'square',  peekLabel: 'SAR'       },
+      { key: 'sar'  as LayerKey, name: 'Sentinel-1 SAR',  sub: '+1.65 dB backscatter delta', color: '#7A2E1A', shape: 'square',  peekLabel: 'SAR'       },
     ],
   },
   {
@@ -332,7 +332,7 @@ const THEME_MODES = [
         class="px-5 py-3 text-[10px] opacity-40"
         :style="{ color: 'var(--rail-text-muted)' }"
       >
-        Data: GFW, Minerals Commission, OSM &middot; Phase 1
+        Data: GFW, Sentinel-1 (Planetary Computer), Minerals Commission, OSM
       </div>
     </div>
   </aside>

@@ -2,29 +2,29 @@
 type MapLibreMap = import('maplibre-gl').Map
 
 import type { AlertTimeRange, LayerKey, ThemeResolved } from '~/types/dashboard'
-import { BASEMAP_URLS, generateAlerts, generateRivers, generateReserves } from '~/composables/useSyntheticData'
+import { BASEMAP_URLS, generateRivers, generateReserves } from '~/composables/useSyntheticData'
 import { useAlertsLayer } from '~/composables/useAlertsLayer'
+import { useSarLayer } from '~/composables/useSarLayer'
 
 // Maps UI toggle keys to the MapLibre layer IDs they control.
 const LAYER_MAP: Record<LayerKey, string[]> = {
   gfw:       ['alerts-dot', 'alerts-glow'],
-  sar:       ['citizen-dot'],
+  sar:       ['sar-fill', 'sar-outline'],
   turbidity: ['rivers'],
   reserves:  ['reserves-fill', 'reserves-outline'],
 }
 
 // Lazily initialised so the generators don't run during SSR module evaluation.
-// Real GFW alerts come from Martin via useAlertsLayer; the synthetic point set
-// here only feeds the citizen-dot layer until Phase 5 wires real reports.
-let _alertData:   ReturnType<typeof generateAlerts>   | null = null
+// Real GFW alerts come from Martin via useAlertsLayer; real SAR polygons come
+// from Martin via useSarLayer. Rivers and reserves are still synthetic until
+// Phase 4 (turbidity) and Phase 1's boundary seeding respectively.
 let _riverData:   ReturnType<typeof generateRivers>   | null = null
 let _reserveData: ReturnType<typeof generateReserves> | null = null
 
 function getSyntheticData() {
-  if (!_alertData)   _alertData   = generateAlerts()
   if (!_riverData)   _riverData   = generateRivers()
   if (!_reserveData) _reserveData = generateReserves()
-  return { alerts: _alertData, rivers: _riverData, reserves: _reserveData }
+  return { rivers: _riverData, reserves: _reserveData }
 }
 
 export const useMap = () => {
@@ -33,10 +33,10 @@ export const useMap = () => {
   const mapRef = ref<any>(null)
   const ready  = ref(false)
   const alerts = useAlertsLayer()
+  const sar    = useSarLayer()
 
   function addSyntheticData(map: MapLibreMap, theme: ThemeResolved) {
-    const citizenColor = theme === 'light' ? '#7A2E1A' : '#D9C9B0'
-    const { alerts: synthAlerts, rivers, reserves } = getSyntheticData()
+    const { rivers, reserves } = getSyntheticData()
 
     if (!map.getSource('reserves')) {
       map.addSource('reserves', { type: 'geojson', data: reserves })
@@ -78,25 +78,12 @@ export const useMap = () => {
       })
     }
 
+    // Add SAR polygons BEFORE GFW dots so the dots paint on top. SAR fills
+    // are 25-35% opacity laterite-deep polygons; if they painted above, they
+    // would mute the GFW alert dots inside detected clearings, weakening the
+    // dual-detector cross-confirmation that's a core value proposition.
+    sar.add(map, theme)
     alerts.add(map)
-
-    if (!map.getSource('citizen-points')) {
-      map.addSource('citizen-points', { type: 'geojson', data: synthAlerts })
-    }
-    if (!map.getLayer('citizen-dot')) {
-      map.addLayer({
-        id: 'citizen-dot',
-        type: 'circle',
-        source: 'citizen-points',
-        filter: ['==', ['get', 'kind'], 'citizen'],
-        paint: {
-          'circle-radius': 5,
-          'circle-color': citizenColor,
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': theme === 'light' ? '#F5F1EA' : '#0F1410',
-        },
-      })
-    }
   }
 
   function applyLayerVisibility(map: MapLibreMap, layers: Record<LayerKey, boolean>) {
@@ -172,7 +159,9 @@ export const useMap = () => {
 
   function setAlertsTimeRange(range: AlertTimeRange): void {
     if (!mapRef.value || !ready.value) return
-    alerts.setTimeRange(mapRef.value as MapLibreMap, range)
+    const map = mapRef.value as MapLibreMap
+    alerts.setTimeRange(map, range)
+    sar.setTimeRange(map, range)
   }
 
   onUnmounted(() => {

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from db import get_pool
 from routers import alerts as alerts_router
+from routers import sar as sar_router
 
 
 @asynccontextmanager
@@ -51,6 +52,7 @@ app.add_middleware(
 )
 
 app.include_router(alerts_router.router, prefix="/alerts", tags=["alerts"])
+app.include_router(sar_router.router, prefix="/sar", tags=["sar"])
 
 
 @app.get("/health")

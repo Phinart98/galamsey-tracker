@@ -24,3 +24,9 @@ postgres:
       minzoom: 4
       maxzoom: 14
       bounds: [-3.26, 4.74, 1.20, 11.18]
+    sar_alerts_mvt:
+      schema: public
+      function: sar_alerts_mvt
+      minzoom: 4
+      maxzoom: 14
+      bounds: [-3.26, 4.74, 1.20, 11.18]
