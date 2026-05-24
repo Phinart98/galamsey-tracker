@@ -104,15 +104,20 @@ against the Microsoft Planetary Computer's anonymous STAC API. The snippet
 below is the minimal viable version of `pipelines/sentinel1_sar/detect.py`.
 
 ```python
+# Requires: pip install pystac-client planetary-computer stackstac rioxarray
+# Adjust period_start / period_end to a recent month. The Wassa hotspot
+# bbox below runs in ~5-10 min on a laptop; the full Ghana bbox
+# (-3.26, 4.74, 1.20, 11.18) needs ~16 GB RAM.
 from datetime import date, timedelta
 
 import numpy as np
 import planetary_computer
+import rioxarray  # noqa: F401  -- registers the .rio xarray accessor
 import stackstac
 from pystac_client import Client
 
 PC_STAC = "https://planetarycomputer.microsoft.com/api/stac/v1"
-GHANA_BBOX = (-3.26, 4.74, 1.20, 11.18)
+BBOX = (-2.35, 5.05, -1.75, 5.65)  # Wassa Amenfi hotspot
 
 client = Client.open(PC_STAC, modifier=planetary_computer.sign_inplace)
 
@@ -123,7 +128,7 @@ def search(start, end):
     dt_to   = f"{end.isoformat()}T23:59:59Z"
     return list(client.search(
         collections=["sentinel-1-rtc"],
-        bbox=GHANA_BBOX,
+        bbox=BBOX,
         datetime=f"{dt_from}/{dt_to}",
         query={"sar:instrument_mode": {"eq": "IW"}},
     ).items())
@@ -139,14 +144,16 @@ baseline = search(baseline_start, baseline_end)
 def db_mean(items):
     da = stackstac.stack(
         items, assets=["vv", "vh"],
-        bounds_latlon=GHANA_BBOX,
+        bounds_latlon=BBOX,
         epsg=32630, resolution=20, dtype="float64", rescale=False,
     )
+    # log10 of 0 is -inf; mask zero-valued pixels (RTC nodata) to NaN first.
     return (10 * np.log10(da.where(da > 0))).mean(dim="time", skipna=True)
 
+# .persist() materialises the dask reductions while MPC signed URLs are fresh.
 delta = (db_mean(current) - db_mean(baseline)).persist()
-mask = (delta.sel(band="vv") >= 1.65) & (delta.sel(band="vh") >= 1.65)
-mask.rio.to_raster("change_2026-04.tif")
+mask = ((delta.sel(band="vv") >= 1.65) & (delta.sel(band="vh") >= 1.65)).astype("uint8")
+mask.rio.to_raster("change_2026-04.tif")  # CRS + transform inherited from stackstac
 ```
 
 That `change_2026-04.tif` is the input the rest of our pipeline polygonises

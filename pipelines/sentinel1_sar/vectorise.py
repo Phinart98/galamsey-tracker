@@ -4,7 +4,9 @@ Pattern mirrors pipelines/gfw_alerts/ingest.py:
   1. rasterio.features.shapes() over the mask band
   2. shapely simplify + area filter + UTM->WGS84 reproject
   3. Compute per-polygon delta_db_mean, delta_db_max, area_ha, confidence
-  4. UNLOGGED staging table + COPY + INSERT ... ON CONFLICT DO NOTHING
+  4. TEMP staging table + COPY + INSERT ... ON CONFLICT DO UPDATE
+     (pipeline_run_id, cog_url, stac_item_id) so re-runs against refreshed
+     boundary tables re-trigger sar_alerts_join_admin enrichment
   5. sar_alerts_join_admin(run_id) populates region/district/reserve/concession FKs
 
 alert_uid = md5(detection_period_start:wkb_sha) -- same period+geom produces
