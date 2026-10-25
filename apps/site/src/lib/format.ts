@@ -65,3 +65,16 @@ export function srcsets(chip: Chip) {
     large: chipUrl(chip.files['720.webp']),
   };
 }
+
+// Why a place has no pictures. Most have simply not been tried yet, so never blame cloud unless we looked.
+export type NoPicture = 'cloudy' | 'small' | 'pending';
+export const PICTURE_MIN_HA = 3;
+export const NO_PICTURE: Record<NoPicture, string> = {
+  cloudy: 'No clear picture yet. Cloud or haze covered this place in every picture we checked. We try again every week.',
+  small: `No pictures. We make them for patches of ${PICTURE_MIN_HA} hectares or more.`,
+  pending: 'No pictures yet. We add them every week, largest places first.',
+};
+export function noPicture(p: Place): NoPicture {
+  if (p.chips && 'missing' in p.chips) return 'cloudy';
+  return p.ha < PICTURE_MIN_HA ? 'small' : 'pending';
+}

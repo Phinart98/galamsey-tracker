@@ -2,7 +2,7 @@
 import Pair from './Pair.astro';
 import LicenceTag from './LicenceTag.astro';
 import { hasPair, type Place } from '../lib/data';
-import { hectares, longDate, placeName } from '../lib/format';
+import { NO_PICTURE, hectares, longDate, noPicture, placeName } from '../lib/format';
 
 interface Props { place: Place }
 const { place } = Astro.props;
@@ -10,7 +10,7 @@ const { place } = Astro.props;
 <li class="place">
   {hasPair(place)
     ? <Pair place={place} variant="row" />
-    : <p class="nopair muted small">No clear satellite picture yet. Clouds cover this place in every recent image.</p>}
+    : <p class="nopair muted small">{NO_PICTURE[noPicture(place)]}</p>}
   <div class="text">
     <h3><a href={`/places/${place.id}`}>{hectares(place.ha)} cleared {placeName(place)}</a></h3>
     <p class="muted small">First seen {longDate(place.first_seen)}.</p>

@@ -59,7 +59,7 @@ const rows = points.map((p) => ({
   <div class="years" aria-hidden="true">
     {years.map((p) => <span style={`left:${(x(points.indexOf(p)) / W) * 100}%`}>{p.date.slice(0, 4)}</span>)}
   </div>
-  <figcaption class="muted small">Hectares cleared in the 12 months to the 22nd of each month. Using the same day every month means each point compares fairly with the one a year before.</figcaption>
+  <figcaption class="muted small">Hectares cleared in the 12 months before each point, measured on the same day each month. <a href="/method">How we compare years</a></figcaption>
   <details class="table">
     <summary>Show the numbers as a table</summary>
     <table>

@@ -69,7 +69,10 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
         <h2 id="biggest">The biggest patches cleared this year</h2>
         <p class="intro">Each pair shows the same place before the clearing was first seen and in the latest clear picture. Tap a picture to see it large.</p>
         <ul class="list">{biggest.map((p) => <PlaceRow place={p} />)}</ul>
-        <p><a class="btn" href="/map">See all {num(summary?.patches ?? 0)} places</a></p>
+        <div class="actions">
+          <a class="btn" href="/map">See all {num(summary?.patches ?? 0)} places</a>
+          <a class="btn" href="/map?sort=new">See the newest</a>
+        </div>
       </section>
     )}
 
@@ -116,13 +119,13 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
     {districts.length > 0 && (
       <section class="band" aria-labelledby="where">
         <h2 id="where">Which districts</h2>
-        <p class="intro">Hectares cleared in the last 12 months, by district.</p>
+        <p class="intro">Hectares cleared in the last 12 months, by district. Pick one to see its places on the map.</p>
         <table class="districts">
           <thead><tr><th scope="col">District</th><th scope="col">Hectares</th></tr></thead>
           <tbody>
             {districts.map((d) => (
               <tr>
-                <th scope="row">{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</th>
+                <th scope="row"><a href={`/map?district=${encodeURIComponent(d.district)}`}>{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</a></th>
                 <td><span class="bar" style={`width:${(d.ha / districtMax) * 100}%`}></span><span class="v">{num(d.ha)}</span></td>
               </tr>
             ))}

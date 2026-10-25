@@ -6,13 +6,15 @@ import { longDate, monthName } from '../lib/format';
 <Base title="Data" description="Download the Galamsey Tracker data: every cleared patch as CSV or GeoJSON, monthly totals and the 12-month trend.">
   <article class="wrap prose">
     <h1>Data</h1>
-    <p>Everything on this site is free to reuse. Please credit "Galamsey Tracker, from NASA OPERA and Copernicus Sentinel-2 data".{summary && <> The current files cover the 12 months to {longDate(summary.data_date)}.</>}</p>
+    <p>Everything on this site is free to use, including in news stories, reports and research.{summary && <> The current files cover the 12 months to {longDate(summary.data_date)}.</>}</p>
+    <p>If you use it, please say where it came from. For example:</p>
+    <p class="credit">Source: Galamsey Tracker, using NASA and Copernicus satellite data.</p>
 
     <h2>Downloads</h2>
     <ul class="files">
       <li><a href="/places.csv">places.csv</a><span class="muted">Every patch: size, dates, licence class, nearest town, district and location. Opens in Excel or Google Sheets.</span></li>
       <li><a href="/places.geojson">places.geojson</a><span class="muted">The same, as map points, with links to the before and after pictures. Opens in QGIS or geojson.io.</span></li>
-      <li><a href="/trend.json">trend.json</a><span class="muted">Hectares cleared in the 12 months to the 22nd of each month, with the share that has no licence to mine.</span></li>
+      <li><a href="/trend.json">trend.json</a><span class="muted">Hectares cleared in the 12 months before each point, one point a month, with the share that has no licence to mine.</span></li>
       <li><a href="/summary.json">summary.json</a><span class="muted">This week's totals, by licence class and district.</span></li>
     </ul>
 
@@ -27,12 +29,14 @@ import { longDate, monthName } from '../lib/format';
     <h2>What is not here</h2>
     <p>We do not publish the outlines of mining licences or the names of licence holders. The licence register belongs to the Minerals Commission, and you can see it on its <a href="https://ghana.revenuedev.org/">public portal</a>.</p>
 
-    <h2>Sources and licences</h2>
-    <ul>
-      <li>NASA OPERA DIST-ALERT-HLS land disturbance data (NASA, public domain).</li>
-      <li>Copernicus Sentinel-2 images, via Earth Search (Copernicus open licence).</li>
-      <li>Minerals Commission cadastre, used only to find the licence class.</li>
-      <li>District boundaries from geoBoundaries (CC BY 4.0). Town names from OpenStreetMap (ODbL).</li>
+    <h2>Where the data comes from</h2>
+    <p>We built this from other people's open data. Each source sets its own terms for reuse.</p>
+    <ul class="files">
+      <li><strong>Land that lost its plant cover</strong><span class="muted">NASA OPERA land disturbance data (DIST-ALERT-HLS). Public domain: free to use for anything.</span></li>
+      <li><strong>Before and after pictures</strong><span class="muted">Copernicus Sentinel-2 images, from Earth Search. Free to use, with credit to Copernicus.</span></li>
+      <li><strong>Licences on the land</strong><span class="muted">The Minerals Commission's public register. We use it only to say what kind of licence covers a patch, and do not republish it.</span></li>
+      <li><strong>District names</strong><span class="muted">geoBoundaries. Free to use, with credit (CC BY 4.0).</span></li>
+      <li><strong>Town and village names</strong><span class="muted">OpenStreetMap. Free to use, with credit. A new database built from it must be shared on the same terms (ODbL).</span></li>
     </ul>
   </article>
 </Base>
@@ -46,6 +50,7 @@ import { longDate, monthName } from '../lib/format';
   .files { list-style: none; padding: 0; }
   .files li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); margin: 0; }
   .files a { font-weight: 700; }
+  .credit { font-weight: 700; padding: 12px 14px; background: var(--paper-2); }
   .months { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
   .months a { display: inline-block; padding: 10px 0; }
 </style>

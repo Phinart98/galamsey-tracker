@@ -5,7 +5,7 @@ import LicenceTag from '../../components/LicenceTag.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
 import { aliases, hasPair, placeById, places, summary, type Place } from '../../lib/data';
-import { LICENCE_SENTENCE, coords, district, hectares, longDate, placeName } from '../../lib/format';
+import { LICENCE_SENTENCE, NO_PICTURE, noPicture, coords, district, hectares, longDate, placeName } from '../../lib/format';
 
 export function getStaticPaths() {
   const real = places.map((place) => ({ params: { id: place.id }, props: { place, to: null } }));
@@ -38,7 +38,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
         <div class="pic">
           {hasPair(place)
             ? <Pair place={place} variant="page" eager />
-            : <p class="nopair">No clear satellite picture of this place yet. Clouds cover it in every recent image. We try again every week.</p>}
+            : <p class="nopair">{NO_PICTURE[noPicture(place)]}</p>}
         </div>
         <div class="about">
           {!place.active && (
@@ -66,8 +66,8 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
         <h2>What this page does and does not say</h2>
         <div class="measure">
           <p>Satellites saw most of the plant cover here disappear, starting on {longDate(place.first_seen)}. The pictures show the place before and after. Mining leaves pits, bare orange ground and muddy ponds, which you can often see in them.</p>
-          <p>We do not know who cleared this land, and we do not say whether it is illegal. The licence above comes from the Minerals Commission's public register{summary && <> as checked on {longDate(summary.data_date)}</>}.</p>
-          <p><a href="/method">How we know</a></p>
+          <p>We do not know who cleared this land or why. Look at the pictures and the licence, and judge for yourself. The licence above comes from the Minerals Commission's public register{summary && <> as checked on {longDate(summary.data_date)}</>}.</p>
+          <p><a href="/method#mining">What mining looks like from above</a></p>
           {CONTACT_EMAIL && <p>Something wrong with these pictures or this page? <a href={mailto(`Place ${place.id}`)}>Email us</a> and say what you see.</p>}
         </div>
       </section>

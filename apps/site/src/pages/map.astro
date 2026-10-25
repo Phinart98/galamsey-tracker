@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import PlaceRow from '../components/PlaceRow.astro';
-import { active, check, coverage, summary, tiles } from '../lib/data';
-import { longDate, num } from '../lib/format';
+import { active, check, coverage, hasPair, summary, tiles } from '../lib/data';
+import { district, longDate, num } from '../lib/format';
 import maplibre from '../../.data/maplibre.json';
 
 const LIST = 60;
@@ -10,6 +10,13 @@ const bounds = Object.values(tiles).map((t) => t.bounds).filter(Boolean);
 const box = bounds.length
   ? [Math.min(...bounds.map((b) => b[0])), Math.min(...bounds.map((b) => b[1])), Math.max(...bounds.map((b) => b[2])), Math.max(...bounds.map((b) => b[3]))]
   : [-3.3, 4.7, -0.3, 7.5];
+const counts = new Map<string, number>();
+for (const p of active) if (p.district) counts.set(p.district, (counts.get(p.district) ?? 0) + 1);
+const districts = [...counts].map(([raw, n]) => ({ raw, n, label: district({ district: raw } as any)! }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+// One row of each kind, cloned by the filter script so its rows match the built ones exactly
+const withPic = active.find(hasPair);
+const withoutPic = active.find((p) => !hasPair(p));
 ---
 <Base title="Map of cleared land" description="Every patch of land of at least 1 hectare that lost its plant cover in the last 12 months, with the licence on the land.">
   <div class="sheet wrap">
@@ -24,6 +31,51 @@ const box = bounds.length
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
+      <details class="fwrap" data-fwrap hidden>
+      <summary class="btn">Filter the places</summary>
+      <form class="filters" data-filters hidden>
+        <label>Licence on the land
+          <select name="licence">
+            <option value="">Any licence or none</option>
+            <option value="alarm">No licence to mine</option>
+            <option value="none">No licence at all</option>
+            <option value="prospecting">Prospecting licence only</option>
+            <option value="small">Small-scale mining licence</option>
+            <option value="large">Large-scale mining lease</option>
+          </select>
+        </label>
+        <label>District
+          <select name="district">
+            <option value="">All districts</option>
+            {districts.map((d) => <option value={d.raw}>{d.label} ({num(d.n)})</option>)}
+          </select>
+        </label>
+        <label>First seen
+          <select name="since">
+            <option value="">Any time in the last 12 months</option>
+            <option value="90">In the last 3 months</option>
+            <option value="30">In the last month</option>
+          </select>
+        </label>
+        <label>Size
+          <select name="min">
+            <option value="">Any size</option>
+            <option value="5">5 hectares or more</option>
+            <option value="20">20 hectares or more</option>
+            <option value="50">50 hectares or more</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="pics" value="1"> Only places with pictures</label>
+        <label>Order of the list
+          <select name="sort">
+            <option value="">Largest first</option>
+            <option value="new">Newest first</option>
+          </select>
+        </label>
+        <p class="count" data-count aria-live="polite"></p>
+        <button class="btn" type="reset">Clear filters</button>
+      </form>
+      </details>
       <ul class="key small" aria-label="Map key">
         <li><span class="sw alarm"></span>No licence to mine, or prospecting only</li>
         <li><span class="sw ring"></span>Inside a mining licence or lease</li>
@@ -37,7 +89,7 @@ const box = bounds.length
       <button class="btn primary open" type="button" data-open-map>Show on map</button>
       <div class="frame" data-frame hidden>
         <div class="maphead">
-          <span class="small muted">© OpenStreetMap, OpenFreeMap</span>
+          <span class="small"><strong data-map-count></strong> <span class="muted">© OpenStreetMap, OpenFreeMap</span></span>
           <button class="btn close" type="button" data-close-map>Back to list</button>
         </div>
         <div id="map" data-map data-lib={maplibre.base} data-bounds={JSON.stringify(box)} data-site={import.meta.env.SITE} role="region" aria-label="Map of cleared land"></div>
@@ -45,15 +97,19 @@ const box = bounds.length
     </div>
 
     <section class="listcol" aria-labelledby="list-h">
-      <h2 id="list-h">Largest first</h2>
-      <p class="muted small">The {Math.min(LIST, active.length)} largest of {num(active.length)} patches. <a href="/places.csv">Download all of them</a>.</p>
-      <ul class="list">{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
+      <h2 id="list-h" data-list-h>Largest first</h2>
+      <p class="muted small"><span data-list-note>The {Math.min(LIST, active.length)} largest of {num(active.length)} patches.</span> <a href="/places.csv">Download all of them</a>.</p>
+      <ul class="list" data-list data-date={summary?.data_date}>{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
+      <button class="btn" type="button" data-more hidden>Show {LIST} more</button>
+      {withPic && <template data-row="pic"><PlaceRow place={withPic} /></template>}
+      {withoutPic && <template data-row="nopic"><PlaceRow place={withoutPic} /></template>}
     </section>
   </div>
 </Base>
 
 <script>
   import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
+  import { NO_PICTURE, type NoPicture } from '../lib/format';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
@@ -93,6 +149,7 @@ const box = bounds.length
         'circle-opacity': 0.9,
       },
     });
+    m.setFilter('places', mapFilter);
   }
 
   let picked: string | null = null;
@@ -203,6 +260,147 @@ const box = bounds.length
     openBtn.focus();
   }
 
+  // Filters: shared by the list and the map, and kept in the address so a filtered view can be shared
+  type Props = Record<string, any>;
+  const form = document.querySelector<HTMLFormElement>('[data-filters]')!;
+  const list = document.querySelector<HTMLUListElement>('[data-list]')!;
+  const more = document.querySelector<HTMLButtonElement>('[data-more]')!;
+  const note = document.querySelector<HTMLElement>('[data-list-note]')!;
+  const listHead = document.querySelector<HTMLElement>('[data-list-h]')!;
+  const count = document.querySelector<HTMLElement>('[data-count]')!;
+  const mapCount = document.querySelector<HTMLElement>('[data-map-count]')!;
+  const PAGE = 60;
+  const LICENCES: Record<string, string[]> = {
+    alarm: ALARM, none: ['no licence'], prospecting: ['prospecting only'],
+    small: ['small-scale licence'], large: ['large-scale lease'],
+  };
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const short = (iso: string) => { const [y, mo, d] = iso.split('-').map(Number); return `${d} ${MONTHS[mo - 1]} ${y}`; };
+  const fmt = new Intl.NumberFormat('en-GB');
+  const hectares = (ha: number) => (ha < 10 ? `${ha.toFixed(1)} hectares` : `${fmt.format(Math.round(ha))} hectares`);
+  let mapFilter: any = null;
+  let places: Promise<Props[]> | null = null;
+  let shown: Props[] = [];
+  let upTo = PAGE;
+
+  const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => f.properties)));
+
+  function wanted() {
+    const f = new FormData(form);
+    const get = (k: string) => String(f.get(k) ?? '');
+    const days = Number(get('since'));
+    const cutoff = days ? new Date(Date.parse(`${list.dataset.date}T00:00:00Z`) - days * 864e5).toISOString().slice(0, 10) : '';
+    return { licence: get('licence'), district: get('district'), cutoff, min: Number(get('min')) || 0, pics: get('pics') === '1', sort: get('sort') };
+  }
+  type Wanted = ReturnType<typeof wanted>;
+
+  const matches = (w: Wanted) => (p: Props) => (!w.licence || LICENCES[w.licence].includes(p.licence))
+    && (!w.district || p.district === w.district)
+    && (!w.cutoff || p.first_seen >= w.cutoff)
+    && p.ha >= w.min
+    && (!w.pics || !!p.before_image);
+
+  function expression(w: Wanted) {
+    const all: any[] = ['all'];
+    if (w.licence) all.push(['in', ['get', 'licence'], ['literal', LICENCES[w.licence]]]);
+    if (w.district) all.push(['==', ['get', 'district'], w.district]);
+    if (w.cutoff) all.push(['>=', ['get', 'first_seen'], w.cutoff]);
+    if (w.min) all.push(['>=', ['get', 'ha'], w.min]);
+    if (w.pics) all.push(['has', 'before_image']);
+    return all.length > 1 ? all : null;
+  }
+
+  function row(p: Props) {
+    const tpl = document.querySelector<HTMLTemplateElement>(`[data-row=${p.before_image ? 'pic' : 'nopic'}]`)!;
+    const li = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
+    const title = `${hectares(p.ha)} cleared ${p.name}`;
+    const a = li.querySelector<HTMLAnchorElement>('h3 a')!;
+    a.href = `/places/${p.id}`; a.textContent = title;
+    li.querySelector('.text p')!.textContent = `First seen ${long(p.first_seen)}.`;
+    const tag = li.querySelector<HTMLElement>('.tag')!;
+    tag.classList.toggle('alarm', ALARM.includes(p.licence));
+    tag.classList.toggle('plain', !ALARM.includes(p.licence));
+    tag.textContent = LABEL[p.licence];
+    const none = li.querySelector('.nopair');
+    if (none) none.textContent = NO_PICTURE[p.no_picture as NoPicture] ?? NO_PICTURE.pending;
+    const fig = li.querySelector<HTMLElement>('[data-pair]');
+    if (fig) {
+      Object.assign(fig.dataset, { title, href: `/places/${p.id}` });
+      li.querySelectorAll<HTMLAnchorElement>('[data-open]').forEach((shot) => {
+        const side = shot.dataset.open!;
+        const small = local(p[`${side}_image`]);
+        const file = (size: string) => small.replace(/-360\.webp$/, `-${size}`);
+        fig.dataset[side] = file('720.webp');
+        fig.dataset[`${side}Date`] = long(p[`${side}_date`]);
+        shot.href = file('720.webp');
+        shot.querySelector('source')!.srcset = `${file('360.avif')} 360w, ${file('720.avif')} 720w`;
+        const img = shot.querySelector('img')!;
+        img.src = small; img.srcset = `${small} 360w, ${file('720.webp')} 720w`;
+        img.loading = 'lazy'; img.removeAttribute('fetchpriority');
+        img.alt = side === 'before'
+          ? `Satellite image of the place on ${long(p.before_date)}, before the clearing was first seen`
+          : `Satellite image of the same place on ${long(p.after_date)}`;
+        shot.querySelector('.when')!.textContent = short(p[`${side}_date`]);
+      });
+    }
+    return li;
+  }
+
+  function paint() {
+    list.replaceChildren(...shown.slice(0, upTo).map(row));
+    more.hidden = shown.length <= upTo;
+  }
+
+  async function apply() {
+    const w = wanted();
+    const q = new URLSearchParams();
+    for (const [k, v] of new FormData(form)) if (v) q.set(k, String(v));
+    history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
+    mapFilter = expression(w);
+    if (map?.getLayer('places')) map.setFilter('places', mapFilter);
+    const all = await load();
+    shown = all.filter(matches(w));
+    shown.sort(w.sort === 'new'
+      ? (a, b) => (a.first_seen === b.first_seen ? b.ha - a.ha : a.first_seen < b.first_seen ? 1 : -1)
+      : (a, b) => b.ha - a.ha);
+    const ha = shown.reduce((t, p) => t + p.ha, 0);
+    const everything = shown.length === all.length;
+    count.textContent = everything
+      ? `Showing all ${fmt.format(all.length)} patches.`
+      : shown.length
+        ? `${fmt.format(shown.length)} of ${fmt.format(all.length)} patches match, ${fmt.format(Math.round(ha))} hectares in all.`
+        : 'No patches match. Try fewer filters.';
+    mapCount.textContent = everything ? '' : `${fmt.format(shown.length)} shown.`;
+    listHead.textContent = w.sort === 'new' ? 'Newest first' : 'Largest first';
+    note.textContent = shown.length
+      ? `${shown.length > PAGE ? `The first ${PAGE} of ` : ''}${fmt.format(shown.length)} ${everything ? '' : 'matching '}patches.`
+      : 'No patches match.';
+    upTo = PAGE;
+    paint();
+  }
+
+  const params = new URLSearchParams(location.search);
+  for (const el of Array.from(form.elements) as HTMLInputElement[]) {
+    const v = params.get(el.name);
+    if (v == null) continue;
+    if (el.type === 'checkbox') el.checked = v === el.value; else el.value = v;
+  }
+  form.hidden = false;
+  (document.querySelector("[data-fwrap]") as HTMLElement).hidden = false;
+  form.addEventListener('change', apply);
+  form.addEventListener('submit', (e) => e.preventDefault());
+  form.addEventListener('reset', () => setTimeout(apply));
+  more.addEventListener('click', () => {
+    const first = upTo;
+    upTo += PAGE;
+    paint();
+    list.children[first]?.querySelector<HTMLAnchorElement>('h3 a')?.focus();
+  });
+  const filtered = [...params.keys()].some((k) => form.elements.namedItem(k));
+  // On phones the filters fold away so the list starts near the top
+  if (filtered || matchMedia('(min-width: 960px)').matches) (document.querySelector('[data-fwrap]') as HTMLDetailsElement).open = true;
+  if (filtered) apply();
+
   openBtn.addEventListener('click', open);
   document.querySelector('[data-close-map]')!.addEventListener('click', close);
   if (matchMedia('(min-width: 960px)').matches || location.hash.length > 1) open();
@@ -210,6 +408,7 @@ const box = bounds.length
 
 <style>
   .sheet { display: grid; gap: 20px; padding-top: 24px; grid-template-areas: 'margin' 'map' 'list'; }
+  .sheet > * { min-width: 0; }
   .margin { grid-area: margin; display: grid; gap: 14px; align-content: start; }
   .mapcol { grid-area: map; }
   .listcol { grid-area: list; }
@@ -234,6 +433,26 @@ const box = bounds.length
   .listcol h2 { font-size: 1.5rem; margin: 16px 0 4px; }
   .list { list-style: none; padding: 0; margin: 12px 0 0; }
 
+  .filters { display: grid; gap: 12px; padding: 12px 0 4px; border-top: 1px solid var(--line); }
+  .filters[hidden] { display: none; }
+  .fwrap { border-top: 1px solid var(--line); padding-top: 12px; }
+  .fwrap > summary { list-style: none; cursor: pointer; display: inline-flex; }
+  .fwrap > summary::-webkit-details-marker { display: none; }
+  .fwrap[open] > summary { background: var(--ink); color: var(--paper); }
+  .fwrap .filters { border-top: 0; }
+  .filters label { display: grid; gap: 4px; font-size: 0.9375rem; font-weight: 700; }
+  .filters select {
+    font: inherit; font-weight: 400; min-height: 44px; padding: 0 10px; width: 100%; min-width: 0;
+    color: var(--ink); background: var(--paper); border: 1px solid var(--ink); border-radius: 6px;
+  }
+  .filters .check { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+  .filters .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
+  .filters .count { margin: 0; font-size: 0.9375rem; }
+  .filters .btn { justify-self: start; }
+  @media (min-width: 480px) and (max-width: 959px) {
+    .filters { grid-template-columns: 1fr 1fr; column-gap: 16px; }
+    .filters .count, .filters .check { grid-column: 1 / -1; }
+  }
   .detail { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 10px; }
   .detail :global(h2) { font-size: 1.0625rem; margin: 0; line-height: 1.3; }
   .detail :global(.hide) { justify-self: end; min-height: 40px; padding: 0 14px; }

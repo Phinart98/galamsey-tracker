@@ -205,7 +205,7 @@
   },
   {
    "id": "trend",
-   "text": "Hectares cleared in the 12 months to the 22nd, compared with the same month a year before",
+   "text": "Hectares cleared in the 12 months before each monthly point, measured on the same day each month, compared with a year before",
    "where": "home chart",
    "evidence": [
     "opera-dist-alert",
@@ -382,7 +382,7 @@
   },
   {
    "id": "revisit",
-   "text": "A new picture of the same place about every three days; fewer from June to September",
+   "text": "With five satellites, the same spot is photographed about every three days; fewer clear pictures from June to September",
    "where": "/method",
    "evidence": [
     "opera-dist-alert",
@@ -390,6 +390,41 @@
    ],
    "status": "measured",
    "caveat": "Median gap 3 days, mean 3.8, longest 32; 3 to 5 readings a month in June to September (one tile, one year)"
+  },
+  {
+   "id": "mining-appearance",
+   "text": "Gold mining in the pictures looks like water-filled pits in rows or clusters, brown, orange or green ponds, bare yellow or orange ground, often along rivers; farms are neat blocks that green again, building sites sit at town edges",
+   "where": "/method",
+   "evidence": [
+    "own-spike-log s12, s15"
+   ],
+   "status": "measured",
+   "caveat": "From the by-eye checks of 117 patches. A published description of galamsey in satellite imagery would strengthen it",
+   "todo": "Cite a published description (for example Barenblitt 2021 or Gallwey) if one matches"
+  },
+  {
+   "id": "dredging-missed",
+   "text": "Mining on rivers, such as dredging from boats, is missed because it removes no plants",
+   "where": "/method",
+   "evidence": [
+    "opera-dist-alert"
+   ],
+   "status": "unverified",
+   "caveat": "Follows from what DIST measures (loss of plant cover)",
+   "todo": "Cite a source that river dredging is a form of galamsey in Ghana"
+  },
+  {
+   "id": "reuse-terms",
+   "text": "NASA OPERA is public domain; Copernicus Sentinel-2 free with credit; geoBoundaries CC BY 4.0; OpenStreetMap ODbL",
+   "where": "/data",
+   "evidence": [
+    "opera-dist-alert",
+    "sentinel2-earth-search",
+    "geoboundaries-gha-adm2",
+    "openstreetmap"
+   ],
+   "status": "unverified",
+   "todo": "Open each licence page and confirm the wording"
   }
  ]
 }
