@@ -515,7 +515,7 @@
   },
   {
    "id": "towns-near-clearing",
-   "text": "At least 665 towns and villages have land cleared within 1 km of them in the last 12 months",
+   "text": "At least 645 towns and villages have land cleared within 1 km of them in the last 12 months",
    "where": "home (planned)",
    "evidence": [
     "openstreetmap",
@@ -523,7 +523,7 @@
     "own-spike-log s19"
    ],
    "status": "measured",
-   "caveat": "OSM misses villages unevenly, so a floor; distance from the place's OSM point"
+   "caveat": "OSM misses villages unevenly, so a floor; distance from the place's OSM point; 645 after the forest-zone mask (665 before), 23 Oct 2026 snapshot"
   },
   {
    "id": "trend-fall-2025-2026",

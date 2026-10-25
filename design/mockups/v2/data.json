@@ -1,10 +1,10 @@
 {
  "data_date": "2026-10-23",
- "total_ha": 16711,
- "patches": 6130,
- "no_licence_share": 0.85,
- "towns_within_1km": 665,
- "towns_5ha": 256,
+ "total_ha": 15964,
+ "patches": 5889,
+ "no_licence_share": 0.842,
+ "towns_within_1km": 645,
+ "towns_5ha": 250,
  "pra": {
   "plant": "Daboase",
   "river": "Pra",
@@ -80,8 +80,8 @@
   },
   {
    "name": "Ajumako",
-   "ha": 30.8,
-   "patches": 2,
+   "ha": 27.2,
+   "patches": 1,
    "district": "Gomoa Central",
    "place_id": "2026-01-5354n0779w",
    "pic": {
@@ -147,23 +147,9 @@
    }
   },
   {
-   "id": "2026-04-6988n0941w",
-   "ha": 60.21,
-   "near": null,
-   "district": "Asante Akim North",
-   "first_seen": "2026-04-07",
-   "licence": "no licence",
-   "pic": {
-    "before": "../../../pipeline/out/chips/2026-04-6988n0941w/before-720.webp",
-    "after": "../../../pipeline/out/chips/2026-04-6988n0941w/after-720.webp",
-    "before_date": "2026-01-25",
-    "after_date": "2026-10-02"
-   }
-  },
-  {
    "id": "2025-10-6206n0527w",
    "ha": 47.88,
-   "near": null,
+   "near": "Kibi",
    "district": "Abuakwa South",
    "first_seen": "2025-10-24",
    "licence": "no licence",
@@ -175,23 +161,9 @@
    }
   },
   {
-   "id": "2026-08-7143n1305w",
-   "ha": 47.52,
-   "near": null,
-   "district": "Sekyere Central",
-   "first_seen": "2026-08-21",
-   "licence": "no licence",
-   "pic": {
-    "before": "../../../pipeline/out/chips/2026-08-7143n1305w/before-720.webp",
-    "after": "../../../pipeline/out/chips/2026-08-7143n1305w/after-720.webp",
-    "before_date": "2026-01-25",
-    "after_date": "2026-10-22"
-   }
-  },
-  {
    "id": "2025-11-6748n1916w",
    "ha": 45.9,
-   "near": null,
+   "near": "Kunso",
    "district": "Ahafo Ano South East",
    "first_seen": "2025-11-14",
    "licence": "no licence",
@@ -205,7 +177,7 @@
   {
    "id": "2025-11-6757n1909w",
    "ha": 40.95,
-   "near": null,
+   "near": "Kunso",
    "district": "Ahafo Ano South East",
    "first_seen": "2025-11-14",
    "licence": "no licence",
@@ -219,7 +191,7 @@
   {
    "id": "2025-10-7226n2943w",
    "ha": 38.43,
-   "near": null,
+   "near": "Babianiha",
    "district": "Dormaa Municipal",
    "first_seen": "2025-10-25",
    "licence": "large-scale lease",
@@ -233,7 +205,7 @@
   {
    "id": "2025-10-5944n2466w",
    "ha": 37.71,
-   "near": null,
+   "near": "Sompre",
    "district": "Wassa Amenfi West",
    "first_seen": "2025-10-27",
    "licence": "no licence",
@@ -247,7 +219,7 @@
   {
    "id": "2025-11-6696n1954w",
    "ha": 37.26,
-   "near": null,
+   "near": "Mpasatia",
    "district": "Atwima Mponua",
    "first_seen": "2025-11-11",
    "licence": "no licence",
@@ -261,7 +233,7 @@
   {
    "id": "2026-02-6737n1873w",
    "ha": 35.82,
-   "near": null,
+   "near": "Mpasatia",
    "district": "Atwima Nwabiagya South",
    "first_seen": "2026-02-19",
    "licence": "large-scale lease",
@@ -275,7 +247,7 @@
   {
    "id": "2025-11-6657n1135w",
    "ha": 32.94,
-   "near": null,
+   "near": "Patriensa",
    "district": "Asante Akim Central Municipal",
    "first_seen": "2025-11-01",
    "licence": "prospecting only",
@@ -289,7 +261,7 @@
   {
    "id": "2026-01-5944n0570w",
    "ha": 31.32,
-   "near": null,
+   "near": "Asamankese",
    "district": "Ayensuano",
    "first_seen": "2026-01-26",
    "licence": "prospecting only",
@@ -297,6 +269,34 @@
     "before": "../../../pipeline/out/chips/2026-01-5944n0570w/before-720.webp",
     "after": "../../../pipeline/out/chips/2026-01-5944n0570w/after-720.webp",
     "before_date": "2026-01-25",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-11-6499n1699w",
+   "ha": 30.42,
+   "near": "Bekwai",
+   "district": "Bekwai Municipal",
+   "first_seen": "2025-11-14",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6499n1699w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6499n1699w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-04-30"
+   }
+  },
+  {
+   "id": "2025-11-6592n2057w",
+   "ha": 28.89,
+   "near": "Agogoso",
+   "district": "Atwima Mponua",
+   "first_seen": "2025-11-11",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6592n2057w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6592n2057w/after-720.webp",
+    "before_date": "2025-01-05",
     "after_date": "2026-10-22"
    }
   }

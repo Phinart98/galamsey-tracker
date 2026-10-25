@@ -53,7 +53,7 @@ newest = sorted(pictured, key=lambda r: r["ha"], reverse=True)[:12]
 out = {
     "data_date": summary["data_date"], "total_ha": summary["total_ha"], "patches": summary["patches"],
     "no_licence_share": summary["no_licence_to_mine"]["share"],
-    "towns_within_1km": 665, "towns_5ha": 256,
+    "towns_within_1km": 645, "towns_5ha": 250,
     "pra": {"plant": "Daboase", "river": "Pra", "ha_upstream": 9025, "share_of_belt": 0.40, "supplies": "Sekondi-Takoradi"},
     "villages": villages,
     "newest": [{"id": r["id"], "ha": r["ha"], "near": r.get("near"), "district": r.get("district"),
