@@ -18,6 +18,7 @@ from collections import OrderedDict
 import geopandas as gpd
 import pandas as pd
 from pyproj import Transformer
+from pystac_client.exceptions import APIError
 
 from tracker import chips, licences, nasa, places, summary
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
@@ -167,8 +168,12 @@ def make_chips(today: dt.date, limit: int):
     for rec in todo:
         first = dt.date.fromisoformat(rec["first_seen"])
         last = dt.date.fromisoformat(rec["last_seen"])
-        before = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, first - dt.timedelta(days=450), first - dt.timedelta(days=1))
-        after = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, last, today)
+        try:
+            before = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, first - dt.timedelta(days=450), first - dt.timedelta(days=1))
+            after = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, last, today)
+        except (OSError, APIError) as e:  # a dropped connection once ended a run 86 places in (2026-10-25)
+            print(f"  {rec['id']}: skipped, {type(e).__name__}; tried again next run")
+            continue
         if not before or not after:
             rec["chips"] = {"missing": True, "checked": str(today)}
             print(f"  {rec['id']}: no clear pair yet")
