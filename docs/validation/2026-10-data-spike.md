@@ -460,3 +460,16 @@ so the 104 of 117 figure (largest plus a random sample of the latest snapshot) m
 share for small, recent patches. **To do:** mask savanna and lake shore out of the tiles (an
 ecological-zone or forest-zone boundary, and the maximum water extent), then redo the trend and a
 season-aware random check before any trend sentence or mining share is published.
+
+## 21. Forest-zone mask (2026-10-25)
+
+RESOLVE Ecoregions 2017 (CC BY 4.0) splits southern Ghana into Eastern Guinean forests and the Guinean
+forest-savanna mosaic (plus mangroves). On the 23 Oct 2026 snapshot, 5,889 of 6,130 patches (15,964 of
+16,711 ha, 96%) lie in the forest ecoregion. The 747 ha outside are the Afram Plains and northern
+Ashanti savanna (Kwahu Afram Plains South 176 ha, Asante Akim North 114, Sekyere Afram Plains North 96,
+Sekyere Central 88, Mampong 75) and the coastal plain around Kasoa, Weija, Winneba and Gomoa. Of the 40
+largest patches it drops 4: the two that look like farm or plantation blocks (60 ha Asante Akim North,
+the site's lead picture until now, and 48 ha Sekyere Central) and two coastal ones. Of the 20 early-2025
+30NYN patches (s20) it keeps 5, including the one that showed mining, and drops 15 of the 19 that did
+not. Pipeline method 2026.10.3 counts only patches whose representative point is in the zone
+(`pipeline/forest_zone.geojson`, made by `spike/forest_zone.py`, simplified to about 100 m, 9 KB).

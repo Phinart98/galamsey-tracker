@@ -20,11 +20,11 @@ import pandas as pd
 from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
-from tracker import chips, licences, nasa, places, summary
+from tracker import chips, licences, nasa, places, summary, zone
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
-METHOD_VERSION = "2026.10.2"
+METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts (spike log s20)
 BELT_BBOX = "-3.3,4.7,-0.3,7.5"   # southern mining belt covered by v1
 WORK_CRS = "EPSG:32630"
 CHIP_MIN_HA = 3.0
@@ -99,7 +99,7 @@ def weekly(today: dt.date):
     if not per_tile:
         raise RuntimeError("no enabled tile had a recent granule")
 
-    clusters = dedupe_tiles(per_tile)
+    clusters = zone.inside(dedupe_tiles(per_tile), zone.load()).reset_index(drop=True)
     clusters["licence"] = licences.classify(clusters, licence_layer(today))
     near, near_km, district = places.name(
         clusters, places.settlements(os.path.join(CACHE, "places")),
@@ -265,10 +265,11 @@ def trend(today: dt.date, start: str = "2024-01"):
         print(f"trend: {tile} done for {len(months)} months", flush=True)
 
     lic = licence_layer(today)
+    forest = zone.load()
     for m in months:
         if not per_month[m]:
             continue
-        c = dedupe_tiles(per_month[m])
+        c = zone.inside(dedupe_tiles(per_month[m]), forest).reset_index(drop=True)
         c["licence"] = licences.classify(c, lic)
         s = summary.summarise(c.drop(columns="geometry"), top=0)
         series["points"][m.strftime("%Y-%m")] = {

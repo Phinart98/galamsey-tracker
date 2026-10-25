@@ -14,7 +14,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from pyproj import Transformer
 
-from tracker import chips, nasa
+from tracker import chips, nasa, zone
 from tracker.dist import cluster_polygons, loss_mask
 from tracker.run import CHIP_HALF_KM, CHIP_MIN_HA, OUT
 
@@ -66,6 +66,8 @@ def main():
     entry = nasa.latest_per_tile(GHANA_BBOX, today)[a.tile]
     status, date, transform, crs = nasa.read_status_and_date(entry)
     clusters = cluster_polygons(loss_mask(status, date, nasa.acquired(entry["title"])), date, transform, crs)
+    # Check the same patches the site counts
+    clusters = zone.inside(clusters, zone.load())
     to_ll = Transformer.from_crs(crs, 4326, always_xy=True)
     print(f"{a.tile}: {len(clusters)} patches, {round(float(clusters.ha.sum()))} ha")
 

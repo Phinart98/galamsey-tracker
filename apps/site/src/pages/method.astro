@@ -39,7 +39,8 @@ import { longDate } from '../lib/format';
     <ul>
       {coverage.map((a) => <li>{a.charAt(0).toUpperCase() + a.slice(1)}</li>)}
     </ul>
-    <p>Within those areas, it misses:</p>
+    <p>Within those areas we only count clearing in the forest zone, where the gold belts are. When we checked clearing north of the forest, in the Afram Plains, and on the coastal plain near Kasoa and Winneba, almost none of it was mining. It was farms, burnt bush, building sites and lake shore left bare when Lake Volta fell.</p>
+    <p>Within the forest zone, the tracker misses:</p>
     <ul>
       <li>Clearing smaller than 1 hectare</li>
       <li>Places hidden by cloud in every picture for a whole year</li>
@@ -61,6 +62,7 @@ import { longDate } from '../lib/format';
       <dt>Satellites</dt><dd>Landsat 8 and 9 (NASA and USGS) and Sentinel-2A, 2B and 2C (ESA, Copernicus), combined by NASA as Harmonized Landsat and Sentinel-2 (HLS). The before and after pictures are Sentinel-2 only.</dd>
       <dt>Clearing data</dt><dd>NASA OPERA DIST-ALERT-HLS version 1, 30 metre pixels, Harmonized Landsat and Sentinel-2. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
+      <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests ecoregion of RESOLVE Ecoregions 2017. This leaves out the forest-savanna mosaic and coastal savanna, about 4% of the cleared land.</dd>
       <dt>Licences</dt><dd>Active licences from the Minerals Commission cadastre. A patch takes the licence class that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
       <dt>Names</dt><dd>Nearest OpenStreetMap town within 15 km or village within 8 km. Districts from geoBoundaries.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from Earth Search. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>

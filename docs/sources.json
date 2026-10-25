@@ -232,6 +232,17 @@
    "url": "https://www.isd.gov.gh/naimos-intensifies-crackdown-on-illegal-mining-across-ghana/",
    "used_for": "Context for the trend: enforcement during the 2025 to 2026 fall",
    "status": "cited"
+  },
+  {
+   "id": "resolve-ecoregions-2017",
+   "title": "RESOLVE Ecoregions 2017 (Dinerstein et al. 2017, An Ecoregion-Based Approach to Protecting Half the Terrestrial Realm, BioScience 67(6))",
+   "publisher": "RESOLVE",
+   "url": "https://ecoregions.appspot.com/",
+   "access": "https://storage.googleapis.com/teow2016/Ecoregions2017.zip",
+   "licence": "CC BY 4.0",
+   "used_for": "Forest zone mask: only clearing in the Eastern Guinean forests ecoregion counts",
+   "status": "live-data",
+   "todo": "Confirm the CC BY 4.0 wording on the RESOLVE page"
   }
  ],
  "claims": [
@@ -524,6 +535,17 @@
    ],
    "status": "rejected",
    "caveat": "The fall is mostly dry-season savanna farm and fire clearing in 30NYN leaving the window: 1 of 20 sampled early-2025 patches showed mining (spike log s20)"
+  },
+  {
+   "id": "forest-zone",
+   "text": "Only clearing in the forest zone is counted; north of it and on the coastal plain almost none of the clearing checked was mining (farms, burnt bush, building sites, Lake Volta shore); about 4% of cleared land is left out",
+   "where": "/method",
+   "evidence": [
+    "resolve-ecoregions-2017",
+    "own-spike-log s20, s21"
+   ],
+   "status": "measured",
+   "caveat": "1 of 20 sampled early-2025 30NYN patches was mining, and it lies inside the zone; 4% from the 23 Oct 2026 snapshot"
   }
  ]
 }
