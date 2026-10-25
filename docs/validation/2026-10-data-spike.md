@@ -295,3 +295,42 @@ overwhelmingly mining, so a hand-weighted score adds fragility without adding ac
 
 The pre-launch check for the public figure stays a human (Philip) task: a single session of about
 100 pairs.
+
+## 13. The monthly trend needs three readings per point (2026-10-25)
+
+The first backfill read one DIST-ALERT granule per month (the one nearest the 22nd) and counted
+confirmed loss first seen in the 365 days before it. The series dipped to about 2,450 ha from
+December 2025 to March 2026, then jumped by 1,560 ha in April. A rolling 12-month total should not
+move like that.
+
+**Cause: two lags in DIST-ALERT, at opposite ends of the window.** Tile 30NXM, confirmed heavy-loss
+pixels (every 7th sampled) by the month they were first seen:
+
+| First seen | Read Nov 2025 | Dec 2025 | Jan 2026 | Mar 2026 | Apr 2026 | Jul 2026 |
+|---|---|---|---|---|---|---|
+| Nov 2024 | 2,192 | | | 16 | | |
+| Mar 2025 | 2,835 | 2,910 | 2,789 | 2,005 | | 10 |
+| Nov 2025 | 43 | 594 | 1,162 | 1,867 | 1,883 | 1,986 |
+| Mar 2026 | | | | 108 | 2,666 | 3,261 |
+
+- **Late confirmation:** a pixel is dated to its first detection but only reaches "confirmed" weeks
+  or months later, especially in the rainy season. The newest months of any reading are undercounted.
+- **Expiry:** about a year after first detection, a pixel drops out of the product. So a reading
+  taken long after the window loses its oldest months.
+
+**Fix (method 2026.10.2):** each point unions three readings, on the 22nd of the window's month and of
+the months 2 and 4 later, keeping only pixels first seen inside the window. The first reading
+supplies the old months before they expire, and the later ones the late confirmations, which
+settle to within about 5% by month 4. A point under 4 months old is marked `"settled": false`, and
+the weekly run recomputes it until it settles.
+
+**Consequence for the site:** year-on-year claims compare settled points only. Provisional points
+are drawn differently and labelled "still being confirmed".
+
+**Result of the backfill (tile 30NXM, 34 points, 20 minutes):** totals are 10 to 65% higher than the
+single-reading series, because late confirmations are now counted. The series still swings with
+the seasons: clear dry-season skies in December and January let NASA confirm a burst of clearing,
+and that burst leaves the window exactly a year later (for example 6,780 ha to 22 December 2024,
+then 3,885 ha to 22 December 2025). So the site only compares a month with the same month a year
+before. Latest settled pair: 4,740 ha to 22 June 2026 against 4,864 ha to 22 June 2025, about the
+same. The share with no licence to mine rose from about 79% in 2024 to 83 to 86% since.

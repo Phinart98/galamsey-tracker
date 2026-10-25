@@ -1,0 +1,17 @@
+{
+ "T30NXM": {
+  "enabled": true,
+  "place": "Dunkwa-on-Offin",
+  "area": "Dunkwa-on-Offin and the land around it, from Obuasi to Damang",
+  "checked": "2026-10-25",
+  "checked_patches": 24,
+  "showed_mining": 23,
+  "result": "23 of 24 random and top patches showed mining (1 clouded)",
+  "bounds": [
+   -2.0975,
+   5.3368,
+   -1.1034,
+   6.3323
+  ]
+ }
+}

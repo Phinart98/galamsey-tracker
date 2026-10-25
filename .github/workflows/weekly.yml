@@ -1,0 +1,94 @@
+name: Weekly update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC, after the weekend's DIST-ALERT granules land
+  workflow_dispatch:
+    inputs:
+      chips_limit:
+        description: "Most places to image this run"
+        default: "80"
+
+concurrency:
+  group: weekly-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    defaults:
+      run:
+        working-directory: pipeline
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check secrets are set
+        env:
+          EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        run: |
+          missing=""
+          for v in EARTHDATA_USERNAME R2_ACCOUNT_ID R2_BUCKET R2_ACCESS_KEY_ID; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then echo "::error::Missing secrets:$missing"; exit 1; fi
+
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync
+
+      - name: Earthdata login for NASA OPERA files
+        env:
+          EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
+          EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
+        run: |
+          printf 'machine urs.earthdata.nasa.gov login %s password %s\n' "$EARTHDATA_USERNAME" "$EARTHDATA_PASSWORD" > ~/.netrc
+          chmod 600 ~/.netrc
+
+      - name: Pull previous places, seeds and images from R2
+        env:
+          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: aws s3 sync "s3://$R2_BUCKET/v1" out --endpoint-url "$R2_ENDPOINT" --exclude "cache/*" --only-show-errors
+
+      - name: Weekly patches, licences, names and summary
+        run: uv run python -m tracker.run weekly
+
+      - name: Before/after images for new large places
+        run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '80' }}"
+
+      - name: Monthly trend point
+        run: uv run python -m tracker.run trend
+
+      - name: Push places, seeds and images to R2
+        if: always()
+        env:
+          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: aws s3 sync out "s3://$R2_BUCKET/v1" --endpoint-url "$R2_ENDPOINT" --exclude "cache/*" --exclude "*.log" --only-show-errors
+
+      # Always commit status.json, even after a failure: it keeps the repo active so GitHub
+      # does not disable this schedule, and it lets the site say when an update is late.
+      - name: Commit data
+        if: always()
+        working-directory: .
+        run: |
+          git config user.name "galamsey-tracker-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "data: weekly update $(date -u +%Y-%m-%d)"
+          git push
