@@ -37,7 +37,7 @@ export const LICENCE_SENTENCE: Record<Licence, string> = {
 };
 
 // geoBoundaries writes some district names with a lower-case word after a slash
-const tidyDistrict = (d: string) => d.replace(/\/(\w)/g, (_, c: string) => `/${c.toUpperCase()}`);
+export const tidyDistrict = (d: string) => d.replace(/\/(\w)/g, (_, c: string) => `/${c.toUpperCase()}`);
 
 export function placeName(p: Place) {
   if (p.near && p.district) return `near ${p.near}, ${tidyDistrict(p.district)}`;

@@ -1,0 +1,122 @@
+---
+// The Pra catchment, its rivers and the clearing in it, drawn at build time as plain SVG (no map library).
+import base from '../data/water-map.json';
+import { active } from '../lib/data';
+import { num } from '../lib/format';
+
+interface Props { praHa: number }
+const { praHa } = Astro.props;
+
+type Ring = number[][];
+const [W0, S0, E0, N0] = base.frame;
+const K = Math.cos((((S0 + N0) / 2) * Math.PI) / 180);
+const WIDTH = 640;
+const scale = WIDTH / ((E0 - W0) * K);
+const HEIGHT = Math.round((N0 - S0) * scale);
+const x = (lon: number) => +((lon - W0) * K * scale).toFixed(1);
+const y = (lat: number) => +((N0 - lat) * scale).toFixed(1);
+const ring = (r: Ring) => `M${r.map(([lon, lat]) => `${x(lon)} ${y(lat)}`).join('L')}Z`;
+const line = (r: Ring) => `M${r.map(([lon, lat]) => `${x(lon)} ${y(lat)}`).join('L')}`;
+const area = (polys: Ring[][]) => polys.map((p) => p.map(ring).join('')).join('');
+
+function inside([lon, lat]: number[], polys: Ring[][]) {
+  let hit = false;
+  for (const poly of polys) for (const r of poly) {
+    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+      const [xi, yi] = r[i], [xj, yj] = r[j];
+      if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) hit = !hit;
+    }
+  }
+  return hit;
+}
+
+// About 4.4 km cells. A square's area follows the hectares cleared in it, so a full square is CELL_MAX_HA or more.
+const CELL = 0.04;
+const CELL_MAX_HA = 150;
+const cells = new Map<string, { lon: number; lat: number; ha: number }>();
+for (const p of active) {
+  const i = Math.floor(p.lon / CELL), j = Math.floor(p.lat / CELL);
+  const c = cells.get(`${i},${j}`) ?? { lon: (i + 0.5) * CELL, lat: (j + 0.5) * CELL, ha: 0 };
+  c.ha += p.ha;
+  cells.set(`${i},${j}`, c);
+}
+const side = CELL * K * scale;
+const squares = [...cells.values()]
+  .filter((c) => c.lon > W0 && c.lon < E0 && c.lat > S0 && c.lat < N0)
+  .map((c) => {
+    const s = +(side * Math.sqrt(Math.min(c.ha, CELL_MAX_HA) / CELL_MAX_HA) * 0.92).toFixed(1);
+    return { x: +(x(c.lon) - s / 2).toFixed(1), y: +(y(c.lat) - s / 2).toFixed(1), s: Math.max(s, 1.6), pra: inside([c.lon, c.lat], base.pra as Ring[][]) };
+  });
+
+// Two paths rather than a rect per cell: about 1,200 cells would add 100 KB to the page
+const squaresPath = (pra: boolean) => squares.filter((q) => q.pra === pra).map((q) => `M${q.x} ${q.y}h${q.s}v${q.s}h-${q.s}z`).join('');
+const rivers = base.rivers.map((r) => ({
+  d: (r.lines as Ring[]).map(line).join(''),
+  w: r.km2 >= 8000 ? 3 : r.km2 >= 2000 ? 2 : 1.2,
+  pra: r.pra,
+}));
+const cities = [
+  { name: 'Kumasi', lon: -1.62, lat: 6.69, anchor: 'start' },
+  { name: 'Sekondi-Takoradi', lon: -1.75, lat: 4.92, anchor: 'end' },
+  { name: 'Accra', lon: -0.2, lat: 5.56, anchor: 'end' },
+];
+const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
+---
+<figure class="watermap">
+  <div class="frame">
+  <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-labelledby="wm-title">
+    <title id="wm-title">Map of southern Ghana. The Pra and its tributaries drain a large area from north of Kumasi down to the Daboase treatment plant near the coast. {num(praHa)} hectares of the cleared land lie in that area.</title>
+    <path class="land" d={area(base.land as Ring[][])} />
+    <path class="pra" d={area(base.pra as Ring[][])} />
+    <g class="rivers" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      {rivers.map((r) => <path d={r.d} stroke-width={r.w} class:list={{ main: r.pra }} />)}
+    </g>
+    <path class="clearing" d={squaresPath(false)} />
+    <path class="clearing in" d={squaresPath(true)} />
+    {cities.map((c) => <circle class="city" cx={x(c.lon)} cy={y(c.lat)} r="3.5" />)}
+    <rect class="plant" x={plant.x - 7} y={plant.y - 7} width="14" height="14" />
+  </svg>
+  <div class="labels" aria-hidden="true">
+    {cities.map((c) => (
+      <span class:list={['label', c.anchor]} style={`left:${(x(c.lon) / WIDTH) * 100}%;top:${(y(c.lat) / HEIGHT) * 100}%`}>{c.name}</span>
+    ))}
+    <span class="label start strong" style={`left:${(plant.x / WIDTH) * 100}%;top:${(plant.y / HEIGHT) * 100}%`}>Daboase water plant</span>
+  </div>
+  </div>
+  <figcaption>
+    <ul class="key">
+      <li><span class="sw pra-sw"></span>Land that drains to the Daboase plant</li>
+      <li><span class="sw in-sw"></span>Cleared land there (bigger square, more land)</li>
+      <li><span class="sw out-sw"></span>Cleared land that drains elsewhere</li>
+    </ul>
+    <p class="credit">{base.credit} Only the {num(active.length)} patches in the six areas we cover are shown.</p>
+  </figcaption>
+</figure>
+
+<style>
+  .watermap { margin: 0; }
+  svg { display: block; width: 100%; height: auto; background: var(--sea); border: 1px solid var(--line); }
+  .land { fill: var(--paper); stroke: var(--muted); stroke-width: 0.8; }
+  .pra { fill: var(--river-wash); stroke: var(--river); stroke-width: 1.2; }
+  .rivers path { stroke: var(--river); opacity: 0.55; }
+  .rivers path.main { opacity: 1; }
+  .clearing { fill: var(--muted); }
+  .clearing.in { fill: var(--signal); }
+  .frame { position: relative; }
+  .city { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+  .plant { fill: var(--ink); stroke: var(--paper); stroke-width: 2; }
+  .labels { position: absolute; inset: 0; pointer-events: none; }
+  /* Labels are HTML so they stay readable at phone width, where the map is drawn at half size */
+  .label { position: absolute; transform: translate(10px, -50%); font-size: 0.875rem; font-weight: 700; line-height: 1.2; white-space: nowrap;
+           background: var(--paper); padding: 1px 5px; border-radius: 3px; }
+  .label.end { transform: translate(calc(-100% - 10px), -50%); }
+  .label.strong { background: var(--ink); color: var(--paper); transform: translate(14px, -50%); }
+  figcaption { margin-top: 12px; }
+  .key { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 6px; font-size: 0.9375rem; }
+  .key li { display: flex; align-items: center; gap: 10px; }
+  .sw { width: 16px; height: 16px; flex: none; }
+  .pra-sw { background: var(--river-wash); border: 1.5px solid var(--river); }
+  .in-sw { background: var(--signal); }
+  .out-sw { background: var(--muted); }
+  .credit { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+</style>

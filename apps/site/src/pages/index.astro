@@ -1,109 +1,146 @@
 ---
 import Base from '../layouts/Base.astro';
 import Pair from '../components/Pair.astro';
-import PlaceRow from '../components/PlaceRow.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import TrendChart from '../components/TrendChart.astro';
-import { check, lead, summary, trend, where, withPairs } from '../lib/data';
-import { LICENCE_SENTENCE, hectares, longDate, num, pct, placeName, shortDate, srcsets } from '../lib/format';
+import WaterMap from '../components/WaterMap.astro';
+import { check, doorstep, summary, townsNear, trend, water, where } from '../lib/data';
+import { LICENCE_SENTENCE, hectares, longDate, num, pct, shortDate, srcsets, tidyDistrict } from '../lib/format';
 
-const biggest = withPairs.filter((p) => p.id !== lead?.id).slice(0, 8);
-const wall = withPairs.slice(0, 24);
+const [lead, ...villages] = doorstep(9);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
+const tidy = (d: string | null) => (d ? tidyDistrict(d) : null);
+const haText = (ha: number) => (ha < 10 ? ha.toFixed(1) : num(ha));
+// Who each plant supplies: docs/sources.json claim water-plant-towns. Kumasi's plants are not sourced yet.
+const SUPPLIES: Record<string, string> = {
+  Daboase: 'Sekondi-Takoradi',
+  Weija: 'central and western Accra',
+  Kwanyako: 'Winneba, Swedru and Kasoa',
+};
+const pra = water.find((w) => w.plant === 'Daboase');
+const total = summary?.total_ha ?? 0;
 ---
 <Base description={summary ? `${num(summary.total_ha)} hectares of land cleared in 12 months ${where}. ${pct(summary.no_licence_to_mine.share)} of it has no licence to mine.` : undefined}>
   <div class="wrap">
     {summary ? (
       <section class="hero" aria-labelledby="headline">
-        <div class="say">
-          <h1 id="headline">In the last 12 months, satellites saw {num(summary.total_ha)} hectares of land cleared {where}.</h1>
-        </div>
+        <h1 id="headline">
+          {townsNear
+            ? `At least ${num(townsNear.count)} towns and villages have land cleared within a kilometre of them.`
+            : `In the last 12 months, satellites saw ${num(summary.total_ha)} hectares of land cleared ${where}.`}
+        </h1>
+        <p class="sub">
+          Satellites saw {num(summary.total_ha)} hectares of land cleared {where} in the 12 months to {longDate(summary.data_date)}.
+          {lead && ' These are the places with the most of it on their doorstep.'}
+        </p>
         {lead && (
-          <div class="look">
-            <Pair place={lead} variant="lead" eager>
+          <div class="lead">
+            <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <strong>{hectares(lead.ha)} cleared {placeName(lead)}</strong>, first seen {longDate(lead.first_seen)}.
-                {' '}{LICENCE_SENTENCE[lead.licence]} <a href={`/places/${lead.id}`}>More about this place</a>
+                <span class="who"><a href={`/places/${lead.place.id}`}>{lead.town.name}</a>{lead.town.district && `, ${tidy(lead.town.district)}`}</span>
+                <span>{hectares(lead.town.ha)} cleared within 1 km, in {lead.town.patches} patches. The pictures show the largest, {hectares(lead.place.ha)}, first seen {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]}</span>
+                <span class="hint">Tap a picture to see it large and zoom in.</span>
               </figcaption>
             </Pair>
           </div>
         )}
-        <div class="more">
-          <p class="lede">That is about {num(summary.football_pitches)} football pitches. <strong>{pct(summary.no_licence_to_mine.share)} of it is land with no licence to mine.</strong></p>
-          {check.patches > 0 && <p>We looked at {check.patches} of these patches in satellite pictures and {check.mining} showed signs of mining, like pits and muddy ponds. Satellites cannot say who cleared the land, so we show the pictures and let you judge.</p>}
-          <p class="muted small">Data up to {longDate(summary.data_date)}, updated every Monday. Sources: NASA and Copernicus. <a href="/method#covers">Which areas we cover</a></p>
-          <div class="actions">
-            <a class="btn primary" href="/map">See every place on the map</a>
-            <a class="btn" href="/method">How we know</a>
-          </div>
-        </div>
       </section>
     ) : (
       <section class="hero"><h1>The first weekly update has not run yet.</h1></section>
     )}
 
-    {trend.length > 1 && (
-      <section class="band" aria-labelledby="worse">
-        <h2 id="worse">Clearing over time</h2>
-        {/* No year-on-year sentence until a change is checked: the 2025 to 2026 fall was dry-season farm and fire clearing (spike log s20) */}
-        <p class="intro">
-          Each point is the land cleared in the 12 months before it. NASA confirms clearing weeks after it first sees it, so the most recent months still rise.
-          Some of the ups and downs are farm and fire clearing in the dry season, so we do not read a trend from this yet.
-        </p>
-        <TrendChart points={trend} />
-      </section>
-    )}
-
-    {biggest.length > 0 && (
-      <section class="band" aria-labelledby="biggest">
-        <h2 id="biggest">The biggest patches cleared this year</h2>
-        <p class="intro">Each pair shows the same place before the clearing was first seen and in the latest clear picture. Tap a picture to see it large.</p>
-        <ul class="list">{biggest.map((p) => <PlaceRow place={p} />)}</ul>
-        <div class="actions">
-          <a class="btn" href="/map">See all {num(summary?.patches ?? 0)} places</a>
-          <a class="btn" href="/map?sort=new">See the newest</a>
-        </div>
-      </section>
-    )}
-
-    {wall.length > 3 && (
-      <section class="band" aria-labelledby="wall">
-        <h2 id="wall">The {wall.length} largest patches, from above</h2>
-        <p class="intro">Switch between before and after to see what was there.</p>
-        <div class="switch" role="group" aria-label="Which pictures to show" data-wall-switch hidden>
-          <button type="button" aria-pressed="false" data-show="before">Before</button>
-          <button type="button" aria-pressed="true" data-show="after">After</button>
-        </div>
-        <ul class="wall" data-wall>
-          {wall.map((p) => {
+    {lead && (
+      <section class="doorstep" aria-label="Towns and villages with the most cleared land nearby">
+        <ul class="villages">
+          {villages.map(({ town, place: p }) => {
             const a = srcsets(p.chips.after), b = srcsets(p.chips.before);
             return (
               <li>
-                <figure data-pair data-title={`${hectares(p.ha)} cleared ${placeName(p)}`} data-href={`/places/${p.id}`}
+                <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`}
                         data-before={b.large} data-after={a.large}
                         data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
                   <a class="cell" href={a.large} data-open="after">
-                    <picture class="after">
-                      <source type="image/avif" srcset={a.avif} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" />
-                      <img src={a.src} srcset={a.webp} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" width="360" height="360" loading="lazy" decoding="async"
-                           alt={`${shortDate(p.chips.after.date)}, ${hectares(p.ha)} cleared ${placeName(p)}`} />
-                    </picture>
-                    <picture class="before">
-                      <source type="image/avif" srcset={b.avif} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" />
-                      <img src={b.src} srcset={b.webp} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" width="360" height="360" loading="lazy" decoding="async"
-                           alt={`${shortDate(p.chips.before.date)}, the same place before`} />
+                    <picture>
+                      <source type="image/avif" srcset={a.avif} sizes="(min-width: 960px) 280px, 50vw" />
+                      <img src={a.src} srcset={a.webp} sizes="(min-width: 960px) 280px, 50vw" width="360" height="360" loading="lazy" decoding="async"
+                           alt={`Satellite image on ${shortDate(p.chips.after.date)} of the largest cleared patch near ${town.name}`} />
                     </picture>
                   </a>
                   <figcaption>
-                    <span class="name">{p.near ?? p.district}</span>
-                    <span class="ha">{num(p.ha)} ha</span>
+                    <a class="name" href={`/places/${p.id}`}>{town.name}</a>
+                    <span class="muted">{tidy(town.district)}</span>
+                    <span>{haText(town.ha)} ha within 1 km</span>
+                    <LicenceTag licence={p.licence} />
                   </figcaption>
                 </figure>
               </li>
             );
           })}
         </ul>
+        <p class="note">
+          Each picture is the largest cleared patch within 1 km, in the latest clear satellite picture. Tap it to compare with before.
+          The label is the licence on that patch. Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.
+        </p>
+      </section>
+    )}
+
+    <section class="band find" aria-labelledby="find" data-find hidden>
+      <h2 id="find">Find a town or village</h2>
+      <p class="intro">See how much land was cleared within 1 km of it in the last 12 months.</p>
+      <label class="field">
+        <span class="visually-hidden">Town or village name</span>
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="search" placeholder="Town or village name" autocomplete="off" spellcheck="false" data-find-q />
+      </label>
+      <p class="status muted" aria-live="polite" data-find-status></p>
+      <ul class="results" data-find-results></ul>
+    </section>
+
+    {summary && (
+      <section class="band" aria-labelledby="facts">
+        <h2 id="facts" class="visually-hidden">In short</h2>
+        <div class="facts3">
+          <p><strong>{num(summary.football_pitches)} football pitches.</strong> That is how much land {num(summary.total_ha)} hectares is.</p>
+          <p><strong>{pct(summary.no_licence_to_mine.share)} of it</strong> is on land with no licence to mine, going by the Minerals Commission's register.</p>
+          {check.patches > 0 && (
+            <p><strong>{check.mining} of {check.patches}</strong> patches we checked by eye, mostly large ones, showed signs of mining: pits, bare orange ground and muddy ponds. Small new patches are more often farms. <a href="/method">How we know</a></p>
+          )}
+        </div>
+      </section>
+    )}
+
+    {pra && pra.ha > 0 && (
+      <section class="band water" aria-labelledby="mud">
+        <div class="say">
+          <h2 id="mud">Where the mud goes</h2>
+          <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies in the land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
+          <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years. Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
+          <h3>Every treatment plant downstream of the areas we cover</h3>
+          <ul class="plants">
+            {water.map((w) => (
+              <li>
+                <span class="p"><strong>{w.plant}</strong> on the {w.river}</span>
+                <span class="v">{num(w.ha)} ha</span>
+                {SUPPLIES[w.plant] && <span class="t">Supplies {SUPPLIES[w.plant]}</span>}
+              </li>
+            ))}
+          </ul>
+          <p class="muted small">Hectares cleared in the last 12 months in the land that drains to each plant. In September 2025 Ghana Water warned that mud in the Ayensu had pushed the Kwanyako plant past what it was built to treat.</p>
+        </div>
+        <div class="look"><WaterMap praHa={pra.ha} /></div>
+      </section>
+    )}
+
+    {trend.length > 1 && (
+      <section class="band" aria-labelledby="time">
+        <h2 id="time">Clearing over time</h2>
+        {/* No year-on-year sentence until a change is checked by eye (spike log s20, s24) */}
+        <p class="intro">
+          Each point is the land cleared in the 12 months before it. NASA confirms clearing weeks after it first sees it, so the most recent months still rise.
+          Some of the ups and downs are farm and fire clearing in the dry season, so we do not read a trend from this yet.
+        </p>
+        <TrendChart points={trend} />
       </section>
     )}
 
@@ -116,12 +153,13 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
           <tbody>
             {districts.map((d) => (
               <tr>
-                <th scope="row"><a href={`/map?district=${encodeURIComponent(d.district)}`}>{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</a></th>
+                <th scope="row"><a href={`/map?district=${encodeURIComponent(d.district)}`}>{tidy(d.district)}</a></th>
                 <td><span class="bar" style={`width:${(d.ha / districtMax) * 100}%`}></span><span class="v">{num(d.ha)}</span></td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div class="actions"><a class="btn primary" href="/map">See every place on the map</a></div>
       </section>
     )}
 
@@ -140,57 +178,105 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
   </div>
 </Base>
 
-<script is:inline>
-  (() => {
-    const sw = document.querySelector('[data-wall-switch]');
-    const wall = document.querySelector('[data-wall]');
-    if (!sw || !wall) return;
-    sw.hidden = false;
-    sw.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
-      sw.querySelectorAll('button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-      wall.classList.toggle('show-before', b.dataset.show === 'before');
-      wall.querySelectorAll('[data-open]').forEach((a) => { a.dataset.open = b.dataset.show; });
-    }));
-  })();
+<script>
+  const box = document.querySelector<HTMLElement>('[data-find]');
+  if (box) {
+    type Row = [string, string | null, number, number, string];
+    const q = box.querySelector<HTMLInputElement>('[data-find-q]')!;
+    const status = box.querySelector<HTMLElement>('[data-find-status]')!;
+    const results = box.querySelector<HTMLUListElement>('[data-find-results]')!;
+    const fmt = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 });
+    const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const tidy = (d: string) => d.replace(/\/(\w)/g, (_, c: string) => `/${c.toUpperCase()}`);
+    let rows: Promise<Row[]> | null = null;
+    const load = () => (rows ??= fetch('/towns.json').then((r) => r.json()));
+    box.hidden = false;
+    q.addEventListener('focus', load, { once: true });
+
+    async function search() {
+      const term = fold(q.value);
+      if (term.length < 2) { results.replaceChildren(); status.textContent = ''; return; }
+      const all = await load();
+      if (fold(q.value) !== term) return;
+      // The exact name first, then names that start with what was typed, then names that contain it, each by land cleared
+      const rank = (name: string) => { const f = fold(name); return f === term ? 0 : f.startsWith(term) ? 1 : f.includes(term) ? 2 : 3; };
+      const found = all.map((r) => ({ r, rank: rank(r[0]) })).filter((m) => m.rank < 3)
+        .sort((a, b) => a.rank - b.rank || b.r[2] - a.r[2]).slice(0, 8);
+      status.textContent = found.length
+        ? ''
+        : 'No cleared land found within 1 km of a place with that name. It may be outside the six areas we cover, or missing from OpenStreetMap.';
+      results.replaceChildren(...found.map(({ r: [name, dist, ha, n, id] }) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `/places/${id}`;
+        const b = document.createElement('strong');
+        b.textContent = name;
+        a.append(b, dist ? `, ${tidy(dist)}` : '');
+        const s = document.createElement('span');
+        s.textContent = `${fmt.format(ha)} ha within 1 km, ${n} ${n === 1 ? 'patch' : 'patches'}. The link shows the largest.`;
+        li.append(a, s);
+        return li;
+      }));
+    }
+    q.addEventListener('input', search);
+  }
 </script>
 
 <style>
-  .hero { display: grid; gap: 20px; padding: 28px 0 40px; }
-  .hero h1 { font-size: clamp(1.75rem, 3.4vw, 2.625rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0; font-weight: 800; max-width: 22ch; }
-  .lede { font-size: 1.25rem; line-height: 1.45; margin: 0 0 14px; max-width: 34ch; }
-  .more p { max-width: 46ch; }
-  .more .actions { margin-top: 20px; }
-  .caption { margin-top: 10px; font-size: 0.9375rem; color: var(--muted); max-width: 60ch; }
-  .caption strong { color: var(--ink); }
-  @media (min-width: 960px) {
-    .hero { grid-template-columns: 5fr 7fr; grid-template-areas: 'say say' 'more look'; column-gap: 48px; row-gap: 28px; padding-top: 48px; align-items: start; }
-    .hero h1 { max-width: 30ch; }
-    .say { grid-area: say; }
-    .look { grid-area: look; }
-    .more { grid-area: more; }
+  .hero { display: grid; gap: 16px; padding: 28px 0 28px; }
+  .hero .lead { margin-top: 8px; }
+  @media (min-width: 1100px) {
+    .hero { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto 1fr; column-gap: 48px; padding-top: 48px; }
+    .hero h1, .sub { grid-column: 1; }
+    .hero .lead { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
   }
-  .list { list-style: none; padding: 0; margin: 0 0 24px; }
+  .hero h1 { font-size: clamp(1.875rem, 4.6vw, 3.5rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0; font-weight: 800; max-width: 21ch; }
+  .sub { font-size: 1.1875rem; line-height: 1.45; margin: 0; max-width: 46ch; }
 
-  .switch {
-    display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; margin-bottom: 16px;
-    position: sticky; top: 8px; z-index: 3; background: var(--paper);
+  .doorstep { display: grid; gap: 20px; padding-bottom: 40px; }
+  .caption { display: grid; gap: 4px; margin-top: 10px; max-width: 60ch; }
+  .caption .who { font-size: 1.25rem; font-weight: 800; line-height: 1.25; }
+  .caption .hint { color: var(--muted); font-size: 0.9375rem; }
+  .villages { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px 4px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .villages figure { margin: 0; }
+  .cell { display: block; aspect-ratio: 1; background: var(--paper-2); }
+  .cell img { width: 100%; height: 100%; object-fit: cover; }
+  .villages figcaption { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 2px 0; font-size: 0.9375rem; line-height: 1.35; }
+  .villages .name { font-weight: 800; font-size: 1.0625rem; }
+  .villages :global(.tag) { margin-top: 4px; white-space: normal; }
+  .note { margin: 0; font-size: 0.9375rem; color: var(--muted); max-width: 70ch; }
+  @media (max-width: 719px) {
+    .villages { margin: 0 calc(-1 * var(--gutter)); column-gap: 2px; }
+    .villages figcaption { padding: 8px var(--gutter) 0; }
+    .lead .caption { padding: 0 var(--gutter); }
   }
-  .switch[hidden] { display: none; }
-  .switch button { font: inherit; font-weight: 700; min-height: 44px; padding: 0 18px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
-  .switch button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
-  .wall { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; grid-template-columns: repeat(2, 1fr); }
-  @media (min-width: 640px) { .wall { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 1000px) { .wall { grid-template-columns: repeat(4, 1fr); } }
-  .wall figure { margin: 0; }
-  .cell { display: block; position: relative; aspect-ratio: 1; background: var(--paper-2); }
-  .cell picture, .cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .cell .before { opacity: 0; transition: opacity 150ms ease-in-out; }
-  .wall.show-before .cell .before { opacity: 1; }
-  .wall figcaption { display: flex; justify-content: space-between; gap: 8px; padding: 6px 2px 12px; font-size: 0.875rem; }
-  .wall .name { font-weight: 700; }
-  .wall .ha { color: var(--muted); white-space: nowrap; }
+  @media (min-width: 720px) { .villages { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 8px; } }
+  .field { display: flex; align-items: center; gap: 10px; max-width: 520px; border: 2px solid var(--ink); border-radius: 6px; padding: 0 12px; background: var(--paper); }
+  .field:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .field input { flex: 1; min-width: 0; min-height: 52px; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 1.125rem; outline: none; }
+  .find .status { margin: 10px 0 0; max-width: 60ch; }
+  .find .status:empty { display: none; }
+  .results { list-style: none; margin: 8px 0 0; padding: 0; max-width: 640px; }
+  .results li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .results a { font-size: 1.0625rem; }
+  .results span { color: var(--muted); font-size: 0.9375rem; }
 
-  .districts { border-collapse: collapse; width: 100%; max-width: 720px; }
+  .facts3 { display: grid; gap: 20px; }
+  .facts3 p { margin: 0; max-width: 36ch; font-size: 1.0625rem; }
+  .facts3 strong { display: block; font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 4px; }
+  @media (min-width: 720px) { .facts3 { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+
+  .water { display: grid; gap: 28px; }
+  .water .big { font-size: 1.25rem; line-height: 1.45; font-weight: 700; max-width: 40ch; }
+  .water p { max-width: 58ch; }
+  .water h3 { font-size: 1.0625rem; margin: 24px 0 4px; }
+  .plants { list-style: none; padding: 0; margin: 0 0 12px; max-width: 560px; }
+  .plants li { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .plants .v { font-weight: 700; text-align: right; }
+  .plants .t { grid-column: 1 / -1; color: var(--muted); font-size: 0.9375rem; }
+  @media (min-width: 1000px) { .water { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 48px; align-items: start; } .water .look { position: sticky; top: 16px; } }
+
+  .districts { border-collapse: collapse; width: 100%; max-width: 720px; margin-bottom: 24px; }
   .districts th, .districts td { padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; }
   .districts thead th { font-weight: 700; font-size: 0.9375rem; }
   .districts tbody th { width: 45%; padding-right: 16px; }

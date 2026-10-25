@@ -9,6 +9,8 @@
   --signal: #B8155A;
   --signal-ink: #FFFFFF;
   --river: #1D5C8C;
+  --river-wash: #CFE0EC;
+  --sea: #E0E6E9;
   --focus: #1D5C8C;
   --gutter: 16px;
   color-scheme: light;
@@ -23,6 +25,8 @@
     --signal: #FF6FA6;
     --signal-ink: #000000;
     --river: #7DB8E8;
+    --river-wash: #1B2C38;
+    --sea: #0F1519;
     --focus: #7DB8E8;
     color-scheme: dark;
   }
@@ -36,6 +40,8 @@
   --signal: #FF6FA6;
   --signal-ink: #000000;
   --river: #7DB8E8;
+  --river-wash: #1B2C38;
+  --sea: #0F1519;
   --focus: #7DB8E8;
   color-scheme: dark;
 }

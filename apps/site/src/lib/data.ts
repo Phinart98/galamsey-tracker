@@ -46,6 +46,8 @@ export interface Summary {
   window_days: number;
   tiles: string[];
   method_version: string;
+  towns_near?: { radius_m: number; count: number; with_5ha: number };
+  water?: WaterPlant[];
 }
 
 export interface TrendPoint {
@@ -84,11 +86,7 @@ export function hasPair(p: Place): p is Place & { chips: { before: Chip; after: 
 export const active = places.filter((p) => p.active).sort((a, b) => b.ha - a.ha);
 export const withPairs = active.filter(hasPair);
 
-const NO_LICENCE_TO_MINE: Licence[] = ['no licence', 'prospecting only'];
-export const noLicenceToMine = (p: Place) => NO_LICENCE_TO_MINE.includes(p.licence);
 
-// The lead picture: the largest recent patch with a clear pair, preferring land with no licence to mine
-export const lead = withPairs.find(noLicenceToMine) ?? withPairs[0] ?? null;
 
 export const coverage = Object.values(tiles).map((t) => t.area);
 export const placeNames = Object.values(tiles).map((t) => t.place);
@@ -103,3 +101,26 @@ export const check = Object.values(tiles).reduce(
 
 export const lastSuccess: string | null = status.weekly?.last_success ?? null;
 export const STALE_DAYS = 14;
+
+export interface Town { name: string; place: string; district: string | null; lat: number; lon: number; ha: number; patches: number; ids: string[] }
+export interface WaterPlant { plant: string; river: string; ha: number }
+
+const townFile = read<{ radius_m: number; towns: Town[] }>(path.join(DATA, 'towns.json'), { radius_m: 1000, towns: [] });
+export const towns = townFile.towns;
+export const townsNear = summary?.towns_near ?? null;
+export const water = (summary?.water ?? []).slice().sort((a, b) => b.ha - a.ha);
+
+// The villages the home page leads with: most cleared land within 1 km, each shown by its largest pictured
+// patch. Neighbouring villages often share one big patch, so each picture is used once.
+export function doorstep(n: number) {
+  const used = new Set<string>();
+  const out: { town: Town; place: Place & { chips: { before: Chip; after: Chip } } }[] = [];
+  for (const town of towns) {
+    const place = town.ids.map((id) => placeById.get(id)).find((p) => p && hasPair(p) && !used.has(p.id));
+    if (!place || !hasPair(place)) continue;
+    used.add(place.id);
+    out.push({ town, place });
+    if (out.length === n) break;
+  }
+  return out;
+}

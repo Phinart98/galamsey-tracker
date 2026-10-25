@@ -139,10 +139,21 @@
    "publisher": "HydroSHEDS / WWF",
    "url": "https://www.hydrosheds.org/products/hydrobasins",
    "licence": "Free for scientific, educational and commercial use (product page, checked 2026-10-25); full licence agreement not yet read",
-   "used_for": "Hectares cleared upstream of water treatment plants (spike log section 16)",
+   "used_for": "Hectares cleared upstream of water treatment plants (spike log s16, s23; pipeline/water_plants.geojson) and the catchment on the home page map",
    "status": "checked",
    "checked": "2026-10-25 (licence summary on product page)",
    "todo": "Read the full licence agreement and confirm the citation"
+  },
+  {
+   "id": "hydrorivers",
+   "title": "HydroRIVERS v1.0, Africa. Lehner and Grill (2013), Hydrological Processes 27(15)",
+   "publisher": "HydroSHEDS / WWF",
+   "url": "https://www.hydrosheds.org/products/hydrorivers",
+   "licence": "Same HydroSHEDS licence as HydroBASINS (free for scientific, educational and commercial use, with credit); full agreement not yet read",
+   "used_for": "Rivers draining at least 800 km2 on the home page water map (spike/water_map.py)",
+   "status": "checked",
+   "checked": "2026-10-25 (downloaded)",
+   "todo": "Read the full licence agreement with HydroBASINS"
   },
   {
    "id": "openfreemap",
@@ -172,7 +183,7 @@
   },
   {
    "id": "gwcl-daboase-news",
-   "title": "Daboase treatment plant (Pra River): output cuts, rationing in Sekondi-Takoradi, turbidity far above design",
+   "title": "Daboase treatment plant (Pra): runs only two hours a day because the intake is heavily silted, partly from illegal mining; Sekondi-Takoradi on rationing for three years (3News, 9 Feb 2022)",
    "publisher": "3News; Graphic; GNA (2024 workshop: 54 NTU design, 8,000 NTU averages, operations cut 30%)",
    "url": "https://3news.com/featured/gwcl-considers-shutdown-of-daboase-plant/",
    "also": [
@@ -197,7 +208,7 @@
   },
   {
    "id": "gwcl-kwanyako-news",
-   "title": "Kwanyako (Kwanyaku) headworks on the Ayensu: serves 30+ districts incl. Winneba, Swedru, Kasoa; shut over two weeks Sept 2025 on turbidity",
+   "title": "Kwanyaku headworks on the Ayensu: serves 30+ districts incl. Winneba, Swedru, Kasoa; pollution pushed turbidity past design capacity and could force a shutdown (GNA, 1 Sep 2025). It does not report an actual shutdown",
    "publisher": "GNA (Sept 2025); Citi Newsroom (Sept 2025, April 2026)",
    "url": "https://gna.org.gh/2025/09/ghana-water-ltd-moves-to-avert-possible-shutdown-of-kwanyaku-headworks-amid-rising-pollution/",
    "also": [
@@ -270,7 +281,7 @@
   {
    "id": "mining-share",
    "text": "104 of 117 randomly checked patches showed signs of mining",
-   "where": "home, /method",
+   "where": "home (\"mostly large ones, small new patches are more often farms\"), /method",
    "evidence": [
     "own-spike-log s12, s15, s22"
    ],
@@ -506,7 +517,7 @@
   {
    "id": "pra-upstream",
    "text": "More than half of the land cleared in the last 12 months (8,946 of 15,964 ha) drains down the Pra past the Daboase treatment plant",
-   "where": "home (planned water story)",
+   "where": "home (water section, built 2026-10-25, not live)",
    "evidence": [
     "opera-dist-alert",
     "hydrobasins",
@@ -519,7 +530,7 @@
   {
    "id": "water-plant-towns",
    "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies central and western Accra; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Kumasi",
-   "where": "home (planned water story)",
+   "where": "home (water section, built 2026-10-25, not live)",
    "evidence": [
     "gwcl-daboase-news",
     "gwcl-weija-news",
@@ -527,12 +538,23 @@
     "gwcl-owabi-barekese-news"
    ],
    "status": "unverified",
-   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25; Owabi and Barekese still need a specific article or GWL page"
+   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25 and shown; Owabi and Barekese (Kumasi) are listed without a town until sourced"
+  },
+  {
+   "id": "plant-silting",
+   "text": "Daboase ran only two hours a day in Feb 2022 because its intake was silted; Ghana Water warned in Sep 2025 that mud in the Ayensu pushed Kwanyako past its design",
+   "where": "home (water section)",
+   "evidence": [
+    "gwcl-daboase-news",
+    "gwcl-kwanyako-news"
+   ],
+   "status": "verified",
+   "caveat": "Checked against the articles 2026-10-25. An earlier note wrongly said Kwanyako was shut for two weeks"
   },
   {
    "id": "towns-near-clearing",
    "text": "At least N towns and villages have land cleared within 1 km of them (N from the weekly run: 644 on 23 Oct 2026)",
-   "where": "home (planned)",
+   "where": "home headline (built 2026-10-25, not live)",
    "evidence": [
     "openstreetmap",
     "opera-dist-alert",
