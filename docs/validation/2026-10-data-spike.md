@@ -400,3 +400,44 @@ DIST-ALERT granule names for tile 30NXM, 23 October 2025 to 22 October 2026: 102
 days. Sentinel-2A 23, Sentinel-2B 25, Sentinel-2C 28, Landsat 8 13, Landsat 9 13. So three quarters
 of the readings come from the European satellites. Gap between reading days: median 3, mean 3.8,
 longest 32. Readings per month fall from 9 to 12 in the dry season to 3 to 5 from June to September.
+
+## 18. Six-tile trend and the 2025 to 2026 fall (2026-10-25)
+
+`uv run python -m tracker.run trend` over six tiles took 67 minutes from scratch (download bound once
+the tile dedupe was indexed: 463 s to 0.2 s, same 6,130 patches). A run with no new reading takes 4 s.
+Settled points (hectares cleared in the 12 months before each point, three readings):
+June 2024 18,270; December 2024 28,055 (peak); October 2025 27,863; May 2026 18,348. May 2025 to
+May 2026 is -25%, but May 2026 is about the same as May 2024 (21,885 vs 21,401 per-tile sums).
+
+`spike/trend_by_tile.py`, May points per tile (ha, tile overlaps counted twice):
+
+| Tile | May 2024 | May 2025 | May 2026 | 2025 to 2026 |
+|---|---|---|---|---|
+| 30NWM Wassa Amenfi, Aowin | 4,073 | 5,060 | 5,229 | +3% |
+| 30NWN Juaboso, Asutifi | 1,474 | 2,454 | 1,773 | -28% |
+| 30NXM Dunkwa-on-Offin | 4,528 | 4,855 | 4,661 | -4% |
+| 30NXN Amansie West, Atwima | 5,131 | 6,706 | 4,788 | -29% |
+| 30NYM Atiwa, Kibi | 1,601 | 2,849 | 2,568 | -10% |
+| 30NYN Atiwa, Kwahu | 4,594 | 7,277 | 2,866 | -61% |
+
+No-data shares are flat across years (0 to 4.4%, the 4.4% is a tile edge) and every reading exists,
+so the fall is not a data gap. 30NYN gives 60% of the fall, and 3,486 ha of its May 2025 point was
+first seen 22 Feb to 22 May 2025: dry season, when fire and farm clearing also remove plants, in the
+tile with the most farm false hits (s15). Outside evidence: no independent satellite figure for
+2025 or 2026 yet (the Forestry Commission's survey ends December 2024 and still rising); NAIMOS
+operations ran through the period; the government says things improved, A Rocha Ghana disputes
+official counts. **Decision pending:** do not publish a year-on-year sentence until the 30NYN
+early-2025 patches are checked by eye (`spike/spike_2025_check.py`).
+
+## 19. Towns and villages near cleared land (2026-10-25)
+
+`spike/towns_near.py`: OSM named cities, towns and villages inside the six tiles: 3,352. With any
+active patch within 1 km of the place's point: 665. With at least 5 ha: 256; 20 ha: 27; 50 ha: 5.
+Patches within 1 km of a named place: 1,171 of 6,130 (19%), 3,430 of 16,711 ha. Clearing first seen
+in the last 90 days near a place: only 13, because recent clearing is confirmed late, so a "new
+near you" line would mislead. OSM is uneven (30NWM has 244 places, 30NYM 1,067), so counts are a
+floor. Usable public form: "at least 665 towns and villages have land cleared within 1 km of them".
+
+Also found: the settlements cache was keyed by file name only, so the five newer tiles had no town
+names (3,058 of 6,130 places named). Settlements now come from Geofabrik's Ghana extract (Overpass
+returned 502 and its mirrors timed out), cached once for all of Ghana: 6,754 named places.

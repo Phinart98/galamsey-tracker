@@ -1,7 +1,7 @@
 """Readable place names: nearest known town (or village) and district.
 
 Districts: geoBoundaries GHA ADM2 (260 districts, 2019, Ghana Statistical Service, CC BY 4.0).
-Settlements: OpenStreetMap place=city|town|village with a name (ODbL).
+Settlements: OpenStreetMap place=city|town|village with a name (ODbL), via Geofabrik's Ghana extract.
 """
 import os
 
@@ -10,7 +10,7 @@ import requests
 
 ADM2 = ("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GHA/ADM2/"
         "geoBoundaries-GHA-ADM2_simplified.geojson")
-OVERPASS = "https://overpass-api.de/api/interpreter"
+GHANA_OSM = "https://download.geofabrik.de/africa/ghana-latest.osm.pbf"
 HEADERS = {"User-Agent": "galamsey-tracker/0.1 (+https://github.com/Phinart98/galamsey-tracker)"}
 TOWN_M = 15000    # readers recognise towns from further away than villages
 VILLAGE_M = 8000  # beyond this, "near X" stops helping and the district alone is clearer
@@ -33,20 +33,33 @@ def districts(cache_dir: str) -> gpd.GeoDataFrame:
     return gdf[["shapeName", "geometry"]].rename(columns={"shapeName": "district"})
 
 
-def settlements(cache_dir: str, bbox: tuple[float, float, float, float]) -> gpd.GeoDataFrame:
-    west, south, east, north = bbox
+def _read_osm_places(pbf: str) -> gpd.GeoDataFrame:
+    g = gpd.read_file(pbf, layer="points", where="place IN ('city','town','village') AND name IS NOT NULL",
+                      columns=["name", "place"])
+    return g[["name", "place", "geometry"]]
 
-    def fetch():
-        q = (f'[out:json][timeout:180];node["place"~"^(city|town|village)$"]["name"]'
-             f'({south},{west},{north},{east});out;')
-        r = requests.post(OVERPASS, data={"data": q}, headers=HEADERS, timeout=240)
+
+def _download(url: str, path: str):
+    with requests.get(url, headers=HEADERS, timeout=600, stream=True) as r:
         r.raise_for_status()
-        rows = [{"name": e["tags"]["name"], "place": e["tags"]["place"], "lon": e["lon"], "lat": e["lat"]}
-                for e in r.json()["elements"]]
-        g = gpd.GeoDataFrame(rows, geometry=gpd.points_from_xy([r["lon"] for r in rows], [r["lat"] for r in rows]),
-                             crs=4326)
-        return g.to_json().encode()
-    return gpd.read_file(_cached(os.path.join(cache_dir, "settlements.geojson"), fetch))
+        with open(path, "wb") as f:
+            f.writelines(r.iter_content(1 << 20))
+
+
+def settlements(cache_dir: str) -> gpd.GeoDataFrame:
+    """Every named city, town and village in Ghana, so any tile switched on later already has its names.
+
+    From Geofabrik's daily Ghana extract: the Overpass API returned 502 and its mirrors timed out (2026-10-25),
+    and a cache made for one tile's area once left five newer tiles without town names.
+    """
+    def fetch():
+        pbf = os.path.join(cache_dir, "ghana.osm.pbf")
+        _download(GHANA_OSM, pbf)
+        try:
+            return _read_osm_places(pbf).to_json().encode()
+        finally:
+            os.remove(pbf)
+    return gpd.read_file(_cached(os.path.join(cache_dir, "settlements_ghana.geojson"), fetch))
 
 
 def name(clusters: gpd.GeoDataFrame, towns_and_villages: gpd.GeoDataFrame, district_polys: gpd.GeoDataFrame):

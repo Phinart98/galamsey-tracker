@@ -101,9 +101,8 @@ def weekly(today: dt.date):
 
     clusters = dedupe_tiles(per_tile)
     clusters["licence"] = licences.classify(clusters, licence_layer(today))
-    ll = clusters.to_crs(4326).total_bounds
     near, near_km, district = places.name(
-        clusters, places.settlements(os.path.join(CACHE, "places"), tuple(ll + [-0.15, -0.15, 0.15, 0.15])),
+        clusters, places.settlements(os.path.join(CACHE, "places")),
         places.districts(os.path.join(CACHE, "places")))
     clusters["near"], clusters["near_km"], clusters["district"] = near.values, near_km.values, district.values
 
