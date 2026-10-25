@@ -1,12 +1,12 @@
 {
- "method_version": "2026.10.2",
+ "method_version": "2026.10.3",
  "points": {
   "2024-01": {
    "date": "2024-01-22",
-   "total_ha": 17092,
+   "total_ha": 15524,
    "no_licence_to_mine": {
-    "ha": 14547,
-    "share": 0.851
+    "ha": 12979,
+    "share": 0.836
    },
    "covered": [
     "T30NWM",
@@ -41,10 +41,10 @@
   },
   "2024-02": {
    "date": "2024-02-22",
-   "total_ha": 16622,
+   "total_ha": 15174,
    "no_licence_to_mine": {
-    "ha": 13968,
-    "share": 0.84
+    "ha": 12521,
+    "share": 0.825
    },
    "covered": [
     "T30NWM",
@@ -79,10 +79,10 @@
   },
   "2024-03": {
    "date": "2024-03-22",
-   "total_ha": 18036,
+   "total_ha": 16679,
    "no_licence_to_mine": {
-    "ha": 15279,
-    "share": 0.847
+    "ha": 13923,
+    "share": 0.835
    },
    "covered": [
     "T30NWM",
@@ -117,10 +117,10 @@
   },
   "2024-04": {
    "date": "2024-04-22",
-   "total_ha": 18708,
+   "total_ha": 16967,
    "no_licence_to_mine": {
-    "ha": 15959,
-    "share": 0.853
+    "ha": 14218,
+    "share": 0.838
    },
    "covered": [
     "T30NWM",
@@ -155,10 +155,10 @@
   },
   "2024-05": {
    "date": "2024-05-22",
-   "total_ha": 18214,
+   "total_ha": 16348,
    "no_licence_to_mine": {
-    "ha": 15620,
-    "share": 0.858
+    "ha": 13754,
+    "share": 0.841
    },
    "covered": [
     "T30NWM",
@@ -192,10 +192,10 @@
   },
   "2024-06": {
    "date": "2024-06-22",
-   "total_ha": 18270,
+   "total_ha": 16435,
    "no_licence_to_mine": {
-    "ha": 15679,
-    "share": 0.858
+    "ha": 13844,
+    "share": 0.842
    },
    "covered": [
     "T30NWM",
@@ -230,10 +230,10 @@
   },
   "2024-07": {
    "date": "2024-07-22",
-   "total_ha": 20270,
+   "total_ha": 18391,
    "no_licence_to_mine": {
-    "ha": 17384,
-    "share": 0.858
+    "ha": 15505,
+    "share": 0.843
    },
    "covered": [
     "T30NWM",
@@ -267,10 +267,10 @@
   },
   "2024-08": {
    "date": "2024-08-22",
-   "total_ha": 21832,
+   "total_ha": 19911,
    "no_licence_to_mine": {
-    "ha": 18675,
-    "share": 0.855
+    "ha": 16754,
+    "share": 0.841
    },
    "covered": [
     "T30NWM",
@@ -305,10 +305,10 @@
   },
   "2024-09": {
    "date": "2024-09-22",
-   "total_ha": 21792,
+   "total_ha": 19840,
    "no_licence_to_mine": {
-    "ha": 18630,
-    "share": 0.855
+    "ha": 16678,
+    "share": 0.841
    },
    "covered": [
     "T30NWM",
@@ -342,10 +342,10 @@
   },
   "2024-10": {
    "date": "2024-10-22",
-   "total_ha": 22785,
+   "total_ha": 20653,
    "no_licence_to_mine": {
-    "ha": 19459,
-    "share": 0.854
+    "ha": 17326,
+    "share": 0.839
    },
    "covered": [
     "T30NWM",
@@ -380,10 +380,10 @@
   },
   "2024-11": {
    "date": "2024-11-22",
-   "total_ha": 27277,
+   "total_ha": 24743,
    "no_licence_to_mine": {
-    "ha": 23319,
-    "share": 0.855
+    "ha": 20785,
+    "share": 0.84
    },
    "covered": [
     "T30NWM",
@@ -418,10 +418,10 @@
   },
   "2024-12": {
    "date": "2024-12-22",
-   "total_ha": 28055,
+   "total_ha": 25693,
    "no_licence_to_mine": {
-    "ha": 23778,
-    "share": 0.848
+    "ha": 21417,
+    "share": 0.834
    },
    "covered": [
     "T30NWM",
@@ -456,10 +456,10 @@
   },
   "2025-01": {
    "date": "2025-01-22",
-   "total_ha": 25723,
+   "total_ha": 23730,
    "no_licence_to_mine": {
-    "ha": 21830,
-    "share": 0.849
+    "ha": 19838,
+    "share": 0.836
    },
    "covered": [
     "T30NWM",
@@ -494,10 +494,10 @@
   },
   "2025-02": {
    "date": "2025-02-22",
-   "total_ha": 22282,
+   "total_ha": 20371,
    "no_licence_to_mine": {
-    "ha": 19086,
-    "share": 0.857
+    "ha": 17175,
+    "share": 0.843
    },
    "covered": [
     "T30NWM",
@@ -532,10 +532,10 @@
   },
   "2025-03": {
    "date": "2025-03-22",
-   "total_ha": 22253,
+   "total_ha": 20396,
    "no_licence_to_mine": {
-    "ha": 19175,
-    "share": 0.862
+    "ha": 17318,
+    "share": 0.849
    },
    "covered": [
     "T30NWM",
@@ -570,10 +570,10 @@
   },
   "2025-04": {
    "date": "2025-04-22",
-   "total_ha": 24780,
+   "total_ha": 21435,
    "no_licence_to_mine": {
-    "ha": 21655,
-    "share": 0.874
+    "ha": 18310,
+    "share": 0.854
    },
    "covered": [
     "T30NWM",
@@ -608,10 +608,10 @@
   },
   "2025-05": {
    "date": "2025-05-22",
-   "total_ha": 24580,
+   "total_ha": 20441,
    "no_licence_to_mine": {
-    "ha": 21608,
-    "share": 0.879
+    "ha": 17469,
+    "share": 0.855
    },
    "covered": [
     "T30NWM",
@@ -646,10 +646,10 @@
   },
   "2025-06": {
    "date": "2025-06-22",
-   "total_ha": 25019,
+   "total_ha": 20819,
    "no_licence_to_mine": {
-    "ha": 22038,
-    "share": 0.881
+    "ha": 17838,
+    "share": 0.857
    },
    "covered": [
     "T30NWM",
@@ -684,10 +684,10 @@
   },
   "2025-07": {
    "date": "2025-07-22",
-   "total_ha": 26233,
+   "total_ha": 22072,
    "no_licence_to_mine": {
-    "ha": 23063,
-    "share": 0.879
+    "ha": 18902,
+    "share": 0.856
    },
    "covered": [
     "T30NWM",
@@ -722,10 +722,10 @@
   },
   "2025-08": {
    "date": "2025-08-22",
-   "total_ha": 26931,
+   "total_ha": 22842,
    "no_licence_to_mine": {
-    "ha": 23624,
-    "share": 0.877
+    "ha": 19535,
+    "share": 0.855
    },
    "covered": [
     "T30NWM",
@@ -760,10 +760,10 @@
   },
   "2025-09": {
    "date": "2025-09-22",
-   "total_ha": 27269,
+   "total_ha": 23169,
    "no_licence_to_mine": {
-    "ha": 23946,
-    "share": 0.878
+    "ha": 19846,
+    "share": 0.857
    },
    "covered": [
     "T30NWM",
@@ -798,10 +798,10 @@
   },
   "2025-10": {
    "date": "2025-10-22",
-   "total_ha": 27863,
+   "total_ha": 23686,
    "no_licence_to_mine": {
-    "ha": 24518,
-    "share": 0.88
+    "ha": 20342,
+    "share": 0.859
    },
    "covered": [
     "T30NWM",
@@ -836,10 +836,10 @@
   },
   "2025-11": {
    "date": "2025-11-22",
-   "total_ha": 24587,
+   "total_ha": 20673,
    "no_licence_to_mine": {
-    "ha": 21654,
-    "share": 0.881
+    "ha": 17740,
+    "share": 0.858
    },
    "covered": [
     "T30NWM",
@@ -874,10 +874,10 @@
   },
   "2025-12": {
    "date": "2025-12-22",
-   "total_ha": 22132,
+   "total_ha": 18365,
    "no_licence_to_mine": {
-    "ha": 19453,
-    "share": 0.879
+    "ha": 15686,
+    "share": 0.854
    },
    "covered": [
     "T30NWM",
@@ -912,10 +912,10 @@
   },
   "2026-01": {
    "date": "2026-01-22",
-   "total_ha": 21651,
+   "total_ha": 17991,
    "no_licence_to_mine": {
-    "ha": 18972,
-    "share": 0.876
+    "ha": 15312,
+    "share": 0.851
    },
    "covered": [
     "T30NWM",
@@ -950,10 +950,10 @@
   },
   "2026-02": {
    "date": "2026-02-22",
-   "total_ha": 20721,
+   "total_ha": 17127,
    "no_licence_to_mine": {
-    "ha": 18139,
-    "share": 0.875
+    "ha": 14544,
+    "share": 0.849
    },
    "covered": [
     "T30NWM",
@@ -988,10 +988,10 @@
   },
   "2026-03": {
    "date": "2026-03-22",
-   "total_ha": 21232,
+   "total_ha": 17989,
    "no_licence_to_mine": {
-    "ha": 18409,
-    "share": 0.867
+    "ha": 15165,
+    "share": 0.843
    },
    "covered": [
     "T30NWM",
@@ -1026,10 +1026,10 @@
   },
   "2026-04": {
    "date": "2026-04-22",
-   "total_ha": 19678,
+   "total_ha": 18272,
    "no_licence_to_mine": {
-    "ha": 16759,
-    "share": 0.852
+    "ha": 15353,
+    "share": 0.84
    },
    "covered": [
     "T30NWM",
@@ -1064,10 +1064,10 @@
   },
   "2026-05": {
    "date": "2026-05-22",
-   "total_ha": 18348,
+   "total_ha": 17341,
    "no_licence_to_mine": {
-    "ha": 15559,
-    "share": 0.848
+    "ha": 14552,
+    "share": 0.839
    },
    "covered": [
     "T30NWM",
@@ -1102,10 +1102,10 @@
   },
   "2026-06": {
    "date": "2026-06-22",
-   "total_ha": 17932,
+   "total_ha": 16965,
    "no_licence_to_mine": {
-    "ha": 15206,
-    "share": 0.848
+    "ha": 14239,
+    "share": 0.839
    },
    "covered": [
     "T30NWM",
@@ -1134,10 +1134,10 @@
   },
   "2026-07": {
    "date": "2026-07-22",
-   "total_ha": 17620,
+   "total_ha": 16691,
    "no_licence_to_mine": {
-    "ha": 14947,
-    "share": 0.848
+    "ha": 14018,
+    "share": 0.84
    },
    "covered": [
     "T30NWM",
@@ -1166,10 +1166,10 @@
   },
   "2026-08": {
    "date": "2026-08-22",
-   "total_ha": 17484,
+   "total_ha": 16586,
    "no_licence_to_mine": {
-    "ha": 14823,
-    "share": 0.848
+    "ha": 13925,
+    "share": 0.84
    },
    "covered": [
     "T30NWM",
@@ -1192,10 +1192,10 @@
   },
   "2026-09": {
    "date": "2026-09-22",
-   "total_ha": 17266,
+   "total_ha": 16398,
    "no_licence_to_mine": {
-    "ha": 14641,
-    "share": 0.848
+    "ha": 13773,
+    "share": 0.84
    },
    "covered": [
     "T30NWM",

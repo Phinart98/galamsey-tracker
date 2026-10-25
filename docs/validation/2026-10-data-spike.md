@@ -518,3 +518,11 @@ figures can be published from the live data. More than half of all the clearing 
 past Daboase. The forest zone dropped nothing upstream of Daboase. The Pra basin upstream of Daboase
 (HydroBASINS, simplified to 500 m, 6.5 KB) is written to `pipeline/out/water/pra_basin.geojson` for the
 home page map. Before publishing, the figure should come from the weekly run, not this spike.
+
+## 24. Trend inside the forest zone (2026-10-25)
+
+Method 2026.10.3 backfill, six tiles, 51 minutes. Rolling 12-month totals to the 22nd: 15,524 ha (Jan 2024),
+a peak of 25,693 ha (Dec 2024), 23,686 ha (Oct 2025), 17,341 ha (May 2026, the latest settled point).
+May to May: 20,441 to 17,341 ha, 15% lower. The swing is smaller than before the zone (s18) but the
+late-2024 peak and the fall after it have not been checked by eye, so the site still prints no direction.
+To do before any trend sentence: an eye check of patches that entered and left the window around the peak.
