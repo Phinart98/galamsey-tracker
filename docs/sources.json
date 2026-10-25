@@ -180,8 +180,8 @@
     "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/"
    ],
    "used_for": "Which towns the Pra plant at Daboase supplies, for the water story",
-   "status": "cited",
-   "todo": "Open and date each article; confirm Sekondi-Takoradi as the supply area from a GWL source"
+   "status": "checked",
+   "checked": "2026-10-25: 3News, 9 Feb 2022: rationing in Sekondi-Takoradi for three years; intake silted 'due to a number of reasons including activities of illegal mining'; pump runs about two hours a day"
   },
   {
    "id": "gwcl-weija-news",
@@ -192,8 +192,8 @@
     "https://rainbowradioonline.com/2026/05/14/weija-plant-technical-hitch-triggers-water-shortages-across-western-accra/?amp=1"
    ],
    "used_for": "Which areas Weija supplies",
-   "status": "cited",
-   "todo": "Open the GWL notice text"
+   "status": "checked",
+   "checked": "2026-10-25: Ghanaian Times, 18 Dec 2025: shutdown affects Accra Central, Dansoman, Mallam, Weija, Gbawe, McCarthy Hill, Kaneshie, Odorkor, Korle Bu, Mamprobi, Chorkor, Abeka La Paz, Tesano, Kokomlemle, Alajo, Nima, Maamobi, Dzorwulu, Abelemkpe"
   },
   {
    "id": "gwcl-kwanyako-news",
@@ -205,8 +205,8 @@
     "https://www.citinewsroom.com/2026/04/ayensu-river-clean-up-improves-kwanyako-water-plant-operations/"
    ],
    "used_for": "Which towns Kwanyako supplies",
-   "status": "cited",
-   "todo": "Open and confirm"
+   "status": "checked",
+   "checked": "2026-10-25: GNA, 1 Sept 2025: Kwanyaku Headworks supplies more than 30 districts including Winneba, Swedru and Kasoa; turbidity 32,000 NTU against a 2,500 NTU design; pollution 'possibly linked to illegal mining'"
   },
   {
    "id": "gwcl-owabi-barekese-news",
@@ -502,7 +502,7 @@
   },
   {
    "id": "water-plant-towns",
-   "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies western Accra and Kasoa; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Kumasi",
+   "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies central and western Accra; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Kumasi",
    "where": "home (planned water story)",
    "evidence": [
     "gwcl-daboase-news",
@@ -511,7 +511,7 @@
     "gwcl-owabi-barekese-news"
    ],
    "status": "unverified",
-   "todo": "Open each source; prefer a GWL page"
+   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25; Owabi and Barekese still need a specific article or GWL page"
   },
   {
    "id": "towns-near-clearing",
