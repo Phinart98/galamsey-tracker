@@ -86,3 +86,13 @@ def test_reading_days_are_the_window_end_and_two_and_four_months_later_once_pass
 
 def test_reading_days_cross_the_new_year():
     assert reading_days(dt.date(2025, 11, 22), today=dt.date(2026, 10, 25))[0][-1] == dt.date(2026, 3, 22)
+
+
+def test_a_settled_point_is_kept_only_while_the_tiles_it_covers_are_unchanged():
+    from tracker.run import needs_point
+    point = {"settled": True, "covered": ["T30NXM"]}
+    assert not needs_point(point, ["T30NXM"])
+    assert needs_point(point, ["T30NXM", "T30NXN"])
+    assert needs_point({"settled": False, "covered": ["T30NXM"]}, ["T30NXM"])
+    assert needs_point({"settled": True, "tiles": ["T30NXM"]}, ["T30NXM"])  # written before tiles were tracked
+    assert needs_point(None, ["T30NXM"])

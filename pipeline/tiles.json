@@ -13,5 +13,80 @@
    -1.1034,
    6.3323
   ]
+ },
+ "T30NWM": {
+  "enabled": true,
+  "place": "Wassa Amenfi and Aowin",
+  "area": "the Wassa Amenfi districts and Aowin, in the Western and Western North regions",
+  "checked": "2026-10-25",
+  "checked_patches": 18,
+  "showed_mining": 18,
+  "result": "18 of 18 judgeable random patches showed mining (2 had no clear pair)",
+  "bounds": [
+   -3.0,
+   5.339,
+   -2.007,
+   6.333
+  ]
+ },
+ "T30NXN": {
+  "enabled": true,
+  "place": "Amansie West and Atwima",
+  "area": "Amansie West, Atwima Mponua, Bekwai and Ahafo Ano South East, in the Ashanti region",
+  "checked": "2026-10-25",
+  "checked_patches": 20,
+  "showed_mining": 18,
+  "result": "18 of 20 showed mining; 1 building site, 1 farm field at the northern edge",
+  "bounds": [
+   -2.096,
+   6.241,
+   -1.1,
+   7.237
+  ]
+ },
+ "T30NYM": {
+  "enabled": true,
+  "place": "Atiwa and Kibi",
+  "area": "Atiwa West, Abuakwa South around Kibi, Kwaebibirem and Denkyembour, in the Eastern region",
+  "checked": "2026-10-25",
+  "checked_patches": 19,
+  "showed_mining": 16,
+  "result": "16 of 19 judgeable showed mining; 2 construction sites by the Accra-Kumasi highway, 1 unclear (1 clouded)",
+  "bounds": [
+   -1.196,
+   5.333,
+   -0.2,
+   6.33
+  ]
+ },
+ "T30NYN": {
+  "enabled": true,
+  "place": "Atiwa and Kwahu",
+  "area": "Atiwa West, Atiwa East and Kwahu, in the Eastern region",
+  "checked": "2026-10-25",
+  "checked_patches": 17,
+  "showed_mining": 13,
+  "result": "13 of 17 judgeable showed mining; all 4 others are farms or savanna north of 6.9 N (3 had no clear pair)",
+  "bounds": [
+   -1.193,
+   6.237,
+   -0.195,
+   7.234
+  ]
+ },
+ "T30NWN": {
+  "enabled": true,
+  "place": "Juaboso and Asutifi",
+  "area": "Juaboso, Asutifi North and Atwima Mponua, in the Western North, Ahafo and Ashanti regions",
+  "checked": "2026-10-25",
+  "checked_patches": 19,
+  "showed_mining": 16,
+  "result": "16 of 19 judgeable showed mining; 2 farm or logging clearings, 1 unclear (1 had no clear pair)",
+  "bounds": [
+   -3.0,
+   6.244,
+   -2.006,
+   7.238
+  ]
  }
 }

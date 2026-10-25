@@ -23,9 +23,9 @@ HTTP = {"GDAL_HTTP_TIMEOUT": "60", "GDAL_HTTP_CONNECTTIMEOUT": "20", "GDAL_HTTP_
         "GDAL_HTTP_RETRY_DELAY": "5", "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR"}
 PLACE_BUDGET_S = 180
 # The scene cloud mask misses thick haze and broken cloud. Those look bright and grey, while mining
-# ground is bright but yellow or orange. Measured on 74 images: clear ones score 0 to 0.14 (grey
-# tailings), the two fogged ones 0.34 and 0.91 (spike log section 14).
-MAX_GREY = 0.25
+# ground is bright but yellow or orange. Measured on 120 images: clear ones score 0 to 0.13 (grey
+# tailings), cloudy ones 0.22 (broken cloud), 0.34 and 0.91 (fog) (spike log section 14).
+MAX_GREY = 0.18
 
 
 def usable_chip(scl: np.ndarray) -> bool:

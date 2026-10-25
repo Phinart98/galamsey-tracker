@@ -348,3 +348,48 @@ Damang, still usable). The fogged ones score 0.34 and 0.91.
 
 **Rule:** a picture with more than 25% bright grey pixels is skipped, and the next clearest is
 tried. The two places were re-imaged.
+
+**Update the same day:** the five-tile check (section 15) found a third bad picture, broken cloud
+with shadows over Eastern Region, scoring 0.22, just under the cut-off. Re-measured over all 120
+accepted pictures: the highest clear one is 0.13 (Tarkwa tailings). The cut-off is now **0.18**. A
+broader "grey" (darker pixels, wider spread) was tried and rejected: clear pictures of bare ground
+scored up to 0.49 on it.
+
+## 15. By-eye check of five more tiles (2026-10-25)
+
+`uv run python -m tracker.check_tile <tile>`: 20 random patches per tile (10 of at least 3 ha, 10 of
+1 to 3 ha, seed 7), with before/after pairs, judged by Claude from contact sheets
+(`pipeline/out/checks/<tile>/`).
+
+| Tile | Main districts (from the data) | Showed mining | Not mining |
+|---|---|---|---|
+| 30NWM | Aowin, Wassa Amenfi Central, West and East | 18 of 18 | none (2 no pair) |
+| 30NXN | Ahafo Ano South East, Atwima Mponua, Bekwai, Amansie West | 18 of 20 | a building site; a farm field at 7.2 N |
+| 30NYM | Atiwa West, Abuakwa South, Kwaebibirem, Denkyembour | 16 of 19 | 2 construction sites by the Accra-Kumasi highway; 1 unclear |
+| 30NYN | Atiwa West and East, Kwahu Afram Plains South, Asante Akim North | 13 of 17 | 4 farms or savanna, all north of 6.9 N |
+| 30NWN | Atwima Mponua, Asutifi North, Juaboso, Dormaa | 16 of 19 | 2 farm or logging clearings; 1 unclear |
+
+With 30NXM (23 of 24): **104 of 117, 89%.** All five were switched on. The false hits are farms at the
+northern edge and construction near towns. A simple "ignore the north" rule would be wrong: a large
+pit field sits at 7.24 N in 30NWN. A farm filter could be tested on these 117 labelled patches later.
+
+## 16. Water: clearing upstream of treatment plants (2026-10-25)
+
+`spike/water.py`: HydroBASINS level 12 (Lehner and Grill 2013, free for commercial use), plants from
+OpenStreetMap `man_made=water_works`, each snapped to the basin within 2 km that drains the most
+area, then every basin upstream of it. Clearing from 15 southern tiles (overlaps removed): 7,940
+patches, 22,166 ha.
+
+| Plant | River | Upstream area | Cleared upstream, 12 months to 22 Oct 2026 |
+|---|---|---|---|
+| Daboase | Pra | 22,853 km2 | **9,025 ha** |
+| Weija | Densu | 2,632 km2 | 233 ha |
+| Kwanyako | Ayensu | 1,715 km2 | 158 ha |
+| Barekese | Offin | 1,538 km2 | 125 ha |
+| Owabi | Owabi | 123 km2 | 3 ha |
+
+The upstream areas match published catchments (Pra about 23,000 km2, Densu about 2,600 km2), which
+checks the snapping. **Reading:** the Pra carries the story. About 40% of all clearing in the 15
+southern tiles drains past Daboase. The Accra link (Weija) is real but small, and much of Accra's
+water comes from the Volta at Kpong, which galamsey barely touches. Which towns each plant supplies
+must be sourced before anything is published.

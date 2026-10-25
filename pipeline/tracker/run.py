@@ -174,6 +174,11 @@ def make_chips(today: dt.date, limit: int):
     _write_json(index_path, index)
 
 
+def needs_point(point: dict | None, tiles: list[str]) -> bool:
+    """A month is recomputed until it has settled, and again whenever the tiles switched on change."""
+    return not point or not point.get("settled") or point.get("covered") != sorted(tiles)
+
+
 def trend(today: dt.date, start: str = "2024-01"):
     """Hectares newly cleared in the 365 days to the 22nd of each month, by licence class, summed over tiles.
 
@@ -183,44 +188,60 @@ def trend(today: dt.date, start: str = "2024-01"):
     series = _read_json(path, {"method_version": METHOD_VERSION, "points": {}})
     if series.get("method_version") != METHOD_VERSION:
         series = {"method_version": METHOD_VERSION, "points": {}}
-    lic = licence_layer(today)
-    recent: OrderedDict = OrderedDict()  # months M, M+2, M+4 share granules with their neighbours; 6 is the smallest FIFO that reads each once
-
-    def read(entry):
-        if entry["title"] not in recent:
-            recent[entry["title"]] = nasa.read_status_and_date(entry)
-            if len(recent) > 6:
-                recent.popitem(last=False)
-        return recent[entry["title"]]
-
+    tiles = sorted(enabled_tiles())
+    months = []
     month = dt.date.fromisoformat(start + "-22")
     while month <= today - dt.timedelta(days=3):
-        key = month.strftime("%Y-%m")
-        if not series["points"].get(key, {}).get("settled"):
-            days, settled = reading_days(month, today)
-            found = [nasa.latest_per_tile(BELT_BBOX, d) for d in days]
-            parts, used = [], []
-            for tile in enabled_tiles():
-                entries = [g[tile] for g in found if tile in g]
-                if not entries or tile not in found[0]:
-                    continue
-                readings = [read(e) for e in entries]
-                mask, date = window_mask([(r[0], r[1]) for r in readings], month)
-                transform, crs = readings[0][2], readings[0][3]
-                g = cluster_polygons(mask, date, transform, crs).to_crs(WORK_CRS)
-                g["tile"] = tile
-                parts.append(g)
-                used += [e["title"] for e in entries]
-            if parts:
-                c = dedupe_tiles(parts)
-                c["licence"] = licences.classify(c, lic)
-                s = summary.summarise(c.drop(columns="geometry"), top=0)
-                series["points"][key] = {"date": str(month), "total_ha": s["total_ha"],
-                                         "no_licence_to_mine": s["no_licence_to_mine"], "tiles": sorted(set(c.tile)),
-                                         "settled": settled, "granules": used}
-                print(f"trend {key}: {s['total_ha']} ha{'' if settled else ' (provisional)'}")
-                _write_json(path, series)
+        if needs_point(series["points"].get(month.strftime("%Y-%m")), tiles):
+            months.append(month)
         month = (month.replace(day=1) + dt.timedelta(days=32)).replace(day=22)
+    if not months:
+        return
+
+    # Tile by tile, so one tile's granules stay cached while its months are worked through:
+    # months M, M+2 and M+4 share granules with their neighbours, and 6 is the smallest FIFO that reads each once
+    per_month: dict[dt.date, list] = {m: [] for m in months}
+    used: dict[dt.date, list] = {m: [] for m in months}
+    settled: dict[dt.date, bool] = {}
+    searches: dict[dt.date, dict] = {}
+
+    def granules(day: dt.date) -> dict:
+        if day not in searches:
+            searches[day] = nasa.latest_per_tile(BELT_BBOX, day)
+        return searches[day]
+
+    for tile in tiles:
+        recent: OrderedDict = OrderedDict()
+        for m in months:
+            days, settled[m] = reading_days(m, today)
+            entries = [g[tile] for g in map(granules, days) if tile in g]
+            if not entries:
+                continue
+            readings = []
+            for e in entries:
+                if e["title"] not in recent:
+                    recent[e["title"]] = nasa.read_status_and_date(e)
+                    if len(recent) > 6:
+                        recent.popitem(last=False)
+                readings.append(recent[e["title"]])
+            mask, date = window_mask([(r[0], r[1]) for r in readings], m)
+            g = cluster_polygons(mask, date, readings[0][2], readings[0][3]).to_crs(WORK_CRS)
+            g["tile"] = tile
+            per_month[m].append(g)
+            used[m] += [e["title"] for e in entries]
+        print(f"trend: {tile} done for {len(months)} months", flush=True)
+
+    lic = licence_layer(today)
+    for m in months:
+        if not per_month[m]:
+            continue
+        c = dedupe_tiles(per_month[m])
+        c["licence"] = licences.classify(c, lic)
+        s = summary.summarise(c.drop(columns="geometry"), top=0)
+        series["points"][m.strftime("%Y-%m")] = {
+            "date": str(m), "total_ha": s["total_ha"], "no_licence_to_mine": s["no_licence_to_mine"],
+            "covered": tiles, "settled": settled[m], "granules": used[m]}
+        print(f"trend {m:%Y-%m}: {s['total_ha']} ha{'' if settled[m] else ' (provisional)'}")
     _write_json(path, series)
 
 
