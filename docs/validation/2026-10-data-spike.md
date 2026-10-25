@@ -499,3 +499,22 @@ the site must not present "newest" patches as mining, and any published mining s
 patches it covers. The forest zone still lets some farm land in at its north-east edge (Asante Akim
 North and the Lake Volta shore). Next: an area-weighted, season-aware random check across all tiles
 before any share is published.
+
+## 23. Water plants on the live tiles (2026-10-25)
+
+`spike/water_live.py` repeats s16 on the live data (six tiles, forest zone, 23 Oct snapshot: 5,889
+patches, 15,964 ha) and on the 15 southern tiles with the forest zone applied (6,886 patches, 18,894 ha).
+
+| Plant | River | Live six tiles | 15 tiles, forest zone |
+|---|---|---|---|
+| Daboase | Pra | **8,946 ha (56% of live)** | 9,025 ha |
+| Weija | Densu | 214 ha | 217 ha |
+| Kwanyako | Ayensu | 146 ha | 146 ha |
+| Barekese | Offin | 125 ha | 125 ha |
+| Owabi | Owabi | 3 ha | 3 ha |
+
+**Reading:** the six live tiles hold almost all the clearing upstream of every plant, so the water
+figures can be published from the live data. More than half of all the clearing the site counts drains
+past Daboase. The forest zone dropped nothing upstream of Daboase. The Pra basin upstream of Daboase
+(HydroBASINS, simplified to 500 m, 6.5 KB) is written to `pipeline/out/water/pra_basin.geojson` for the
+home page map. Before publishing, the figure should come from the weekly run, not this spike.

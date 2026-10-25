@@ -393,11 +393,14 @@
   },
   {
    "id": "catchment-areas",
-   "text": "Pra basin about 23,000 km2, Densu about 2,600 km2",
+   "text": "Pra basin upstream of Daboase about 22,900 km2, Densu upstream of Weija about 2,600 km2",
    "where": "spike log only",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Source, or drop from the log"
+   "evidence": [
+    "hydrobasins",
+    "own-spike-log s16"
+   ],
+   "status": "measured",
+   "caveat": "Measured from HydroBASINS level 12, not from a published catchment figure"
   },
   {
    "id": "water-shutdowns",
@@ -499,6 +502,19 @@
    ],
    "status": "unverified",
    "todo": "Open each licence page and confirm the wording"
+  },
+  {
+   "id": "pra-upstream",
+   "text": "More than half of the land cleared in the last 12 months (8,946 of 15,964 ha) drains down the Pra past the Daboase treatment plant",
+   "where": "home (planned water story)",
+   "evidence": [
+    "opera-dist-alert",
+    "hydrobasins",
+    "resolve-ecoregions-2017",
+    "own-spike-log s16, s23"
+   ],
+   "status": "measured",
+   "caveat": "Clearing upstream is not a measure of what reaches the plant. Spike figure; publish from the weekly run"
   },
   {
    "id": "water-plant-towns",
