@@ -22,7 +22,8 @@ def gdal_env() -> dict:
     cookies = os.path.join(tempfile.gettempdir(), "edl_cookies.txt")
     return {"GDAL_HTTP_NETRC": "YES", "GDAL_HTTP_NETRC_FILE": netrc, "GDAL_HTTP_COOKIEFILE": cookies,
             "GDAL_HTTP_COOKIEJAR": cookies, "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR",
-            "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif", "GDAL_HTTP_MAX_RETRY": "4", "GDAL_HTTP_RETRY_DELAY": "3"}
+            "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif", "GDAL_HTTP_MAX_RETRY": "4", "GDAL_HTTP_RETRY_DELAY": "3",
+            "GDAL_HTTP_TIMEOUT": "120", "GDAL_HTTP_CONNECTTIMEOUT": "20"}
 
 
 def search(short_name: str, bbox: str, start: dt.date, end: dt.date, page_size: int = 2000) -> list[dict]:

@@ -19,7 +19,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 150
     defaults:
       run:
         working-directory: pipeline
@@ -63,12 +63,17 @@ jobs:
         run: aws s3 sync "s3://$R2_BUCKET/v1" out --endpoint-url "$R2_ENDPOINT" --exclude "cache/*" --only-show-errors
 
       - name: Weekly patches, licences, names and summary
+        timeout-minutes: 30
         run: uv run python -m tracker.run weekly
 
       - name: Before/after images for new large places
+        timeout-minutes: 60
+        # Missing pictures are retried next week, so a failure here must not stop the trend or the upload
+        continue-on-error: true
         run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '80' }}"
 
       - name: Monthly trend point
+        timeout-minutes: 45
         run: uv run python -m tracker.run trend
 
       - name: Push places, seeds and images to R2

@@ -27,6 +27,7 @@ BELT_BBOX = "-3.3,4.7,-0.3,7.5"   # southern mining belt covered by v1
 WORK_CRS = "EPSG:32630"
 CHIP_MIN_HA = 3.0
 CHIP_HALF_KM = 0.8
+CHIP_RETRY_DAYS = 7
 
 PIPELINE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(PIPELINE_DIR)
@@ -133,11 +134,20 @@ def write_places(clusters, previous, new_aliases, to_ll):
                                 COORDINATE_PRECISION=5)
 
 
+def needs_chips(rec: dict, today: dt.date) -> bool:
+    """Large active places with no pictures yet, or none clear enough when last tried a week or more ago."""
+    if not rec["active"] or rec["ha"] < CHIP_MIN_HA:
+        return False
+    chips = rec.get("chips")
+    if not chips:
+        return True
+    return bool(chips.get("missing")) and (today - dt.date.fromisoformat(chips["checked"])).days >= CHIP_RETRY_DAYS
+
+
 def make_chips(today: dt.date, limit: int):
     index_path = os.path.join(OUT, "places", "index.json")
     index = _read_json(index_path, {})
-    todo = sorted((r for r in index.values() if r["active"] and r["ha"] >= CHIP_MIN_HA and not r.get("chips")),
-                  key=lambda r: -r["ha"])[:limit]
+    todo = sorted((r for r in index.values() if needs_chips(r, today)), key=lambda r: -r["ha"])[:limit]
     print(f"chips: {len(todo)} places to image")
     for rec in todo:
         first = dt.date.fromisoformat(rec["first_seen"])

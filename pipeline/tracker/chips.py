@@ -1,6 +1,7 @@
 """Before/after Sentinel-2 true-colour images of a place, small enough for phones on prepaid data."""
 import datetime as dt
 import io
+import time
 
 import numpy as np
 import rasterio
@@ -16,6 +17,11 @@ CLOUDY_SCL = (3, 8, 9, 10)   # cloud shadow, medium and high cloud probability, 
 MAX_CLOUD = 0.10
 MAX_NODATA = 0.02
 WIDTHS = (360, 720)
+# A stalled read with no timeout hung a local run for 85 minutes (2026-10-25). Every read now gives
+# up after a minute, and each place gets a few minutes before it waits for next week's retry.
+HTTP = {"GDAL_HTTP_TIMEOUT": "60", "GDAL_HTTP_CONNECTTIMEOUT": "20", "GDAL_HTTP_MAX_RETRY": "2",
+        "GDAL_HTTP_RETRY_DELAY": "5", "GDAL_DISABLE_READDIR_ON_OPEN": "EMPTY_DIR"}
+PLACE_BUDGET_S = 180
 # The scene cloud mask misses thick haze and broken cloud. Those look bright and grey, while mining
 # ground is bright but yellow or orange. Measured on 74 images: clear ones score 0 to 0.14 (grey
 # tailings), the two fogged ones 0.34 and 0.91 (spike log section 14).
@@ -41,19 +47,22 @@ def _bbox(lon: float, lat: float, half_km: float) -> list[float]:
 
 
 def _read(href: str, bbox: list[float]) -> np.ndarray:
-    with rasterio.open(href) as src:
+    with rasterio.Env(**HTTP), rasterio.open(href) as src:
         b = transform_bounds(4326, src.crs, *bbox)
         return src.read(window=from_bounds(*b, src.transform), boundless=True, fill_value=0)
 
 
 def clearest(lon: float, lat: float, half_km: float, start: dt.date, end: dt.date, max_items: int = 40):
     """The least cloudy usable true-colour crop between start and end, as (date, HxWx3 uint8) or None."""
+    deadline = time.monotonic() + PLACE_BUDGET_S
     bbox = _bbox(lon, lat, half_km)
-    cat = Client.open(EARTH_SEARCH)
+    cat = Client.open(EARTH_SEARCH, timeout=60)
     items = [i for c in COLLECTIONS
              for i in cat.search(collections=[c], bbox=bbox, datetime=f"{start}/{end}",
                                  query={"eo:cloud_cover": {"lt": 30}}, max_items=max_items).items()]
     for item in sorted(items, key=lambda i: i.properties.get("eo:cloud_cover", 100)):
+        if time.monotonic() > deadline:
+            return None
         scl = _read(item.assets["scl"].href, bbox)[0]
         if not usable_chip(scl):
             continue

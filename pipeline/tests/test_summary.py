@@ -1,9 +1,12 @@
+import datetime as dt
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from tracker.chips import hazy, usable_chip
 from tracker.licences import LARGE_SCALE, NONE, PROSPECTING
+from tracker.run import needs_chips
 from tracker.summary import football_pitches, summarise
 
 
@@ -87,3 +90,13 @@ def test_bright_mining_ground_and_some_grey_tailings_are_not_haze():
     rgb[:50] = (220, 190, 110)          # yellow pits and bare soil
     rgb[50:65] = (150, 150, 145)        # 15% grey tailings
     assert not hazy(rgb)
+
+
+def test_places_without_a_clear_picture_are_retried_after_a_week():
+    today = dt.date(2026, 10, 25)
+    assert needs_chips({"active": True, "ha": 5.0, "chips": None}, today)
+    assert needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-17"}}, today)
+    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-20"}}, today)
+    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"before": {}, "after": {}}}, today)
+    assert not needs_chips({"active": True, "ha": 2.0, "chips": None}, today)
+    assert not needs_chips({"active": False, "ha": 5.0, "chips": None}, today)
