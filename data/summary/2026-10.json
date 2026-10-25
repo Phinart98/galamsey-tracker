@@ -1,28 +1,28 @@
 {
- "total_ha": 4007,
- "football_pitches": 5613,
- "patches": 1528,
+ "total_ha": 16711,
+ "football_pitches": 23405,
+ "patches": 6130,
  "by_licence": {
   "no licence": {
-   "ha": 2828,
-   "share": 0.706
+   "ha": 12359,
+   "share": 0.74
   },
   "prospecting only": {
-   "ha": 470,
-   "share": 0.117
+   "ha": 1838,
+   "share": 0.11
   },
   "small-scale licence": {
-   "ha": 59,
-   "share": 0.015
+   "ha": 91,
+   "share": 0.005
   },
   "large-scale lease": {
-   "ha": 651,
-   "share": 0.162
+   "ha": 2423,
+   "share": 0.145
   }
  },
  "no_licence_to_mine": {
-  "ha": 3298,
-  "share": 0.823
+  "ha": 14197,
+  "share": 0.85
  },
  "top_places": [
   {
@@ -38,192 +38,197 @@
    "id": "2025-11-6208n1721w"
   },
   {
+   "local_id": 1,
+   "ha": 60.21,
+   "first_seen": "2026-04-07",
+   "last_seen": "2026-06-01",
+   "tile": "T30NYN",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Asante Akim North",
+   "id": "2026-04-6988n0941w"
+  },
+  {
+   "local_id": 1,
+   "ha": 47.88,
+   "first_seen": "2025-10-24",
+   "last_seen": "2026-10-02",
+   "tile": "T30NYM",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Abuakwa South",
+   "id": "2025-10-6206n0527w"
+  },
+  {
+   "local_id": 1,
+   "ha": 47.52,
+   "first_seen": "2026-08-21",
+   "last_seen": "2026-10-16",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Sekyere Central",
+   "id": "2026-08-7143n1305w"
+  },
+  {
    "local_id": 2,
-   "ha": 27.27,
-   "first_seen": "2025-10-27",
-   "last_seen": "2026-04-30",
-   "tile": "T30NXM",
-   "licence": "large-scale lease",
-   "near": "Damang",
-   "near_km": 3.2,
-   "district": "Prestea/huni Valley",
-   "id": "2025-10-5488n1852w"
+   "ha": 45.9,
+   "first_seen": "2025-11-14",
+   "last_seen": "2026-10-02",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Ahafo Ano South East",
+   "id": "2025-11-6748n1916w"
   },
   {
    "local_id": 3,
-   "ha": 24.48,
-   "first_seen": "2025-11-01",
+   "ha": 40.95,
+   "first_seen": "2025-11-14",
+   "last_seen": "2026-08-21",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Ahafo Ano South East",
+   "id": "2025-11-6757n1909w"
+  },
+  {
+   "local_id": 1,
+   "ha": 38.43,
+   "first_seen": "2025-10-25",
    "last_seen": "2026-04-30",
-   "tile": "T30NXM",
-   "licence": "prospecting only",
-   "near": "Dadieso",
-   "near_km": 8.4,
-   "district": "Wassa Amenfi East",
-   "id": "2025-11-5856n1918w"
+   "tile": "T30NWN",
+   "licence": "large-scale lease",
+   "near": null,
+   "near_km": null,
+   "district": "Dormaa Municipal",
+   "id": "2025-10-7226n2943w"
+  },
+  {
+   "local_id": 1,
+   "ha": 37.71,
+   "first_seen": "2025-10-27",
+   "last_seen": "2026-06-01",
+   "tile": "T30NWM",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Wassa Amenfi West",
+   "id": "2025-10-5944n2466w"
   },
   {
    "local_id": 4,
-   "ha": 17.46,
-   "first_seen": "2025-11-13",
-   "last_seen": "2026-04-30",
-   "tile": "T30NXM",
-   "licence": "small-scale licence",
-   "near": "Dadieso",
-   "near_km": 6.5,
-   "district": "Wassa Amenfi East",
-   "id": "2025-11-5813n2014w"
+   "ha": 37.26,
+   "first_seen": "2025-11-11",
+   "last_seen": "2026-06-01",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": null,
+   "near_km": null,
+   "district": "Atwima Mponua",
+   "id": "2025-11-6696n1954w"
   },
   {
    "local_id": 5,
-   "ha": 16.38,
-   "first_seen": "2025-11-14",
-   "last_seen": "2026-04-30",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Wompam",
-   "near_km": 7.6,
-   "district": "Amansie Central",
-   "id": "2025-11-6035n1841w"
+   "ha": 35.82,
+   "first_seen": "2026-02-19",
+   "last_seen": "2026-05-10",
+   "tile": "T30NXN",
+   "licence": "large-scale lease",
+   "near": null,
+   "near_km": null,
+   "district": "Atwima Nwabiagya South",
+   "id": "2026-02-6737n1873w"
   },
   {
    "local_id": 6,
-   "ha": 16.29,
-   "first_seen": "2025-11-11",
-   "last_seen": "2026-05-02",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Wompam",
-   "near_km": 6.4,
-   "district": "Amansie Central",
-   "id": "2025-11-6032n1868w"
-  },
-  {
-   "local_id": 7,
-   "ha": 15.39,
-   "first_seen": "2025-11-22",
-   "last_seen": "2026-05-01",
-   "tile": "T30NXM",
-   "licence": "large-scale lease",
-   "near": "Amoanda",
-   "near_km": 12.4,
-   "district": "Prestea/huni Valley",
-   "id": "2025-11-5375n1835w"
-  },
-  {
-   "local_id": 8,
-   "ha": 15.21,
-   "first_seen": "2025-11-14",
+   "ha": 32.94,
+   "first_seen": "2025-11-01",
    "last_seen": "2026-06-01",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Tontokrom",
-   "near_km": 3.0,
-   "district": "Amansie South",
-   "id": "2025-11-6249n2022w"
+   "tile": "T30NXN",
+   "licence": "prospecting only",
+   "near": null,
+   "near_km": null,
+   "district": "Asante Akim Central Municipal",
+   "id": "2025-11-6657n1135w"
   },
   {
-   "local_id": 9,
-   "ha": 14.58,
-   "first_seen": "2025-11-14",
-   "last_seen": "2026-04-30",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Tontokrom",
-   "near_km": 9.7,
-   "district": "Amansie South",
-   "id": "2025-11-6166n2022w"
-  },
-  {
-   "local_id": 10,
-   "ha": 14.49,
-   "first_seen": "2025-11-30",
-   "last_seen": "2026-05-05",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Bogoso",
-   "near_km": 8.6,
-   "district": "Wassa Amenfi East",
-   "id": "2025-11-5646n1996w"
-  },
-  {
-   "local_id": 11,
-   "ha": 14.4,
-   "first_seen": "2026-03-06",
-   "last_seen": "2026-04-15",
-   "tile": "T30NXM",
-   "licence": "no licence",
-   "near": "Assin Nsuta",
-   "near_km": 13.3,
-   "district": "Asikuma-odoben-brakwa",
-   "id": "2026-03-5665n1116w"
-  },
-  {
-   "local_id": 12,
-   "ha": 14.4,
-   "first_seen": "2025-11-26",
-   "last_seen": "2026-04-15",
-   "tile": "T30NXM",
-   "licence": "large-scale lease",
-   "near": "Tarkwa",
-   "near_km": 8.7,
-   "district": "Prestea/huni Valley",
-   "id": "2025-11-5368n2047w"
+   "local_id": 2,
+   "ha": 31.32,
+   "first_seen": "2026-01-26",
+   "last_seen": "2026-10-02",
+   "tile": "T30NYM",
+   "licence": "prospecting only",
+   "near": null,
+   "near_km": null,
+   "district": "Ayensuano",
+   "id": "2026-01-5944n0570w"
   }
  ],
  "top_districts": [
   {
    "district": "Wassa Amenfi East",
-   "ha": 1102
+   "ha": 1543
+  },
+  {
+   "district": "Aowin",
+   "ha": 998
+  },
+  {
+   "district": "Wassa Amenfi Central",
+   "ha": 775
+  },
+  {
+   "district": "Atwima Mponua",
+   "ha": 773
+  },
+  {
+   "district": "Atiwa West",
+   "ha": 768
+  },
+  {
+   "district": "Wassa Amenfi West",
+   "ha": 768
   },
   {
    "district": "Amansie Central",
-   "ha": 610
+   "ha": 696
   },
   {
    "district": "Amansie South",
-   "ha": 437
+   "ha": 689
+  },
+  {
+   "district": "Ahafo Ano South East",
+   "ha": 653
   },
   {
    "district": "Upper Denkyira West",
-   "ha": 427
+   "ha": 591
   },
   {
-   "district": "Prestea/huni Valley",
-   "ha": 238
+   "district": "Kwaebibirem",
+   "ha": 458
   },
   {
-   "district": "Adansi Akrofuom",
-   "ha": 237
-  },
-  {
-   "district": "Obuasi Municipal",
-   "ha": 203
-  },
-  {
-   "district": "Adansi North",
-   "ha": 159
-  },
-  {
-   "district": "Upper Denkyira East Municipal",
-   "ha": 107
-  },
-  {
-   "district": "Adansi Asokwa",
-   "ha": 84
-  },
-  {
-   "district": "Obuasi East",
-   "ha": 71
-  },
-  {
-   "district": "Wassa East",
-   "ha": 56
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "ha": 414
   }
  ],
- "data_date": "2026-10-22",
+ "data_date": "2026-10-23",
  "window_days": 365,
  "tiles": [
-  "T30NXM"
+  "T30NWM",
+  "T30NWN",
+  "T30NXM",
+  "T30NXN",
+  "T30NYM",
+  "T30NYN"
  ],
- "method_version": "2026.10.1"
+ "method_version": "2026.10.2"
 }
