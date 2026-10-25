@@ -7,6 +7,7 @@ import numpy as np
 import rasterio
 from PIL import Image
 from pystac_client import Client
+from rasterio.errors import RasterioIOError
 from rasterio.warp import transform_bounds
 from rasterio.windows import from_bounds
 
@@ -63,14 +64,23 @@ def clearest(lon: float, lat: float, half_km: float, start: dt.date, end: dt.dat
     for item in sorted(items, key=lambda i: i.properties.get("eo:cloud_cover", 100)):
         if time.monotonic() > deadline:
             return None
-        scl = _read(item.assets["scl"].href, bbox)[0]
-        if not usable_chip(scl):
-            continue
-        rgb = np.moveaxis(_read(item.assets["visual"].href, bbox), 0, -1)
-        if (rgb.sum(axis=2) == 0).mean() > MAX_NODATA or hazy(rgb):
-            continue
-        return item.datetime.date(), rgb
+        rgb = scene(item, bbox)
+        if rgb is not None:
+            return item.datetime.date(), rgb
     return None
+
+
+def scene(item, bbox: list[float]) -> np.ndarray | None:
+    """The true-colour crop of one scene, or None if it is cloudy, hazy, has gaps or cannot be read."""
+    try:
+        if not usable_chip(_read(item.assets["scl"].href, bbox)[0]):
+            return None
+        rgb = np.moveaxis(_read(item.assets["visual"].href, bbox), 0, -1)
+    except RasterioIOError:  # a broken file on Earth Search once ended a whole run (2026-10-25)
+        return None
+    if (rgb.sum(axis=2) == 0).mean() > MAX_NODATA or hazy(rgb):
+        return None
+    return rgb
 
 
 def encode(rgb: np.ndarray) -> dict[str, bytes]:
