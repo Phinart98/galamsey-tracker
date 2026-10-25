@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'Atkinson Next';
+  src: url('../../../apps/site/node_modules/@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2') format('woff2');
+  font-weight: 200 800;
+}
+:root {
+  --paper: #F5F6F3; --paper-2: #EAECE7; --ink: #000; --muted: #474C48; --line: #C4C8C1;
+  --signal: #B8155A; --signal-ink: #fff; --river: #1D5C8C; --gutter: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #161716; --paper-2: #222422; --ink: #F3F3EF; --muted: #AEB2AC; --line: #3A3D3A;
+          --signal: #FF6FA6; --signal-ink: #000; --river: #7DB8E8; color-scheme: dark; }
+}
+@media (min-width: 720px) { :root { --gutter: 32px; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.55 'Atkinson Next', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+a { color: inherit; text-underline-offset: 0.18em; }
+img { display: block; max-width: 100%; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+.head { border-bottom: 1px solid var(--line); }
+.head .wrap { display: flex; justify-content: space-between; align-items: center; min-height: 60px; }
+.brand { font-weight: 800; text-decoration: none; }
+.label { font-size: 0.875rem; color: var(--muted); }
+.mock { position: fixed; right: 12px; bottom: 12px; z-index: 9; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 0.8125rem; padding: 6px 10px; border-radius: 6px; }
+h1, h2 { text-wrap: balance; margin: 0; }
+h2 { font-size: 1.5rem; line-height: 1.2; }
+.band { padding: 40px 0; border-top: 1px solid var(--line); }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--ink); border-radius: 6px; font-weight: 700; text-decoration: none; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.tag { display: inline-block; font-size: 0.8125rem; font-weight: 700; padding: 1px 8px; border-radius: 4px; background: var(--signal); color: var(--signal-ink); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.pair img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--paper-2); }
+.when { font-size: 0.8125rem; font-weight: 700; margin-top: 4px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.9375rem; }

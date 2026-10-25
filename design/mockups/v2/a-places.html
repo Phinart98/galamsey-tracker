@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GH">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Places | Galamsey Tracker mockup</title>
+<link rel="stylesheet" href="v2.css">
+<style>
+  .hero { padding: 32px 0 28px; display: grid; gap: 18px; }
+  .hero h1 { font-size: clamp(1.9rem, 4.4vw, 3.4rem); line-height: 1.05; letter-spacing: -0.025em; font-weight: 800; max-width: 20ch; }
+  .hero .sub { font-size: 1.1875rem; max-width: 44ch; margin: 0; }
+  .villages { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 720px) { .villages { grid-template-columns: repeat(3, 1fr); } }
+  .v { position: relative; }
+  .v img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--paper-2); }
+  /* The name sits on a solid plate so it reads on any picture */
+  .v .plate { position: absolute; left: 0; bottom: 0; max-width: 100%; background: var(--paper); color: var(--ink); padding: 6px 10px 8px; }
+  .v .name { display: block; font-weight: 800; font-size: 1.0625rem; line-height: 1.2; }
+  .v .ha { display: block; font-size: 0.875rem; }
+  .facts { display: grid; gap: 16px; margin: 0; }
+  @media (min-width: 720px) { .facts { grid-template-columns: repeat(3, 1fr); gap: 32px; } }
+  .facts p { margin: 0; max-width: 34ch; }
+  .facts strong { display: block; font-size: 1.375rem; line-height: 1.2; }
+  .two { display: grid; gap: 24px; }
+  @media (min-width: 900px) { .two { grid-template-columns: 1fr 1fr; gap: 48px; } }
+</style>
+</head>
+<body>
+<span class="mock">Mockup A: Places</span>
+<header class="head"><div class="wrap"><a class="brand" href="#">Galamsey Tracker</a><span class="label">Map &nbsp; How we know &nbsp; Data &nbsp; About</span></div></header>
+<main class="wrap">
+  <section class="hero">
+    <h1 id="h"></h1>
+    <p class="sub" id="sub"></p>
+  </section>
+  <ul class="villages" id="villages"></ul>
+  <p class="small muted" id="vnote"></p>
+  <div class="actions" style="margin:16px 0 8px"><a class="btn primary" href="#">Find a town or village</a><a class="btn" href="#">See every place on the map</a></div>
+
+  <section class="band">
+    <div class="facts" id="facts"></div>
+  </section>
+
+  <section class="band two">
+    <div>
+      <h2>Where the mud goes</h2>
+      <p id="water"></p>
+      <a class="btn" href="#">Follow the river</a>
+    </div>
+    <div>
+      <h2>Is it getting worse?</h2>
+      <div id="trend"></div>
+      <p class="small muted">Hectares cleared in the 12 months before each month. Dashed months are still being confirmed and usually rise.</p>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { data, num, esc, tidy, $, html, trendSvg, shortDate } from './shared.js';
+  $('#h').textContent = `At least ${num(data.towns_within_1km)} towns and villages have land cleared within a kilometre of them this year.`;
+  $('#sub').textContent = `Satellites saw ${num(data.total_ha)} hectares of land stripped bare across Ghana's southern gold belt in the 12 months to ${shortDate(data.data_date)}. These are the villages with the most of it on their doorstep.`;
+  for (const v of data.villages) {
+    $('#villages').append(html(`<li class="v"><img src="${esc(v.pic.after)}" alt="Satellite image near ${esc(v.name)}, ${esc(v.pic.after_date)}" loading="lazy">
+      <span class="plate"><span class="name">${esc(v.name)}</span><span class="ha">${num(v.ha)} ha within 1 km, ${tidy(v.district)}</span></span></li>`));
+  }
+  $('#vnote').textContent = `Each picture is the largest cleared patch near the village, seen from above. Town and village locations from OpenStreetMap, which misses many villages, so the true count is higher.`;
+  $('#facts').append(html(`
+    <p><strong>${num(data.total_ha)} hectares</strong>cleared in 12 months, about ${num(data.total_ha / 0.714)} football pitches.</p>
+    <p><strong>${Math.round(data.no_licence_share * 100)}% of it</strong>is on land with no licence to mine.</p>
+    <p><strong>104 of 117</strong>patches we checked by eye showed signs of mining: pits, bare orange ground and muddy ponds.</p>`));
+  $('#water').textContent = `About ${Math.round(data.pra.share_of_belt * 100)}% of the clearing drains into the River ${data.pra.river}, upstream of the ${data.pra.plant} treatment plant that supplies ${data.pra.supplies}.`;
+  $('#trend').innerHTML = trendSvg(data.trend);
+</script>
+</body>
+</html>

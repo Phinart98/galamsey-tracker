@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-GH">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C Evidence | Galamsey Tracker mockup</title>
+<link rel="stylesheet" href="v2.css">
+<style>
+  /* The pictures are the headline: a full-width wall before any text */
+  .wall { display: grid; gap: 3px; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 720px) { .wall { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1100px) { .wall { grid-template-columns: repeat(6, 1fr); } }
+  .cell { position: relative; }
+  .cell img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--paper-2); }
+  .cell .b { position: absolute; inset: 0; opacity: 0; transition: opacity 150ms ease-in-out; }
+  .wall.before .cell .b { opacity: 1; }
+  .cell span { position: absolute; left: 0; bottom: 0; background: #000; color: #fff; font-size: 0.8125rem; font-weight: 700; padding: 3px 8px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
+  .switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
+  .switch button { font: inherit; font-weight: 700; min-height: 44px; padding: 0 16px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+  .switch button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .say { padding: 24px 0 40px; display: grid; gap: 16px; }
+  @media (min-width: 900px) { .say { grid-template-columns: 7fr 5fr; gap: 56px; } }
+  .say h1 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
+  .say p { margin: 0 0 12px; max-width: 44ch; }
+  .list { list-style: none; padding: 0; margin: 0; }
+  .list li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<span class="mock">Mockup C: Evidence</span>
+<header class="head"><div class="wrap"><a class="brand" href="#">Galamsey Tracker</a><span class="label">Map &nbsp; How we know &nbsp; Data &nbsp; About</span></div></header>
+<main>
+  <div class="wrap bar">
+    <p class="small" style="margin:0"><b>The largest patches cleared this year, seen from space.</b> <span class="muted" id="asof"></span></p>
+    <div class="switch" role="group" aria-label="Which pictures to show">
+      <button type="button" data-s="before" aria-pressed="false">Before</button>
+      <button type="button" data-s="after" aria-pressed="true">After</button>
+    </div>
+  </div>
+  <div class="wall" id="wall"></div>
+  <div class="wrap">
+    <section class="say">
+      <div>
+        <h1 id="h"></h1>
+        <div class="actions" style="margin-top:20px"><a class="btn primary" href="#">See every place on the map</a><a class="btn" href="#">How we know</a></div>
+      </div>
+      <div>
+        <p id="p1"></p>
+        <p id="p2"></p>
+        <p class="small muted">Satellites cannot say who cleared the land. We show the pictures and the licence, and you judge.</p>
+      </div>
+    </section>
+    <section class="band">
+      <h2>Villages with the most cleared land within 1 km</h2>
+      <ul class="list" id="villages" style="margin-top:12px;max-width:640px"></ul>
+    </section>
+  </div>
+</main>
+<script type="module">
+  import { data, num, esc, tidy, $, html, longDate } from './shared.js';
+  $('#asof').textContent = `12 months to ${longDate(data.data_date)}.`;
+  for (const n of data.newest) {
+    $('#wall').append(html(`<a class="cell" href="#"><img src="${esc(n.pic.after)}" alt="After, ${esc(n.pic.after_date)}" loading="lazy">
+      <img class="b" src="${esc(n.pic.before)}" alt="" loading="lazy"><span>${n.near ? esc(n.near) : tidy(n.district)}</span></a>`));
+  }
+  document.querySelectorAll('[data-s]').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-s]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    $('#wall').classList.toggle('before', b.dataset.s === 'before');
+  }));
+  $('#h').textContent = `${num(data.total_ha)} hectares of land cleared across Ghana's southern gold belt in 12 months.`;
+  $('#p1').textContent = `At least ${num(data.towns_within_1km)} towns and villages have some of it within a kilometre of them. ${Math.round(data.no_licence_share * 100)}% is on land with no licence to mine.`;
+  $('#p2').textContent = `About ${Math.round(data.pra.share_of_belt * 100)}% drains into the River ${data.pra.river}, upstream of the plant that supplies ${data.pra.supplies}.`;
+  for (const v of data.villages.slice(0, 6)) {
+    $('#villages').append(html(`<li><span><b>${esc(v.name)}</b> <span class="muted">${tidy(v.district)}</span></span><span>${num(v.ha)} ha</span></li>`));
+  }
+</script>
+</body>
+</html>

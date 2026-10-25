@@ -1,0 +1,471 @@
+{
+ "data_date": "2026-10-23",
+ "total_ha": 16711,
+ "patches": 6130,
+ "no_licence_share": 0.85,
+ "towns_within_1km": 665,
+ "towns_5ha": 256,
+ "pra": {
+  "plant": "Daboase",
+  "river": "Pra",
+  "ha_upstream": 9025,
+  "share_of_belt": 0.4,
+  "supplies": "Sekondi-Takoradi"
+ },
+ "villages": [
+  {
+   "name": "Tete",
+   "ha": 71.5,
+   "patches": 8,
+   "district": "Abuakwa South",
+   "place_id": "2025-10-6206n0527w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-6206n0527w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-6206n0527w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "name": "Pramkuma",
+   "ha": 39.1,
+   "patches": 4,
+   "district": "Atiwa West",
+   "place_id": "2025-10-6199n0686w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-6199n0686w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-6199n0686w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "name": "Ayensuano",
+   "ha": 37.0,
+   "patches": 2,
+   "district": "Ayensuano",
+   "place_id": "2026-01-5944n0570w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-01-5944n0570w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-01-5944n0570w/after-720.webp",
+    "before_date": "2026-01-25",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "name": "Takyikroum",
+   "ha": 31.7,
+   "patches": 3,
+   "district": "Dormaa Municipal",
+   "place_id": "2025-10-7230n2957w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-7230n2957w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-7230n2957w/after-720.webp",
+    "before_date": "2024-12-19",
+    "after_date": "2026-04-05"
+   }
+  },
+  {
+   "name": "Bonkwaso No.1",
+   "ha": 31.2,
+   "patches": 6,
+   "district": "Ahafo Ano South East",
+   "place_id": "2025-11-6764n1940w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6764n1940w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6764n1940w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "name": "Ajumako",
+   "ha": 30.8,
+   "patches": 2,
+   "district": "Gomoa Central",
+   "place_id": "2026-01-5354n0779w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-01-5354n0779w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-01-5354n0779w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-08-18"
+   }
+  },
+  {
+   "name": "Topreman",
+   "ha": 26.9,
+   "patches": 7,
+   "district": "Denkyembour",
+   "place_id": "2025-10-6066n0769w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-6066n0769w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-6066n0769w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "name": "Okroase",
+   "ha": 26.2,
+   "patches": 6,
+   "district": "Ahafo Ano South East",
+   "place_id": "2025-11-6839n1908w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6839n1908w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6839n1908w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-04-30"
+   }
+  },
+  {
+   "name": "Adomanu",
+   "ha": 25.8,
+   "patches": 6,
+   "district": "Adansi North",
+   "place_id": "2025-11-6300n1691w",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6300n1691w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6300n1691w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-04-30"
+   }
+  }
+ ],
+ "newest": [
+  {
+   "id": "2025-11-6208n1721w",
+   "ha": 124.11,
+   "near": "Obuasi",
+   "district": "Obuasi Municipal",
+   "first_seen": "2025-11-03",
+   "licence": "large-scale lease",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6208n1721w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6208n1721w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-04-15"
+   }
+  },
+  {
+   "id": "2026-04-6988n0941w",
+   "ha": 60.21,
+   "near": null,
+   "district": "Asante Akim North",
+   "first_seen": "2026-04-07",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-04-6988n0941w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-04-6988n0941w/after-720.webp",
+    "before_date": "2026-01-25",
+    "after_date": "2026-10-02"
+   }
+  },
+  {
+   "id": "2025-10-6206n0527w",
+   "ha": 47.88,
+   "near": null,
+   "district": "Abuakwa South",
+   "first_seen": "2025-10-24",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-6206n0527w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-6206n0527w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2026-08-7143n1305w",
+   "ha": 47.52,
+   "near": null,
+   "district": "Sekyere Central",
+   "first_seen": "2026-08-21",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-08-7143n1305w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-08-7143n1305w/after-720.webp",
+    "before_date": "2026-01-25",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-11-6748n1916w",
+   "ha": 45.9,
+   "near": null,
+   "district": "Ahafo Ano South East",
+   "first_seen": "2025-11-14",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6748n1916w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6748n1916w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-11-6757n1909w",
+   "ha": 40.95,
+   "near": null,
+   "district": "Ahafo Ano South East",
+   "first_seen": "2025-11-14",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6757n1909w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6757n1909w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-10-7226n2943w",
+   "ha": 38.43,
+   "near": null,
+   "district": "Dormaa Municipal",
+   "first_seen": "2025-10-25",
+   "licence": "large-scale lease",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-7226n2943w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-7226n2943w/after-720.webp",
+    "before_date": "2024-12-19",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-10-5944n2466w",
+   "ha": 37.71,
+   "near": null,
+   "district": "Wassa Amenfi West",
+   "first_seen": "2025-10-27",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-10-5944n2466w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-10-5944n2466w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-11-6696n1954w",
+   "ha": 37.26,
+   "near": null,
+   "district": "Atwima Mponua",
+   "first_seen": "2025-11-11",
+   "licence": "no licence",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6696n1954w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6696n1954w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2026-02-6737n1873w",
+   "ha": 35.82,
+   "near": null,
+   "district": "Atwima Nwabiagya South",
+   "first_seen": "2026-02-19",
+   "licence": "large-scale lease",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-02-6737n1873w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-02-6737n1873w/after-720.webp",
+    "before_date": "2025-01-05",
+    "after_date": "2026-10-22"
+   }
+  },
+  {
+   "id": "2025-11-6657n1135w",
+   "ha": 32.94,
+   "near": null,
+   "district": "Asante Akim Central Municipal",
+   "first_seen": "2025-11-01",
+   "licence": "prospecting only",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2025-11-6657n1135w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2025-11-6657n1135w/after-720.webp",
+    "before_date": "2025-02-04",
+    "after_date": "2026-10-02"
+   }
+  },
+  {
+   "id": "2026-01-5944n0570w",
+   "ha": 31.32,
+   "near": null,
+   "district": "Ayensuano",
+   "first_seen": "2026-01-26",
+   "licence": "prospecting only",
+   "pic": {
+    "before": "../../../pipeline/out/chips/2026-01-5944n0570w/before-720.webp",
+    "after": "../../../pipeline/out/chips/2026-01-5944n0570w/after-720.webp",
+    "before_date": "2026-01-25",
+    "after_date": "2026-10-22"
+   }
+  }
+ ],
+ "trend": [
+  {
+   "m": "2024-01",
+   "ha": 17092,
+   "settled": true
+  },
+  {
+   "m": "2024-02",
+   "ha": 16622,
+   "settled": true
+  },
+  {
+   "m": "2024-03",
+   "ha": 18036,
+   "settled": true
+  },
+  {
+   "m": "2024-04",
+   "ha": 18708,
+   "settled": true
+  },
+  {
+   "m": "2024-05",
+   "ha": 18214,
+   "settled": true
+  },
+  {
+   "m": "2024-06",
+   "ha": 18270,
+   "settled": true
+  },
+  {
+   "m": "2024-07",
+   "ha": 20270,
+   "settled": true
+  },
+  {
+   "m": "2024-08",
+   "ha": 21832,
+   "settled": true
+  },
+  {
+   "m": "2024-09",
+   "ha": 21792,
+   "settled": true
+  },
+  {
+   "m": "2024-10",
+   "ha": 22785,
+   "settled": true
+  },
+  {
+   "m": "2024-11",
+   "ha": 27277,
+   "settled": true
+  },
+  {
+   "m": "2024-12",
+   "ha": 28055,
+   "settled": true
+  },
+  {
+   "m": "2025-01",
+   "ha": 25723,
+   "settled": true
+  },
+  {
+   "m": "2025-02",
+   "ha": 22282,
+   "settled": true
+  },
+  {
+   "m": "2025-03",
+   "ha": 22253,
+   "settled": true
+  },
+  {
+   "m": "2025-04",
+   "ha": 24780,
+   "settled": true
+  },
+  {
+   "m": "2025-05",
+   "ha": 24580,
+   "settled": true
+  },
+  {
+   "m": "2025-06",
+   "ha": 25019,
+   "settled": true
+  },
+  {
+   "m": "2025-07",
+   "ha": 26233,
+   "settled": true
+  },
+  {
+   "m": "2025-08",
+   "ha": 26931,
+   "settled": true
+  },
+  {
+   "m": "2025-09",
+   "ha": 27269,
+   "settled": true
+  },
+  {
+   "m": "2025-10",
+   "ha": 27863,
+   "settled": true
+  },
+  {
+   "m": "2025-11",
+   "ha": 24587,
+   "settled": true
+  },
+  {
+   "m": "2025-12",
+   "ha": 22132,
+   "settled": true
+  },
+  {
+   "m": "2026-01",
+   "ha": 21651,
+   "settled": true
+  },
+  {
+   "m": "2026-02",
+   "ha": 20721,
+   "settled": true
+  },
+  {
+   "m": "2026-03",
+   "ha": 21232,
+   "settled": true
+  },
+  {
+   "m": "2026-04",
+   "ha": 19678,
+   "settled": true
+  },
+  {
+   "m": "2026-05",
+   "ha": 18348,
+   "settled": true
+  },
+  {
+   "m": "2026-06",
+   "ha": 17932,
+   "settled": false
+  },
+  {
+   "m": "2026-07",
+   "ha": 17620,
+   "settled": false
+  },
+  {
+   "m": "2026-08",
+   "ha": 17484,
+   "settled": false
+  },
+  {
+   "m": "2026-09",
+   "ha": 17266,
+   "settled": false
+  }
+ ]
+}
