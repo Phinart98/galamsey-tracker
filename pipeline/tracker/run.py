@@ -201,6 +201,11 @@ def needs_point(point: dict | None, tiles: list[str], readings: int) -> bool:
     return not point or point.get("covered") != sorted(tiles) or point.get("readings", len(SETTLE_OFFSETS_MONTHS) if point.get("settled") else -1) < readings
 
 
+def drop_stale(points: dict, tiles: list[str]) -> dict:
+    """Points summed over a different set of tiles are not comparable, so they go until they can be redone."""
+    return {k: p for k, p in points.items() if p.get("covered") == sorted(tiles)}
+
+
 def trend(today: dt.date, start: str = "2024-01"):
     """Hectares newly cleared in the 365 days to the 22nd of each month, by licence class, summed over tiles.
 
@@ -218,6 +223,8 @@ def trend(today: dt.date, start: str = "2024-01"):
             months.append(month)
         month = (month.replace(day=1) + dt.timedelta(days=32)).replace(day=22)
     if not months:
+        series["points"] = drop_stale(series["points"], tiles)
+        _write_json(path, series)
         return
 
     # Tile by tile, so one tile's granules stay cached while its months are worked through:
@@ -265,6 +272,7 @@ def trend(today: dt.date, start: str = "2024-01"):
             "covered": tiles, "settled": settled[m], "readings": len(readings_as_of(m, today)[0]),
             "granules": used[m]}
         print(f"trend {m:%Y-%m}: {s['total_ha']} ha{'' if settled[m] else ' (provisional)'}")
+    series["points"] = drop_stale(series["points"], tiles)
     _write_json(path, series)
 
 

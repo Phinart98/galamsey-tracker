@@ -108,3 +108,9 @@ def test_a_reading_counts_only_once_nasa_has_had_a_week_to_publish_it():
     end = dt.date(2026, 6, 22)
     assert readings_as_of(end, dt.date(2026, 8, 24)) == ([end], False)
     assert readings_as_of(end, dt.date(2026, 8, 22) + dt.timedelta(days=READING_LAG_DAYS)) == ([end, dt.date(2026, 8, 22)], False)
+
+
+def test_points_from_a_different_set_of_tiles_are_dropped_rather_than_shown():
+    from tracker.run import drop_stale
+    points = {"2026-09": {"covered": ["T30NXM", "T30NXN"]}, "2026-10": {"covered": ["T30NXM"]}, "2026-08": {"tiles": ["T30NXM"]}}
+    assert list(drop_stale(points, ["T30NXN", "T30NXM"])) == ["2026-09"]
