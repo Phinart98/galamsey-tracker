@@ -473,3 +473,29 @@ the site's lead picture until now, and 48 ha Sekyere Central) and two coastal on
 30NYN patches (s20) it keeps 5, including the one that showed mining, and drops 15 of the 19 that did
 not. Pipeline method 2026.10.3 counts only patches whose representative point is in the zone
 (`pipeline/forest_zone.geojson`, made by `spike/forest_zone.py`, simplified to about 100 m, 9 KB).
+
+## 22. Small, recent patches inside the forest zone (2026-10-25)
+
+`spike/recent_check.py`: of the 141 active patches under 3 ha first seen since 26 Apr 2026 (inside the
+forest zone, 23 Oct snapshot), a random 20 (seed 13), each before (the clearest picture in the 15 months
+before first seen) and now. Sheets in `pipeline/out/checks/recent-small/`. Judged by eye at the centre
+of each 1.6 km picture, where a 1 to 3 ha patch is a small square.
+
+- **Signs of mining, 8:** yellow and pale pits, ponds or a muddy river channel at the patch (2 and 11
+  Abomosu, 5 Bopa, 8 Kwawu, 20 Enchi), and a band of pits and ponds along a valley (7 and 14 Akim Oda,
+  the same band, and 16 Manso).
+- **A long cleared band, mining or road works, 3:** an orange band of uneven width through forest
+  (13 and 15 Ekoso, the same band) and a straight pale band (10 Kuntanase). They could be river-channel
+  mining or a new road.
+- **Farm blocks, 4:** square field blocks at Agogo (4, 6), Achiase (17) and a Lake Volta peninsula at
+  Sempoakurom (9). Agogo and Sempoakurom are at the north-east edge of the forest zone.
+- **Cannot tell, 5:** no clear picture since first seen (1, 18, 19), or nothing visible at the centre
+  (3, 12).
+
+**Reading:** for small, recent patches the share with signs of mining is 8 of 20 for sure and at most
+11 of 20, far below the 104 of 117 for the largest and a random draw of all patches (s12, s15). These
+patches are 141 of 5,889 and a small part of the area, so the headline area is barely affected, but
+the site must not present "newest" patches as mining, and any published mining share must say which
+patches it covers. The forest zone still lets some farm land in at its north-east edge (Asante Akim
+North and the Lake Volta shore). Next: an area-weighted, season-aware random check across all tiles
+before any share is published.

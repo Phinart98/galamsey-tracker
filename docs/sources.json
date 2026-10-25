@@ -272,10 +272,10 @@
    "text": "104 of 117 randomly checked patches showed signs of mining",
    "where": "home, /method",
    "evidence": [
-    "own-spike-log s12, s15"
+    "own-spike-log s12, s15, s22"
    ],
    "status": "measured",
-   "caveat": "Judged by Claude from pictures. Philip's one-time 100-pair check is still to do before launch. Small, recent patches look mostly like farm blocks (s20), so the share may be lower for them; season-aware recheck needed"
+   "caveat": "Judged by Claude from pictures, mostly large patches. For small patches first seen in the last six months only 8 to 11 of 20 showed mining (s22), so the share must say which patches it covers. Philip's one-time check and an area-weighted, season-aware random check across all tiles are still to do before launch"
   },
   {
    "id": "trend",
