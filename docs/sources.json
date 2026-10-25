@@ -1,47 +1,370 @@
 {
- "about": "Every outside source the tracker relies on, and every claim the public site makes or plans to make, with how it is backed. Status values. Sources: live-data (our code reads it directly), checked (opened and the specific fact confirmed, with date), cited (from docs/research, not re-opened for this use), rejected (tested or considered and not used). Claims: measured (our own test, see evidence), sourced (backed by a checked source), unverified (needs a source before it is published), to-confirm (Philip must confirm). Rule: add a source here the moment research uses it. Nothing marked unverified or to-confirm goes on the public site.",
+ "about": "Every outside source the tracker relies on, and every claim the public site makes or plans to make, with how it is backed. Status values. Sources: live-data (our code reads it directly), checked (opened and the specific fact confirmed, with date), cited (from docs/research, not re-opened for this use), rejected (tested or considered and not used). Claims: measured (our own test, see evidence), sourced (backed by a checked source), unverified (needs a source before it is published), to-confirm (Philip must confirm). Rule: add a source here the moment research uses it. Nothing marked unverified or to-confirm goes on the public site. This file is the full reading list. The public site's reference list is derived from it: a source is listed on the site only if a claim published on the site cites it, like a paper's references.",
  "updated": "2026-10-25",
  "sources": [
-  {"id": "opera-dist-alert", "title": "OPERA Land Surface Disturbance Alert from Harmonized Landsat Sentinel-2 (DIST-ALERT-HLS), version 1", "publisher": "NASA JPL OPERA project, distributed by NASA LP DAAC", "url": "https://www.earthdata.nasa.gov/data/alerts-outages/opera-land-surface-disturbance-alert-version-1-data-product-released", "access": "NASA CMR, short_name OPERA_L3_DIST-ALERT-HLS_V1", "licence": "NASA open data, no restrictions", "used_for": "Every cleared-land figure: patches, hectares, first-seen dates, trend", "status": "live-data", "todo": "Link the product specification document that defines VEG-DIST-STATUS codes 6 and 8 and VEG-DIST-DATE"},
-  {"id": "opera-dist-ann", "title": "OPERA DIST-ANN-HLS (annual disturbance)", "publisher": "NASA JPL OPERA", "url": null, "used_for": "Tested for the yearly trend and rejected (spike log section 11)", "status": "rejected"},
-  {"id": "opera-dswx", "title": "OPERA Dynamic Surface Water Extent (DSWx-HLS and DSWx-S1)", "publisher": "NASA JPL OPERA", "url": null, "used_for": "Tested as a new-water signal for mining ponds and rejected (spike log section 12)", "status": "rejected"},
-  {"id": "opera-rtc-s1", "title": "OPERA Radiometric Terrain Corrected Sentinel-1 backscatter (RTC-S1)", "publisher": "NASA JPL OPERA, distributed by ASF", "url": "https://registry.opendata.aws/nasa-operal2rtc-s1v1/", "used_for": "Radar reproduction of Forkuor et al. 2020, rejected (spike log section 5)", "status": "rejected"},
-  {"id": "hls", "title": "Harmonized Landsat and Sentinel-2 (HLS)", "publisher": "NASA", "url": "https://www.earthdata.nasa.gov/data/projects/nsite/solutions/hls", "used_for": "Explains revisit ('every few days') on /method", "status": "cited", "todo": "Check the revisit figure before the sentence is published"},
-  {"id": "sentinel2-earth-search", "title": "Sentinel-2 Level 2A on Earth Search (collections sentinel-2-c1-l2a and sentinel-2-l2a)", "publisher": "Element 84, data from the European Space Agency Copernicus programme", "url": "https://github.com/Element84/earth-search", "access": "https://earth-search.aws.element84.com/v1", "licence": "Copernicus Sentinel data terms; credit 'Contains modified Copernicus Sentinel data [year]'", "used_for": "All before/after pictures and share cards", "status": "live-data", "todo": "Confirm the exact Copernicus attribution wording (open question in docs/research)"},
-  {"id": "sentinel2-scl", "title": "Sentinel-2 Level 2A Scene Classification (SCL) class definitions", "publisher": "European Space Agency", "url": null, "used_for": "Cloud test for pictures (classes 3, 8, 9, 10)", "status": "cited", "todo": "Find and link the ESA L2A product definition"},
-  {"id": "forkuor-2020", "title": "Forkuor, Ullmann and Griesbeck (2020). Mapping and monitoring small-scale mining activities in Ghana using Sentinel-1 time series (2015-2019). Remote Sensing 12(6), 911", "publisher": "MDPI Remote Sensing", "url": "https://opus.bibliothek.uni-wuerzburg.de/files/20320/remotesensing-12-00911.pdf", "used_for": "Radar method we reproduced and rejected (spike log section 5)", "status": "cited", "todo": "Confirm full title and authors from the PDF"},
-  {"id": "barenblitt-2021", "title": "Barenblitt et al. (2021), mapping of artisanal and small-scale gold mining in Ghana 2007-2019, dataset", "publisher": "Mendeley Data", "url": "https://data.mendeley.com/datasets/s4rfcckr39", "licence": "CC BY 4.0", "used_for": "Reference map when testing the radar method (spike log section 5)", "status": "checked", "checked": "2026-10-24 (downloaded and used)", "todo": "Add the paper citation (title, journal) and link"},
-  {"id": "smallminesds", "title": "SmallMinesDS: a multi-modal dataset for mapping artisanal and small-scale gold mines", "publisher": "Hugging Face dataset ellaampy/SmallMinesDS", "url": "https://huggingface.co/datasets/ellaampy/SmallMinesDS", "licence": "CC BY-SA 4.0", "used_for": "Considered for validation; not used in the product yet", "status": "cited"},
-  {"id": "gallwey", "title": "Gallwey et al., Sentinel-2 mapping of artisanal mining in southern Ghana", "publisher": "University of Exeter", "url": "https://ore.exeter.ac.uk/repository/handle/10871/122294", "used_for": "Background in the research report only", "status": "cited"},
-  {"id": "minerals-commission-cadastre", "title": "Ghana Minerals Commission mining cadastre, active licences", "publisher": "Minerals Commission of Ghana, portal hosted by Revenue Development Foundation", "url": "https://ghana.revenuedev.org/", "access": "https://repo-prod.revenuedev.org/api/map/geojson/GH/ws/-1?status=Active%20Licenses", "licence": "Not stated. We publish only the derived licence class per patch, never boundaries or holder names", "used_for": "Licence class of every patch; the 'no licence to mine' share", "status": "live-data", "todo": "Decide whether to ask the Minerals Commission about reuse"},
-  {"id": "geoboundaries-gha-adm2", "title": "geoBoundaries Ghana ADM2 (districts)", "publisher": "William & Mary geoLab", "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GHA/ADM2/", "licence": "CC BY 4.0", "used_for": "District of every patch", "status": "live-data", "todo": "Check the district count against Ghana's current 261 districts"},
-  {"id": "openstreetmap", "title": "OpenStreetMap, via the Overpass API", "publisher": "OpenStreetMap contributors", "url": "https://www.openstreetmap.org/copyright", "access": "https://overpass-api.de/api/interpreter", "licence": "ODbL", "used_for": "Nearest town or village of every patch; water treatment plant locations (water spike)", "status": "live-data"},
-  {"id": "hydrobasins", "title": "HydroBASINS level 12, Africa, v1c. Lehner and Grill (2013), Hydrological Processes 27(15)", "publisher": "HydroSHEDS / WWF", "url": "https://www.hydrosheds.org/products/hydrobasins", "licence": "Free for scientific, educational and commercial use (product page, checked 2026-10-25); full licence agreement not yet read", "used_for": "Hectares cleared upstream of water treatment plants (spike log section 16)", "status": "checked", "checked": "2026-10-25 (licence summary on product page)", "todo": "Read the full licence agreement and confirm the citation"},
-  {"id": "openfreemap", "title": "OpenFreeMap basemap styles", "publisher": "OpenFreeMap, data OpenStreetMap", "url": "https://openfreemap.org/", "licence": "Free, attribution to OpenStreetMap and OpenFreeMap", "used_for": "Background map on /map", "status": "live-data"},
-  {"id": "worldpop", "title": "WorldPop 100 m population grids", "publisher": "WorldPop, University of Southampton", "url": null, "used_for": "Considered for 'people living near new clearing'; rejected because errors near a single site are too large and mining camps are missed", "status": "rejected"},
-  {"id": "own-spike-log", "title": "Galamsey Tracker data spike log", "publisher": "This project", "url": "https://github.com/Phinart98/galamsey-tracker/blob/master/docs/validation/2026-10-data-spike.md", "used_for": "Every measured claim below", "status": "live-data"}
+  {
+   "id": "opera-dist-alert",
+   "title": "OPERA Land Surface Disturbance Alert from Harmonized Landsat Sentinel-2 (DIST-ALERT-HLS), version 1",
+   "publisher": "NASA JPL OPERA project, distributed by NASA LP DAAC",
+   "url": "https://www.earthdata.nasa.gov/data/alerts-outages/opera-land-surface-disturbance-alert-version-1-data-product-released",
+   "access": "NASA CMR, short_name OPERA_L3_DIST-ALERT-HLS_V1",
+   "licence": "NASA open data, no restrictions",
+   "used_for": "Every cleared-land figure: patches, hectares, first-seen dates, trend",
+   "status": "live-data",
+   "todo": "Link the product specification document that defines VEG-DIST-STATUS codes 6 and 8 and VEG-DIST-DATE"
+  },
+  {
+   "id": "opera-dist-ann",
+   "title": "OPERA DIST-ANN-HLS (annual disturbance)",
+   "publisher": "NASA JPL OPERA",
+   "url": null,
+   "used_for": "Tested for the yearly trend and rejected (spike log section 11)",
+   "status": "rejected"
+  },
+  {
+   "id": "opera-dswx",
+   "title": "OPERA Dynamic Surface Water Extent (DSWx-HLS and DSWx-S1)",
+   "publisher": "NASA JPL OPERA",
+   "url": null,
+   "used_for": "Tested as a new-water signal for mining ponds and rejected (spike log section 12)",
+   "status": "rejected"
+  },
+  {
+   "id": "opera-rtc-s1",
+   "title": "OPERA Radiometric Terrain Corrected Sentinel-1 backscatter (RTC-S1)",
+   "publisher": "NASA JPL OPERA, distributed by ASF",
+   "url": "https://registry.opendata.aws/nasa-operal2rtc-s1v1/",
+   "used_for": "Radar reproduction of Forkuor et al. 2020, rejected (spike log section 5)",
+   "status": "rejected"
+  },
+  {
+   "id": "hls",
+   "title": "Harmonized Landsat and Sentinel-2 (HLS)",
+   "publisher": "NASA",
+   "url": "https://www.earthdata.nasa.gov/data/projects/nsite/solutions/hls",
+   "used_for": "Explains revisit ('every few days') on /method",
+   "status": "cited",
+   "todo": "Check the revisit figure before the sentence is published"
+  },
+  {
+   "id": "sentinel2-earth-search",
+   "title": "Sentinel-2 Level 2A on Earth Search (collections sentinel-2-c1-l2a and sentinel-2-l2a)",
+   "publisher": "Element 84, data from the European Space Agency Copernicus programme",
+   "url": "https://github.com/Element84/earth-search",
+   "access": "https://earth-search.aws.element84.com/v1",
+   "licence": "Copernicus Sentinel data terms; credit 'Contains modified Copernicus Sentinel data [year]'",
+   "used_for": "All before/after pictures and share cards",
+   "status": "live-data",
+   "todo": "Confirm the exact Copernicus attribution wording (open question in docs/research)"
+  },
+  {
+   "id": "sentinel2-scl",
+   "title": "Sentinel-2 Level 2A Scene Classification (SCL) class definitions",
+   "publisher": "European Space Agency",
+   "url": null,
+   "used_for": "Cloud test for pictures (classes 3, 8, 9, 10)",
+   "status": "cited",
+   "todo": "Find and link the ESA L2A product definition"
+  },
+  {
+   "id": "forkuor-2020",
+   "title": "Forkuor, Ullmann and Griesbeck (2020). Mapping and monitoring small-scale mining activities in Ghana using Sentinel-1 time series (2015-2019). Remote Sensing 12(6), 911",
+   "publisher": "MDPI Remote Sensing",
+   "url": "https://opus.bibliothek.uni-wuerzburg.de/files/20320/remotesensing-12-00911.pdf",
+   "used_for": "Radar method we reproduced and rejected (spike log section 5)",
+   "status": "cited",
+   "todo": "Confirm full title and authors from the PDF"
+  },
+  {
+   "id": "barenblitt-2021",
+   "title": "Barenblitt et al. (2021), mapping of artisanal and small-scale gold mining in Ghana 2007-2019, dataset",
+   "publisher": "Mendeley Data",
+   "url": "https://data.mendeley.com/datasets/s4rfcckr39",
+   "licence": "CC BY 4.0",
+   "used_for": "Reference map when testing the radar method (spike log section 5)",
+   "status": "checked",
+   "checked": "2026-10-24 (downloaded and used)",
+   "todo": "Add the paper citation (title, journal) and link"
+  },
+  {
+   "id": "smallminesds",
+   "title": "SmallMinesDS: a multi-modal dataset for mapping artisanal and small-scale gold mines",
+   "publisher": "Hugging Face dataset ellaampy/SmallMinesDS",
+   "url": "https://huggingface.co/datasets/ellaampy/SmallMinesDS",
+   "licence": "CC BY-SA 4.0",
+   "used_for": "Considered for validation; not used in the product yet",
+   "status": "cited"
+  },
+  {
+   "id": "gallwey",
+   "title": "Gallwey et al., Sentinel-2 mapping of artisanal mining in southern Ghana",
+   "publisher": "University of Exeter",
+   "url": "https://ore.exeter.ac.uk/repository/handle/10871/122294",
+   "used_for": "Background in the research report only",
+   "status": "cited"
+  },
+  {
+   "id": "minerals-commission-cadastre",
+   "title": "Ghana Minerals Commission mining cadastre, active licences",
+   "publisher": "Minerals Commission of Ghana, portal hosted by Revenue Development Foundation",
+   "url": "https://ghana.revenuedev.org/",
+   "access": "https://repo-prod.revenuedev.org/api/map/geojson/GH/ws/-1?status=Active%20Licenses",
+   "licence": "Not stated. We publish only the derived licence class per patch, never boundaries or holder names",
+   "used_for": "Licence class of every patch; the 'no licence to mine' share",
+   "status": "live-data",
+   "todo": "Decide whether to ask the Minerals Commission about reuse"
+  },
+  {
+   "id": "geoboundaries-gha-adm2",
+   "title": "geoBoundaries Ghana ADM2 (districts)",
+   "publisher": "William & Mary geoLab",
+   "url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GHA/ADM2/",
+   "licence": "CC BY 4.0",
+   "used_for": "District of every patch",
+   "status": "live-data",
+   "todo": "Check the district count against Ghana's current 261 districts"
+  },
+  {
+   "id": "openstreetmap",
+   "title": "OpenStreetMap, via the Overpass API",
+   "publisher": "OpenStreetMap contributors",
+   "url": "https://www.openstreetmap.org/copyright",
+   "access": "https://overpass-api.de/api/interpreter",
+   "licence": "ODbL",
+   "used_for": "Nearest town or village of every patch; water treatment plant locations (water spike)",
+   "status": "live-data"
+  },
+  {
+   "id": "hydrobasins",
+   "title": "HydroBASINS level 12, Africa, v1c. Lehner and Grill (2013), Hydrological Processes 27(15)",
+   "publisher": "HydroSHEDS / WWF",
+   "url": "https://www.hydrosheds.org/products/hydrobasins",
+   "licence": "Free for scientific, educational and commercial use (product page, checked 2026-10-25); full licence agreement not yet read",
+   "used_for": "Hectares cleared upstream of water treatment plants (spike log section 16)",
+   "status": "checked",
+   "checked": "2026-10-25 (licence summary on product page)",
+   "todo": "Read the full licence agreement and confirm the citation"
+  },
+  {
+   "id": "openfreemap",
+   "title": "OpenFreeMap basemap styles",
+   "publisher": "OpenFreeMap, data OpenStreetMap",
+   "url": "https://openfreemap.org/",
+   "licence": "Free, attribution to OpenStreetMap and OpenFreeMap",
+   "used_for": "Background map on /map",
+   "status": "live-data"
+  },
+  {
+   "id": "worldpop",
+   "title": "WorldPop 100 m population grids",
+   "publisher": "WorldPop, University of Southampton",
+   "url": null,
+   "used_for": "Considered for 'people living near new clearing'; rejected because errors near a single site are too large and mining camps are missed",
+   "status": "rejected"
+  },
+  {
+   "id": "own-spike-log",
+   "title": "Galamsey Tracker data spike log",
+   "publisher": "This project",
+   "url": "https://github.com/Phinart98/galamsey-tracker/blob/master/docs/validation/2026-10-data-spike.md",
+   "used_for": "Every measured claim below",
+   "status": "live-data"
+  }
  ],
  "claims": [
-  {"id": "cleared-hectares", "text": "Satellites saw N hectares of land cleared in the last 12 months (patches of at least 1 ha, confirmed loss of at least half the plant cover)", "where": "home, map, bulletins", "evidence": ["opera-dist-alert", "own-spike-log s7, s13"], "status": "measured"},
-  {"id": "no-licence-share", "text": "N% of it is land with no licence to mine", "where": "home, map, bulletins", "evidence": ["minerals-commission-cadastre", "own-spike-log s9"], "status": "measured", "caveat": "Only as complete as the public cadastre"},
-  {"id": "mining-share", "text": "104 of 117 randomly checked patches showed signs of mining", "where": "home, /method", "evidence": ["own-spike-log s12, s15"], "status": "measured", "caveat": "Judged by Claude from pictures. Philip's one-time 100-pair check is still to do before launch"},
-  {"id": "trend", "text": "Hectares cleared in the 12 months to the 22nd, compared with the same month a year before", "where": "home chart", "evidence": ["opera-dist-alert", "own-spike-log s11, s13"], "status": "measured"},
-  {"id": "confirmation-lag", "text": "NASA confirms clearing weeks or months after first seeing it, and drops it from the data about a year later", "where": "/method, home", "evidence": ["own-spike-log s13"], "status": "measured", "todo": "Also cite the DIST-ALERT specification for confirmation and expiry rules"},
-  {"id": "status-codes", "text": "Status 6 and 8 mean confirmed loss of at least 50% of plant cover, ongoing or finished", "where": "/method", "evidence": ["opera-dist-alert"], "status": "unverified", "todo": "Link the product specification"},
-  {"id": "football-pitch", "text": "A football pitch is 105 by 68 m, 0.714 ha; 1 ha is about one and a half pitches", "where": "home, /method", "evidence": [], "status": "unverified", "todo": "Cite FIFA/IFAB recommended dimensions. 1 ha is 1.4 pitches, so check the wording"},
-  {"id": "radar-failed", "text": "A published radar method flagged pixels of which only about 6% were mining", "where": "/method", "evidence": ["forkuor-2020", "barenblitt-2021", "own-spike-log s5"], "status": "measured"},
-  {"id": "river-colour-failed", "text": "River colour changes more between pictures than between years", "where": "/method", "evidence": ["own-spike-log s8"], "status": "measured"},
-  {"id": "annual-product-failed", "text": "NASA's yearly product made clearing look as if it had halved", "where": "/method", "evidence": ["opera-dist-ann", "own-spike-log s11"], "status": "measured"},
-  {"id": "new-water-failed", "text": "NASA's surface water data missed the mining ponds", "where": "/method", "evidence": ["opera-dswx", "own-spike-log s12"], "status": "measured", "caveat": "'Smaller than its 30 m pixels' is our explanation, not a measurement"},
-  {"id": "prospecting-no-mining", "text": "A prospecting licence allows exploration but not mining", "where": "home, place pages", "evidence": [], "status": "unverified", "todo": "Cite the Minerals and Mining Act 2006 (Act 703) or Minerals Commission guidance"},
-  {"id": "restricted-leases", "text": "Restricted leases for granite, sand or salt do not allow gold mining", "where": "/method", "evidence": [], "status": "unverified", "todo": "Cite Act 703 or Minerals Commission licence types"},
-  {"id": "upstream-hectares", "text": "N hectares cleared upstream of each water treatment plant (Daboase 9,025 ha, about 40% of all clearing in 15 southern tiles)", "where": "planned", "evidence": ["hydrobasins", "openstreetmap", "own-spike-log s16"], "status": "measured"},
-  {"id": "plant-supplies", "text": "Which towns each plant supplies (Daboase: Sekondi-Takoradi; Weija: west Accra; Barekese and Owabi: Kumasi; Kpong supplies much of Accra)", "where": "planned", "evidence": [], "status": "unverified", "todo": "Ghana Water Ltd or news sources for each"},
-  {"id": "catchment-areas", "text": "Pra basin about 23,000 km2, Densu about 2,600 km2", "where": "spike log only", "evidence": [], "status": "unverified", "todo": "Source, or drop from the log"},
-  {"id": "water-shutdowns", "text": "Ghana's water utility has had to cut supply at treatment plants because rivers were too dirty to treat", "where": "/about (live in the current build)", "evidence": [], "status": "unverified", "todo": "Find dated reports (Ghana Water Ltd statements or major outlets) or remove"},
-  {"id": "mercury", "text": "Galamsey turns rivers brown with mud and mercury", "where": "/about (live in the current build)", "evidence": [], "status": "unverified", "todo": "Cite a study of mercury in Ghanaian rivers or remove 'mercury'"},
-  {"id": "reporting-bodies", "text": "Report illegal mining to the Minerals Commission, NAIMOS or the District Assembly", "where": "/about (live in the current build)", "evidence": [], "status": "unverified", "todo": "Confirm NAIMOS exists and how to contact each body"},
-  {"id": "philip-bio", "text": "Built and run by Philip Narteh, a software engineer in Ghana; independent project", "where": "/about", "evidence": [], "status": "to-confirm"},
-  {"id": "coverage-areas", "text": "Plain-language area names for each tile", "where": "home, /map, /method", "evidence": ["geoboundaries-gha-adm2"], "status": "measured", "caveat": "Names come from the top districts by cleared area in each tile"}
+  {
+   "id": "cleared-hectares",
+   "text": "Satellites saw N hectares of land cleared in the last 12 months (patches of at least 1 ha, confirmed loss of at least half the plant cover)",
+   "where": "home, map, bulletins",
+   "evidence": [
+    "opera-dist-alert",
+    "own-spike-log s7, s13"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "no-licence-share",
+   "text": "N% of it is land with no licence to mine",
+   "where": "home, map, bulletins",
+   "evidence": [
+    "minerals-commission-cadastre",
+    "own-spike-log s9"
+   ],
+   "status": "measured",
+   "caveat": "Only as complete as the public cadastre"
+  },
+  {
+   "id": "mining-share",
+   "text": "104 of 117 randomly checked patches showed signs of mining",
+   "where": "home, /method",
+   "evidence": [
+    "own-spike-log s12, s15"
+   ],
+   "status": "measured",
+   "caveat": "Judged by Claude from pictures. Philip's one-time 100-pair check is still to do before launch"
+  },
+  {
+   "id": "trend",
+   "text": "Hectares cleared in the 12 months to the 22nd, compared with the same month a year before",
+   "where": "home chart",
+   "evidence": [
+    "opera-dist-alert",
+    "own-spike-log s11, s13"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "confirmation-lag",
+   "text": "NASA confirms clearing weeks or months after first seeing it, and drops it from the data about a year later",
+   "where": "/method, home",
+   "evidence": [
+    "own-spike-log s13"
+   ],
+   "status": "measured",
+   "todo": "Also cite the DIST-ALERT specification for confirmation and expiry rules"
+  },
+  {
+   "id": "status-codes",
+   "text": "Status 6 and 8 mean confirmed loss of at least 50% of plant cover, ongoing or finished",
+   "where": "/method",
+   "evidence": [
+    "opera-dist-alert"
+   ],
+   "status": "unverified",
+   "todo": "Link the product specification"
+  },
+  {
+   "id": "football-pitch",
+   "text": "A football pitch is 105 by 68 m, 0.714 ha; 1 ha is about one and a half pitches",
+   "where": "home, /method",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Cite FIFA/IFAB recommended dimensions. 1 ha is 1.4 pitches, so check the wording"
+  },
+  {
+   "id": "radar-failed",
+   "text": "A published radar method flagged pixels of which only about 6% were mining",
+   "where": "/method",
+   "evidence": [
+    "forkuor-2020",
+    "barenblitt-2021",
+    "own-spike-log s5"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "river-colour-failed",
+   "text": "River colour changes more between pictures than between years",
+   "where": "/method",
+   "evidence": [
+    "own-spike-log s8"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "annual-product-failed",
+   "text": "NASA's yearly product made clearing look as if it had halved",
+   "where": "/method",
+   "evidence": [
+    "opera-dist-ann",
+    "own-spike-log s11"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "new-water-failed",
+   "text": "NASA's surface water data missed the mining ponds",
+   "where": "/method",
+   "evidence": [
+    "opera-dswx",
+    "own-spike-log s12"
+   ],
+   "status": "measured",
+   "caveat": "'Smaller than its 30 m pixels' is our explanation, not a measurement"
+  },
+  {
+   "id": "prospecting-no-mining",
+   "text": "A prospecting licence allows exploration but not mining",
+   "where": "home, place pages",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Cite the Minerals and Mining Act 2006 (Act 703) or Minerals Commission guidance"
+  },
+  {
+   "id": "restricted-leases",
+   "text": "Restricted leases for granite, sand or salt do not allow gold mining",
+   "where": "/method",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Cite Act 703 or Minerals Commission licence types"
+  },
+  {
+   "id": "upstream-hectares",
+   "text": "N hectares cleared upstream of each water treatment plant (Daboase 9,025 ha, about 40% of all clearing in 15 southern tiles)",
+   "where": "planned",
+   "evidence": [
+    "hydrobasins",
+    "openstreetmap",
+    "own-spike-log s16"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "plant-supplies",
+   "text": "Which towns each plant supplies (Daboase: Sekondi-Takoradi; Weija: west Accra; Barekese and Owabi: Kumasi; Kpong supplies much of Accra)",
+   "where": "planned",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Ghana Water Ltd or news sources for each"
+  },
+  {
+   "id": "catchment-areas",
+   "text": "Pra basin about 23,000 km2, Densu about 2,600 km2",
+   "where": "spike log only",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Source, or drop from the log"
+  },
+  {
+   "id": "water-shutdowns",
+   "text": "Ghana's water utility has had to cut supply at treatment plants because rivers were too dirty to treat",
+   "where": "/about (live in the current build)",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Find dated reports (Ghana Water Ltd statements or major outlets) or remove"
+  },
+  {
+   "id": "mercury",
+   "text": "Galamsey turns rivers brown with mud and mercury",
+   "where": "/about (live in the current build)",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Cite a study of mercury in Ghanaian rivers or remove 'mercury'"
+  },
+  {
+   "id": "reporting-bodies",
+   "text": "Report illegal mining to the Minerals Commission, NAIMOS or the District Assembly",
+   "where": "/about (live in the current build)",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Confirm NAIMOS exists and how to contact each body"
+  },
+  {
+   "id": "philip-bio",
+   "text": "Built and run by Philip Narteh, a software engineer in Ghana; independent project",
+   "where": "/about",
+   "evidence": [],
+   "status": "to-confirm"
+  },
+  {
+   "id": "coverage-areas",
+   "text": "Plain-language area names for each tile",
+   "where": "home, /map, /method",
+   "evidence": [
+    "geoboundaries-gha-adm2"
+   ],
+   "status": "measured",
+   "caveat": "Names come from the top districts by cleared area in each tile"
+  }
  ]
 }
