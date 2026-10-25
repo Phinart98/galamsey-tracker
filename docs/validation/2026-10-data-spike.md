@@ -441,3 +441,22 @@ floor. Usable public form: "at least 665 towns and villages have land cleared wi
 Also found: the settlements cache was keyed by file name only, so the five newer tiles had no town
 names (3,058 of 6,130 places named). Settlements now come from Geofabrik's Ghana extract (Overpass
 returned 502 and its mirrors timed out), cached once for all of Ghana: 6,754 named places.
+
+## 20. The early-2025 jump in 30NYN was farm and fire clearing, not mining (2026-10-25)
+
+`spike/spike_2025_check.py T30NYN`: 1,016 patches (3,486 ha) in the May 2025 point were first seen
+22 Feb to 22 May 2025. A random 20 (seed 11, half at least 3 ha), each before / soon after / now
+(sheets in `pipeline/out/checks/spike-2025-T30NYN/`). **1 of 20 showed mining** (patch 12 at 6.41 N,
+yellow pits by a stream, in the south of the tile). The other 19: field blocks in savanna that are
+green again a year later, patchy burnt or cleared bush, and one Lake Volta shoreline exposed by a
+falling lake level. They sit in the Afram Plains and northern Kwahu, north of the forest.
+
+**Reading:** the May 2025 to May 2026 fall (s18) is mostly one dry season of savanna farm and fire
+clearing leaving the 12-month window, so it is not a galamsey trend and must not be published as
+one. In the current window the same strip (30NYN north of 6.8 N) is only 443 of 16,711 ha (3%), so
+the headline is barely affected, but the trend swings with these dry-season pulses. Also: the
+newest small patches across the belt look mostly like farm blocks (mockup review, 2026-10-25),
+so the 104 of 117 figure (largest plus a random sample of the latest snapshot) may overstate the
+share for small, recent patches. **To do:** mask savanna and lake shore out of the tiles (an
+ecological-zone or forest-zone boundary, and the maximum water extent), then redo the trend and a
+season-aware random check before any trend sentence or mining share is published.

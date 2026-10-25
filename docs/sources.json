@@ -264,7 +264,7 @@
     "own-spike-log s12, s15"
    ],
    "status": "measured",
-   "caveat": "Judged by Claude from pictures. Philip's one-time 100-pair check is still to do before launch"
+   "caveat": "Judged by Claude from pictures. Philip's one-time 100-pair check is still to do before launch. Small, recent patches look mostly like farm blocks (s20), so the share may be lower for them; season-aware recheck needed"
   },
   {
    "id": "trend",
@@ -522,8 +522,8 @@
     "opera-dist-alert",
     "own-spike-log s18"
    ],
-   "status": "to-confirm",
-   "caveat": "60% of the fall is one tile (30NYN) with an early-2025 dry-season jump; by-eye check pending"
+   "status": "rejected",
+   "caveat": "The fall is mostly dry-season savanna farm and fire clearing in 30NYN leaving the window: 1 of 20 sampled early-2025 patches showed mining (spike log s20)"
   }
  ]
 }
