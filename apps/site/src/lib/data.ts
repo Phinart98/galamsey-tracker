@@ -92,6 +92,10 @@ export const lead = withPairs.find(noLicenceToMine) ?? withPairs[0] ?? null;
 
 export const coverage = Object.values(tiles).map((t) => t.area);
 export const placeNames = Object.values(tiles).map((t) => t.place);
+// Where the totals come from, short enough for a headline however many areas are switched on
+export const where = coverage.length > 1
+  ? `across ${coverage.length} areas of Ghana's southern gold belt`
+  : `around ${placeNames[0] ?? 'the area we cover'}`;
 export const check = Object.values(tiles).reduce(
   (acc, t) => ({ patches: acc.patches + (t.checked_patches ?? 0), mining: acc.mining + (t.showed_mining ?? 0) }),
   { patches: 0, mining: 0 },

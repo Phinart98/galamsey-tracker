@@ -22,7 +22,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   <div class="sheet wrap">
     <aside class="margin">
       <h1>Every patch cleared in the last 12 months</h1>
-      <p class="muted small">{coverage.join('. ')}.</p>
+      <p class="muted small">Covers {coverage.length === 1 ? coverage[0] : `${coverage.length} areas of the southern gold belt`}. <a href="/method#covers">Which areas</a></p>
       {summary && (
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>

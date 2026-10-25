@@ -34,7 +34,7 @@ import { longDate } from '../lib/format';
     <p>Each month we add up the land cleared over the 12 months before, measured on the same day each month. That way each total can be compared fairly with the one a year earlier.</p>
     <p>NASA confirms clearing only after it has seen the same spot clear several times, which can take weeks, or months in the rainy season. So we check each monthly total again two and four months later. Until then it is marked as still being confirmed, and it usually goes up.</p>
 
-    <h2>What it covers</h2>
+    <h2 id="covers">What it covers</h2>
     <p>The tracker does not cover all of Ghana yet. We add areas one at a time, each after checking a sample of its patches by eye. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>
     <ul>
       {coverage.map((a) => <li>{a.charAt(0).toUpperCase() + a.slice(1)}</li>)}

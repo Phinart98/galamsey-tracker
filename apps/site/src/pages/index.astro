@@ -4,11 +4,9 @@ import Pair from '../components/Pair.astro';
 import PlaceRow from '../components/PlaceRow.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import TrendChart from '../components/TrendChart.astro';
-import { check, coverage, lead, placeNames, summary, trend, withPairs } from '../lib/data';
+import { check, lead, summary, trend, where, withPairs } from '../lib/data';
 import { LICENCE_SENTENCE, hectares, longDate, num, pct, placeName, shortDate, srcsets } from '../lib/format';
 
-const area = coverage[0] ?? 'the area we cover';
-const near = placeNames.join(' and ') || 'the area we cover';
 const settled = trend.filter((p) => p.settled !== false);
 const latestSettled = settled.at(-1);
 const yearBefore = latestSettled && trend.find((p) => p.date === `${Number(latestSettled.date.slice(0, 4)) - 1}${latestSettled.date.slice(4)}`);
@@ -18,12 +16,12 @@ const wall = withPairs.slice(0, 24);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 ---
-<Base description={summary ? `${num(summary.total_ha)} hectares of land cleared in 12 months around ${near}. ${pct(summary.no_licence_to_mine.share)} of it has no licence to mine.` : undefined}>
+<Base description={summary ? `${num(summary.total_ha)} hectares of land cleared in 12 months ${where}. ${pct(summary.no_licence_to_mine.share)} of it has no licence to mine.` : undefined}>
   <div class="wrap">
     {summary ? (
       <section class="hero" aria-labelledby="headline">
         <div class="say">
-          <h1 id="headline">In the last 12 months, satellites saw {num(summary.total_ha)} hectares of land cleared around {near}.</h1>
+          <h1 id="headline">In the last 12 months, satellites saw {num(summary.total_ha)} hectares of land cleared {where}.</h1>
         </div>
         {lead && (
           <div class="look">
@@ -38,7 +36,7 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
         <div class="more">
           <p class="lede">That is about {num(summary.football_pitches)} football pitches. <strong>{pct(summary.no_licence_to_mine.share)} of it is land with no licence to mine.</strong></p>
           {check.patches > 0 && <p>We looked at {check.patches} of these patches in satellite pictures and {check.mining} showed signs of mining, like pits and muddy ponds. Satellites cannot say who cleared the land, so we show the pictures and let you judge.</p>}
-          <p class="muted small">Data up to {longDate(summary.data_date)}, updated every Monday. Covers {area}. Sources: NASA and Copernicus.</p>
+          <p class="muted small">Data up to {longDate(summary.data_date)}, updated every Monday. Sources: NASA and Copernicus. <a href="/method#covers">Which areas we cover</a></p>
           <div class="actions">
             <a class="btn primary" href="/map">See every place on the map</a>
             <a class="btn" href="/method">How we know</a>
