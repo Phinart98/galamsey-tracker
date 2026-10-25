@@ -20,7 +20,7 @@ import pandas as pd
 from pyproj import Transformer
 
 from tracker import chips, licences, nasa, places, summary
-from tracker.dist import cluster_polygons, loss_mask, reading_days, window_mask
+from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
 METHOD_VERSION = "2026.10.2"
@@ -29,6 +29,9 @@ WORK_CRS = "EPSG:32630"
 CHIP_MIN_HA = 3.0
 CHIP_HALF_KM = 0.8
 CHIP_RETRY_DAYS = 7
+# NASA usually publishes a reading within days, but some take up to three weeks. A reading counts
+# from a week after its day, and a late one only shifts that reading to an image a few days older.
+READING_LAG_DAYS = 7
 
 PIPELINE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(PIPELINE_DIR)
@@ -186,15 +189,22 @@ def make_chips(today: dt.date, limit: int):
     _write_json(index_path, index)
 
 
-def needs_point(point: dict | None, tiles: list[str]) -> bool:
-    """A month is recomputed until it has settled, and again whenever the tiles switched on change."""
-    return not point or not point.get("settled") or point.get("covered") != sorted(tiles)
+def readings_as_of(window_end: dt.date, today: dt.date) -> tuple[list[dt.date], bool]:
+    return reading_days(window_end, today - dt.timedelta(days=READING_LAG_DAYS))
+
+
+def needs_point(point: dict | None, tiles: list[str], readings: int) -> bool:
+    """A month is recomputed when a new reading has arrived for it, or when the tiles switched on change.
+
+    Readings arrive about once a month, so most weekly runs skip the trend entirely.
+    """
+    return not point or point.get("covered") != sorted(tiles) or point.get("readings", len(SETTLE_OFFSETS_MONTHS) if point.get("settled") else -1) < readings
 
 
 def trend(today: dt.date, start: str = "2024-01"):
     """Hectares newly cleared in the 365 days to the 22nd of each month, by licence class, summed over tiles.
 
-    A point is provisional until all its later readings exist, and is recomputed on every run until then.
+    A point is provisional until all its later readings exist, and is recomputed as each one arrives.
     """
     path = os.path.join(DATA, "trend.json")
     series = _read_json(path, {"method_version": METHOD_VERSION, "points": {}})
@@ -203,8 +213,8 @@ def trend(today: dt.date, start: str = "2024-01"):
     tiles = sorted(enabled_tiles())
     months = []
     month = dt.date.fromisoformat(start + "-22")
-    while month <= today - dt.timedelta(days=3):
-        if needs_point(series["points"].get(month.strftime("%Y-%m")), tiles):
+    while (days := readings_as_of(month, today)[0]):
+        if needs_point(series["points"].get(month.strftime("%Y-%m")), tiles, len(days)):
             months.append(month)
         month = (month.replace(day=1) + dt.timedelta(days=32)).replace(day=22)
     if not months:
@@ -225,7 +235,7 @@ def trend(today: dt.date, start: str = "2024-01"):
     for tile in tiles:
         recent: OrderedDict = OrderedDict()
         for m in months:
-            days, settled[m] = reading_days(m, today)
+            days, settled[m] = readings_as_of(m, today)
             entries = [g[tile] for g in map(granules, days) if tile in g]
             if not entries:
                 continue
@@ -252,7 +262,8 @@ def trend(today: dt.date, start: str = "2024-01"):
         s = summary.summarise(c.drop(columns="geometry"), top=0)
         series["points"][m.strftime("%Y-%m")] = {
             "date": str(m), "total_ha": s["total_ha"], "no_licence_to_mine": s["no_licence_to_mine"],
-            "covered": tiles, "settled": settled[m], "granules": used[m]}
+            "covered": tiles, "settled": settled[m], "readings": len(readings_as_of(m, today)[0]),
+            "granules": used[m]}
         print(f"trend {m:%Y-%m}: {s['total_ha']} ha{'' if settled[m] else ' (provisional)'}")
     _write_json(path, series)
 

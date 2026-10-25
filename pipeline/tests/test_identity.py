@@ -54,3 +54,17 @@ def test_merged_patches_keep_the_older_id_and_alias_the_younger():
     out, aliases = match_ids(new, prev, to_lonlat=lambda x, y: (0, 0))
     assert out.iloc[0].id == "2025-11-b"
     assert aliases == {"2025-12-a": "2025-11-b"}
+
+
+def test_a_patch_dropped_as_a_duplicate_cannot_knock_out_a_third_one():
+    big = _gdf([{"tile": "T30NXM", "ha": 10.0, "geometry": box(0, 0, 100, 100)},
+                {"tile": "T30NXM", "ha": 6.0, "geometry": box(100, 0, 140, 100)}])
+    middle = _gdf([{"tile": "T30NWM", "ha": 8.0, "geometry": box(20, 0, 140, 100)}])
+    out = dedupe_tiles([big, middle])
+    assert sorted(out.ha.tolist()) == [6.0, 10.0]
+
+
+def test_same_tile_patches_are_never_merged_even_when_they_touch():
+    a = _gdf([{"tile": "T30NXM", "ha": 5.0, "geometry": box(0, 0, 100, 100)},
+              {"tile": "T30NXM", "ha": 4.0, "geometry": box(0, 0, 100, 90)}])
+    assert len(dedupe_tiles([a])) == 2

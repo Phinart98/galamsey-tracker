@@ -88,11 +88,23 @@ def test_reading_days_cross_the_new_year():
     assert reading_days(dt.date(2025, 11, 22), today=dt.date(2026, 10, 25))[0][-1] == dt.date(2026, 3, 22)
 
 
-def test_a_settled_point_is_kept_only_while_the_tiles_it_covers_are_unchanged():
+def test_a_point_is_recomputed_only_when_its_tiles_change_or_a_new_reading_has_arrived():
     from tracker.run import needs_point
-    point = {"settled": True, "covered": ["T30NXM"]}
-    assert not needs_point(point, ["T30NXM"])
-    assert needs_point(point, ["T30NXM", "T30NXN"])
-    assert needs_point({"settled": False, "covered": ["T30NXM"]}, ["T30NXM"])
-    assert needs_point({"settled": True, "tiles": ["T30NXM"]}, ["T30NXM"])  # written before tiles were tracked
-    assert needs_point(None, ["T30NXM"])
+    point = {"settled": True, "covered": ["T30NXM"], "readings": 3}
+    assert not needs_point(point, ["T30NXM"], readings=3)
+    assert needs_point(point, ["T30NXM", "T30NXN"], readings=3)
+    waiting = {"settled": False, "covered": ["T30NXM"], "readings": 2}
+    assert not needs_point(waiting, ["T30NXM"], readings=2)  # no new NASA reading since last week
+    assert needs_point(waiting, ["T30NXM"], readings=3)
+    assert needs_point({"settled": False, "covered": ["T30NXM"]}, ["T30NXM"], readings=1)  # written before readings were tracked
+    assert needs_point({"settled": True, "tiles": ["T30NXM"]}, ["T30NXM"], readings=3)  # written before tiles were tracked
+    assert needs_point(None, ["T30NXM"], readings=1)
+    # A settled point from before readings were tracked had all three, so it is not redone for that
+    assert not needs_point({"settled": True, "covered": ["T30NXM"]}, ["T30NXM"], readings=3)
+
+
+def test_a_reading_counts_only_once_nasa_has_had_a_week_to_publish_it():
+    from tracker.run import READING_LAG_DAYS, readings_as_of
+    end = dt.date(2026, 6, 22)
+    assert readings_as_of(end, dt.date(2026, 8, 24)) == ([end], False)
+    assert readings_as_of(end, dt.date(2026, 8, 22) + dt.timedelta(days=READING_LAG_DAYS)) == ([end, dt.date(2026, 8, 22)], False)

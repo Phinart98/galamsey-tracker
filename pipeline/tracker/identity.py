@@ -24,14 +24,20 @@ def dedupe_tiles(per_tile: list[gpd.GeoDataFrame]) -> gpd.GeoDataFrame:
     crs = frames[0].crs
     allc = pd.concat([f.to_crs(crs) for f in frames], ignore_index=True)
     allc = gpd.GeoDataFrame(allc, geometry="geometry", crs=crs).sort_values("ha", ascending=False, kind="stable")
-    kept = []
-    for idx, row in allc.iterrows():
-        dup = any(other.tile != row.tile
-                  and row.geometry.intersection(other.geometry).area >= DUPLICATE_SHARE * row.geometry.area
-                  for other in kept)
-        if not dup:
-            kept.append(row)
-    return gpd.GeoDataFrame(kept, geometry="geometry", crs=crs).reset_index(drop=True)
+    allc = allc.reset_index(drop=True)
+    geoms, tiles = allc.geometry.values, allc["tile"].values
+    # Only patches whose boxes touch can be duplicates. Comparing every pair took ~10 minutes for six tiles.
+    left, right = allc.sindex.query(allc.geometry, predicate="intersects")
+    touching: dict[int, list[int]] = {}
+    for i, j in zip(left, right):
+        if j < i and tiles[i] != tiles[j]:
+            touching.setdefault(i, []).append(j)
+    kept = set()
+    for i in range(len(allc)):
+        g = geoms[i]
+        if not any(j in kept and g.intersection(geoms[j]).area >= DUPLICATE_SHARE * g.area for j in touching.get(i, ())):
+            kept.add(i)
+    return allc.loc[sorted(kept)].reset_index(drop=True)
 
 
 def match_ids(new: gpd.GeoDataFrame, previous: gpd.GeoDataFrame | None,
