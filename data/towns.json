@@ -1,0 +1,8400 @@
+{
+ "data_date": "2026-10-23",
+ "radius_m": 1000,
+ "towns": [
+  {
+   "name": "Tete",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.194,
+   "lon": -0.5383,
+   "ha": 71.5,
+   "patches": 8,
+   "ids": [
+    "2025-10-6206n0527w",
+    "2026-01-6204n0535w",
+    "2025-11-6197n0539w",
+    "2026-03-6197n0532w",
+    "2026-04-6189n0531w",
+    "2026-01-6190n0537w",
+    "2026-03-6200n0535w",
+    "2026-03-6188n0532w"
+   ]
+  },
+  {
+   "name": "Nyamebekyere",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6985,
+   "lon": -1.9416,
+   "ha": 67.4,
+   "patches": 7,
+   "ids": [
+    "2025-11-6696n1954w",
+    "2025-11-6702n1949w",
+    "2025-11-6693n1935w",
+    "2026-02-6704n1937w",
+    "2026-03-6707n1945w",
+    "2025-11-6691n1941w",
+    "2025-11-6699n1937w"
+   ]
+  },
+  {
+   "name": "Abompe",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.7439,
+   "lon": -1.927,
+   "ha": 66.7,
+   "patches": 6,
+   "ids": [
+    "2025-11-6748n1916w",
+    "2025-11-6743n1920w",
+    "2025-11-6734n1927w",
+    "2025-12-6738n1933w",
+    "2025-12-6740n1922w",
+    "2025-11-6739n1926w"
+   ]
+  },
+  {
+   "name": "Aburokyire",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7057,
+   "lon": -1.9422,
+   "ha": 65.2,
+   "patches": 10,
+   "ids": [
+    "2025-11-6696n1954w",
+    "2025-11-6702n1949w",
+    "2026-02-6704n1937w",
+    "2026-03-6707n1945w",
+    "2026-01-6708n1952w",
+    "2025-11-6712n1948w",
+    "2026-03-6708n1937w",
+    "2025-11-6699n1937w",
+    "2026-01-6715n1942w",
+    "2026-03-6715n1940w"
+   ]
+  },
+  {
+   "name": "Ayem Adukrom",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.2159,
+   "lon": -0.5237,
+   "ha": 58.5,
+   "patches": 7,
+   "ids": [
+    "2025-10-6206n0527w",
+    "2025-11-6215n0517w",
+    "2025-11-6221n0519w",
+    "2025-11-6225n0522w",
+    "2026-01-6219n0517w",
+    "2026-02-6209n0530w",
+    "2025-11-6218n0529w"
+   ]
+  },
+  {
+   "name": "Adadientam",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1678,
+   "lon": -0.5762,
+   "ha": 39.3,
+   "patches": 11,
+   "ids": [
+    "2025-10-6162n0565w",
+    "2025-10-6166n0568w",
+    "2025-12-6165n0578w",
+    "2026-01-6163n0579w",
+    "2026-03-6160n0583w",
+    "2026-05-6171n0569w",
+    "2026-03-6168n0578w",
+    "2026-05-6173n0576w",
+    "2026-01-6166n0576w",
+    "2026-03-6163n0584w",
+    "2026-03-6166n0574w"
+   ]
+  },
+  {
+   "name": "Pramkuma",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.1881,
+   "lon": -0.6842,
+   "ha": 39.2,
+   "patches": 4,
+   "ids": [
+    "2025-10-6199n0686w",
+    "2025-10-6192n0682w",
+    "2025-10-6192n0679w",
+    "2025-10-6191n0685w"
+   ]
+  },
+  {
+   "name": "Ayensuano",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9462,
+   "lon": -0.5603,
+   "ha": 37.0,
+   "patches": 2,
+   "ids": [
+    "2026-01-5944n0570w",
+    "2026-06-5954n0559w"
+   ]
+  },
+  {
+   "name": "Takyikroum",
+   "place": "village",
+   "district": "Dormaa Municipal",
+   "lat": 7.2378,
+   "lon": -2.9589,
+   "ha": 31.7,
+   "patches": 3,
+   "ids": [
+    "2025-10-7230n2957w",
+    "2025-10-7233n2950w",
+    "2025-10-7237n2952w"
+   ]
+  },
+  {
+   "name": "Kofipare",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9507,
+   "lon": -0.5739,
+   "ha": 31.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-5944n0570w"
+   ]
+  },
+  {
+   "name": "Bonkwaso No.1",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.7579,
+   "lon": -1.9461,
+   "ha": 31.2,
+   "patches": 6,
+   "ids": [
+    "2025-11-6764n1940w",
+    "2026-02-6756n1949w",
+    "2025-10-6761n1955w",
+    "2026-03-6755n1946w",
+    "2025-10-6767n1944w",
+    "2026-06-6760n1953w"
+   ]
+  },
+  {
+   "name": "Akropong",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.1962,
+   "lon": -0.6556,
+   "ha": 30.5,
+   "patches": 7,
+   "ids": [
+    "2025-11-6190n0658w",
+    "2025-11-6198n0643w",
+    "2025-10-6198n0662w",
+    "2025-10-6204n0648w",
+    "2026-06-6189n0661w",
+    "2026-02-6187n0654w",
+    "2026-03-6196n0665w"
+   ]
+  },
+  {
+   "name": "Apampatia",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2437,
+   "lon": -0.6176,
+   "ha": 29.2,
+   "patches": 10,
+   "ids": [
+    "2025-11-6240n0622w",
+    "2025-11-6239n0614w",
+    "2025-11-6253n0622w",
+    "2026-01-6240n0619w",
+    "2025-11-6250n0618w",
+    "2025-10-6244n0613w",
+    "2026-01-6249n0617w",
+    "2025-11-6238n0616w",
+    "2026-01-6241n0610w",
+    "2026-01-6246n0615w"
+   ]
+  },
+  {
+   "name": "Ajumako",
+   "place": "village",
+   "district": "Gomoa Central",
+   "lat": 5.3483,
+   "lon": -0.7711,
+   "ha": 27.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5354n0779w"
+   ]
+  },
+  {
+   "name": "Saamang",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.324,
+   "lon": -0.4977,
+   "ha": 27.1,
+   "patches": 5,
+   "ids": [
+    "2025-10-6329n0486w",
+    "2025-11-6321n0498w",
+    "2025-11-6318n0493w",
+    "2026-01-6322n0491w",
+    "2025-11-6321n0502w"
+   ]
+  },
+  {
+   "name": "Topreman",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0562,
+   "lon": -0.7649,
+   "ha": 26.9,
+   "patches": 7,
+   "ids": [
+    "2025-10-6066n0769w",
+    "2025-11-6049n0768w",
+    "2025-11-6059n0761w",
+    "2026-02-6054n0760w",
+    "2025-11-6052n0768w",
+    "2026-03-6049n0761w",
+    "2026-04-6050n0765w"
+   ]
+  },
+  {
+   "name": "Okroase",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8501,
+   "lon": -1.9068,
+   "ha": 26.2,
+   "patches": 6,
+   "ids": [
+    "2025-11-6839n1908w",
+    "2025-11-6855n1907w",
+    "2025-11-6841n1905w",
+    "2026-03-6847n1910w",
+    "2026-03-6844n1909w",
+    "2026-02-6852n1906w"
+   ]
+  },
+  {
+   "name": "Adomanu",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.303,
+   "lon": -1.6811,
+   "ha": 25.8,
+   "patches": 6,
+   "ids": [
+    "2025-11-6300n1691w",
+    "2025-11-6295n1685w",
+    "2025-11-6296n1682w",
+    "2025-11-6293n1680w",
+    "2026-03-6298n1677w",
+    "2025-11-6306n1690w"
+   ]
+  },
+  {
+   "name": "Cocoa Station",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.496,
+   "lon": -0.8499,
+   "ha": 24.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6486n0851w"
+   ]
+  },
+  {
+   "name": "Kojo Fordjourkrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7369,
+   "lon": -1.9255,
+   "ha": 24.1,
+   "patches": 7,
+   "ids": [
+    "2025-11-6743n1920w",
+    "2025-11-6734n1927w",
+    "2025-12-6738n1933w",
+    "2026-01-6733n1923w",
+    "2026-01-6730n1930w",
+    "2025-12-6740n1922w",
+    "2025-11-6739n1926w"
+   ]
+  },
+  {
+   "name": "Kramokurom",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8019,
+   "lon": -1.912,
+   "ha": 24.1,
+   "patches": 3,
+   "ids": [
+    "2025-11-6806n1905w",
+    "2026-01-6809n1909w",
+    "2026-03-6804n1920w"
+   ]
+  },
+  {
+   "name": "Akyem-Awenare",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2688,
+   "lon": -0.6244,
+   "ha": 23.5,
+   "patches": 4,
+   "ids": [
+    "2025-11-6271n0619w",
+    "2025-11-6277n0630w",
+    "2026-03-6270n0631w",
+    "2025-11-6265n0617w"
+   ]
+  },
+  {
+   "name": "Old Aboi",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6374,
+   "lon": -2.006,
+   "ha": 22.9,
+   "patches": 8,
+   "ids": [
+    "2025-11-5632n2000w",
+    "2025-11-5640n2015w",
+    "2025-11-5635n2005w",
+    "2026-01-5643n1998w",
+    "2025-11-5639n2006w",
+    "2025-11-5641n2015w",
+    "2026-01-5638n2004w",
+    "2026-03-5638n2009w"
+   ]
+  },
+  {
+   "name": "Twenedaso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6897,
+   "lon": -1.9372,
+   "ha": 21.3,
+   "patches": 6,
+   "ids": [
+    "2025-11-6693n1935w",
+    "2026-03-6691n1931w",
+    "2025-11-6691n1941w",
+    "2025-10-6691n1927w",
+    "2026-01-6692n1933w",
+    "2025-11-6699n1937w"
+   ]
+  },
+  {
+   "name": "Dadease",
+   "place": "town",
+   "district": "Amansie South",
+   "lat": 6.3306,
+   "lon": -1.9808,
+   "ha": 21.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6333n1991w",
+    "2025-11-6330n1988w",
+    "2025-11-6338n1983w",
+    "2025-12-6328n1974w",
+    "2025-11-6330n1972w"
+   ]
+  },
+  {
+   "name": "Nkyemkyemso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6764,
+   "lon": -2.0037,
+   "ha": 20.6,
+   "patches": 4,
+   "ids": [
+    "2025-10-6675n2013w",
+    "2025-10-6681n2011w",
+    "2025-11-6670n1999w",
+    "2026-03-6672n2003w"
+   ]
+  },
+  {
+   "name": "Odoyefe",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8313,
+   "lon": -1.9191,
+   "ha": 20.5,
+   "patches": 2,
+   "ids": [
+    "2025-10-6836n1928w",
+    "2025-11-6833n1913w"
+   ]
+  },
+  {
+   "name": "Banso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.244,
+   "lon": -0.6285,
+   "ha": 19.4,
+   "patches": 6,
+   "ids": [
+    "2025-11-6240n0622w",
+    "2026-01-6240n0619w",
+    "2026-03-6247n0630w",
+    "2025-11-6242n0635w",
+    "2026-03-6250n0629w",
+    "2026-01-6250n0633w"
+   ]
+  },
+  {
+   "name": "Poano",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4365,
+   "lon": -1.6823,
+   "ha": 19.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6444n1688w",
+    "2025-11-6434n1679w",
+    "2025-11-6438n1686w",
+    "2025-11-6436n1690w",
+    "2025-11-6436n1685w"
+   ]
+  },
+  {
+   "name": "Abesem",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2235,
+   "lon": -0.6256,
+   "ha": 18.9,
+   "patches": 7,
+   "ids": [
+    "2025-11-6224n0623w",
+    "2025-11-6226n0621w",
+    "2025-10-6221n0627w",
+    "2025-12-6220n0634w",
+    "2025-11-6230n0625w",
+    "2026-03-6226n0632w",
+    "2026-03-6227n0628w"
+   ]
+  },
+  {
+   "name": "New Achiase",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.4803,
+   "lon": -2.0382,
+   "ha": 18.4,
+   "patches": 6,
+   "ids": [
+    "2025-11-6473n2045w",
+    "2025-11-6476n2031w",
+    "2025-11-6471n2036w",
+    "2025-12-6480n2030w",
+    "2026-01-6473n2036w",
+    "2025-11-6478n2045w"
+   ]
+  },
+  {
+   "name": "Bremang",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.028,
+   "lon": -1.9485,
+   "ha": 18.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-6022n1960w",
+    "2025-11-6025n1950w"
+   ]
+  },
+  {
+   "name": "Asuogya Krobo",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.871,
+   "lon": -2.159,
+   "ha": 18.0,
+   "patches": 8,
+   "ids": [
+    "2025-11-5870n2155w",
+    "2025-11-5867n2166w",
+    "2026-01-5867n2161w",
+    "2026-01-5865n2161w",
+    "2026-01-5862n2161w",
+    "2025-11-5866n2159w",
+    "2025-11-5870n2158w",
+    "2026-03-5876n2160w"
+   ]
+  },
+  {
+   "name": "Potrase",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1076,
+   "lon": -0.5649,
+   "ha": 17.8,
+   "patches": 4,
+   "ids": [
+    "2025-11-6102n0563w",
+    "2025-11-6110n0570w",
+    "2026-01-6113n0573w",
+    "2026-03-6112n0568w"
+   ]
+  },
+  {
+   "name": "Dawusaso",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.351,
+   "lon": -2.0334,
+   "ha": 17.7,
+   "patches": 4,
+   "ids": [
+    "2025-11-6353n2042w",
+    "2025-11-6356n2033w",
+    "2025-11-6358n2039w",
+    "2026-02-6357n2030w"
+   ]
+  },
+  {
+   "name": "Kokoben",
+   "place": "village",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.4879,
+   "lon": -0.9672,
+   "ha": 17.6,
+   "patches": 1,
+   "ids": [
+    "2026-01-5479n0972w"
+   ]
+  },
+  {
+   "name": "Takyiman",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.1628,
+   "lon": -0.6666,
+   "ha": 17.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6163n0661w",
+    "2025-11-6158n0659w"
+   ]
+  },
+  {
+   "name": "Samfifire",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 6.0443,
+   "lon": -2.3759,
+   "ha": 17.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6041n2376w",
+    "2026-03-6038n2371w",
+    "2025-11-6044n2372w",
+    "2026-01-6039n2373w",
+    "2025-11-6045n2369w"
+   ]
+  },
+  {
+   "name": "Nyameadom Bredi",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8578,
+   "lon": -1.909,
+   "ha": 16.9,
+   "patches": 4,
+   "ids": [
+    "2025-11-6866n1912w",
+    "2025-11-6855n1907w",
+    "2025-11-6862n1900w",
+    "2026-02-6852n1906w"
+   ]
+  },
+  {
+   "name": "Dadieso",
+   "place": "town",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8679,
+   "lon": -1.9934,
+   "ha": 16.8,
+   "patches": 5,
+   "ids": [
+    "2025-11-5864n1995w",
+    "2025-10-5872n1986w",
+    "2025-12-5860n1997w",
+    "2025-12-5871n1989w",
+    "2025-12-5866n1987w"
+   ]
+  },
+  {
+   "name": "Pabi",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 5.9621,
+   "lon": -0.6059,
+   "ha": 16.8,
+   "patches": 2,
+   "ids": [
+    "2025-12-5956n0600w",
+    "2026-02-5965n0607w"
+   ]
+  },
+  {
+   "name": "James",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9659,
+   "lon": -0.6015,
+   "ha": 16.8,
+   "patches": 2,
+   "ids": [
+    "2025-12-5956n0600w",
+    "2026-02-5965n0607w"
+   ]
+  },
+  {
+   "name": "Muoso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3635,
+   "lon": -0.6046,
+   "ha": 16.6,
+   "patches": 5,
+   "ids": [
+    "2026-01-6362n0614w",
+    "2025-12-6369n0605w",
+    "2025-12-6369n0607w",
+    "2026-03-6363n0597w",
+    "2025-12-6357n0597w"
+   ]
+  },
+  {
+   "name": "Ahwenease",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.162,
+   "lon": -0.5867,
+   "ha": 16.5,
+   "patches": 5,
+   "ids": [
+    "2025-12-6165n0578w",
+    "2026-03-6160n0595w",
+    "2026-01-6163n0579w",
+    "2026-03-6160n0583w",
+    "2026-03-6163n0584w"
+   ]
+  },
+  {
+   "name": "Kwahu",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4536,
+   "lon": -1.8969,
+   "ha": 16.3,
+   "patches": 3,
+   "ids": [
+    "2025-11-6445n1901w",
+    "2026-03-6448n1896w",
+    "2025-11-6456n1906w"
+   ]
+  },
+  {
+   "name": "Anum Apapam",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9877,
+   "lon": -0.5826,
+   "ha": 16.2,
+   "patches": 5,
+   "ids": [
+    "2026-01-5994n0581w",
+    "2025-12-5998n0583w",
+    "2026-04-5995n0588w",
+    "2026-01-5990n0578w",
+    "2026-01-5988n0574w"
+   ]
+  },
+  {
+   "name": "Abrobuasen",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.0344,
+   "lon": -1.8826,
+   "ha": 16.0,
+   "patches": 7,
+   "ids": [
+    "2025-11-6034n1875w",
+    "2025-11-6032n1879w",
+    "2026-01-6027n1877w",
+    "2025-11-6033n1878w",
+    "2025-12-6029n1884w",
+    "2026-01-6027n1887w",
+    "2025-11-6029n1877w"
+   ]
+  },
+  {
+   "name": "Pano",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1797,
+   "lon": -0.5444,
+   "ha": 15.8,
+   "patches": 5,
+   "ids": [
+    "2026-01-6180n0537w",
+    "2026-01-6171n0539w",
+    "2025-10-6183n0536w",
+    "2025-12-6177n0538w",
+    "2026-03-6175n0538w"
+   ]
+  },
+  {
+   "name": "Ahankrasu",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.4768,
+   "lon": -0.5969,
+   "ha": 15.4,
+   "patches": 4,
+   "ids": [
+    "2025-11-6466n0597w",
+    "2025-11-6469n0599w",
+    "2025-11-6473n0594w",
+    "2025-12-6470n0594w"
+   ]
+  },
+  {
+   "name": "Nyamedema",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.9765,
+   "lon": -2.9005,
+   "ha": 15.4,
+   "patches": 4,
+   "ids": [
+    "2025-11-5979n2908w",
+    "2025-11-5977n2903w",
+    "2025-11-5978n2901w",
+    "2025-11-5979n2900w"
+   ]
+  },
+  {
+   "name": "Chiraa",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.1786,
+   "lon": -2.3395,
+   "ha": 15.3,
+   "patches": 6,
+   "ids": [
+    "2025-12-6176n2346w",
+    "2026-01-6171n2343w",
+    "2025-11-6170n2340w",
+    "2026-01-6173n2344w",
+    "2026-01-6178n2350w",
+    "2026-01-6178n2348w"
+   ]
+  },
+  {
+   "name": "Nanapa",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.462,
+   "lon": -0.5709,
+   "ha": 15.0,
+   "patches": 5,
+   "ids": [
+    "2025-11-6466n0559w",
+    "2025-12-6467n0563w",
+    "2025-11-6461n0564w",
+    "2025-12-6458n0573w",
+    "2025-11-6456n0565w"
+   ]
+  },
+  {
+   "name": "Fremponso",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.437,
+   "lon": -0.5589,
+   "ha": 14.9,
+   "patches": 3,
+   "ids": [
+    "2025-11-6436n0568w",
+    "2025-11-6442n0566w",
+    "2025-12-6444n0562w"
+   ]
+  },
+  {
+   "name": "Apinaman",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0819,
+   "lon": -0.6929,
+   "ha": 14.8,
+   "patches": 5,
+   "ids": [
+    "2025-11-6076n0686w",
+    "2025-11-6085n0692w",
+    "2026-01-6080n0684w",
+    "2026-01-6086n0698w",
+    "2025-11-6084n0688w"
+   ]
+  },
+  {
+   "name": "Akwasi Akwasiso",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3649,
+   "lon": -1.952,
+   "ha": 14.7,
+   "patches": 5,
+   "ids": [
+    "2025-11-6357n1947w",
+    "2026-03-6374n1951w",
+    "2025-11-6366n1945w",
+    "2025-12-6364n1944w",
+    "2026-03-6371n1953w"
+   ]
+  },
+  {
+   "name": "Wuamasi",
+   "place": "village",
+   "district": "Adansi Akrofuom",
+   "lat": 6.0844,
+   "lon": -1.6973,
+   "ha": 14.4,
+   "patches": 6,
+   "ids": [
+    "2026-02-6084n1694w",
+    "2025-11-6088n1693w",
+    "2025-11-6091n1691w",
+    "2026-01-6084n1703w",
+    "2025-11-6079n1700w",
+    "2025-11-6088n1704w"
+   ]
+  },
+  {
+   "name": "Kasotie",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7177,
+   "lon": -2.2016,
+   "ha": 14.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6721n2205w",
+    "2026-01-6717n2197w"
+   ]
+  },
+  {
+   "name": "Grumisa",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.7415,
+   "lon": -2.0729,
+   "ha": 13.9,
+   "patches": 3,
+   "ids": [
+    "2025-12-5740n2067w",
+    "2025-12-5733n2069w",
+    "2025-12-5746n2071w"
+   ]
+  },
+  {
+   "name": "Biribiwomang",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3357,
+   "lon": -1.6464,
+   "ha": 13.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-6346n1650w",
+    "2026-03-6335n1650w"
+   ]
+  },
+  {
+   "name": "Asibe Nkwanta",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6052,
+   "lon": -2.0567,
+   "ha": 13.8,
+   "patches": 5,
+   "ids": [
+    "2025-11-6599n2049w",
+    "2025-11-6597n2051w",
+    "2025-11-6595n2055w",
+    "2026-03-6608n2061w",
+    "2025-11-6600n2056w"
+   ]
+  },
+  {
+   "name": "Wassa Nkyease",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8092,
+   "lon": -2.0792,
+   "ha": 13.8,
+   "patches": 6,
+   "ids": [
+    "2025-11-5817n2078w",
+    "2026-03-5802n2083w",
+    "2026-01-5814n2081w",
+    "2025-11-5808n2072w",
+    "2025-11-5816n2073w",
+    "2025-11-5814n2073w"
+   ]
+  },
+  {
+   "name": "Nsuogya",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9908,
+   "lon": -0.5739,
+   "ha": 13.6,
+   "patches": 5,
+   "ids": [
+    "2026-01-5994n0581w",
+    "2026-03-5989n0569w",
+    "2026-01-5990n0578w",
+    "2026-01-5988n0574w",
+    "2026-03-5986n0565w"
+   ]
+  },
+  {
+   "name": "Wassa Dawurampong",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6847,
+   "lon": -2.0258,
+   "ha": 13.4,
+   "patches": 7,
+   "ids": [
+    "2026-02-5687n2032w",
+    "2026-01-5693n2032w",
+    "2025-11-5692n2029w",
+    "2026-03-5690n2025w",
+    "2026-01-5685n2018w",
+    "2026-02-5692n2022w",
+    "2025-12-5687n2018w"
+   ]
+  },
+  {
+   "name": "Ajuman",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9257,
+   "lon": -1.7011,
+   "ha": 13.1,
+   "patches": 5,
+   "ids": [
+    "2025-10-5916n1700w",
+    "2026-03-5922n1701w",
+    "2026-02-5930n1701w",
+    "2025-12-5933n1700w",
+    "2026-02-5932n1699w"
+   ]
+  },
+  {
+   "name": "Agyianakurom",
+   "place": "village",
+   "district": "Upper West Akim",
+   "lat": 5.801,
+   "lon": -0.4723,
+   "ha": 13.0,
+   "patches": 1,
+   "ids": [
+    "2026-01-5806n0468w"
+   ]
+  },
+  {
+   "name": "Odabo",
+   "place": "village",
+   "district": "Upper West Akim",
+   "lat": 5.8096,
+   "lon": -0.4665,
+   "ha": 13.0,
+   "patches": 1,
+   "ids": [
+    "2026-01-5806n0468w"
+   ]
+  },
+  {
+   "name": "Adukunama",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.488,
+   "lon": -1.8464,
+   "ha": 12.6,
+   "patches": 6,
+   "ids": [
+    "2025-11-6490n1840w",
+    "2025-11-6487n1845w",
+    "2025-11-6485n1852w",
+    "2025-11-6479n1846w",
+    "2025-11-6491n1842w",
+    "2025-11-6482n1839w"
+   ]
+  },
+  {
+   "name": "Kokotro",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.371,
+   "lon": -1.4618,
+   "ha": 12.6,
+   "patches": 4,
+   "ids": [
+    "2025-11-6363n1460w",
+    "2025-11-6379n1459w",
+    "2026-03-6368n1466w",
+    "2026-03-6375n1458w"
+   ]
+  },
+  {
+   "name": "Adumasa",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.601,
+   "lon": -2.0139,
+   "ha": 12.4,
+   "patches": 2,
+   "ids": [
+    "2025-10-6607n2006w",
+    "2025-11-6595n2009w"
+   ]
+  },
+  {
+   "name": "Amangoase",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6032,
+   "lon": -2.0131,
+   "ha": 12.4,
+   "patches": 2,
+   "ids": [
+    "2025-10-6607n2006w",
+    "2025-11-6595n2009w"
+   ]
+  },
+  {
+   "name": "Asempaneye",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9846,
+   "lon": -0.5774,
+   "ha": 12.4,
+   "patches": 4,
+   "ids": [
+    "2026-01-5994n0581w",
+    "2026-03-5989n0569w",
+    "2026-01-5990n0578w",
+    "2026-01-5988n0574w"
+   ]
+  },
+  {
+   "name": "Betenase",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1545,
+   "lon": -2.0393,
+   "ha": 12.3,
+   "patches": 5,
+   "ids": [
+    "2025-11-6149n2037w",
+    "2025-11-6153n2037w",
+    "2025-11-6150n2031w",
+    "2025-11-6152n2033w",
+    "2025-11-6154n2031w"
+   ]
+  },
+  {
+   "name": "Fotobi",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.812,
+   "lon": -0.2694,
+   "ha": 12.2,
+   "patches": 1,
+   "ids": [
+    "2026-05-5808n0280w"
+   ]
+  },
+  {
+   "name": "Mankranso",
+   "place": "town",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8184,
+   "lon": -1.8626,
+   "ha": 12.2,
+   "patches": 2,
+   "ids": [
+    "2025-11-6809n1855w",
+    "2026-02-6824n1858w"
+   ]
+  },
+  {
+   "name": "Adipa",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8126,
+   "lon": -0.2865,
+   "ha": 12.2,
+   "patches": 1,
+   "ids": [
+    "2026-05-5808n0280w"
+   ]
+  },
+  {
+   "name": "Kokotintin",
+   "place": "village",
+   "district": "Adansi Akrofuom",
+   "lat": 6.1079,
+   "lon": -1.6915,
+   "ha": 12.2,
+   "patches": 6,
+   "ids": [
+    "2025-11-6109n1700w",
+    "2025-11-6101n1692w",
+    "2025-11-6111n1696w",
+    "2025-11-6115n1693w",
+    "2025-11-6098n1691w",
+    "2026-04-6105n1693w"
+   ]
+  },
+  {
+   "name": "Nsuaem No.2",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.3635,
+   "lon": -1.3645,
+   "ha": 12.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6359n1362w",
+    "2026-01-6363n1360w",
+    "2026-03-6365n1374w",
+    "2026-01-6359n1367w",
+    "2025-11-6358n1366w"
+   ]
+  },
+  {
+   "name": "Birim Amona",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1833,
+   "lon": -0.5438,
+   "ha": 11.8,
+   "patches": 4,
+   "ids": [
+    "2026-01-6180n0537w",
+    "2025-10-6183n0536w",
+    "2026-01-6190n0537w",
+    "2025-12-6177n0538w"
+   ]
+  },
+  {
+   "name": "Akwadum",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.129,
+   "lon": -0.5669,
+   "ha": 11.8,
+   "patches": 4,
+   "ids": [
+    "2025-11-6134n0569w",
+    "2026-01-6131n0575w",
+    "2026-03-6121n0565w",
+    "2026-03-6128n0570w"
+   ]
+  },
+  {
+   "name": "Kibi",
+   "place": "town",
+   "district": "Abuakwa South",
+   "lat": 6.1657,
+   "lon": -0.5503,
+   "ha": 11.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6175n0557w",
+    "2025-11-6160n0546w"
+   ]
+  },
+  {
+   "name": "Kunsu Camp",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8264,
+   "lon": -1.9629,
+   "ha": 11.6,
+   "patches": 3,
+   "ids": [
+    "2026-03-6826n1955w",
+    "2026-03-6830n1957w",
+    "2026-05-6831n1962w"
+   ]
+  },
+  {
+   "name": "Oda",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.8505,
+   "lon": -2.4857,
+   "ha": 11.5,
+   "patches": 2,
+   "ids": [
+    "2025-10-5857n2488w",
+    "2025-10-5853n2489w"
+   ]
+  },
+  {
+   "name": "Masu",
+   "place": "village",
+   "district": "Dormaa Municipal",
+   "lat": 7.2401,
+   "lon": -2.8836,
+   "ha": 11.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-7234n2887w"
+   ]
+  },
+  {
+   "name": "Sankubenase",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2917,
+   "lon": -0.7578,
+   "ha": 11.3,
+   "patches": 3,
+   "ids": [
+    "2025-11-6299n0761w",
+    "2026-06-6288n0766w",
+    "2026-03-6293n0768w"
+   ]
+  },
+  {
+   "name": "Achimfo",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.7829,
+   "lon": -2.7254,
+   "ha": 11.2,
+   "patches": 3,
+   "ids": [
+    "2026-01-5790n2733w",
+    "2025-11-5788n2731w",
+    "2025-11-5778n2724w"
+   ]
+  },
+  {
+   "name": "Ameyaw",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.2131,
+   "lon": -2.0533,
+   "ha": 11.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6223n2052w",
+    "2025-11-6216n2057w",
+    "2026-01-6210n2059w",
+    "2026-01-6204n2055w",
+    "2026-03-6211n2057w"
+   ]
+  },
+  {
+   "name": "Dwumakro",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.416,
+   "lon": -1.577,
+   "ha": 11.1,
+   "patches": 5,
+   "ids": [
+    "2025-11-6425n1578w",
+    "2025-10-6415n1584w",
+    "2025-11-6426n1575w",
+    "2025-11-6424n1583w",
+    "2025-11-6422n1581w"
+   ]
+  },
+  {
+   "name": "Kwame Kura",
+   "place": "village",
+   "district": "Asene Akroso Manso",
+   "lat": 5.8877,
+   "lon": -0.8136,
+   "ha": 11.1,
+   "patches": 3,
+   "ids": [
+    "2026-04-5890n0808w",
+    "2026-03-5892n0817w",
+    "2026-03-5885n0819w"
+   ]
+  },
+  {
+   "name": "Bomaa",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2889,
+   "lon": -0.5899,
+   "ha": 10.8,
+   "patches": 4,
+   "ids": [
+    "2026-01-6292n0600w",
+    "2026-01-6284n0596w",
+    "2025-11-6294n0597w",
+    "2026-01-6284n0585w"
+   ]
+  },
+  {
+   "name": "Hwiremuasi",
+   "place": "village",
+   "district": "Adansi Asokwa",
+   "lat": 6.2324,
+   "lon": -1.4877,
+   "ha": 10.7,
+   "patches": 1,
+   "ids": [
+    "2025-10-6241n1490w"
+   ]
+  },
+  {
+   "name": "Kwaokurom",
+   "place": "village",
+   "district": "Juaboso",
+   "lat": 6.4082,
+   "lon": -2.8856,
+   "ha": 10.7,
+   "patches": 5,
+   "ids": [
+    "2025-11-6406n2883w",
+    "2025-11-6403n2886w",
+    "2026-01-6412n2889w",
+    "2025-11-6405n2891w",
+    "2025-11-6404n2893w"
+   ]
+  },
+  {
+   "name": "Senfi",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.5062,
+   "lon": -1.6345,
+   "ha": 10.5,
+   "patches": 3,
+   "ids": [
+    "2025-11-6499n1634w",
+    "2026-01-6501n1633w",
+    "2026-02-6505n1630w"
+   ]
+  },
+  {
+   "name": "Dwenase",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3686,
+   "lon": -0.4697,
+   "ha": 10.4,
+   "patches": 6,
+   "ids": [
+    "2026-01-6362n0471w",
+    "2026-01-6374n0468w",
+    "2025-11-6363n0464w",
+    "2026-02-6378n0474w",
+    "2025-12-6360n0472w",
+    "2025-11-6371n0465w"
+   ]
+  },
+  {
+   "name": "Beposo",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8157,
+   "lon": -1.8507,
+   "ha": 10.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6809n1855w"
+   ]
+  },
+  {
+   "name": "Nkronua Anafu",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.2583,
+   "lon": -2.0865,
+   "ha": 10.3,
+   "patches": 4,
+   "ids": [
+    "2025-11-6267n2085w",
+    "2026-01-6262n2085w",
+    "2025-11-6266n2089w",
+    "2026-01-6252n2091w"
+   ]
+  },
+  {
+   "name": "Patriensa",
+   "place": "town",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.662,
+   "lon": -1.1789,
+   "ha": 10.2,
+   "patches": 4,
+   "ids": [
+    "2025-11-6662n1175w",
+    "2025-11-6665n1174w",
+    "2025-11-6668n1172w",
+    "2025-11-6660n1185w"
+   ]
+  },
+  {
+   "name": "Sompre",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.9497,
+   "lon": -2.4407,
+   "ha": 10.2,
+   "patches": 1,
+   "ids": [
+    "2025-10-5949n2451w"
+   ]
+  },
+  {
+   "name": "Sewum",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.67,
+   "lon": -2.8212,
+   "ha": 10.2,
+   "patches": 2,
+   "ids": [
+    "2025-10-5681n2822w",
+    "2026-02-5669n2826w"
+   ]
+  },
+  {
+   "name": "Papueso",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7464,
+   "lon": -2.7152,
+   "ha": 9.9,
+   "patches": 3,
+   "ids": [
+    "2025-11-5743n2716w",
+    "2025-10-5751n2712w",
+    "2025-12-5740n2715w"
+   ]
+  },
+  {
+   "name": "Wassa Ankonsia",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6894,
+   "lon": -2.1336,
+   "ha": 9.7,
+   "patches": 4,
+   "ids": [
+    "2025-11-5681n2137w",
+    "2025-11-5690n2129w",
+    "2025-11-5693n2139w",
+    "2026-02-5693n2124w"
+   ]
+  },
+  {
+   "name": "Akotombra Nkwanta",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.9779,
+   "lon": -2.9423,
+   "ha": 9.7,
+   "patches": 4,
+   "ids": [
+    "2026-04-5987n2942w",
+    "2026-03-5978n2939w",
+    "2026-01-5972n2939w",
+    "2026-03-5981n2942w"
+   ]
+  },
+  {
+   "name": "Anumso",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4298,
+   "lon": -1.3023,
+   "ha": 9.5,
+   "patches": 4,
+   "ids": [
+    "2026-01-6429n1300w",
+    "2026-03-6439n1305w",
+    "2025-11-6437n1301w",
+    "2026-01-6429n1312w"
+   ]
+  },
+  {
+   "name": "Wenchi Akim",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 5.9672,
+   "lon": -0.9309,
+   "ha": 9.5,
+   "patches": 5,
+   "ids": [
+    "2025-11-5967n0927w",
+    "2025-12-5967n0922w",
+    "2026-01-5963n0934w",
+    "2026-01-5965n0936w",
+    "2025-11-5968n0925w"
+   ]
+  },
+  {
+   "name": "Labikurom",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.1718,
+   "lon": -0.6231,
+   "ha": 9.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6167n0633w",
+    "2025-11-6177n0617w"
+   ]
+  },
+  {
+   "name": "Aniamoa",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5376,
+   "lon": -2.0313,
+   "ha": 9.4,
+   "patches": 4,
+   "ids": [
+    "2025-11-6534n2039w",
+    "2025-11-6539n2024w",
+    "2025-11-6534n2037w",
+    "2026-03-6536n2034w"
+   ]
+  },
+  {
+   "name": "Nkroma",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6172,
+   "lon": -1.9826,
+   "ha": 9.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6613n1990w",
+    "2025-10-6615n1975w"
+   ]
+  },
+  {
+   "name": "Kwahu",
+   "place": "village",
+   "district": "Asutifi North",
+   "lat": 6.9519,
+   "lon": -2.4769,
+   "ha": 9.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6963n2480w"
+   ]
+  },
+  {
+   "name": "Sagyimase",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.2361,
+   "lon": -0.5179,
+   "ha": 9.3,
+   "patches": 5,
+   "ids": [
+    "2025-11-6242n0514w",
+    "2026-01-6245n0516w",
+    "2025-11-6235n0527w",
+    "2026-01-6234n0516w",
+    "2026-02-6241n0511w"
+   ]
+  },
+  {
+   "name": "Amponyase",
+   "place": "village",
+   "district": "Adansi Akrofuom",
+   "lat": 6.054,
+   "lon": -1.7323,
+   "ha": 9.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6056n1723w"
+   ]
+  },
+  {
+   "name": "Amadaa",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6451,
+   "lon": -1.991,
+   "ha": 9.2,
+   "patches": 3,
+   "ids": [
+    "2025-11-6649n1986w",
+    "2025-11-6653n1986w",
+    "2025-11-6646n1986w"
+   ]
+  },
+  {
+   "name": "Amonom",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2662,
+   "lon": -0.7434,
+   "ha": 9.2,
+   "patches": 3,
+   "ids": [
+    "2025-10-6266n0749w",
+    "2025-10-6274n0747w",
+    "2026-03-6264n0752w"
+   ]
+  },
+  {
+   "name": "Obenimase",
+   "place": "village",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.6758,
+   "lon": -1.1667,
+   "ha": 9.1,
+   "patches": 3,
+   "ids": [
+    "2025-11-6685n1164w",
+    "2025-11-6668n1172w",
+    "2025-12-6670n1169w"
+   ]
+  },
+  {
+   "name": "Nkakaa",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 5.6206,
+   "lon": -2.2035,
+   "ha": 9.1,
+   "patches": 3,
+   "ids": [
+    "2025-11-5615n2207w",
+    "2025-10-5625n2211w",
+    "2026-02-5615n2196w"
+   ]
+  },
+  {
+   "name": "Dome Keniago",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3696,
+   "lon": -2.0202,
+   "ha": 9.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6366n2028w"
+   ]
+  },
+  {
+   "name": "Agona Port",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1453,
+   "lon": -2.1251,
+   "ha": 9.0,
+   "patches": 4,
+   "ids": [
+    "2025-11-6154n2130w",
+    "2025-11-6148n2133w",
+    "2025-11-6142n2133w",
+    "2026-03-6143n2122w"
+   ]
+  },
+  {
+   "name": "Biemso No.1",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8793,
+   "lon": -1.8532,
+   "ha": 8.9,
+   "patches": 2,
+   "ids": [
+    "2025-11-6870n1849w",
+    "2025-12-6887n1859w"
+   ]
+  },
+  {
+   "name": "Krodua",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3314,
+   "lon": -1.612,
+   "ha": 8.9,
+   "patches": 2,
+   "ids": [
+    "2025-11-6330n1621w",
+    "2025-11-6335n1615w"
+   ]
+  },
+  {
+   "name": "Gyamaase No.2",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5482,
+   "lon": -0.9486,
+   "ha": 8.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-6552n0953w",
+    "2025-10-6550n0957w",
+    "2026-02-6550n0953w"
+   ]
+  },
+  {
+   "name": "Nyinawusu",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6497,
+   "lon": -1.9577,
+   "ha": 8.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-6646n1961w",
+    "2025-11-6645n1953w",
+    "2025-11-6645n1963w"
+   ]
+  },
+  {
+   "name": "Mpeasem",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.1326,
+   "lon": -0.6754,
+   "ha": 8.8,
+   "patches": 3,
+   "ids": [
+    "2025-10-6129n0666w",
+    "2026-01-6139n0681w",
+    "2025-11-6142n0676w"
+   ]
+  },
+  {
+   "name": "Akwadaakrom",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6725,
+   "lon": -2.0423,
+   "ha": 8.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-5666n2040w",
+    "2026-03-5680n2046w",
+    "2025-11-5674n2045w"
+   ]
+  },
+  {
+   "name": "Kontokrom",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.887,
+   "lon": -1.7305,
+   "ha": 8.7,
+   "patches": 3,
+   "ids": [
+    "2025-11-5891n1720w",
+    "2026-01-5884n1728w",
+    "2025-12-5887n1737w"
+   ]
+  },
+  {
+   "name": "Adjakaa",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7732,
+   "lon": -2.7608,
+   "ha": 8.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-5765n2754w"
+   ]
+  },
+  {
+   "name": "Kwawu",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.6691,
+   "lon": -2.7442,
+   "ha": 8.6,
+   "patches": 6,
+   "ids": [
+    "2026-03-5669n2740w",
+    "2025-12-5663n2740w",
+    "2025-12-5675n2745w",
+    "2026-02-5675n2741w",
+    "2025-12-5672n2741w",
+    "2025-11-5661n2740w"
+   ]
+  },
+  {
+   "name": "Domeabra",
+   "place": "village",
+   "district": "Obuasi East",
+   "lat": 6.2273,
+   "lon": -1.578,
+   "ha": 8.6,
+   "patches": 3,
+   "ids": [
+    "2026-03-6226n1575w",
+    "2026-01-6230n1577w",
+    "2026-04-6221n1583w"
+   ]
+  },
+  {
+   "name": "Kwamang",
+   "place": "town",
+   "district": "Kwaebibirem",
+   "lat": 6.2086,
+   "lon": -0.7188,
+   "ha": 8.6,
+   "patches": 3,
+   "ids": [
+    "2026-02-6204n0711w",
+    "2026-02-6208n0711w",
+    "2026-02-6210n0714w"
+   ]
+  },
+  {
+   "name": "Sanfo",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4062,
+   "lon": -1.5544,
+   "ha": 8.6,
+   "patches": 3,
+   "ids": [
+    "2025-11-6397n1548w",
+    "2025-11-6401n1550w",
+    "2026-01-6397n1553w"
+   ]
+  },
+  {
+   "name": "Nkotumso",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 5.9997,
+   "lon": -1.9194,
+   "ha": 8.6,
+   "patches": 3,
+   "ids": [
+    "2025-11-6000n1914w",
+    "2025-11-6007n1920w",
+    "2026-01-6003n1915w"
+   ]
+  },
+  {
+   "name": "Afiesa",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1555,
+   "lon": -0.5928,
+   "ha": 8.6,
+   "patches": 4,
+   "ids": [
+    "2026-03-6160n0595w",
+    "2026-03-6160n0583w",
+    "2026-03-6164n0597w",
+    "2026-03-6153n0591w"
+   ]
+  },
+  {
+   "name": "Ekoso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.315,
+   "lon": -0.6888,
+   "ha": 8.5,
+   "patches": 5,
+   "ids": [
+    "2026-01-6320n0684w",
+    "2026-01-6319n0697w",
+    "2026-03-6319n0682w",
+    "2025-10-6316n0694w",
+    "2026-03-6321n0691w"
+   ]
+  },
+  {
+   "name": "Densuso",
+   "place": "village",
+   "district": "Suhum Municipal",
+   "lat": 6.101,
+   "lon": -0.4827,
+   "ha": 8.3,
+   "patches": 2,
+   "ids": [
+    "2026-03-6109n0484w",
+    "2026-03-6098n0479w"
+   ]
+  },
+  {
+   "name": "Aboabo Tetekaso",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.569,
+   "lon": -1.9049,
+   "ha": 8.3,
+   "patches": 3,
+   "ids": [
+    "2025-11-6567n1899w",
+    "2025-11-6563n1901w",
+    "2025-11-6567n1895w"
+   ]
+  },
+  {
+   "name": "Odumase",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3234,
+   "lon": -1.6398,
+   "ha": 8.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6323n1637w",
+    "2025-11-6319n1633w"
+   ]
+  },
+  {
+   "name": "Akokwaso",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3283,
+   "lon": -1.6342,
+   "ha": 8.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6323n1637w",
+    "2025-11-6319n1633w"
+   ]
+  },
+  {
+   "name": "Mmoroben",
+   "place": "village",
+   "district": "Ahafo Ano South West",
+   "lat": 6.917,
+   "lon": -1.9936,
+   "ha": 8.3,
+   "patches": 4,
+   "ids": [
+    "2025-12-6917n1986w",
+    "2026-03-6921n2001w",
+    "2025-12-6915n1992w",
+    "2026-05-6916n1988w"
+   ]
+  },
+  {
+   "name": "Asechere",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.441,
+   "lon": -1.5221,
+   "ha": 8.2,
+   "patches": 1,
+   "ids": [
+    "2025-10-6438n1512w"
+   ]
+  },
+  {
+   "name": "Ntobroso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5336,
+   "lon": -2.0452,
+   "ha": 8.2,
+   "patches": 3,
+   "ids": [
+    "2025-11-6534n2039w",
+    "2025-11-6529n2044w",
+    "2025-11-6534n2037w"
+   ]
+  },
+  {
+   "name": "Akrofuom",
+   "place": "town",
+   "district": "Adansi Akrofuom",
+   "lat": 6.1191,
+   "lon": -1.6532,
+   "ha": 8.2,
+   "patches": 2,
+   "ids": [
+    "2025-11-6126n1648w",
+    "2025-11-6125n1658w"
+   ]
+  },
+  {
+   "name": "New Nsutam",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.2929,
+   "lon": -0.4753,
+   "ha": 8.2,
+   "patches": 4,
+   "ids": [
+    "2026-01-6293n0478w",
+    "2025-11-6300n0469w",
+    "2026-03-6297n0470w",
+    "2026-01-6301n0480w"
+   ]
+  },
+  {
+   "name": "Yiwabra Nkwanta",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7799,
+   "lon": -2.6583,
+   "ha": 8.1,
+   "patches": 2,
+   "ids": [
+    "2025-10-5780n2664w",
+    "2026-04-5784n2653w"
+   ]
+  },
+  {
+   "name": "Buabinso",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9556,
+   "lon": -1.7385,
+   "ha": 8.0,
+   "patches": 2,
+   "ids": [
+    "2025-11-5957n1729w",
+    "2025-10-5963n1737w"
+   ]
+  },
+  {
+   "name": "Abaasa",
+   "place": "town",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.3653,
+   "lon": -0.9475,
+   "ha": 8.0,
+   "patches": 2,
+   "ids": [
+    "2025-11-5364n0955w",
+    "2025-11-5363n0952w"
+   ]
+  },
+  {
+   "name": "Kwabenakwa",
+   "place": "town",
+   "district": "Obuasi East",
+   "lat": 6.2151,
+   "lon": -1.5898,
+   "ha": 7.9,
+   "patches": 3,
+   "ids": [
+    "2025-11-6215n1595w",
+    "2026-04-6216n1582w",
+    "2026-04-6221n1583w"
+   ]
+  },
+  {
+   "name": "Pakyi",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5997,
+   "lon": -1.9603,
+   "ha": 7.9,
+   "patches": 4,
+   "ids": [
+    "2025-11-6600n1955w",
+    "2025-12-6596n1962w",
+    "2025-11-6595n1959w",
+    "2026-04-6604n1965w"
+   ]
+  },
+  {
+   "name": "Akropong",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9241,
+   "lon": -1.6913,
+   "ha": 7.8,
+   "patches": 2,
+   "ids": [
+    "2025-10-5916n1700w",
+    "2026-03-5922n1701w"
+   ]
+  },
+  {
+   "name": "Pamase No.1",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5125,
+   "lon": -1.7285,
+   "ha": 7.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-6504n1733w",
+    "2026-03-6519n1736w"
+   ]
+  },
+  {
+   "name": "Afigya",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.7948,
+   "lon": -1.8898,
+   "ha": 7.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-6800n1891w",
+    "2026-02-6799n1888w"
+   ]
+  },
+  {
+   "name": "Wassa Adesu",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8031,
+   "lon": -2.0736,
+   "ha": 7.7,
+   "patches": 3,
+   "ids": [
+    "2026-03-5810n2066w",
+    "2026-03-5802n2083w",
+    "2025-11-5808n2072w"
+   ]
+  },
+  {
+   "name": "Agrosum",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.414,
+   "lon": -1.878,
+   "ha": 7.6,
+   "patches": 3,
+   "ids": [
+    "2025-11-6419n1877w",
+    "2025-11-6410n1874w",
+    "2025-11-6412n1885w"
+   ]
+  },
+  {
+   "name": "Kwameduakrom",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.1644,
+   "lon": -1.6544,
+   "ha": 7.6,
+   "patches": 4,
+   "ids": [
+    "2026-01-6172n1652w",
+    "2026-02-6165n1654w",
+    "2026-01-6169n1651w",
+    "2025-11-6169n1659w"
+   ]
+  },
+  {
+   "name": "Nyaboo",
+   "place": "village",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.6518,
+   "lon": -1.1845,
+   "ha": 7.6,
+   "patches": 3,
+   "ids": [
+    "2025-12-6649n1179w",
+    "2025-11-6644n1182w",
+    "2025-11-6660n1185w"
+   ]
+  },
+  {
+   "name": "Bonsaiso",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.2353,
+   "lon": -1.9978,
+   "ha": 7.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6237n2004w",
+    "2025-11-6229n1997w"
+   ]
+  },
+  {
+   "name": "Nsuapem",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.329,
+   "lon": -0.468,
+   "ha": 7.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6321n0466w",
+    "2026-03-6320n0467w"
+   ]
+  },
+  {
+   "name": "Akwadum",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 5.9993,
+   "lon": -0.7384,
+   "ha": 7.6,
+   "patches": 4,
+   "ids": [
+    "2025-11-6010n0740w",
+    "2025-11-5997n0733w",
+    "2025-11-6004n0740w",
+    "2025-11-6000n0743w"
+   ]
+  },
+  {
+   "name": "Mposo",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8036,
+   "lon": -1.9877,
+   "ha": 7.5,
+   "patches": 2,
+   "ids": [
+    "2025-11-6810n1991w",
+    "2025-11-6806n1983w"
+   ]
+  },
+  {
+   "name": "Anwona",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.1634,
+   "lon": -1.7104,
+   "ha": 7.5,
+   "patches": 3,
+   "ids": [
+    "2025-11-6174n1710w",
+    "2026-01-6168n1709w",
+    "2026-03-6166n1713w"
+   ]
+  },
+  {
+   "name": "Anwiafutu",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6237,
+   "lon": -2.0381,
+   "ha": 7.5,
+   "patches": 4,
+   "ids": [
+    "2025-12-6620n2031w",
+    "2025-11-6620n2036w",
+    "2025-10-6622n2030w",
+    "2026-03-6618n2037w"
+   ]
+  },
+  {
+   "name": "Bensuoso",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4713,
+   "lon": -1.7795,
+   "ha": 7.5,
+   "patches": 2,
+   "ids": [
+    "2025-11-6470n1785w",
+    "2025-11-6464n1776w"
+   ]
+  },
+  {
+   "name": "New Aboi",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6356,
+   "lon": -2.0303,
+   "ha": 7.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-5632n2025w",
+    "2026-01-5629n2027w",
+    "2026-03-5644n2027w"
+   ]
+  },
+  {
+   "name": "Nkurakan",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2811,
+   "lon": -0.7618,
+   "ha": 7.4,
+   "patches": 2,
+   "ids": [
+    "2026-02-6284n0765w",
+    "2026-06-6288n0766w"
+   ]
+  },
+  {
+   "name": "Ekoso-Birimso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3117,
+   "lon": -0.7009,
+   "ha": 7.4,
+   "patches": 5,
+   "ids": [
+    "2026-02-6305n0705w",
+    "2026-01-6319n0697w",
+    "2026-01-6309n0706w",
+    "2025-10-6316n0694w",
+    "2026-03-6314n0710w"
+   ]
+  },
+  {
+   "name": "Juaso",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3157,
+   "lon": -0.5052,
+   "ha": 7.3,
+   "patches": 3,
+   "ids": [
+    "2025-11-6321n0498w",
+    "2025-11-6314n0501w",
+    "2025-11-6321n0502w"
+   ]
+  },
+  {
+   "name": "Yadeaya",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5071,
+   "lon": -1.8001,
+   "ha": 7.3,
+   "patches": 4,
+   "ids": [
+    "2025-11-6505n1803w",
+    "2025-11-6512n1797w",
+    "2026-02-6503n1794w",
+    "2025-11-6512n1799w"
+   ]
+  },
+  {
+   "name": "Samankrom",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6468,
+   "lon": -2.0296,
+   "ha": 7.2,
+   "patches": 5,
+   "ids": [
+    "2025-11-5651n2024w",
+    "2026-01-5654n2024w",
+    "2025-11-5653n2029w",
+    "2026-01-5646n2020w",
+    "2026-03-5644n2027w"
+   ]
+  },
+  {
+   "name": "Apedwa Nkwanta",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1137,
+   "lon": -0.489,
+   "ha": 7.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6109n0484w"
+   ]
+  },
+  {
+   "name": "Gyamase",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2378,
+   "lon": -0.7116,
+   "ha": 7.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6239n0701w"
+   ]
+  },
+  {
+   "name": "Hiakose",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5385,
+   "lon": -1.8275,
+   "ha": 7.1,
+   "patches": 1,
+   "ids": [
+    "2025-10-6539n1818w"
+   ]
+  },
+  {
+   "name": "Afiefiso",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.2088,
+   "lon": -2.0439,
+   "ha": 7.1,
+   "patches": 3,
+   "ids": [
+    "2025-11-6211n2041w",
+    "2025-11-6204n2049w",
+    "2025-11-6209n2042w"
+   ]
+  },
+  {
+   "name": "Adeade",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.183,
+   "lon": -2.0909,
+   "ha": 7.0,
+   "patches": 3,
+   "ids": [
+    "2025-11-6179n2089w",
+    "2026-03-6175n2092w",
+    "2026-01-6190n2083w"
+   ]
+  },
+  {
+   "name": "Asuboi",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9495,
+   "lon": -0.4124,
+   "ha": 7.0,
+   "patches": 1,
+   "ids": [
+    "2026-03-5953n0419w"
+   ]
+  },
+  {
+   "name": "Owuratwum",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1078,
+   "lon": -0.5488,
+   "ha": 7.0,
+   "patches": 2,
+   "ids": [
+    "2025-10-6098n0549w",
+    "2026-01-6100n0550w"
+   ]
+  },
+  {
+   "name": "Dwinase",
+   "place": "village",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.4695,
+   "lon": -0.9832,
+   "ha": 7.0,
+   "patches": 3,
+   "ids": [
+    "2026-01-5469n0979w",
+    "2025-12-5465n0991w",
+    "2026-03-5463n0986w"
+   ]
+  },
+  {
+   "name": "Nsutam",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3068,
+   "lon": -0.4702,
+   "ha": 6.9,
+   "patches": 4,
+   "ids": [
+    "2025-11-6300n0469w",
+    "2025-11-6314n0466w",
+    "2025-11-6303n0462w",
+    "2026-10-6309n0479w"
+   ]
+  },
+  {
+   "name": "Nsuaem No.1",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.3586,
+   "lon": -1.376,
+   "ha": 6.9,
+   "patches": 4,
+   "ids": [
+    "2025-11-6368n1376w",
+    "2026-03-6365n1374w",
+    "2026-01-6359n1367w",
+    "2025-11-6358n1366w"
+   ]
+  },
+  {
+   "name": "Omanpe",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.6108,
+   "lon": -2.7343,
+   "ha": 6.9,
+   "patches": 2,
+   "ids": [
+    "2025-12-5603n2730w",
+    "2026-04-5613n2732w"
+   ]
+  },
+  {
+   "name": "Sang",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.8453,
+   "lon": -2.4174,
+   "ha": 6.9,
+   "patches": 4,
+   "ids": [
+    "2025-10-5841n2423w",
+    "2026-01-5852n2414w",
+    "2025-11-5844n2426w",
+    "2026-02-5838n2417w"
+   ]
+  },
+  {
+   "name": "Chirin",
+   "place": "village",
+   "district": "Gomoa West",
+   "lat": 5.3367,
+   "lon": -0.8349,
+   "ha": 6.9,
+   "patches": 1,
+   "ids": [
+    "2026-01-5338n0832w"
+   ]
+  },
+  {
+   "name": "Ankaase",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.3716,
+   "lon": -0.5043,
+   "ha": 6.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-6373n0512w",
+    "2025-11-6379n0498w"
+   ]
+  },
+  {
+   "name": "Gyampomani",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3613,
+   "lon": -0.452,
+   "ha": 6.8,
+   "patches": 4,
+   "ids": [
+    "2025-11-6358n0460w",
+    "2025-11-6360n0461w",
+    "2025-10-6359n0450w",
+    "2026-05-6361n0443w"
+   ]
+  },
+  {
+   "name": "Nkra",
+   "place": "village",
+   "district": "Juaboso",
+   "lat": 6.4865,
+   "lon": -2.9161,
+   "ha": 6.8,
+   "patches": 2,
+   "ids": [
+    "2025-10-6494n2917w",
+    "2025-10-6495n2915w"
+   ]
+  },
+  {
+   "name": "Asikuma",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6229,
+   "lon": -0.8977,
+   "ha": 6.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-6627n0893w",
+    "2025-11-6622n0906w"
+   ]
+  },
+  {
+   "name": "Akrofuom",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2929,
+   "lon": -1.5941,
+   "ha": 6.8,
+   "patches": 3,
+   "ids": [
+    "2026-04-6290n1596w",
+    "2026-01-6294n1588w",
+    "2025-11-6297n1596w"
+   ]
+  },
+  {
+   "name": "Manso Akropong",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4356,
+   "lon": -1.8094,
+   "ha": 6.7,
+   "patches": 3,
+   "ids": [
+    "2025-11-6445n1807w",
+    "2026-01-6428n1803w",
+    "2025-11-6435n1803w"
+   ]
+  },
+  {
+   "name": "Akyem Akrofufu",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3504,
+   "lon": -0.6237,
+   "ha": 6.7,
+   "patches": 3,
+   "ids": [
+    "2025-12-6341n0626w",
+    "2025-12-6344n0628w",
+    "2025-12-6346n0632w"
+   ]
+  },
+  {
+   "name": "Dome",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4321,
+   "lon": -1.7992,
+   "ha": 6.7,
+   "patches": 3,
+   "ids": [
+    "2025-11-6439n1797w",
+    "2026-01-6428n1803w",
+    "2025-11-6435n1803w"
+   ]
+  },
+  {
+   "name": "Asuokor",
+   "place": "village",
+   "district": "Ahafo Ano South West",
+   "lat": 6.7355,
+   "lon": -2.2273,
+   "ha": 6.7,
+   "patches": 3,
+   "ids": [
+    "2025-11-6734n2229w",
+    "2025-11-6740n2221w",
+    "2025-10-6737n2224w"
+   ]
+  },
+  {
+   "name": "Besease",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5335,
+   "lon": -0.8361,
+   "ha": 6.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6536n0829w"
+   ]
+  },
+  {
+   "name": "Morkwa-Bremeng",
+   "place": "village",
+   "district": "Twifo Atti-morkwa",
+   "lat": 5.704,
+   "lon": -1.604,
+   "ha": 6.7,
+   "patches": 1,
+   "ids": [
+    "2025-10-5711n1597w"
+   ]
+  },
+  {
+   "name": "Dompim",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.1724,
+   "lon": -0.6341,
+   "ha": 6.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-6167n0633w",
+    "2026-03-6180n0630w"
+   ]
+  },
+  {
+   "name": "Asuasu",
+   "place": "village",
+   "district": "Upper West Akim",
+   "lat": 5.7644,
+   "lon": -0.5274,
+   "ha": 6.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-5763n0533w"
+   ]
+  },
+  {
+   "name": "Alafia",
+   "place": "village",
+   "district": "Upper West Akim",
+   "lat": 5.7652,
+   "lon": -0.5362,
+   "ha": 6.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-5763n0533w"
+   ]
+  },
+  {
+   "name": "Goigoikrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6842,
+   "lon": -1.9577,
+   "ha": 6.6,
+   "patches": 3,
+   "ids": [
+    "2026-03-6691n1957w",
+    "2026-03-6687n1965w",
+    "2025-11-6692n1960w"
+   ]
+  },
+  {
+   "name": "Bogyawe",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.3885,
+   "lon": -1.5519,
+   "ha": 6.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6397n1548w",
+    "2026-01-6397n1553w"
+   ]
+  },
+  {
+   "name": "Antoakrom",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4495,
+   "lon": -1.7921,
+   "ha": 6.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-6455n1781w"
+   ]
+  },
+  {
+   "name": "Asuogya",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8245,
+   "lon": -2.0034,
+   "ha": 6.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-6824n2009w"
+   ]
+  },
+  {
+   "name": "Minta Bomeng",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.3295,
+   "lon": -0.9627,
+   "ha": 6.5,
+   "patches": 2,
+   "ids": [
+    "2025-11-6335n0964w",
+    "2026-05-6328n0971w"
+   ]
+  },
+  {
+   "name": "Ashiem",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.1083,
+   "lon": -2.3236,
+   "ha": 6.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-6110n2313w",
+    "2026-02-6101n2324w",
+    "2026-01-6102n2326w"
+   ]
+  },
+  {
+   "name": "Ntinanko",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4259,
+   "lon": -1.6896,
+   "ha": 6.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-6425n1694w",
+    "2025-12-6421n1689w",
+    "2026-03-6428n1698w"
+   ]
+  },
+  {
+   "name": "Afraso",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3107,
+   "lon": -1.9762,
+   "ha": 6.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6307n1981w",
+    "2025-11-6311n1984w"
+   ]
+  },
+  {
+   "name": "Akwebetosu",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4348,
+   "lon": -1.5833,
+   "ha": 6.3,
+   "patches": 3,
+   "ids": [
+    "2026-02-6438n1583w",
+    "2025-11-6427n1585w",
+    "2025-11-6428n1584w"
+   ]
+  },
+  {
+   "name": "Ayem",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.294,
+   "lon": -2.0461,
+   "ha": 6.2,
+   "patches": 2,
+   "ids": [
+    "2026-01-6292n2057w",
+    "2025-12-6287n2051w"
+   ]
+  },
+  {
+   "name": "Yaw Bua",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6826,
+   "lon": -1.8466,
+   "ha": 6.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6674n1847w"
+   ]
+  },
+  {
+   "name": "Mensahkrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7569,
+   "lon": -2.7688,
+   "ha": 6.1,
+   "patches": 2,
+   "ids": [
+    "2026-09-5766n2774w",
+    "2026-10-5756n2768w"
+   ]
+  },
+  {
+   "name": "Nsutem",
+   "place": "village",
+   "district": "Fanteakwa North",
+   "lat": 6.4633,
+   "lon": -0.3548,
+   "ha": 6.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6474n0356w"
+   ]
+  },
+  {
+   "name": "Akwani Doboro",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8257,
+   "lon": -0.295,
+   "ha": 6.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5830n0302w"
+   ]
+  },
+  {
+   "name": "Fobinso",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 5.9814,
+   "lon": -1.9394,
+   "ha": 6.1,
+   "patches": 2,
+   "ids": [
+    "2026-01-5979n1942w",
+    "2025-11-5975n1945w"
+   ]
+  },
+  {
+   "name": "Kofihiakrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6172,
+   "lon": -1.9755,
+   "ha": 6.0,
+   "patches": 2,
+   "ids": [
+    "2025-10-6615n1975w",
+    "2025-11-6625n1974w"
+   ]
+  },
+  {
+   "name": "Wassa Dunkwa",
+   "place": "town",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7735,
+   "lon": -2.5321,
+   "ha": 6.0,
+   "patches": 2,
+   "ids": [
+    "2025-10-5783n2535w",
+    "2026-01-5768n2534w"
+   ]
+  },
+  {
+   "name": "Afepaye",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.431,
+   "lon": -2.0488,
+   "ha": 5.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-6436n2049w"
+   ]
+  },
+  {
+   "name": "Owusukurom",
+   "place": "village",
+   "district": "Adansi South",
+   "lat": 5.913,
+   "lon": -1.509,
+   "ha": 5.9,
+   "patches": 2,
+   "ids": [
+    "2025-12-5911n1516w",
+    "2026-03-5911n1512w"
+   ]
+  },
+  {
+   "name": "Bonteso",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.527,
+   "lon": -1.968,
+   "ha": 5.9,
+   "patches": 2,
+   "ids": [
+    "2025-12-6533n1973w",
+    "2025-11-6523n1970w"
+   ]
+  },
+  {
+   "name": "Essienkyeim",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3165,
+   "lon": -2.0173,
+   "ha": 5.9,
+   "patches": 3,
+   "ids": [
+    "2025-11-6316n2007w",
+    "2025-11-6312n2025w",
+    "2025-11-6320n2022w"
+   ]
+  },
+  {
+   "name": "Akronwe",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.4929,
+   "lon": -1.3072,
+   "ha": 5.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-6484n1307w",
+    "2025-11-6497n1308w",
+    "2025-11-6499n1303w"
+   ]
+  },
+  {
+   "name": "Bontomuruso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5633,
+   "lon": -2.0329,
+   "ha": 5.8,
+   "patches": 4,
+   "ids": [
+    "2025-11-6567n2029w",
+    "2026-03-6565n2038w",
+    "2026-01-6556n2029w",
+    "2025-11-6566n2027w"
+   ]
+  },
+  {
+   "name": "Patakru",
+   "place": "village",
+   "district": "Bodi",
+   "lat": 6.2817,
+   "lon": -2.9222,
+   "ha": 5.8,
+   "patches": 2,
+   "ids": [
+    "2026-02-6280n2915w",
+    "2026-01-6279n2913w"
+   ]
+  },
+  {
+   "name": "Owuraku",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8329,
+   "lon": -0.3537,
+   "ha": 5.8,
+   "patches": 1,
+   "ids": [
+    "2026-01-5835n0355w"
+   ]
+  },
+  {
+   "name": "Asamang Tamfoe",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.3679,
+   "lon": -0.5284,
+   "ha": 5.8,
+   "patches": 3,
+   "ids": [
+    "2025-10-6374n0527w",
+    "2025-10-6359n0528w",
+    "2025-10-6372n0522w"
+   ]
+  },
+  {
+   "name": "Abiram",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3853,
+   "lon": -1.972,
+   "ha": 5.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6385n1981w"
+   ]
+  },
+  {
+   "name": "Nwiniso No.2",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.5337,
+   "lon": -1.7967,
+   "ha": 5.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-6538n1802w",
+    "2026-02-6537n1804w",
+    "2025-11-6542n1800w"
+   ]
+  },
+  {
+   "name": "Kisiedukrom",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6702,
+   "lon": -2.0544,
+   "ha": 5.8,
+   "patches": 3,
+   "ids": [
+    "2025-12-5672n2056w",
+    "2026-01-5674n2058w",
+    "2026-04-5670n2060w"
+   ]
+  },
+  {
+   "name": "Odumase",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.1572,
+   "lon": -1.6555,
+   "ha": 5.8,
+   "patches": 4,
+   "ids": [
+    "2026-02-6165n1654w",
+    "2025-11-6153n1649w",
+    "2025-11-6155n1659w",
+    "2025-11-6154n1657w"
+   ]
+  },
+  {
+   "name": "Anomabo",
+   "place": "village",
+   "district": "Asene Akroso Manso",
+   "lat": 5.8952,
+   "lon": -0.7816,
+   "ha": 5.8,
+   "patches": 1,
+   "ids": [
+    "2026-04-5886n0784w"
+   ]
+  },
+  {
+   "name": "Gyapongkrom",
+   "place": "village",
+   "district": "Suaman",
+   "lat": 6.1629,
+   "lon": -2.9828,
+   "ha": 5.8,
+   "patches": 2,
+   "ids": [
+    "2025-12-6169n2986w",
+    "2025-11-6157n2991w"
+   ]
+  },
+  {
+   "name": "Nsuta",
+   "place": "village",
+   "district": "Asutifi North",
+   "lat": 7.0878,
+   "lon": -2.6073,
+   "ha": 5.7,
+   "patches": 2,
+   "ids": [
+    "2026-01-7086n2601w",
+    "2026-01-7080n2609w"
+   ]
+  },
+  {
+   "name": "Adaboi",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.0919,
+   "lon": -1.9853,
+   "ha": 5.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-6094n1984w",
+    "2025-11-6090n1988w"
+   ]
+  },
+  {
+   "name": "Bonwire",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.7933,
+   "lon": -1.4732,
+   "ha": 5.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6787n1477w"
+   ]
+  },
+  {
+   "name": "Nkyenenkyene",
+   "place": "village",
+   "district": "Kwahu South",
+   "lat": 6.7034,
+   "lon": -0.557,
+   "ha": 5.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6706n0548w"
+   ]
+  },
+  {
+   "name": "Tenkyemso",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4812,
+   "lon": -0.9138,
+   "ha": 5.5,
+   "patches": 2,
+   "ids": [
+    "2025-12-6488n0913w",
+    "2026-03-6489n0910w"
+   ]
+  },
+  {
+   "name": "Jedua",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 5.8913,
+   "lon": -2.3078,
+   "ha": 5.5,
+   "patches": 3,
+   "ids": [
+    "2026-03-5887n2310w",
+    "2026-03-5885n2304w",
+    "2025-11-5884n2311w"
+   ]
+  },
+  {
+   "name": "Larbikrom",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.3583,
+   "lon": -0.9531,
+   "ha": 5.5,
+   "patches": 3,
+   "ids": [
+    "2025-11-6357n0957w",
+    "2026-01-6350n0955w",
+    "2025-11-6365n0954w"
+   ]
+  },
+  {
+   "name": "Mim",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4196,
+   "lon": -1.854,
+   "ha": 5.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-6413n1859w",
+    "2025-11-6419n1860w",
+    "2025-11-6423n1862w"
+   ]
+  },
+  {
+   "name": "Huntado",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4452,
+   "lon": -1.6717,
+   "ha": 5.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6452n1677w",
+    "2025-11-6450n1673w"
+   ]
+  },
+  {
+   "name": "Adubiasi",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3237,
+   "lon": -1.5542,
+   "ha": 5.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6329n1552w",
+    "2025-11-6331n1553w"
+   ]
+  },
+  {
+   "name": "Kyeaboso",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3285,
+   "lon": -1.5459,
+   "ha": 5.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6329n1552w",
+    "2025-11-6331n1553w"
+   ]
+  },
+  {
+   "name": "Mmofranfadwen",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.614,
+   "lon": -1.9951,
+   "ha": 5.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6613n1990w"
+   ]
+  },
+  {
+   "name": "Aboi-Nkwanta",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7697,
+   "lon": -2.4894,
+   "ha": 5.4,
+   "patches": 3,
+   "ids": [
+    "2025-10-5768n2496w",
+    "2026-01-5775n2483w",
+    "2025-11-5778n2493w"
+   ]
+  },
+  {
+   "name": "Asano",
+   "place": "village",
+   "district": "Assin South",
+   "lat": 5.4392,
+   "lon": -1.2013,
+   "ha": 5.3,
+   "patches": 2,
+   "ids": [
+    "2026-03-5436n1211w",
+    "2026-03-5437n1202w"
+   ]
+  },
+  {
+   "name": "Nyankamam",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8475,
+   "lon": -2.7996,
+   "ha": 5.3,
+   "patches": 2,
+   "ids": [
+    "2025-10-5846n2805w",
+    "2026-02-5845n2802w"
+   ]
+  },
+  {
+   "name": "Biseasi",
+   "place": "town",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.4589,
+   "lon": -0.976,
+   "ha": 5.2,
+   "patches": 2,
+   "ids": [
+    "2026-01-5469n0979w",
+    "2026-03-5463n0986w"
+   ]
+  },
+  {
+   "name": "Oyoko",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5537,
+   "lon": -1.5705,
+   "ha": 5.2,
+   "patches": 2,
+   "ids": [
+    "2025-11-6559n1575w",
+    "2025-11-6560n1570w"
+   ]
+  },
+  {
+   "name": "Kotokuom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6785,
+   "lon": -1.982,
+   "ha": 5.2,
+   "patches": 2,
+   "ids": [
+    "2026-02-6677n1973w",
+    "2025-10-6674n1978w"
+   ]
+  },
+  {
+   "name": "Atwima Asamang",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6808,
+   "lon": -1.933,
+   "ha": 5.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6691n1931w"
+   ]
+  },
+  {
+   "name": "Adumasa",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.5588,
+   "lon": -1.3079,
+   "ha": 5.1,
+   "patches": 3,
+   "ids": [
+    "2026-03-6557n1303w",
+    "2026-03-6557n1299w",
+    "2026-03-6552n1310w"
+   ]
+  },
+  {
+   "name": "Akwaduo",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5958,
+   "lon": -1.5224,
+   "ha": 5.1,
+   "patches": 4,
+   "ids": [
+    "2026-01-6592n1526w",
+    "2026-02-6599n1517w",
+    "2026-02-6590n1525w",
+    "2026-03-6590n1517w"
+   ]
+  },
+  {
+   "name": "Mansi",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.262,
+   "lon": -2.2037,
+   "ha": 5.1,
+   "patches": 3,
+   "ids": [
+    "2026-01-6260n2197w",
+    "2025-11-6270n2198w",
+    "2026-03-6258n2197w"
+   ]
+  },
+  {
+   "name": "Diewuoso",
+   "place": "village",
+   "district": "Obuasi East",
+   "lat": 6.1734,
+   "lon": -1.6275,
+   "ha": 5.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6177n1632w"
+   ]
+  },
+  {
+   "name": "Manso Nkwanta",
+   "place": "town",
+   "district": "Amansie West",
+   "lat": 6.469,
+   "lon": -1.886,
+   "ha": 5.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6471n1877w"
+   ]
+  },
+  {
+   "name": "Tamakloe",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8828,
+   "lon": -2.0783,
+   "ha": 5.1,
+   "patches": 3,
+   "ids": [
+    "2026-01-5883n2088w",
+    "2026-01-5889n2072w",
+    "2025-11-5884n2071w"
+   ]
+  },
+  {
+   "name": "Atobrakrom",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4675,
+   "lon": -1.7625,
+   "ha": 5.0,
+   "patches": 4,
+   "ids": [
+    "2025-11-6472n1758w",
+    "2025-11-6472n1760w",
+    "2025-12-6461n1760w",
+    "2025-11-6462n1766w"
+   ]
+  },
+  {
+   "name": "Nyamebekyere",
+   "place": "town",
+   "district": "Ahafo Ano South West",
+   "lat": 7.0129,
+   "lon": -1.9936,
+   "ha": 5.0,
+   "patches": 4,
+   "ids": [
+    "2026-01-7016n1998w",
+    "2026-02-7011n1999w",
+    "2026-05-7009n1988w",
+    "2026-02-7006n1996w"
+   ]
+  },
+  {
+   "name": "Yiwabra",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7565,
+   "lon": -2.6614,
+   "ha": 5.0,
+   "patches": 3,
+   "ids": [
+    "2026-02-5750n2661w",
+    "2025-10-5757n2671w",
+    "2025-10-5755n2670w"
+   ]
+  },
+  {
+   "name": "Ayasi",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2841,
+   "lon": -1.5359,
+   "ha": 5.0,
+   "patches": 3,
+   "ids": [
+    "2026-02-6281n1527w",
+    "2025-11-6278n1533w",
+    "2025-11-6292n1537w"
+   ]
+  },
+  {
+   "name": "Gyasikrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.9108,
+   "lon": -2.6808,
+   "ha": 5.0,
+   "patches": 1,
+   "ids": [
+    "2026-02-5917n2679w"
+   ]
+  },
+  {
+   "name": "Jomoro",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7597,
+   "lon": -2.5912,
+   "ha": 5.0,
+   "patches": 4,
+   "ids": [
+    "2025-12-5759n2582w",
+    "2025-10-5754n2590w",
+    "2026-10-5758n2599w",
+    "2025-11-5753n2591w"
+   ]
+  },
+  {
+   "name": "Amoamang",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7743,
+   "lon": -2.4748,
+   "ha": 5.0,
+   "patches": 3,
+   "ids": [
+    "2025-11-5767n2468w",
+    "2026-02-5776n2477w",
+    "2026-01-5775n2483w"
+   ]
+  },
+  {
+   "name": "Wassa Berekum",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.5302,
+   "lon": -2.5674,
+   "ha": 4.9,
+   "patches": 2,
+   "ids": [
+    "2025-12-5538n2563w",
+    "2025-12-5531n2574w"
+   ]
+  },
+  {
+   "name": "Foso",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9228,
+   "lon": -1.6077,
+   "ha": 4.9,
+   "patches": 3,
+   "ids": [
+    "2025-12-5919n1607w",
+    "2025-11-5929n1607w",
+    "2025-11-5925n1599w"
+   ]
+  },
+  {
+   "name": "Hutinbo",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.497,
+   "lon": -2.7151,
+   "ha": 4.9,
+   "patches": 2,
+   "ids": [
+    "2026-02-5498n2715w",
+    "2026-03-5495n2715w"
+   ]
+  },
+  {
+   "name": "Koka",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.303,
+   "lon": -0.9554,
+   "ha": 4.8,
+   "patches": 2,
+   "ids": [
+    "2026-02-6300n0946w",
+    "2026-04-6298n0950w"
+   ]
+  },
+  {
+   "name": "Beposo",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5069,
+   "lon": -1.3443,
+   "ha": 4.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-6504n1349w",
+    "2025-11-6509n1349w"
+   ]
+  },
+  {
+   "name": "Adaa",
+   "place": "village",
+   "district": "Gomoa West",
+   "lat": 5.3594,
+   "lon": -0.8398,
+   "ha": 4.7,
+   "patches": 1,
+   "ids": [
+    "2026-02-5369n0841w"
+   ]
+  },
+  {
+   "name": "Anoff",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8089,
+   "lon": -0.4139,
+   "ha": 4.7,
+   "patches": 1,
+   "ids": [
+    "2026-01-5799n0413w"
+   ]
+  },
+  {
+   "name": "Kwabeng",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3201,
+   "lon": -0.5896,
+   "ha": 4.7,
+   "patches": 2,
+   "ids": [
+    "2026-01-6310n0585w",
+    "2026-01-6317n0579w"
+   ]
+  },
+  {
+   "name": "Yirase",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7243,
+   "lon": -2.4888,
+   "ha": 4.6,
+   "patches": 2,
+   "ids": [
+    "2025-10-5720n2489w",
+    "2025-12-5719n2494w"
+   ]
+  },
+  {
+   "name": "Wisiwusiw",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5199,
+   "lon": -0.8287,
+   "ha": 4.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6527n0825w",
+    "2025-12-6527n0827w"
+   ]
+  },
+  {
+   "name": "Brofoyedru",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2543,
+   "lon": -1.4863,
+   "ha": 4.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6248n1482w"
+   ]
+  },
+  {
+   "name": "Mile Fifteen",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.1689,
+   "lon": -1.8205,
+   "ha": 4.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6165n1816w",
+    "2026-01-6166n1819w"
+   ]
+  },
+  {
+   "name": "Bososo Dumase",
+   "place": "village",
+   "district": "Abuakwa North",
+   "lat": 6.2904,
+   "lon": -0.4191,
+   "ha": 4.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6301n0420w"
+   ]
+  },
+  {
+   "name": "Suwura",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6288,
+   "lon": -0.8312,
+   "ha": 4.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6626n0838w",
+    "2026-03-6632n0840w"
+   ]
+  },
+  {
+   "name": "Akyedum",
+   "place": "village",
+   "district": "Adansi South",
+   "lat": 6.077,
+   "lon": -1.2091,
+   "ha": 4.5,
+   "patches": 2,
+   "ids": [
+    "2025-11-6072n1209w",
+    "2025-11-6073n1205w"
+   ]
+  },
+  {
+   "name": "Adiembra",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6028,
+   "lon": -2.0381,
+   "ha": 4.5,
+   "patches": 2,
+   "ids": [
+    "2026-03-6606n2040w",
+    "2026-03-6609n2038w"
+   ]
+  },
+  {
+   "name": "Asempanaye",
+   "place": "town",
+   "district": "Juaboso",
+   "lat": 6.5017,
+   "lon": -2.9074,
+   "ha": 4.5,
+   "patches": 2,
+   "ids": [
+    "2025-10-6495n2915w",
+    "2025-11-6500n2911w"
+   ]
+  },
+  {
+   "name": "Krobo",
+   "place": "town",
+   "district": "Kwaebibirem",
+   "lat": 6.236,
+   "lon": -0.7888,
+   "ha": 4.5,
+   "patches": 2,
+   "ids": [
+    "2026-01-6233n0791w",
+    "2025-11-6228n0791w"
+   ]
+  },
+  {
+   "name": "Abokyea",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.7726,
+   "lon": -2.7444,
+   "ha": 4.5,
+   "patches": 3,
+   "ids": [
+    "2026-02-5767n2750w",
+    "2026-02-5763n2745w",
+    "2026-02-5779n2743w"
+   ]
+  },
+  {
+   "name": "Obuoho",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 6.0177,
+   "lon": -0.6253,
+   "ha": 4.5,
+   "patches": 2,
+   "ids": [
+    "2025-10-6028n0626w",
+    "2025-10-6017n0628w"
+   ]
+  },
+  {
+   "name": "Kyekyewere",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9291,
+   "lon": -0.3965,
+   "ha": 4.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-5922n0391w"
+   ]
+  },
+  {
+   "name": "Adankrono",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.0822,
+   "lon": -0.8294,
+   "ha": 4.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6078n0836w",
+    "2025-11-6087n0821w"
+   ]
+  },
+  {
+   "name": "Manso Dominase",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4643,
+   "lon": -1.9058,
+   "ha": 4.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-6473n1906w",
+    "2025-11-6456n1906w",
+    "2025-11-6457n1910w"
+   ]
+  },
+  {
+   "name": "Nkwanta Mmiensa",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.3473,
+   "lon": -0.9556,
+   "ha": 4.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6357n0957w",
+    "2026-01-6350n0955w"
+   ]
+  },
+  {
+   "name": "Aziako",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9235,
+   "lon": -0.3932,
+   "ha": 4.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-5922n0391w"
+   ]
+  },
+  {
+   "name": "Kokobin",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4465,
+   "lon": -1.3665,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6448n1369w"
+   ]
+  },
+  {
+   "name": "Mmuranam",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.2233,
+   "lon": -1.1955,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-6227n1204w"
+   ]
+  },
+  {
+   "name": "Nkwanta",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.571,
+   "lon": -1.5735,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6563n1576w"
+   ]
+  },
+  {
+   "name": "Akwaboso",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.23,
+   "lon": -2.0346,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6233n2044w"
+   ]
+  },
+  {
+   "name": "Kumpese",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.3788,
+   "lon": -1.9446,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6374n1951w"
+   ]
+  },
+  {
+   "name": "Abrokofe",
+   "place": "village",
+   "district": "Juaboso",
+   "lat": 6.3869,
+   "lon": -2.8905,
+   "ha": 4.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6379n2892w",
+    "2026-01-6387n2884w"
+   ]
+  },
+  {
+   "name": "Yapesa",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4505,
+   "lon": -1.3706,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6448n1369w"
+   ]
+  },
+  {
+   "name": "Gyadem",
+   "place": "village",
+   "district": "Birim Central Municipal",
+   "lat": 5.9274,
+   "lon": -1.0398,
+   "ha": 4.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-5919n1035w"
+   ]
+  },
+  {
+   "name": "Asikasu",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3632,
+   "lon": -1.6321,
+   "ha": 4.2,
+   "patches": 3,
+   "ids": [
+    "2025-12-6364n1623w",
+    "2025-11-6362n1627w",
+    "2025-12-6358n1629w"
+   ]
+  },
+  {
+   "name": "Kurakuratum",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4353,
+   "lon": -0.8983,
+   "ha": 4.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6444n0901w"
+   ]
+  },
+  {
+   "name": "Esreso",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.357,
+   "lon": -1.6579,
+   "ha": 4.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6360n1654w"
+   ]
+  },
+  {
+   "name": "Akete Bommo",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7816,
+   "lon": -1.5221,
+   "ha": 4.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-6778n1522w"
+   ]
+  },
+  {
+   "name": "Nobewam",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.6261,
+   "lon": -1.2965,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2026-04-6628n1307w"
+   ]
+  },
+  {
+   "name": "Twapease",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.3821,
+   "lon": -0.9127,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6376n0910w"
+   ]
+  },
+  {
+   "name": "Hweakwai",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.3446,
+   "lon": -1.0533,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-6335n1053w"
+   ]
+  },
+  {
+   "name": "Akyem Amanfrom",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.3378,
+   "lon": -1.0598,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-6335n1053w"
+   ]
+  },
+  {
+   "name": "Gyedam",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.367,
+   "lon": -0.5061,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6373n0512w"
+   ]
+  },
+  {
+   "name": "Omanekurom",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.385,
+   "lon": -0.9078,
+   "ha": 4.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6376n0910w"
+   ]
+  },
+  {
+   "name": "Esaase",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.558,
+   "lon": -1.8908,
+   "ha": 4.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-6559n1898w",
+    "2025-11-6560n1900w"
+   ]
+  },
+  {
+   "name": "Nsuaem",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8857,
+   "lon": -1.8576,
+   "ha": 4.1,
+   "patches": 2,
+   "ids": [
+    "2025-12-5880n1858w",
+    "2025-12-5882n1860w"
+   ]
+  },
+  {
+   "name": "Dumpaso No. 2",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.3359,
+   "lon": -1.9278,
+   "ha": 4.0,
+   "patches": 2,
+   "ids": [
+    "2025-11-6341n1926w",
+    "2025-11-6342n1924w"
+   ]
+  },
+  {
+   "name": "Gomoa Hasowodze",
+   "place": "village",
+   "district": "Gomoa West",
+   "lat": 5.5256,
+   "lon": -0.8834,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-5524n0887w"
+   ]
+  },
+  {
+   "name": "Kukubuso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7027,
+   "lon": -1.9187,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6699n1923w"
+   ]
+  },
+  {
+   "name": "Faaman",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4427,
+   "lon": -1.5936,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6440n1598w"
+   ]
+  },
+  {
+   "name": "Krofofrom",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.63,
+   "lon": -2.4741,
+   "ha": 4.0,
+   "patches": 2,
+   "ids": [
+    "2026-02-5627n2483w",
+    "2026-01-5627n2479w"
+   ]
+  },
+  {
+   "name": "Manukrom",
+   "place": "village",
+   "district": "Adansi Akrofuom",
+   "lat": 6.0147,
+   "lon": -1.7643,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2026-01-6013n1765w"
+   ]
+  },
+  {
+   "name": "Bawdie",
+   "place": "town",
+   "district": "Wassa Amenfi East",
+   "lat": 5.6355,
+   "lon": -2.0962,
+   "ha": 4.0,
+   "patches": 2,
+   "ids": [
+    "2026-03-5640n2089w",
+    "2026-03-5631n2096w"
+   ]
+  },
+  {
+   "name": "Asemkrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.3883,
+   "lon": -2.6899,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2025-12-5387n2687w"
+   ]
+  },
+  {
+   "name": "Hia",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.2085,
+   "lon": -1.7755,
+   "ha": 4.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6207n1778w"
+   ]
+  },
+  {
+   "name": "Nkoduase",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3661,
+   "lon": -1.6975,
+   "ha": 4.0,
+   "patches": 3,
+   "ids": [
+    "2026-02-6376n1699w",
+    "2026-02-6368n1692w",
+    "2025-12-6361n1693w"
+   ]
+  },
+  {
+   "name": "Asarekrom",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4996,
+   "lon": -1.8076,
+   "ha": 3.9,
+   "patches": 2,
+   "ids": [
+    "2025-11-6505n1803w",
+    "2025-11-6497n1800w"
+   ]
+  },
+  {
+   "name": "Nsuta",
+   "place": "village",
+   "district": "Ahafo Ano South West",
+   "lat": 7.015,
+   "lon": -2.0069,
+   "ha": 3.9,
+   "patches": 3,
+   "ids": [
+    "2026-01-7016n1998w",
+    "2026-02-7011n1999w",
+    "2025-11-7008n2003w"
+   ]
+  },
+  {
+   "name": "Akua Nsia",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8142,
+   "lon": -2.6575,
+   "ha": 3.9,
+   "patches": 2,
+   "ids": [
+    "2025-10-5822n2662w",
+    "2025-12-5820n2660w"
+   ]
+  },
+  {
+   "name": "Nsuta Subriso",
+   "place": "village",
+   "district": "Adansi South",
+   "lat": 6.0328,
+   "lon": -1.2411,
+   "ha": 3.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-6037n1231w"
+   ]
+  },
+  {
+   "name": "Asuadei",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1806,
+   "lon": -2.1189,
+   "ha": 3.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-6179n2121w",
+    "2026-02-6188n2119w"
+   ]
+  },
+  {
+   "name": "Asiakwa",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.2632,
+   "lon": -0.5048,
+   "ha": 3.8,
+   "patches": 3,
+   "ids": [
+    "2026-03-6260n0512w",
+    "2026-03-6266n0509w",
+    "2026-03-6270n0511w"
+   ]
+  },
+  {
+   "name": "Abasua",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7237,
+   "lon": -1.9358,
+   "ha": 3.8,
+   "patches": 3,
+   "ids": [
+    "2026-01-6730n1930w",
+    "2026-07-6722n1927w",
+    "2026-04-6717n1940w"
+   ]
+  },
+  {
+   "name": "Boatenkurom",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8099,
+   "lon": -1.9248,
+   "ha": 3.8,
+   "patches": 2,
+   "ids": [
+    "2026-03-6804n1920w",
+    "2026-03-6809n1921w"
+   ]
+  },
+  {
+   "name": "Achiasi",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3008,
+   "lon": -1.6631,
+   "ha": 3.8,
+   "patches": 3,
+   "ids": [
+    "2025-11-6292n1665w",
+    "2025-11-6296n1663w",
+    "2025-11-6293n1668w"
+   ]
+  },
+  {
+   "name": "Asougya",
+   "place": "village",
+   "district": "Prestea/huni Valley",
+   "lat": 5.4825,
+   "lon": -1.8305,
+   "ha": 3.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-5477n1838w",
+    "2026-01-5484n1826w"
+   ]
+  },
+  {
+   "name": "Tettey Junction",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8562,
+   "lon": -2.6553,
+   "ha": 3.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-5859n2650w"
+   ]
+  },
+  {
+   "name": "Deduako",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5538,
+   "lon": -1.4587,
+   "ha": 3.8,
+   "patches": 1,
+   "ids": [
+    "2026-02-6546n1464w"
+   ]
+  },
+  {
+   "name": "Anyinamso No. 2",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6467,
+   "lon": -1.9041,
+   "ha": 3.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6657n1905w"
+   ]
+  },
+  {
+   "name": "Anyinamso No. 1",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6498,
+   "lon": -1.8971,
+   "ha": 3.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6657n1905w"
+   ]
+  },
+  {
+   "name": "Miawani",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8352,
+   "lon": -2.6705,
+   "ha": 3.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-5833n2667w",
+    "2026-02-5829n2673w"
+   ]
+  },
+  {
+   "name": "Nnaama",
+   "place": "village",
+   "district": "Sekyere East",
+   "lat": 6.8598,
+   "lon": -1.3339,
+   "ha": 3.7,
+   "patches": 1,
+   "ids": [
+    "2026-04-6864n1329w"
+   ]
+  },
+  {
+   "name": "Sefwi Ashiam",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.1084,
+   "lon": -2.3256,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2026-02-6101n2324w",
+    "2026-01-6102n2326w"
+   ]
+  },
+  {
+   "name": "Krobo",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7729,
+   "lon": -1.5043,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6764n1504w",
+    "2026-03-6780n1510w"
+   ]
+  },
+  {
+   "name": "Atakurom",
+   "place": "village",
+   "district": "Sekyere East",
+   "lat": 6.8366,
+   "lon": -1.3015,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2026-03-6845n1300w",
+    "2026-02-6832n1294w"
+   ]
+  },
+  {
+   "name": "Abedwum",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3009,
+   "lon": -1.6587,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2025-12-6296n1652w",
+    "2025-11-6296n1663w"
+   ]
+  },
+  {
+   "name": "Sodua",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3015,
+   "lon": -1.5872,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6294n1588w",
+    "2025-11-6297n1596w"
+   ]
+  },
+  {
+   "name": "Nkrankese",
+   "place": "village",
+   "district": "Adansi South",
+   "lat": 5.929,
+   "lon": -1.4247,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-5930n1414w",
+    "2025-12-5930n1418w"
+   ]
+  },
+  {
+   "name": "Takyikrom",
+   "place": "village",
+   "district": "Adansi South",
+   "lat": 5.9386,
+   "lon": -1.4204,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-5930n1414w",
+    "2025-12-5930n1418w"
+   ]
+  },
+  {
+   "name": "Akwaboso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3459,
+   "lon": -0.6484,
+   "ha": 3.5,
+   "patches": 2,
+   "ids": [
+    "2026-01-6344n0653w",
+    "2026-01-6350n0642w"
+   ]
+  },
+  {
+   "name": "Jameso Nkwanta",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1364,
+   "lon": -2.1165,
+   "ha": 3.5,
+   "patches": 2,
+   "ids": [
+    "2025-11-6131n2124w",
+    "2026-03-6143n2122w"
+   ]
+  },
+  {
+   "name": "Ankwaoso",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.143,
+   "lon": -2.217,
+   "ha": 3.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6152n2218w"
+   ]
+  },
+  {
+   "name": "Odaho",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.3526,
+   "lon": -1.8251,
+   "ha": 3.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-6347n1829w",
+    "2026-01-6353n1834w"
+   ]
+  },
+  {
+   "name": "Nkronso",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1388,
+   "lon": -0.4883,
+   "ha": 3.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6142n0479w"
+   ]
+  },
+  {
+   "name": "Beposo",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7312,
+   "lon": -1.9122,
+   "ha": 3.4,
+   "patches": 2,
+   "ids": [
+    "2026-02-6738n1909w",
+    "2026-02-6733n1916w"
+   ]
+  },
+  {
+   "name": "Asikuma",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.906,
+   "lon": -1.8295,
+   "ha": 3.4,
+   "patches": 2,
+   "ids": [
+    "2026-01-5897n1831w",
+    "2025-11-5897n1834w"
+   ]
+  },
+  {
+   "name": "Kyenkyentaa",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7107,
+   "lon": -1.8753,
+   "ha": 3.4,
+   "patches": 2,
+   "ids": [
+    "2026-01-6716n1878w",
+    "2026-03-6703n1880w"
+   ]
+  },
+  {
+   "name": "Oda Anwiam",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.8412,
+   "lon": -2.4957,
+   "ha": 3.3,
+   "patches": 1,
+   "ids": [
+    "2025-10-5841n2492w"
+   ]
+  },
+  {
+   "name": "Chirebroso",
+   "place": "village",
+   "district": "Adansi Asokwa",
+   "lat": 6.2141,
+   "lon": -1.4846,
+   "ha": 3.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6214n1489w"
+   ]
+  },
+  {
+   "name": "Dwinase",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0958,
+   "lon": -0.6954,
+   "ha": 3.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6090n0702w",
+    "2026-01-6086n0698w"
+   ]
+  },
+  {
+   "name": "Beposo",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 6.0737,
+   "lon": -2.3651,
+   "ha": 3.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-6073n2358w"
+   ]
+  },
+  {
+   "name": "Adankwame",
+   "place": "village",
+   "district": "Atwima Nwabiagya North",
+   "lat": 6.8006,
+   "lon": -1.7137,
+   "ha": 3.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-6805n1721w",
+    "2026-03-6808n1712w"
+   ]
+  },
+  {
+   "name": "Kojo Fachuma",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 5.8989,
+   "lon": -0.6005,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5895n0600w"
+   ]
+  },
+  {
+   "name": "Twereso",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.4101,
+   "lon": -0.5821,
+   "ha": 3.2,
+   "patches": 2,
+   "ids": [
+    "2025-10-6410n0574w",
+    "2025-11-6420n0580w"
+   ]
+  },
+  {
+   "name": "Kantanso",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.6092,
+   "lon": -1.0286,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-6617n1022w"
+   ]
+  },
+  {
+   "name": "Agyadebiakuraa",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 5.9042,
+   "lon": -0.6014,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5895n0600w"
+   ]
+  },
+  {
+   "name": "Aduamkrom",
+   "place": "village",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.5781,
+   "lon": -1.2449,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6585n1240w"
+   ]
+  },
+  {
+   "name": "Amankwadei",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5181,
+   "lon": -1.5101,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6509n1505w"
+   ]
+  },
+  {
+   "name": "Mammiriwa No.1",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.2359,
+   "lon": -1.715,
+   "ha": 3.2,
+   "patches": 2,
+   "ids": [
+    "2025-12-6234n1715w",
+    "2025-11-6234n1720w"
+   ]
+  },
+  {
+   "name": "Mammiriwa No.2",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.231,
+   "lon": -1.7121,
+   "ha": 3.2,
+   "patches": 2,
+   "ids": [
+    "2025-12-6234n1715w",
+    "2025-11-6234n1720w"
+   ]
+  },
+  {
+   "name": "Aponapon",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.3901,
+   "lon": -1.8945,
+   "ha": 3.2,
+   "patches": 2,
+   "ids": [
+    "2025-11-6386n1903w",
+    "2025-11-6381n1897w"
+   ]
+  },
+  {
+   "name": "Anwianwia",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.051,
+   "lon": -2.0024,
+   "ha": 3.2,
+   "patches": 2,
+   "ids": [
+    "2025-11-6050n1997w",
+    "2026-01-6042n1999w"
+   ]
+  },
+  {
+   "name": "Aketechieso",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.28,
+   "lon": -1.6883,
+   "ha": 3.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-6276n1696w"
+   ]
+  },
+  {
+   "name": "Kario",
+   "place": "village",
+   "district": "Suaman",
+   "lat": 6.1327,
+   "lon": -3.0016,
+   "ha": 3.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6137n2992w"
+   ]
+  },
+  {
+   "name": "Kwahu Praso No.2",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6241,
+   "lon": -0.9132,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2026-04-6621n0908w",
+    "2025-11-6622n0906w"
+   ]
+  },
+  {
+   "name": "Apoli South",
+   "place": "village",
+   "district": "Birim South",
+   "lat": 5.9462,
+   "lon": -1.1572,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5953n1154w",
+    "2025-11-5954n1152w"
+   ]
+  },
+  {
+   "name": "Apoli North",
+   "place": "village",
+   "district": "Akyem Mansa",
+   "lat": 5.9546,
+   "lon": -1.149,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5953n1154w",
+    "2025-11-5954n1152w"
+   ]
+  },
+  {
+   "name": "Wabiri",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.474,
+   "lon": -1.2951,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2026-03-6467n1292w",
+    "2026-03-6467n1289w"
+   ]
+  },
+  {
+   "name": "Jensue",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8407,
+   "lon": -2.8448,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5846n2845w",
+    "2025-12-5846n2854w"
+   ]
+  },
+  {
+   "name": "Kwahu Praso No.1",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6192,
+   "lon": -0.9078,
+   "ha": 3.1,
+   "patches": 2,
+   "ids": [
+    "2026-04-6621n0908w",
+    "2025-11-6622n0906w"
+   ]
+  },
+  {
+   "name": "Aburi",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.2732,
+   "lon": -2.0633,
+   "ha": 3.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6282n2066w"
+   ]
+  },
+  {
+   "name": "Awadua Nkwanta",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.9071,
+   "lon": -1.9669,
+   "ha": 3.0,
+   "patches": 2,
+   "ids": [
+    "2025-11-6906n1974w",
+    "2025-11-6909n1973w"
+   ]
+  },
+  {
+   "name": "Abuakwa Nkwanta",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9409,
+   "lon": -1.7635,
+   "ha": 3.0,
+   "patches": 2,
+   "ids": [
+    "2026-01-5936n1768w",
+    "2025-12-5945n1769w"
+   ]
+  },
+  {
+   "name": "Mmradan",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9417,
+   "lon": -1.7718,
+   "ha": 3.0,
+   "patches": 2,
+   "ids": [
+    "2026-01-5936n1768w",
+    "2025-12-5945n1769w"
+   ]
+  },
+  {
+   "name": "Benda Nkwanta",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.5393,
+   "lon": -2.5439,
+   "ha": 3.0,
+   "patches": 2,
+   "ids": [
+    "2025-12-5545n2550w",
+    "2025-10-5532n2542w"
+   ]
+  },
+  {
+   "name": "Domeabra",
+   "place": "village",
+   "district": "Akyem Mansa",
+   "lat": 5.9554,
+   "lon": -1.139,
+   "ha": 3.0,
+   "patches": 1,
+   "ids": [
+    "2026-04-5958n1131w"
+   ]
+  },
+  {
+   "name": "Nkaasu",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4629,
+   "lon": -1.9422,
+   "ha": 3.0,
+   "patches": 2,
+   "ids": [
+    "2025-11-6462n1946w",
+    "2025-11-6461n1943w"
+   ]
+  },
+  {
+   "name": "Biemso No.2",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8997,
+   "lon": -1.859,
+   "ha": 2.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-6905n1858w"
+   ]
+  },
+  {
+   "name": "Wompam",
+   "place": "town",
+   "district": "Upper Denkyira West",
+   "lat": 5.9739,
+   "lon": -1.8727,
+   "ha": 2.9,
+   "patches": 2,
+   "ids": [
+    "2026-02-5977n1872w",
+    "2025-11-5974n1879w"
+   ]
+  },
+  {
+   "name": "Kwasi Lame",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.7945,
+   "lon": -0.3721,
+   "ha": 2.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-5802n0371w"
+   ]
+  },
+  {
+   "name": "Osino",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3501,
+   "lon": -0.4866,
+   "ha": 2.8,
+   "patches": 2,
+   "ids": [
+    "2026-01-6341n0487w",
+    "2026-03-6346n0494w"
+   ]
+  },
+  {
+   "name": "Abakoase",
+   "place": "town",
+   "district": "Atiwa East",
+   "lat": 6.4194,
+   "lon": -0.6314,
+   "ha": 2.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-6422n0623w",
+    "2026-03-6424n0635w"
+   ]
+  },
+  {
+   "name": "Sompre Junction",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.9323,
+   "lon": -2.4318,
+   "ha": 2.8,
+   "patches": 2,
+   "ids": [
+    "2025-11-5931n2428w",
+    "2025-11-5929n2427w"
+   ]
+  },
+  {
+   "name": "Mfranor",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9988,
+   "lon": -0.5667,
+   "ha": 2.8,
+   "patches": 1,
+   "ids": [
+    "2026-03-5989n0569w"
+   ]
+  },
+  {
+   "name": "Suhyenso",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.1403,
+   "lon": -1.7259,
+   "ha": 2.8,
+   "patches": 1,
+   "ids": [
+    "2026-02-6147n1730w"
+   ]
+  },
+  {
+   "name": "Asante Asamang",
+   "place": "village",
+   "district": "Sekyere South",
+   "lat": 6.9035,
+   "lon": -1.4359,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6898n1440w"
+   ]
+  },
+  {
+   "name": "Boankra",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.6951,
+   "lon": -1.404,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6700n1403w"
+   ]
+  },
+  {
+   "name": "Konya Brehoma",
+   "place": "village",
+   "district": "Sekyere South",
+   "lat": 6.9006,
+   "lon": -1.4323,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6898n1440w"
+   ]
+  },
+  {
+   "name": "Abenaso",
+   "place": "town",
+   "district": "Kwaebibirem",
+   "lat": 6.2175,
+   "lon": -0.7432,
+   "ha": 2.7,
+   "patches": 2,
+   "ids": [
+    "2026-10-6218n0750w",
+    "2026-10-6217n0752w"
+   ]
+  },
+  {
+   "name": "Manso Takorase",
+   "place": "village",
+   "district": "Amansie South",
+   "lat": 6.3198,
+   "lon": -1.975,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2025-12-6328n1974w"
+   ]
+  },
+  {
+   "name": "Peterkrom",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.7356,
+   "lon": -1.8111,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2026-01-5739n1810w"
+   ]
+  },
+  {
+   "name": "Sika Nti",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.9072,
+   "lon": -2.4005,
+   "ha": 2.7,
+   "patches": 2,
+   "ids": [
+    "2025-12-5912n2393w",
+    "2026-01-5903n2401w"
+   ]
+  },
+  {
+   "name": "Ampeha",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5392,
+   "lon": -0.8535,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2025-12-6541n0851w"
+   ]
+  },
+  {
+   "name": "Trado",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5432,
+   "lon": -0.7512,
+   "ha": 2.7,
+   "patches": 2,
+   "ids": [
+    "2026-03-6541n0758w",
+    "2026-03-6537n0748w"
+   ]
+  },
+  {
+   "name": "Praso Amoada",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.5072,
+   "lon": -0.9838,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6501n0983w",
+    "2025-12-6499n0986w"
+   ]
+  },
+  {
+   "name": "Kwame Dwaa",
+   "place": "village",
+   "district": "Atwima Nwabiagya South",
+   "lat": 6.7039,
+   "lon": -1.8661,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6704n1864w",
+    "2025-11-6700n1862w"
+   ]
+  },
+  {
+   "name": "Fankyeneko",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3515,
+   "lon": -0.4461,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2025-10-6359n0450w",
+    "2026-05-6361n0443w"
+   ]
+  },
+  {
+   "name": "Mansaso",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6972,
+   "lon": -1.864,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-6704n1864w",
+    "2025-11-6700n1862w"
+   ]
+  },
+  {
+   "name": "Bodoma",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.398,
+   "lon": -1.5864,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-6398n1591w",
+    "2025-11-6402n1577w"
+   ]
+  },
+  {
+   "name": "Dome",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3551,
+   "lon": -0.4412,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2025-10-6359n0450w",
+    "2026-05-6361n0443w"
+   ]
+  },
+  {
+   "name": "Ohene Nkwanta",
+   "place": "village",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.6153,
+   "lon": -1.2694,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2026-03-6617n1273w",
+    "2025-10-6615n1260w"
+   ]
+  },
+  {
+   "name": "Asankra Breman",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.8536,
+   "lon": -2.4535,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-5863n2452w",
+    "2026-02-5862n2457w"
+   ]
+  },
+  {
+   "name": "Okyerekrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.56,
+   "lon": -2.2751,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6565n2267w"
+   ]
+  },
+  {
+   "name": "Sempoakurom",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.8417,
+   "lon": -0.7547,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2025-12-6847n0763w"
+   ]
+  },
+  {
+   "name": "Ayanfuri",
+   "place": "town",
+   "district": "Upper Denkyira West",
+   "lat": 5.9602,
+   "lon": -1.8951,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-5958n1902w",
+    "2025-12-5955n1900w"
+   ]
+  },
+  {
+   "name": "Antoa",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7575,
+   "lon": -1.525,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6757n1528w"
+   ]
+  },
+  {
+   "name": "Obohema",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.3198,
+   "lon": -1.0705,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6325n1064w"
+   ]
+  },
+  {
+   "name": "Afua Kuntukurom",
+   "place": "village",
+   "district": "Afigya Kwabre North",
+   "lat": 6.9569,
+   "lon": -1.6178,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6961n1625w"
+   ]
+  },
+  {
+   "name": "Atwima Takoradi",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5374,
+   "lon": -2.1841,
+   "ha": 2.5,
+   "patches": 2,
+   "ids": [
+    "2026-03-6539n2193w",
+    "2026-04-6532n2181w"
+   ]
+  },
+  {
+   "name": "Tumfa",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2426,
+   "lon": -0.6755,
+   "ha": 2.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-6247n0669w"
+   ]
+  },
+  {
+   "name": "Kabreso",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 6.0295,
+   "lon": -0.6751,
+   "ha": 2.5,
+   "patches": 2,
+   "ids": [
+    "2025-10-6030n0671w",
+    "2026-01-6025n0670w"
+   ]
+  },
+  {
+   "name": "Bamanase",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0118,
+   "lon": -0.7712,
+   "ha": 2.5,
+   "patches": 1,
+   "ids": [
+    "2026-05-6006n0772w"
+   ]
+  },
+  {
+   "name": "Otwenkwanta",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 6.0008,
+   "lon": -0.7695,
+   "ha": 2.5,
+   "patches": 1,
+   "ids": [
+    "2026-05-6006n0772w"
+   ]
+  },
+  {
+   "name": "Appiahkrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8344,
+   "lon": -2.665,
+   "ha": 2.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-5833n2667w"
+   ]
+  },
+  {
+   "name": "Kontompa",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6316,
+   "lon": -0.8516,
+   "ha": 2.5,
+   "patches": 2,
+   "ids": [
+    "2026-03-6639n0851w",
+    "2025-12-6637n0857w"
+   ]
+  },
+  {
+   "name": "Kwekuanani",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4997,
+   "lon": -0.9246,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6491n0920w"
+   ]
+  },
+  {
+   "name": "Wassa Afransie",
+   "place": "town",
+   "district": "Wassa Amenfi East",
+   "lat": 5.906,
+   "lon": -2.1276,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-5897n2128w"
+   ]
+  },
+  {
+   "name": "Obogu",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.5234,
+   "lon": -1.1216,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6517n1126w"
+   ]
+  },
+  {
+   "name": "Bobriase",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2947,
+   "lon": -1.6212,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2026-03-6290n1621w"
+   ]
+  },
+  {
+   "name": "Akim Bomso",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.2704,
+   "lon": -0.7846,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6267n0775w"
+   ]
+  },
+  {
+   "name": "Aboaso",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.6197,
+   "lon": -1.5385,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6611n1540w"
+   ]
+  },
+  {
+   "name": "Adense",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7615,
+   "lon": -1.4946,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6764n1504w"
+   ]
+  },
+  {
+   "name": "Adeesena",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7638,
+   "lon": -1.5143,
+   "ha": 2.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6764n1504w"
+   ]
+  },
+  {
+   "name": "Atakroasi",
+   "place": "village",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.3989,
+   "lon": -0.9023,
+   "ha": 2.4,
+   "patches": 2,
+   "ids": [
+    "2025-11-5400n0906w",
+    "2026-01-5400n0905w"
+   ]
+  },
+  {
+   "name": "Nyankomagokrom",
+   "place": "village",
+   "district": "Asunafo North Municipal",
+   "lat": 6.989,
+   "lon": -2.6976,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6984n2695w"
+   ]
+  },
+  {
+   "name": "Wassa Mamieso",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8811,
+   "lon": -2.1176,
+   "ha": 2.3,
+   "patches": 2,
+   "ids": [
+    "2025-11-5886n2118w",
+    "2026-03-5888n2119w"
+   ]
+  },
+  {
+   "name": "Jukwa Hemang",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 5.9523,
+   "lon": -2.1683,
+   "ha": 2.3,
+   "patches": 2,
+   "ids": [
+    "2026-01-5946n2170w",
+    "2025-11-5949n2163w"
+   ]
+  },
+  {
+   "name": "Manso Atwere",
+   "place": "town",
+   "district": "Amansie West",
+   "lat": 6.4574,
+   "lon": -1.8575,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6459n1853w"
+   ]
+  },
+  {
+   "name": "Takyiman Merewadwa",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.6238,
+   "lon": -1.7147,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6632n1713w"
+   ]
+  },
+  {
+   "name": "Dida",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.6276,
+   "lon": -1.7192,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6632n1713w"
+   ]
+  },
+  {
+   "name": "Akomfere",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5355,
+   "lon": -2.0687,
+   "ha": 2.3,
+   "patches": 2,
+   "ids": [
+    "2026-03-6540n2065w",
+    "2026-01-6538n2065w"
+   ]
+  },
+  {
+   "name": "Bentekrom",
+   "place": "village",
+   "district": "Atwima Nwabiagya South",
+   "lat": 6.7337,
+   "lon": -1.8899,
+   "ha": 2.3,
+   "patches": 2,
+   "ids": [
+    "2026-03-6739n1895w",
+    "2026-03-6728n1890w"
+   ]
+  },
+  {
+   "name": "Akwakupom",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8238,
+   "lon": -0.2708,
+   "ha": 2.3,
+   "patches": 2,
+   "ids": [
+    "2026-03-5823n0277w",
+    "2026-03-5833n0275w"
+   ]
+  },
+  {
+   "name": "Mpasaso No.1",
+   "place": "village",
+   "district": "Ahafo Ano South West",
+   "lat": 6.7984,
+   "lon": -2.1402,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2026-02-6807n2146w"
+   ]
+  },
+  {
+   "name": "Asempaneye",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.797,
+   "lon": -1.8216,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2025-12-6790n1822w"
+   ]
+  },
+  {
+   "name": "Pemenase",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.5251,
+   "lon": -1.3112,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6520n1317w"
+   ]
+  },
+  {
+   "name": "Nkoranza",
+   "place": "village",
+   "district": "Gomoa West",
+   "lat": 5.368,
+   "lon": -0.7973,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-5374n0801w"
+   ]
+  },
+  {
+   "name": "Atiemo",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.4931,
+   "lon": -1.1519,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6496n1145w"
+   ]
+  },
+  {
+   "name": "Merewa",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.2863,
+   "lon": -2.1361,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6288n2143w"
+   ]
+  },
+  {
+   "name": "Nsiana",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4646,
+   "lon": -1.8126,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-6455n1815w"
+   ]
+  },
+  {
+   "name": "Nwinso",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4618,
+   "lon": -0.9403,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-6466n0947w"
+   ]
+  },
+  {
+   "name": "Sanso",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.152,
+   "lon": -1.7001,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6152n1706w"
+   ]
+  },
+  {
+   "name": "Ahyiresu",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5401,
+   "lon": -2.3367,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-6533n2330w"
+   ]
+  },
+  {
+   "name": "Akooko",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1609,
+   "lon": -0.4861,
+   "ha": 2.2,
+   "patches": 2,
+   "ids": [
+    "2026-03-6158n0494w",
+    "2026-02-6154n0486w"
+   ]
+  },
+  {
+   "name": "Sureso",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 5.7315,
+   "lon": -2.3738,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5735n2366w"
+   ]
+  },
+  {
+   "name": "Twinuasi",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.5343,
+   "lon": -1.6263,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-6537n1632w"
+   ]
+  },
+  {
+   "name": "Amobaka",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1997,
+   "lon": -2.1778,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6207n2179w"
+   ]
+  },
+  {
+   "name": "Sobroso",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.8931,
+   "lon": -1.7543,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5892n1750w"
+   ]
+  },
+  {
+   "name": "Mmeso",
+   "place": "village",
+   "district": "Asunafo South",
+   "lat": 6.5444,
+   "lon": -2.4001,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6552n2403w"
+   ]
+  },
+  {
+   "name": "Twifo Ntafrewaso",
+   "place": "village",
+   "district": "Twifo Atti-morkwa",
+   "lat": 5.5594,
+   "lon": -1.5463,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-5566n1544w"
+   ]
+  },
+  {
+   "name": "Oworomera",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.5257,
+   "lon": -0.852,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6523n0858w"
+   ]
+  },
+  {
+   "name": "Fiankuma",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3149,
+   "lon": -1.7267,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6323n1732w"
+   ]
+  },
+  {
+   "name": "Abom",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.5495,
+   "lon": -1.7178,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6551n1710w"
+   ]
+  },
+  {
+   "name": "Kwaso",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.6301,
+   "lon": -1.4511,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6628n1459w"
+   ]
+  },
+  {
+   "name": "Boinso",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.5548,
+   "lon": -2.7212,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2026-04-5561n2728w"
+   ]
+  },
+  {
+   "name": "Asiedukurom",
+   "place": "village",
+   "district": "Asene Akroso Manso",
+   "lat": 5.9254,
+   "lon": -0.8026,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5922n0812w"
+   ]
+  },
+  {
+   "name": "Kwamekyekrom",
+   "place": "village",
+   "district": "Ahafo Ano South East",
+   "lat": 6.9872,
+   "lon": -1.9405,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6979n1940w"
+   ]
+  },
+  {
+   "name": "Abrade",
+   "place": "village",
+   "district": "Akyem Mansa",
+   "lat": 6.1114,
+   "lon": -1.1889,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6110n1194w"
+   ]
+  },
+  {
+   "name": "Ampenkro",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6254,
+   "lon": -2.0203,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6624n2024w"
+   ]
+  },
+  {
+   "name": "Apiate",
+   "place": "village",
+   "district": "Prestea/huni Valley",
+   "lat": 5.5849,
+   "lon": -2.0464,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-5584n2040w"
+   ]
+  },
+  {
+   "name": "Adaase",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.2459,
+   "lon": -1.7009,
+   "ha": 2.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-6244n1706w"
+   ]
+  },
+  {
+   "name": "Manso Adubia",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4017,
+   "lon": -1.9347,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6404n1941w"
+   ]
+  },
+  {
+   "name": "Mpasatia",
+   "place": "town",
+   "district": "Atwima Mponua",
+   "lat": 6.6637,
+   "lon": -1.8426,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2026-03-6657n1837w"
+   ]
+  },
+  {
+   "name": "Abrodease",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5501,
+   "lon": -1.8224,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6555n1830w"
+   ]
+  },
+  {
+   "name": "Korko",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5619,
+   "lon": -1.8358,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6555n1830w"
+   ]
+  },
+  {
+   "name": "Apaah",
+   "place": "village",
+   "district": "Mampong Municipal",
+   "lat": 6.9631,
+   "lon": -1.4539,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2026-03-6965n1456w"
+   ]
+  },
+  {
+   "name": "Akrofrom",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3961,
+   "lon": -1.6057,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-6388n1603w"
+   ]
+  },
+  {
+   "name": "Twifo Moseaso",
+   "place": "village",
+   "district": "Twifo Atti-morkwa",
+   "lat": 5.6294,
+   "lon": -1.6053,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-5624n1600w"
+   ]
+  },
+  {
+   "name": "Ankokrom",
+   "place": "village",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.3787,
+   "lon": -0.9968,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2026-03-5373n1000w"
+   ]
+  },
+  {
+   "name": "Badoa No.1",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9247,
+   "lon": -1.6316,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2026-01-5931n1632w"
+   ]
+  },
+  {
+   "name": "Galalie",
+   "place": "town",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8275,
+   "lon": -2.0942,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-11-5831n2092w"
+   ]
+  },
+  {
+   "name": "Juaben",
+   "place": "town",
+   "district": "Juaben Municipal",
+   "lat": 6.8156,
+   "lon": -1.4215,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-02-6807n1426w"
+   ]
+  },
+  {
+   "name": "Konkoma",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5146,
+   "lon": -1.3532,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-6509n1349w"
+   ]
+  },
+  {
+   "name": "Mmofram",
+   "place": "village",
+   "district": "Asene Akroso Manso",
+   "lat": 5.8039,
+   "lon": -0.8599,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-5808n0863w"
+   ]
+  },
+  {
+   "name": "Gomoa Abamkrom",
+   "place": "village",
+   "district": "Gomoa West",
+   "lat": 5.5111,
+   "lon": -0.8603,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-5517n0865w"
+   ]
+  },
+  {
+   "name": "Nyinahin",
+   "place": "town",
+   "district": "Atwima Mponua",
+   "lat": 6.5992,
+   "lon": -2.1168,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-04-6600n2107w"
+   ]
+  },
+  {
+   "name": "Ohiamiasi",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.297,
+   "lon": -1.2486,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-6293n1247w"
+   ]
+  },
+  {
+   "name": "Acquai Allah",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.8831,
+   "lon": -2.6648,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-5878n2663w"
+   ]
+  },
+  {
+   "name": "Klo-Agogo",
+   "place": "town",
+   "district": "Yilo Krobo",
+   "lat": 6.2501,
+   "lon": -0.2249,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-6247n0228w"
+   ]
+  },
+  {
+   "name": "Patunso",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7698,
+   "lon": -2.5683,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-01-5769n2574w"
+   ]
+  },
+  {
+   "name": "Rama",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4649,
+   "lon": -0.8824,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-01-6462n0881w"
+   ]
+  },
+  {
+   "name": "Asuofori",
+   "place": "village",
+   "district": "West Akim",
+   "lat": 5.9813,
+   "lon": -0.7282,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-5981n0734w"
+   ]
+  },
+  {
+   "name": "Akwapim",
+   "place": "village",
+   "district": "Yilo Krobo",
+   "lat": 6.2486,
+   "lon": -0.2368,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-6247n0228w"
+   ]
+  },
+  {
+   "name": "Okansseri",
+   "place": "village",
+   "district": "Yilo Krobo",
+   "lat": 6.2424,
+   "lon": -0.2267,
+   "ha": 1.9,
+   "patches": 1,
+   "ids": [
+    "2026-03-6247n0228w"
+   ]
+  },
+  {
+   "name": "Awaso",
+   "place": "town",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.2425,
+   "lon": -2.2846,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-01-6246n2289w"
+   ]
+  },
+  {
+   "name": "Donyina",
+   "place": "village",
+   "district": "Ejisu Municipal",
+   "lat": 6.6397,
+   "lon": -1.4934,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6646n1487w"
+   ]
+  },
+  {
+   "name": "Saamang",
+   "place": "town",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8157,
+   "lon": -2.129,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-03-5811n2121w"
+   ]
+  },
+  {
+   "name": "Diaso",
+   "place": "town",
+   "district": "Upper Denkyira West",
+   "lat": 6.1531,
+   "lon": -2.153,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-01-6153n2159w"
+   ]
+  },
+  {
+   "name": "Brofoyedru",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2982,
+   "lon": -1.5247,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-10-6302n1518w"
+   ]
+  },
+  {
+   "name": "Nwiniso No.1",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.5771,
+   "lon": -1.7901,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-03-6569n1786w"
+   ]
+  },
+  {
+   "name": "Homasi No.2",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3735,
+   "lon": -1.626,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-12-6364n1623w"
+   ]
+  },
+  {
+   "name": "Sefwi Ewiakyiren",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.2884,
+   "lon": -2.2737,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6294n2274w"
+   ]
+  },
+  {
+   "name": "Pewodie",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 6.0941,
+   "lon": -2.2859,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-04-6088n2281w"
+   ]
+  },
+  {
+   "name": "Okanta",
+   "place": "village",
+   "district": "Suhum Municipal",
+   "lat": 6.0223,
+   "lon": -0.4892,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-04-6030n0481w"
+   ]
+  },
+  {
+   "name": "Buko",
+   "place": "village",
+   "district": "Suhum Municipal",
+   "lat": 6.024,
+   "lon": -0.4812,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-04-6030n0481w"
+   ]
+  },
+  {
+   "name": "Kusi Camp",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0384,
+   "lon": -0.8587,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6036n0851w"
+   ]
+  },
+  {
+   "name": "Ntonso",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.8297,
+   "lon": -1.52,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-02-6835n1526w"
+   ]
+  },
+  {
+   "name": "Kwamang",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5774,
+   "lon": -0.8087,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6572n0814w"
+   ]
+  },
+  {
+   "name": "Wiawso",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2809,
+   "lon": -1.6615,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2025-11-6276n1667w"
+   ]
+  },
+  {
+   "name": "New Asonomaso",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.836,
+   "lon": -1.5166,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-02-6835n1526w"
+   ]
+  },
+  {
+   "name": "Damang",
+   "place": "town",
+   "district": "Prestea/huni Valley",
+   "lat": 5.5142,
+   "lon": -1.8635,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5514n1855w"
+   ]
+  },
+  {
+   "name": "Adobewora",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.542,
+   "lon": -2.0133,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6539n2010w"
+   ]
+  },
+  {
+   "name": "Enyiresi",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.4342,
+   "lon": -0.586,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-01-6439n0583w"
+   ]
+  },
+  {
+   "name": "Anyinasa",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.7004,
+   "lon": -2.0016,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6707n2000w"
+   ]
+  },
+  {
+   "name": "Nwiniso No.3",
+   "place": "village",
+   "district": "Atwima Kwanwoma",
+   "lat": 6.5171,
+   "lon": -1.7885,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6512n1797w"
+   ]
+  },
+  {
+   "name": "Begroase",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.3694,
+   "lon": -1.6098,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6378n1606w"
+   ]
+  },
+  {
+   "name": "Koniyaw",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4038,
+   "lon": -1.4506,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-6405n1458w"
+   ]
+  },
+  {
+   "name": "Mile 4",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7822,
+   "lon": -2.7991,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-09-5779n2795w"
+   ]
+  },
+  {
+   "name": "Ɔdɔ Yɛ Fɛ",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7829,
+   "lon": -2.7045,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-10-5778n2703w"
+   ]
+  },
+  {
+   "name": "Techiman",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.9413,
+   "lon": -2.9468,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5947n2943w"
+   ]
+  },
+  {
+   "name": "Compound",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7802,
+   "lon": -2.8023,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-09-5779n2795w"
+   ]
+  },
+  {
+   "name": "Apitiso No.2",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.1751,
+   "lon": -1.7366,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6168n1733w"
+   ]
+  },
+  {
+   "name": "Manso Esumenya",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.467,
+   "lon": -1.9013,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2025-11-6473n1906w"
+   ]
+  },
+  {
+   "name": "Patriensa",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.539,
+   "lon": -1.4557,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6535n1458w"
+   ]
+  },
+  {
+   "name": "Esaman",
+   "place": "village",
+   "district": "Ajumako-enyan-essiam",
+   "lat": 5.4351,
+   "lon": -0.9116,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-12-5432n0912w"
+   ]
+  },
+  {
+   "name": "Bensaase",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.3867,
+   "lon": -1.8172,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6395n1818w"
+   ]
+  },
+  {
+   "name": "Boinzan",
+   "place": "village",
+   "district": "Juaboso",
+   "lat": 6.384,
+   "lon": -2.8772,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-01-6387n2884w"
+   ]
+  },
+  {
+   "name": "Sraha",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 6.0769,
+   "lon": -2.2005,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6077n2208w"
+   ]
+  },
+  {
+   "name": "Kramokrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7691,
+   "lon": -2.7868,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-10-5769n2784w"
+   ]
+  },
+  {
+   "name": "Asantekrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7747,
+   "lon": -2.6212,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-5772n2628w"
+   ]
+  },
+  {
+   "name": "Koforidua",
+   "place": "village",
+   "district": "Offinso Municipal",
+   "lat": 7.0862,
+   "lon": -1.7128,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-7092n1717w"
+   ]
+  },
+  {
+   "name": "Merepongso",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.1928,
+   "lon": -0.7775,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6199n0774w"
+   ]
+  },
+  {
+   "name": "Ekoso",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5475,
+   "lon": -0.7927,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6552n0791w"
+   ]
+  },
+  {
+   "name": "Kwaku Dwira",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5599,
+   "lon": -0.7908,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2025-11-6552n0791w"
+   ]
+  },
+  {
+   "name": "Ankaase",
+   "place": "village",
+   "district": "Afigya Kwabre South",
+   "lat": 6.8495,
+   "lon": -1.5492,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-6853n1542w"
+   ]
+  },
+  {
+   "name": "Bechem",
+   "place": "town",
+   "district": "Tano South Municipal",
+   "lat": 7.0878,
+   "lon": -2.0246,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-7088n2017w"
+   ]
+  },
+  {
+   "name": "Kunso",
+   "place": "town",
+   "district": "Ahafo Ano South East",
+   "lat": 6.8284,
+   "lon": -1.8888,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-02-6836n1896w"
+   ]
+  },
+  {
+   "name": "Adumasa",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4799,
+   "lon": -1.4698,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-10-6478n1477w"
+   ]
+  },
+  {
+   "name": "Adwafo New Town",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5233,
+   "lon": -1.4786,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-6517n1485w"
+   ]
+  },
+  {
+   "name": "Agogoso",
+   "place": "town",
+   "district": "Atwima Mponua",
+   "lat": 6.6063,
+   "lon": -2.066,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-6608n2061w"
+   ]
+  },
+  {
+   "name": "Oboase",
+   "place": "village",
+   "district": "Ayensuano",
+   "lat": 5.9704,
+   "lon": -0.382,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-5966n0383w"
+   ]
+  },
+  {
+   "name": "Berekuso",
+   "place": "village",
+   "district": "Akwapem South",
+   "lat": 5.7594,
+   "lon": -0.225,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-5764n0228w"
+   ]
+  },
+  {
+   "name": "Kansare",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.3712,
+   "lon": -1.5713,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-6376n1567w"
+   ]
+  },
+  {
+   "name": "Afirimkrom",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.3836,
+   "lon": -2.6388,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-10-6386n2640w"
+   ]
+  },
+  {
+   "name": "Gomoa Okyereko",
+   "place": "village",
+   "district": "Gomoa East",
+   "lat": 5.4201,
+   "lon": -0.6048,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-10-5427n0607w"
+   ]
+  },
+  {
+   "name": "Dedesua",
+   "place": "village",
+   "district": "Bosomtwe",
+   "lat": 6.5877,
+   "lon": -1.6013,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-6590n1596w"
+   ]
+  },
+  {
+   "name": "Afosu",
+   "place": "town",
+   "district": "Birim North",
+   "lat": 6.3739,
+   "lon": -0.998,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-04-6365n0995w"
+   ]
+  },
+  {
+   "name": "Suiano",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.3844,
+   "lon": -2.6328,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-10-6386n2640w"
+   ]
+  },
+  {
+   "name": "Esaase",
+   "place": "village",
+   "district": "Afigya Kwabre South",
+   "lat": 6.8375,
+   "lon": -1.6671,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-6841n1661w"
+   ]
+  },
+  {
+   "name": "Pampatia",
+   "place": "village",
+   "district": "Afigya Kwabre South",
+   "lat": 6.8409,
+   "lon": -1.6693,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-6841n1661w"
+   ]
+  },
+  {
+   "name": "Donkorkurom",
+   "place": "village",
+   "district": "Assin North",
+   "lat": 5.8471,
+   "lon": -1.5048,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2026-03-5849n1508w"
+   ]
+  },
+  {
+   "name": "Aduana",
+   "place": "village",
+   "district": "Offinso Municipal",
+   "lat": 7.0228,
+   "lon": -1.7096,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-7028n1701w"
+   ]
+  },
+  {
+   "name": "Awenade",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5869,
+   "lon": -0.8187,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6584n0817w"
+   ]
+  },
+  {
+   "name": "Wassa Wantram",
+   "place": "village",
+   "district": "Wassa Amenfi East",
+   "lat": 5.8592,
+   "lon": -2.1072,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-5863n2104w"
+   ]
+  },
+  {
+   "name": "Efwhia",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.1965,
+   "lon": -2.4284,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-6192n2432w"
+   ]
+  },
+  {
+   "name": "Kwankyeabo",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4421,
+   "lon": -1.8783,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6440n1882w"
+   ]
+  },
+  {
+   "name": "Assin Dansame",
+   "place": "village",
+   "district": "Assin North",
+   "lat": 5.9004,
+   "lon": -1.346,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-5908n1347w"
+   ]
+  },
+  {
+   "name": "Abompe",
+   "place": "village",
+   "district": "Fanteakwa South",
+   "lat": 6.3792,
+   "lon": -0.4779,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-02-6378n0474w"
+   ]
+  },
+  {
+   "name": "Hiawu Besease",
+   "place": "village",
+   "district": "Atwima Nwabiagya South",
+   "lat": 6.7318,
+   "lon": -1.7785,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6737n1774w"
+   ]
+  },
+  {
+   "name": "Amanpe",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.8019,
+   "lon": -1.47,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-03-6805n1476w"
+   ]
+  },
+  {
+   "name": "Dicksonkrom",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.4278,
+   "lon": -1.2585,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6435n1255w"
+   ]
+  },
+  {
+   "name": "Bopa",
+   "place": "village",
+   "district": "Sefwi Akontombra",
+   "lat": 6.0862,
+   "lon": -2.5734,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-05-6086n2565w"
+   ]
+  },
+  {
+   "name": "Amoya",
+   "place": "town",
+   "district": "Bodi",
+   "lat": 6.2431,
+   "lon": -2.9385,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6240n2938w"
+   ]
+  },
+  {
+   "name": "Okyinso",
+   "place": "village",
+   "district": "Kwaebibirem",
+   "lat": 6.2172,
+   "lon": -0.7932,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6221n0795w"
+   ]
+  },
+  {
+   "name": "Samahu",
+   "place": "village",
+   "district": "Prestea/huni Valley",
+   "lat": 5.365,
+   "lon": -1.9994,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-5358n1995w"
+   ]
+  },
+  {
+   "name": "Adanwomase",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.8125,
+   "lon": -1.4757,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-03-6805n1476w"
+   ]
+  },
+  {
+   "name": "Fawotirikye",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.321,
+   "lon": -1.9507,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6323n1961w"
+   ]
+  },
+  {
+   "name": "Nkwanta no 2",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7359,
+   "lon": -2.774,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-5743n2775w"
+   ]
+  },
+  {
+   "name": "Kusikrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7614,
+   "lon": -2.7334,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-5764n2739w"
+   ]
+  },
+  {
+   "name": "Nyamebekyere",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.206,
+   "lon": -2.4483,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-05-6209n2446w"
+   ]
+  },
+  {
+   "name": "Penakrom",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.2026,
+   "lon": -2.4438,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-05-6209n2446w"
+   ]
+  },
+  {
+   "name": "Moseaso",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.3638,
+   "lon": -0.5419,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-10-6358n0535w"
+   ]
+  },
+  {
+   "name": "Bankame Sunkwa",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.4365,
+   "lon": -1.2458,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6435n1255w"
+   ]
+  },
+  {
+   "name": "Ntosua",
+   "place": "village",
+   "district": "Obuasi Municipal",
+   "lat": 6.2069,
+   "lon": -1.7387,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6206n1731w"
+   ]
+  },
+  {
+   "name": "Kayera",
+   "place": "village",
+   "district": "Offinso Municipal",
+   "lat": 7.0283,
+   "lon": -1.7091,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-7028n1701w"
+   ]
+  },
+  {
+   "name": "Atronie",
+   "place": "town",
+   "district": "Sunyani Municipal",
+   "lat": 7.1534,
+   "lon": -2.4048,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-03-7158n2404w"
+   ]
+  },
+  {
+   "name": "Brofoyedru",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4393,
+   "lon": -1.3501,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6434n1343w"
+   ]
+  },
+  {
+   "name": "Banso",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.4753,
+   "lon": -1.1979,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2026-03-6481n1193w"
+   ]
+  },
+  {
+   "name": "Yawkrom",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4341,
+   "lon": -1.8717,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6430n1876w"
+   ]
+  },
+  {
+   "name": "Mpatuam",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5415,
+   "lon": -1.9327,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6533n1937w"
+   ]
+  },
+  {
+   "name": "Abrense",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.4995,
+   "lon": -1.8314,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6497n1824w"
+   ]
+  },
+  {
+   "name": "Kakatire",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.3681,
+   "lon": -2.1755,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6365n2175w"
+   ]
+  },
+  {
+   "name": "Manhyia",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5628,
+   "lon": -1.8877,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-6567n1895w"
+   ]
+  },
+  {
+   "name": "Yokwai",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.3262,
+   "lon": -1.1787,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-04-6326n1187w"
+   ]
+  },
+  {
+   "name": "Aboabogya",
+   "place": "village",
+   "district": "Afigya Kwabre South",
+   "lat": 6.8405,
+   "lon": -1.6103,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-03-6837n1616w"
+   ]
+  },
+  {
+   "name": "Antubia",
+   "place": "town",
+   "district": "Juaboso",
+   "lat": 6.3217,
+   "lon": -2.8448,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-6330n2840w"
+   ]
+  },
+  {
+   "name": "Baakoniaba",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.6377,
+   "lon": -2.087,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6645n2093w"
+   ]
+  },
+  {
+   "name": "Adupri",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.4965,
+   "lon": -2.0146,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-6500n2008w"
+   ]
+  },
+  {
+   "name": "Abuakwa Breman",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9562,
+   "lon": -1.752,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-5965n1749w"
+   ]
+  },
+  {
+   "name": "Odumase",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4423,
+   "lon": -1.5509,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-02-6438n1546w"
+   ]
+  },
+  {
+   "name": "Nyamebekyere",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.4682,
+   "lon": -0.8664,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6474n0870w"
+   ]
+  },
+  {
+   "name": "Gyarman",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.7704,
+   "lon": -2.4176,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-01-5777n2424w"
+   ]
+  },
+  {
+   "name": "Saati",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5825,
+   "lon": -0.8272,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6588n0832w"
+   ]
+  },
+  {
+   "name": "Swiedibi",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5846,
+   "lon": -0.8348,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-6588n0832w"
+   ]
+  },
+  {
+   "name": "Osenso",
+   "place": "village",
+   "district": "Wassa East",
+   "lat": 5.6241,
+   "lon": -1.7184,
+   "ha": 1.3,
+   "patches": 1,
+   "ids": [
+    "2026-02-5626n1727w"
+   ]
+  },
+  {
+   "name": "Mahame",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.3374,
+   "lon": -1.4699,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6345n1466w"
+   ]
+  },
+  {
+   "name": "Adwafo Old Town",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.4936,
+   "lon": -1.4729,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-6493n1470w"
+   ]
+  },
+  {
+   "name": "Anwiem",
+   "place": "village",
+   "district": "Sefwi-wiawso",
+   "lat": 6.2068,
+   "lon": -2.5108,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6203n2503w"
+   ]
+  },
+  {
+   "name": "Awuakrom",
+   "place": "village",
+   "district": "Akyem Mansa",
+   "lat": 5.9669,
+   "lon": -1.125,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-5969n1117w"
+   ]
+  },
+  {
+   "name": "Barniekrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.5406,
+   "lon": -2.1767,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-6532n2181w"
+   ]
+  },
+  {
+   "name": "Besease",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.0407,
+   "lon": -2.0102,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-6041n2007w"
+   ]
+  },
+  {
+   "name": "Abirem",
+   "place": "town",
+   "district": "Birim North",
+   "lat": 6.3017,
+   "lon": -1.0066,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6310n1011w"
+   ]
+  },
+  {
+   "name": "Kojo Fordjourkrom",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.3726,
+   "lon": -2.1672,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-6380n2167w"
+   ]
+  },
+  {
+   "name": "Agyaka Manso",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 6.0368,
+   "lon": -2.2862,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-6043n2287w"
+   ]
+  },
+  {
+   "name": "Akyem Asunafo",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.3399,
+   "lon": -0.7065,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6333n0709w"
+   ]
+  },
+  {
+   "name": "K. Baoteng",
+   "place": "village",
+   "district": "Wassa Amenfi Central",
+   "lat": 5.6523,
+   "lon": -2.2903,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-5659n2294w"
+   ]
+  },
+  {
+   "name": "Mmofranfadwene",
+   "place": "village",
+   "district": "Akyem Mansa",
+   "lat": 6.0888,
+   "lon": -1.1913,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6092n1196w"
+   ]
+  },
+  {
+   "name": "Akyempim",
+   "place": "village",
+   "district": "Wassa East",
+   "lat": 5.4902,
+   "lon": -1.7283,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-5487n1720w"
+   ]
+  },
+  {
+   "name": "Obobetwao",
+   "place": "village",
+   "district": "Birim North",
+   "lat": 6.3924,
+   "lon": -0.931,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-01-6385n0932w"
+   ]
+  },
+  {
+   "name": "Amanforom",
+   "place": "village",
+   "district": "Denkyembour",
+   "lat": 6.0274,
+   "lon": -0.8094,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6022n0804w"
+   ]
+  },
+  {
+   "name": "Yawkorkor",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5359,
+   "lon": -0.8615,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-12-6534n0870w"
+   ]
+  },
+  {
+   "name": "Mile Nine",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.2233,
+   "lon": -1.7724,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6221n1764w"
+   ]
+  },
+  {
+   "name": "Esaase",
+   "place": "village",
+   "district": "Atwima Nwabiagya South",
+   "lat": 6.7366,
+   "lon": -1.7119,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6730n1704w"
+   ]
+  },
+  {
+   "name": "Esikofokrom",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.2532,
+   "lon": -1.6638,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6262n1663w"
+   ]
+  },
+  {
+   "name": "Akrokoso",
+   "place": "village",
+   "district": "Amansie West",
+   "lat": 6.5073,
+   "lon": -1.8449,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-6508n1841w"
+   ]
+  },
+  {
+   "name": "Domeabra",
+   "place": "village",
+   "district": "Oforikrom Municipal",
+   "lat": 6.679,
+   "lon": -1.5112,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6688n1514w"
+   ]
+  },
+  {
+   "name": "Ahodwo",
+   "place": "village",
+   "district": "Kwabre East",
+   "lat": 6.7831,
+   "lon": -1.5093,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-6780n1510w"
+   ]
+  },
+  {
+   "name": "Brenyi",
+   "place": "village",
+   "district": "Abura-asebu-kwamankese",
+   "lat": 5.3392,
+   "lon": -1.135,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-5344n1139w"
+   ]
+  },
+  {
+   "name": "Samsam",
+   "place": "village",
+   "district": "Ga North Municipal",
+   "lat": 5.7823,
+   "lon": -0.3041,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2025-11-5779n0311w"
+   ]
+  },
+  {
+   "name": "Amoabeng",
+   "place": "village",
+   "district": "Atwima Nwabiagya South",
+   "lat": 6.7138,
+   "lon": -1.7625,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-02-6720n1758w"
+   ]
+  },
+  {
+   "name": "Amanshia",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.9414,
+   "lon": -2.5318,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-5950n2529w"
+   ]
+  },
+  {
+   "name": "Bonkrase",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.7827,
+   "lon": -0.6598,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-6775n0660w"
+   ]
+  },
+  {
+   "name": "Konongo",
+   "place": "town",
+   "district": "Asante Akim Central Municipal",
+   "lat": 6.6231,
+   "lon": -1.2148,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6623n1215w"
+   ]
+  },
+  {
+   "name": "Dunkwa-on-Offin",
+   "place": "town",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9679,
+   "lon": -1.7873,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-5970n1784w"
+   ]
+  },
+  {
+   "name": "Kyekyewere",
+   "place": "village",
+   "district": "Upper Denkyira East Municipal",
+   "lat": 5.9178,
+   "lon": -1.6802,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-5923n1678w"
+   ]
+  },
+  {
+   "name": "Ahwirem",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.4588,
+   "lon": -1.5015,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-10-6453n1496w"
+   ]
+  },
+  {
+   "name": "Adawso",
+   "place": "village",
+   "district": "Akwapem North",
+   "lat": 5.951,
+   "lon": -0.2142,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5949n0215w"
+   ]
+  },
+  {
+   "name": "Ofoase",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.3913,
+   "lon": -1.284,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6398n1278w"
+   ]
+  },
+  {
+   "name": "Kokobin",
+   "place": "village",
+   "district": "Asante Akim South",
+   "lat": 6.3188,
+   "lon": -1.1402,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-04-6317n1143w"
+   ]
+  },
+  {
+   "name": "Ogwang",
+   "place": "village",
+   "district": "Gomoa Central",
+   "lat": 5.3748,
+   "lon": -0.7608,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5382n0766w"
+   ]
+  },
+  {
+   "name": "Kwapong",
+   "place": "town",
+   "district": "Asunafo South",
+   "lat": 6.6167,
+   "lon": -2.4788,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6624n2474w"
+   ]
+  },
+  {
+   "name": "Chirano",
+   "place": "village",
+   "district": "Bibiani-anhwiaso-bekwai Municipal",
+   "lat": 6.271,
+   "lon": -2.3176,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6280n2315w"
+   ]
+  },
+  {
+   "name": "Anyinasu",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.5277,
+   "lon": -0.8091,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6533n0814w"
+   ]
+  },
+  {
+   "name": "Bedifi",
+   "place": "village",
+   "district": "Atwima Mponua",
+   "lat": 6.697,
+   "lon": -1.8843,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6703n1880w"
+   ]
+  },
+  {
+   "name": "Anyinase",
+   "place": "village",
+   "district": "Bosome Freho",
+   "lat": 6.407,
+   "lon": -1.3338,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-02-6412n1337w"
+   ]
+  },
+  {
+   "name": "Adokwae",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3602,
+   "lon": -1.5,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6361n1497w"
+   ]
+  },
+  {
+   "name": "New Adakwai",
+   "place": "village",
+   "district": "Adansi North",
+   "lat": 6.3672,
+   "lon": -1.4948,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6361n1497w"
+   ]
+  },
+  {
+   "name": "Maudaso",
+   "place": "village",
+   "district": "Upper Denkyira West",
+   "lat": 6.1233,
+   "lon": -2.1611,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6125n2170w"
+   ]
+  },
+  {
+   "name": "Bokaso",
+   "place": "village",
+   "district": "Sefwi Akontombra",
+   "lat": 6.0498,
+   "lon": -2.8913,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-08-6047n2894w"
+   ]
+  },
+  {
+   "name": "Nkwantanang",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.786,
+   "lon": -0.7022,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-09-6790n0697w"
+   ]
+  },
+  {
+   "name": "Nimebeso",
+   "place": "village",
+   "district": "Amansie Central",
+   "lat": 6.0787,
+   "lon": -1.8569,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6083n1855w"
+   ]
+  },
+  {
+   "name": "Okyerekurom",
+   "place": "village",
+   "district": "Adansi Akrofuom",
+   "lat": 6.1146,
+   "lon": -1.6641,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6120n1670w"
+   ]
+  },
+  {
+   "name": "Potsin",
+   "place": "village",
+   "district": "Gomoa East",
+   "lat": 5.4494,
+   "lon": -0.5817,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-5456n0576w"
+   ]
+  },
+  {
+   "name": "Wioso",
+   "place": "village",
+   "district": "Bekwai Municipal",
+   "lat": 6.401,
+   "lon": -1.5753,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6402n1577w"
+   ]
+  },
+  {
+   "name": "Disue Ano",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7418,
+   "lon": -2.6858,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-02-5746n2682w"
+   ]
+  },
+  {
+   "name": "Vanderpuye I",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.4285,
+   "lon": -0.5517,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6427n0559w"
+   ]
+  },
+  {
+   "name": "Vanderpuye II",
+   "place": "village",
+   "district": "Atiwa East",
+   "lat": 6.4235,
+   "lon": -0.5527,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-6427n0559w"
+   ]
+  },
+  {
+   "name": "Boti",
+   "place": "village",
+   "district": "Yilo Krobo",
+   "lat": 6.1955,
+   "lon": -0.2197,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6200n0221w"
+   ]
+  },
+  {
+   "name": "Kofi Gyan",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.9268,
+   "lon": -2.409,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5923n2412w"
+   ]
+  },
+  {
+   "name": "Amaamaso",
+   "place": "town",
+   "district": "Birim North",
+   "lat": 6.3287,
+   "lon": -0.9948,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-6328n1004w"
+   ]
+  },
+  {
+   "name": "Ason Yaw Kurom",
+   "place": "village",
+   "district": "Akwapem South",
+   "lat": 5.8401,
+   "lon": -0.2722,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5833n0275w"
+   ]
+  },
+  {
+   "name": "Akwaduso",
+   "place": "village",
+   "district": "Atiwa West",
+   "lat": 6.2925,
+   "lon": -0.6908,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6284n0688w"
+   ]
+  },
+  {
+   "name": "Akim Apapam",
+   "place": "village",
+   "district": "Abuakwa South",
+   "lat": 6.1474,
+   "lon": -0.5964,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6153n0591w"
+   ]
+  },
+  {
+   "name": "Asikan",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6402,
+   "lon": -0.8388,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6632n0840w"
+   ]
+  },
+  {
+   "name": "Asubone",
+   "place": "village",
+   "district": "Kwahu East",
+   "lat": 6.6379,
+   "lon": -0.8665,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-6637n0857w"
+   ]
+  },
+  {
+   "name": "Twimakuraa",
+   "place": "village",
+   "district": "Kwahu West",
+   "lat": 6.532,
+   "lon": -0.7479,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-6537n0748w"
+   ]
+  },
+  {
+   "name": "Yaw Yarkurom",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8382,
+   "lon": -0.2788,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5833n0275w"
+   ]
+  },
+  {
+   "name": "Anyinasuso",
+   "place": "village",
+   "district": "Offinso Municipal",
+   "lat": 7.0141,
+   "lon": -1.7097,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-7006n1705w"
+   ]
+  },
+  {
+   "name": "Gyankobo",
+   "place": "town",
+   "district": "Twifo Hemang Lower Denkyira",
+   "lat": 5.3996,
+   "lon": -1.4583,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-5405n1459w"
+   ]
+  },
+  {
+   "name": "Labadi",
+   "place": "village",
+   "district": "Assin South",
+   "lat": 5.5141,
+   "lon": -1.1275,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-02-5519n1132w"
+   ]
+  }
+ ]
+}

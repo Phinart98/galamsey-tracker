@@ -230,5 +230,37 @@
   "T30NYM",
   "T30NYN"
  ],
- "method_version": "2026.10.3"
+ "method_version": "2026.10.3",
+ "towns_near": {
+  "radius_m": 1000,
+  "count": 644,
+  "with_5ha": 249
+ },
+ "water": [
+  {
+   "plant": "Weija",
+   "river": "Densu",
+   "ha": 214.8
+  },
+  {
+   "plant": "Kwanyako",
+   "river": "Ayensu",
+   "ha": 145.6
+  },
+  {
+   "plant": "Daboase",
+   "river": "Pra",
+   "ha": 8945.3
+  },
+  {
+   "plant": "Barekese",
+   "river": "Offin",
+   "ha": 124.7
+  },
+  {
+   "plant": "Owabi",
+   "river": "Owabi",
+   "ha": 2.6
+  }
+ ]
 }

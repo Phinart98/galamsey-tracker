@@ -6,7 +6,7 @@ Weekly job that turns NASA and Copernicus satellite data into the numbers and im
 
 | Command | Output |
 |---|---|
-| `uv run python -m tracker.run weekly` | Finds land that lost most of its plant cover in the last 12 months (NASA OPERA DIST-ALERT, patches of at least 1 ha), checks each patch against the Minerals Commission's active licences, names it after the nearest town and district, and gives it a permanent id. Writes `data/summary/latest.json`, `data/summary/YYYY-MM.json` and `data/places/aliases.json`. |
+| `uv run python -m tracker.run weekly` | Finds land that lost most of its plant cover in the last 12 months (NASA OPERA DIST-ALERT, patches of at least 1 ha), checks each patch against the Minerals Commission's active licences, names it after the nearest town and district, and gives it a permanent id. Writes `data/summary/latest.json`, `data/summary/YYYY-MM.json` , `data/places/aliases.json` and `data/towns.json` (towns and villages with cleared land within 1 km). The summary also gives the clearing upstream of each water treatment plant (`water_plants.geojson`). |
 | `uv run python -m tracker.run chips --limit 80` | Makes before/after Sentinel-2 images (AVIF and WebP, 360 and 720 px) for places of at least 3 ha that do not have them yet. Skips any image with more than 10% cloud. |
 | `uv run python -m tracker.run trend` | Adds one point per month to `data/trend.json`: hectares cleared in the 12 months to the 22nd, by licence class. The same date every month keeps the comparison fair. NASA confirms loss weeks after first seeing it, so each point combines readings from that day and 2 and 4 months later. Until the last reading exists the point is marked provisional and is recomputed each run. |
 

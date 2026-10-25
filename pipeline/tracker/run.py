@@ -20,7 +20,7 @@ import pandas as pd
 from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
-from tracker import chips, licences, nasa, places, summary, zone
+from tracker import chips, licences, nasa, places, summary, water, zone
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
@@ -101,9 +101,9 @@ def weekly(today: dt.date):
 
     clusters = zone.inside(dedupe_tiles(per_tile), zone.load()).reset_index(drop=True)
     clusters["licence"] = licences.classify(clusters, licence_layer(today))
-    near, near_km, district = places.name(
-        clusters, places.settlements(os.path.join(CACHE, "places")),
-        places.districts(os.path.join(CACHE, "places")))
+    settlements = places.settlements(os.path.join(CACHE, "places"))
+    district_polys = places.districts(os.path.join(CACHE, "places"))
+    near, near_km, district = places.name(clusters, settlements, district_polys)
     clusters["near"], clusters["near_km"], clusters["district"] = near.values, near_km.values, district.values
 
     seeds_path = os.path.join(OUT, "places", "seeds.geojson")
@@ -114,7 +114,12 @@ def weekly(today: dt.date):
     write_places(clusters, previous, new_aliases, to_ll.transform)
     data_date = max(v["data_date"] for v in tile_status.values() if v.get("data_date"))
     s = summary.summarise(clusters.drop(columns=["geometry", "seed"]), top=12)
-    s.update({"data_date": data_date, "window_days": 365, "tiles": sorted(tile_status), "method_version": METHOD_VERSION})
+    towns = places.towns_near(clusters, settlements, district_polys)
+    s.update({"data_date": data_date, "window_days": 365, "tiles": sorted(tile_status), "method_version": METHOD_VERSION,
+              "towns_near": {"radius_m": places.NEAR_M, "count": len(towns), "with_5ha": int((towns.ha >= 5).sum())},
+              "water": water.upstream(clusters, water.load())})
+    _write_json(os.path.join(DATA, "towns.json"), {"data_date": data_date, "radius_m": places.NEAR_M,
+                                                   "towns": towns.round({"lat": 4, "lon": 4, "ha": 1}).to_dict("records")})
     _write_json(os.path.join(DATA, "summary", "latest.json"), s)
     _write_json(os.path.join(DATA, "summary", f"{data_date[:7]}.json"), s)
     return tile_status, data_date
