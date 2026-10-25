@@ -12,10 +12,12 @@
   <div class="stages" data-v-stages>
     <figure class="stage" data-v-stage="before">
       <div class="zoom"><img data-v-img="before" alt="" width="720" height="720" draggable="false"></div>
+      <span class="ghost" aria-hidden="true" hidden></span>
       <figcaption class="stamp"><strong>Before</strong> <span data-v-date="before"></span></figcaption>
     </figure>
     <figure class="stage" data-v-stage="after">
       <div class="zoom"><img data-v-img="after" alt="" width="720" height="720" draggable="false"></div>
+      <span class="ghost" aria-hidden="true" hidden></span>
       <figcaption class="stamp"><strong>After</strong> <span data-v-date="after"></span></figcaption>
     </figure>
   </div>
@@ -29,6 +31,7 @@
       <button type="button" data-v-zoom-by="1.6" aria-label="Zoom in">+</button>
       <button type="button" class="fit" data-v-fit disabled>Fit</button>
     </div>
+    <a class="more narrow" data-v-link href="/">Open this place</a>
     <p class="hint muted small" data-v-hint></p>
   </div>
 </dialog>
@@ -54,7 +57,7 @@
       q('[data-v-switch]').hidden = both();
       q('[data-v-hint]').textContent = coarse
         ? (both() ? 'Pinch or double-tap to zoom. Both pictures zoom together.' : 'Pinch or double-tap to zoom. Swipe to switch between before and after.')
-        : `Scroll, double-click or use + and − to zoom. Drag to look around.${both() ? ' Both pictures zoom together.' : ' Arrow keys switch between before and after.'}`;
+        : `Scroll, double-click or use + and − to zoom. Drag to look around.${both() ? ' Both pictures move together, and a ring marks the same spot on the other one.' : ' Arrow keys switch between before and after.'}`;
       render(false);
     };
     new ResizeObserver(layout).observe(stages);
@@ -68,7 +71,7 @@
 
     const open = (fig, start) => {
       q('[data-v-title]').textContent = fig.dataset.title;
-      q('[data-v-link]').href = fig.dataset.href;
+      d.querySelectorAll('[data-v-link]').forEach((a) => { a.href = fig.dataset.href; });
       for (const s of ['before', 'after']) {
         const img = q(`[data-v-img=${s}]`);
         img.src = fig.dataset[s];
@@ -147,7 +150,14 @@
         if (pts.size === 1) grab(local(e, stage));
         if (pts.size === 2) { pinch = { ...spread(), z }; pinched = true; }
       });
+      const other = stage === stageOf.before ? stageOf.after : stageOf.before;
+      const ghost = other.querySelector('.ghost');
       stage.addEventListener('pointermove', (e) => {
+        if (e.pointerType === 'mouse' && both()) {
+          const p = local(e, stage);
+          ghost.hidden = false;
+          ghost.style.translate = `${p.x}px ${p.y}px`;
+        }
         if (!pts.has(e.pointerId)) return;
         pts.set(e.pointerId, local(e, stage));
         if (pts.size === 2 && pinch) {
@@ -181,6 +191,7 @@
         }
         start = null; pinched = false;
       };
+      stage.addEventListener('pointerleave', () => { ghost.hidden = true; });
       stage.addEventListener('pointerup', lift);
       stage.addEventListener('pointercancel', lift);
       stage.addEventListener('wheel', (e) => {
@@ -221,7 +232,8 @@
   .bar { display: flex; align-items: center; gap: 16px; padding: 8px var(--gutter); border-bottom: 1px solid var(--line); }
   .bar h2 { font-size: 1.0625rem; margin: 0; line-height: 1.3; flex: 1; min-width: 0; }
   .more { font-weight: 700; padding: 10px 0; white-space: nowrap; }
-  @media (max-width: 559px) { .bar .more { display: none; } }
+  .controls .more.narrow { display: none; }
+  @media (max-width: 559px) { .bar .more { display: none; } .controls .more.narrow { display: inline-block; } }
   .close {
     font: inherit; font-weight: 700; min-height: 44px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 6px;
     background: transparent; color: var(--ink); cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 8px;
@@ -239,6 +251,11 @@
   .stages.zoomed .stage:active { cursor: grabbing; }
   .zoom { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
   .zoom img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+  .ghost {
+    position: absolute; left: -11px; top: -11px; width: 22px; height: 22px; border-radius: 50%; pointer-events: none;
+    border: 2px solid #fff; box-shadow: 0 0 0 1.5px #000, inset 0 0 0 1.5px #000;
+  }
+  .ghost[hidden] { display: none; }
   .stamp { position: absolute; left: 10px; bottom: 10px; background: #000; color: #fff; padding: 4px 10px; font-size: 0.9375rem; }
 
   .controls {

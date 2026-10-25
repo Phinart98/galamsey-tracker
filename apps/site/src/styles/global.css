@@ -96,3 +96,4 @@ p { text-wrap: pretty; }
 /* Place lists lay out their rows by their own width, so they work in a side column too */
 ul.list { container-type: inline-size; }
 body > main { flex: 1; }
+:root:has(dialog[open]) { overflow: hidden; }

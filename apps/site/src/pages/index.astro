@@ -170,7 +170,8 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
   .caption { margin-top: 10px; font-size: 0.9375rem; color: var(--muted); max-width: 60ch; }
   .caption strong { color: var(--ink); }
   @media (min-width: 960px) {
-    .hero { grid-template-columns: 5fr 7fr; grid-template-areas: 'say look' 'more look'; column-gap: 48px; row-gap: 20px; padding-top: 56px; align-items: start; }
+    .hero { grid-template-columns: 5fr 7fr; grid-template-areas: 'say say' 'more look'; column-gap: 48px; row-gap: 28px; padding-top: 48px; align-items: start; }
+    .hero h1 { max-width: 30ch; }
     .say { grid-area: say; }
     .look { grid-area: look; }
     .more { grid-area: more; }
