@@ -169,6 +169,69 @@
    "used_for": "Every measured claim below",
    "status": "live-data",
    "note": "Internal. The repository URL identifies the maintainer, so the site must not link it while the project is anonymous"
+  },
+  {
+   "id": "gwcl-daboase-news",
+   "title": "Daboase treatment plant (Pra River): output cuts, rationing in Sekondi-Takoradi, turbidity far above design",
+   "publisher": "3News; Graphic; GNA (2024 workshop: 54 NTU design, 8,000 NTU averages, operations cut 30%)",
+   "url": "https://3news.com/featured/gwcl-considers-shutdown-of-daboase-plant/",
+   "also": [
+    "https://graphic.com.gh/news/general-news/water-crisis-looms-in-western-region-daboase-water-treatment-plant-risks-shutdown.html",
+    "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/"
+   ],
+   "used_for": "Which towns the Pra plant at Daboase supplies, for the water story",
+   "status": "cited",
+   "todo": "Open and date each article; confirm Sekondi-Takoradi as the supply area from a GWL source"
+  },
+  {
+   "id": "gwcl-weija-news",
+   "title": "Weija plant outages: areas of western Accra affected (Dansoman, Mamprobi, Kaneshie, Odorkor, Kasoa and others)",
+   "publisher": "Ghanaian Times; Rainbow Radio; 3News (GWL notices, Dec 2025 and May 2026)",
+   "url": "https://ghanaiantimes.com.gh/weija-water-treatment-plant-shuts-down-friday-december-19-2025-for-scheduled-maintenance-works",
+   "also": [
+    "https://rainbowradioonline.com/2026/05/14/weija-plant-technical-hitch-triggers-water-shortages-across-western-accra/?amp=1"
+   ],
+   "used_for": "Which areas Weija supplies",
+   "status": "cited",
+   "todo": "Open the GWL notice text"
+  },
+  {
+   "id": "gwcl-kwanyako-news",
+   "title": "Kwanyako (Kwanyaku) headworks on the Ayensu: serves 30+ districts incl. Winneba, Swedru, Kasoa; shut over two weeks Sept 2025 on turbidity",
+   "publisher": "GNA (Sept 2025); Citi Newsroom (Sept 2025, April 2026)",
+   "url": "https://gna.org.gh/2025/09/ghana-water-ltd-moves-to-avert-possible-shutdown-of-kwanyaku-headworks-amid-rising-pollution/",
+   "also": [
+    "https://citinewsroom.com/2025/09/kwanyako-plant-shutdown-galamsey-pollution-throw-effutu-into-water-crisis/",
+    "https://www.citinewsroom.com/2026/04/ayensu-river-clean-up-improves-kwanyako-water-plant-operations/"
+   ],
+   "used_for": "Which towns Kwanyako supplies",
+   "status": "cited",
+   "todo": "Open and confirm"
+  },
+  {
+   "id": "gwcl-owabi-barekese-news",
+   "title": "Owabi and Barekese: the two main plants supplying Greater Kumasi, at risk from pollution",
+   "publisher": "Citi Newsroom",
+   "url": "https://www.citinewsroom.com/tag/adam-muntawakilu/",
+   "used_for": "Which areas Owabi and Barekese supply",
+   "status": "cited",
+   "todo": "Find the specific article and a GWL source"
+  },
+  {
+   "id": "forestry-commission-2026",
+   "title": "Galamsey degraded 8,923.8 ha of forest reserves to 31 Dec 2024 (+5,252.9 ha in three years); 2025 analysis pending",
+   "publisher": "Forestry Commission via Graphic and MyJoyOnline (Feb 2026)",
+   "url": "https://www.graphic.com.gh/news/general-news/ghana-news-galamsey-destroys-9-000-hectares-of-forest-reserves-forestry-commission-research.html",
+   "used_for": "Context for the trend: no independent 2025 or 2026 satellite figure yet",
+   "status": "cited"
+  },
+  {
+   "id": "naimos-2026",
+   "title": "NAIMOS operations to March 2026: 94 excavators seized, nearly 3,000 chanfans destroyed, 237 arrests",
+   "publisher": "Information Services Department; Ghanaian Times",
+   "url": "https://www.isd.gov.gh/naimos-intensifies-crackdown-on-illegal-mining-across-ghana/",
+   "used_for": "Context for the trend: enforcement during the 2025 to 2026 fall",
+   "status": "cited"
   }
  ],
  "claims": [
@@ -425,6 +488,42 @@
    ],
    "status": "unverified",
    "todo": "Open each licence page and confirm the wording"
+  },
+  {
+   "id": "water-plant-towns",
+   "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies western Accra and Kasoa; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Kumasi",
+   "where": "home (planned water story)",
+   "evidence": [
+    "gwcl-daboase-news",
+    "gwcl-weija-news",
+    "gwcl-kwanyako-news",
+    "gwcl-owabi-barekese-news"
+   ],
+   "status": "unverified",
+   "todo": "Open each source; prefer a GWL page"
+  },
+  {
+   "id": "towns-near-clearing",
+   "text": "At least 665 towns and villages have land cleared within 1 km of them in the last 12 months",
+   "where": "home (planned)",
+   "evidence": [
+    "openstreetmap",
+    "opera-dist-alert",
+    "own-spike-log s19"
+   ],
+   "status": "measured",
+   "caveat": "OSM misses villages unevenly, so a floor; distance from the place's OSM point"
+  },
+  {
+   "id": "trend-fall-2025-2026",
+   "text": "Clearing in the 12 months to May 2026 was about 25% less than a year before, and about the same as two years before",
+   "where": "home (held back)",
+   "evidence": [
+    "opera-dist-alert",
+    "own-spike-log s18"
+   ],
+   "status": "to-confirm",
+   "caveat": "60% of the fall is one tile (30NYN) with an early-2025 dry-season jump; by-eye check pending"
   }
  ]
 }
