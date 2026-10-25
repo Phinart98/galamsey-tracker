@@ -31,9 +31,15 @@ const withoutPic = active.find((p) => !hasPair(p));
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
-      <details class="fwrap" data-fwrap hidden>
-      <summary class="btn">Filter the places</summary>
-      <form class="filters" data-filters hidden>
+      <div class="fwrap" data-fwrap hidden>
+      <button class="ftoggle" type="button" aria-expanded="false" aria-controls="filters" data-ftoggle>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="6" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="flabel">Filters</span>
+        <span class="fbadge" data-fbadge hidden></span>
+        <svg class="chev" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <h2 class="fh">Filter the places</h2>
+      <form class="filters" id="filters" data-filters hidden>
         <label>Licence on the land
           <select name="licence">
             <option value="">Any licence or none</option>
@@ -73,16 +79,9 @@ const withoutPic = active.find((p) => !hasPair(p));
           </select>
         </label>
         <p class="count" data-count aria-live="polite"></p>
-        <button class="btn" type="reset">Clear filters</button>
+        <button class="btn" type="reset" data-clear hidden>Clear filters</button>
       </form>
-      </details>
-      <ul class="key small" aria-label="Map key">
-        <li><span class="sw alarm"></span>No licence to mine, or prospecting only</li>
-        <li><span class="sw ring"></span>Inside a mining licence or lease</li>
-        <li><span class="sw area"></span>Area we cover so far</li>
-      </ul>
-      <p class="small muted">Circles are sized by area. Tap one to see its pictures.</p>
-      <div class="detail" data-detail hidden></div>
+      </div>
     </aside>
 
     <div class="mapcol">
@@ -92,7 +91,20 @@ const withoutPic = active.find((p) => !hasPair(p));
           <span class="small"><strong data-map-count></strong> <span class="muted">© OpenStreetMap, OpenFreeMap</span></span>
           <button class="btn close" type="button" data-close-map>Back to list</button>
         </div>
-        <div id="map" data-map data-lib={maplibre.base} data-bounds={JSON.stringify(box)} data-site={import.meta.env.SITE} role="region" aria-label="Map of cleared land"></div>
+        <div class="mapbox">
+          <div id="map" data-map data-lib={maplibre.base} data-bounds={JSON.stringify(box)} data-site={import.meta.env.SITE} role="region" aria-label="Map of cleared land"></div>
+          <p class="tip" data-tip hidden></p>
+          <p class="loading" data-loading role="status">Loading {num(active.length)} places</p>
+          <div class="detail" data-detail hidden></div>
+        </div>
+        <div class="mapfoot small">
+          <ul class="key" aria-label="Map key">
+            <li><span class="sw alarm"></span>No licence to mine</li>
+            <li><span class="sw ring"></span>Inside a mining licence</li>
+            <li><span class="sw area"></span>Area we cover</li>
+          </ul>
+          <p class="muted">Bigger circles, bigger patches. Tap one to see it.</p>
+        </div>
       </div>
     </div>
 
@@ -115,6 +127,8 @@ const withoutPic = active.find((p) => !hasPair(p));
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
   const openBtn = document.querySelector<HTMLButtonElement>('[data-open-map]')!;
   const detail = document.querySelector<HTMLElement>('[data-detail]')!;
+  const loading = document.querySelector<HTMLElement>('[data-loading]')!;
+  const tip = document.querySelector<HTMLElement>('[data-tip]')!;
   const site = el.dataset.site!.replace(/\/$/, '');
   const box = JSON.parse(el.dataset.bounds!) as [number, number, number, number];
   let map: MLMap | null = null;
@@ -143,9 +157,9 @@ const withoutPic = active.find((p) => !hasPair(p));
       paint: {
         'circle-radius': ['interpolate', ['linear'], ['sqrt', ['get', 'ha']], 1, 3, 11, 20],
         'circle-color': ['case', ['in', ['get', 'licence'], ['literal', ALARM]], css('--signal'), 'rgba(0,0,0,0)'],
-        'circle-stroke-color': ['case', ['boolean', ['feature-state', 'picked'], false], css('--ink'),
+        'circle-stroke-color': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], css('--ink'),
           ['in', ['get', 'licence'], ['literal', ALARM]], css('--paper'), css('--ink')],
-        'circle-stroke-width': ['case', ['boolean', ['feature-state', 'picked'], false], 3, ['in', ['get', 'licence'], ['literal', ALARM]], 0.75, 2],
+        'circle-stroke-width': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], 3, ['in', ['get', 'licence'], ['literal', ALARM]], 0.75, 2],
         'circle-opacity': 0.9,
       },
     });
@@ -170,27 +184,43 @@ const withoutPic = active.find((p) => !hasPair(p));
     picked = p.id;
     m.setFeatureState({ source: 'places', id: p.id }, { picked: true });
     detail.replaceChildren();
-    const hide = document.createElement('button');
-    hide.type = 'button'; hide.className = 'btn hide'; hide.textContent = 'Hide';
-    hide.addEventListener('click', unpick);
-    detail.append(hide);
+    const title = `${hectares(p.ha)} cleared ${p.name}`;
+    const head = document.createElement('div');
+    head.className = 'dhead';
     const h = document.createElement('h2');
-    h.textContent = `${p.ha < 10 ? p.ha.toFixed(1) : Math.round(p.ha)} hectares cleared ${p.name}`;
-    detail.append(h);
+    h.textContent = title;
+    const hide = document.createElement('button');
+    hide.type = 'button'; hide.className = 'hide'; hide.textContent = 'Close';
+    hide.setAttribute('aria-label', 'Close this place');
+    hide.addEventListener('click', unpick);
+    head.append(h, hide);
+    detail.append(head);
     if (p.before_image) {
-      const pair = document.createElement('div');
+      // A pair the picture viewer understands, so tapping a picture opens it large
+      const pair = document.createElement('figure');
       pair.className = 'mini';
+      Object.assign(pair.dataset, { pair: '', title, href: `/places/${p.id}` });
       for (const side of ['before', 'after']) {
-        const fig = document.createElement('figure');
+        const small = local(p[`${side}_image`]);
+        const large = small.replace(/-360\.webp$/, '-720.webp');
+        pair.dataset[side] = large;
+        pair.dataset[`${side}Date`] = long(p[`${side}_date`]);
+        const a = document.createElement('a');
+        a.href = large; a.dataset.open = side;
         const img = document.createElement('img');
-        img.src = local(p[`${side}_image`]); img.width = 360; img.height = 360;
-        img.alt = `Satellite image, ${long(p[`${side}_date`])}`;
-        const cap = document.createElement('figcaption');
-        cap.textContent = long(p[`${side}_date`]);
-        fig.append(img, cap);
-        pair.append(fig);
+        img.src = small; img.width = 360; img.height = 360;
+        img.alt = `Satellite image, ${side}, ${long(p[`${side}_date`])}`;
+        const cap = document.createElement('span');
+        cap.textContent = short(p[`${side}_date`]);
+        a.append(img, cap);
+        pair.append(a);
       }
       detail.append(pair);
+    } else {
+      const none = document.createElement('p');
+      none.className = 'muted small';
+      none.textContent = NO_PICTURE[p.no_picture as NoPicture] ?? NO_PICTURE.pending;
+      detail.append(none);
     }
     const lic = document.createElement('p');
     lic.textContent = `${LABEL[p.licence]}. First seen ${long(p.first_seen)}.`;
@@ -203,7 +233,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     // On a phone the panel covers the lower half, so centre the place in the part still showing
     m.easeTo({
       center: f.geometry.coordinates as [number, number], zoom: zoom ?? Math.max(m.getZoom(), 11),
-      padding: { top: 0, left: 0, right: 0, bottom: phone() ? detail.offsetHeight : 0 },
+      padding: { top: 0, left: phone() ? 0 : detail.offsetWidth + 24, right: 0, bottom: phone() ? detail.offsetHeight : 0 },
       duration: still() ? 0 : 400,
     });
   }
@@ -225,6 +255,9 @@ const withoutPic = active.find((p) => !hasPair(p));
     map = m;
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
     m.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
+    m.on('sourcedata', (e) => {
+      if (e.sourceId === 'places' && m.isSourceLoaded('places')) loading.hidden = true;
+    });
     m.on('load', () => {
       addData(m);
       const want = decodeURIComponent(location.hash.slice(1));
@@ -238,12 +271,39 @@ const withoutPic = active.find((p) => !hasPair(p));
         });
       }
     });
-    m.on('click', 'places', (e) => {
-      const f = e.features!.reduce((a, b) => (b.properties!.ha > a.properties!.ha ? b : a));
-      pick(m, f as unknown as GeoJSON.Feature<GeoJSON.Point>);
+    // Small circles are hard to hit, especially with a finger, so look a few pixels around the point
+    const near = (pt: { x: number; y: number }) => {
+      const r = phone() ? 14 : 6;
+      const found = m.getLayer('places') ? m.queryRenderedFeatures([[pt.x - r, pt.y - r], [pt.x + r, pt.y + r]], { layers: ['places'] }) : [];
+      return found.length ? found.reduce((a, b) => (b.properties!.ha > a.properties!.ha ? b : a)) : null;
+    };
+    let hovered: string | null = null;
+    const unhover = () => {
+      if (hovered) m.setFeatureState({ source: 'places', id: hovered }, { hover: false });
+      hovered = null;
+      tip.hidden = true;
+      m.getCanvas().style.cursor = '';
+    };
+    m.on('click', (e) => {
+      const f = near(e.point);
+      if (f) pick(m, f as unknown as GeoJSON.Feature<GeoJSON.Point>);
     });
-    m.on('mouseenter', 'places', () => { m.getCanvas().style.cursor = 'pointer'; });
-    m.on('mouseleave', 'places', () => { m.getCanvas().style.cursor = ''; });
+    m.on('mousemove', (e) => {
+      const f = near(e.point);
+      if (!f) return unhover();
+      const p = f.properties as Record<string, any>;
+      if (hovered !== p.id) {
+        unhover();
+        hovered = p.id;
+        m.setFeatureState({ source: 'places', id: p.id }, { hover: true });
+        tip.textContent = `${hectares(p.ha)} cleared ${p.name}. ${p.before_image ? 'Click to see the pictures.' : 'Click for details.'}`;
+      }
+      tip.hidden = false;
+      tip.style.translate = `${Math.min(e.point.x + 14, el.clientWidth - tip.offsetWidth - 8)}px ${Math.max(e.point.y - tip.offsetHeight - 10, 8)}px`;
+      m.getCanvas().style.cursor = 'pointer';
+    });
+    m.on('mouseout', unhover);
+    m.on('movestart', unhover);
     addEventListener('themechange', () => {
       m.setStyle(style(), { diff: false });
       m.once('style.load', () => {
@@ -385,8 +445,26 @@ const withoutPic = active.find((p) => !hasPair(p));
     if (v == null) continue;
     if (el.type === 'checkbox') el.checked = v === el.value; else el.value = v;
   }
-  form.hidden = false;
-  (document.querySelector("[data-fwrap]") as HTMLElement).hidden = false;
+  const toggle = document.querySelector<HTMLButtonElement>('[data-ftoggle]')!;
+  const badge = document.querySelector<HTMLElement>('[data-fbadge]')!;
+  const clear = document.querySelector<HTMLButtonElement>('[data-clear]')!;
+  const wide = matchMedia('(min-width: 960px)');
+  const setOpen = (open: boolean) => {
+    form.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+  // On desktop the filters are always shown; on phones they fold away so the list starts near the top
+  wide.addEventListener('change', () => setOpen(wide.matches || toggle.getAttribute('aria-expanded') === 'true'));
+  toggle.addEventListener('click', () => setOpen(form.hidden));
+  const markActive = () => {
+    const on = [...new FormData(form)].filter(([k, v]) => v && k !== 'sort').length;
+    badge.hidden = on === 0;
+    badge.textContent = `${on} on`;
+    clear.hidden = on === 0;
+  };
+  form.addEventListener('change', markActive);
+  form.addEventListener('reset', () => setTimeout(markActive));
+  (document.querySelector('[data-fwrap]') as HTMLElement).hidden = false;
   form.addEventListener('change', apply);
   form.addEventListener('submit', (e) => e.preventDefault());
   form.addEventListener('reset', () => setTimeout(apply));
@@ -398,7 +476,8 @@ const withoutPic = active.find((p) => !hasPair(p));
   });
   const filtered = [...params.keys()].some((k) => form.elements.namedItem(k));
   // On phones the filters fold away so the list starts near the top
-  if (filtered || matchMedia('(min-width: 960px)').matches) (document.querySelector('[data-fwrap]') as HTMLDetailsElement).open = true;
+  setOpen(wide.matches);
+  markActive();
   if (filtered) apply();
 
   openBtn.addEventListener('click', open);
@@ -412,34 +491,66 @@ const withoutPic = active.find((p) => !hasPair(p));
   .margin { grid-area: margin; display: grid; gap: 14px; align-content: start; }
   .mapcol { grid-area: map; }
   .listcol { grid-area: list; }
+  /* Desktop: the panel and the list scroll with the page while the map stays in view beside them */
   @media (min-width: 960px) {
-    .sheet { grid-template-columns: 1fr 360px; grid-template-areas: 'map margin' 'list margin'; column-gap: 32px; }
-    .margin { border-left: 2px solid var(--ink); padding-left: 24px; position: sticky; top: 16px; max-height: calc(100dvh - 32px); overflow: auto; }
+    .sheet { grid-template-columns: minmax(340px, 400px) 1fr; grid-template-areas: 'margin map' 'list map'; column-gap: 32px; row-gap: 8px; }
+    /* Short enough to show whole below the header, so the key at its foot is never cut off */
+    .mapcol { position: sticky; top: 16px; align-self: start; height: calc(100dvh - 110px); min-height: 480px; }
+    .mapcol .frame { height: 100%; display: flex; flex-direction: column; }
+    .mapcol .mapbox { flex: 1; min-height: 0; }
+    .mapcol #map { height: 100%; min-height: 0; }
   }
   h1 { font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
   .margin p { margin: 0; }
-  .key { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 8px; }
-  .key li { display: flex; align-items: center; gap: 10px; }
+  .mapfoot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 20px; padding: 8px 10px; border-top: 1px solid var(--line); }
+  .mapfoot p { margin: 0; }
+  .key { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .key li { display: flex; align-items: center; gap: 8px; }
   .sw { width: 14px; height: 14px; border-radius: 50%; flex: none; }
   .sw.alarm { background: var(--signal); }
   .sw.ring { border: 2px solid var(--ink); }
   .sw.area { border-radius: 0; height: 0; border-top: 2px dashed var(--ink); }
-  .frame { border: 2px solid var(--ink); padding: 0; }
+  .frame { border: 2px solid var(--ink); padding: 0; background: var(--paper); }
   .maphead { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
   .maphead .close { min-height: 40px; }
+  .mapbox { position: relative; }
   #map { height: 70vh; min-height: 420px; }
+  .loading {
+    position: absolute; top: 12px; left: 12px; margin: 0; padding: 8px 12px; font-weight: 700;
+    background: var(--paper); border: 1px solid var(--ink); border-radius: 6px;
+  }
+  .loading[hidden] { display: none; }
+  .tip {
+    position: absolute; left: 0; top: 0; margin: 0; max-width: 260px; padding: 6px 10px; pointer-events: none; z-index: 2;
+    font-size: 0.875rem; font-weight: 700; background: var(--paper); border: 1px solid var(--ink); border-radius: 6px;
+  }
+  .tip[hidden] { display: none; }
   .open { width: 100%; }
   @media (min-width: 960px) { .open { display: none; } .maphead .close { display: none; } }
   .listcol h2 { font-size: 1.5rem; margin: 16px 0 4px; }
   .list { list-style: none; padding: 0; margin: 12px 0 0; }
 
-  .filters { display: grid; gap: 12px; padding: 12px 0 4px; border-top: 1px solid var(--line); }
-  .filters[hidden] { display: none; }
   .fwrap { border-top: 1px solid var(--line); padding-top: 12px; }
-  .fwrap > summary { list-style: none; cursor: pointer; display: inline-flex; }
-  .fwrap > summary::-webkit-details-marker { display: none; }
-  .fwrap[open] > summary { background: var(--ink); color: var(--paper); }
-  .fwrap .filters { border-top: 0; }
+  .fwrap[hidden] { display: none; }
+  .ftoggle {
+    font: inherit; font-weight: 700; color: var(--ink); background: var(--paper); cursor: pointer;
+    display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 0 14px;
+    border: 1px solid var(--ink); border-radius: 6px; text-align: left;
+  }
+  .ftoggle .flabel { flex: 1; }
+  .ftoggle .chev { transition: rotate 150ms ease-out; }
+  .ftoggle[aria-expanded='true'] .chev { rotate: 180deg; }
+  .ftoggle[aria-expanded='true'] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  @media (prefers-reduced-motion: reduce) { .ftoggle .chev { transition: none; } }
+  .fbadge { background: var(--ink); color: var(--paper); font-size: 0.8125rem; padding: 1px 8px; border-radius: 4px; }
+  .fbadge[hidden] { display: none; }
+  .fh { display: none; font-size: 1.125rem; margin: 0 0 4px; }
+  @media (min-width: 960px) { .ftoggle { display: none; } .fh { display: block; } }
+  .filters { display: grid; gap: 12px; padding: 12px 0 4px; }
+  .filters[hidden] { display: none; }
+  @media (max-width: 959px) {
+    .filters { border: 1px solid var(--ink); border-top: 0; border-radius: 0 0 6px 6px; padding: 14px; }
+  }
   .filters label { display: grid; gap: 4px; font-size: 0.9375rem; font-weight: 700; }
   .filters select {
     font: inherit; font-weight: 400; min-height: 44px; padding: 0 10px; width: 100%; min-width: 0;
@@ -449,28 +560,44 @@ const withoutPic = active.find((p) => !hasPair(p));
   .filters .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--ink); }
   .filters .count { margin: 0; font-size: 0.9375rem; }
   .filters .btn { justify-self: start; }
+  .filters .btn[hidden] { display: none; }
   @media (min-width: 480px) and (max-width: 959px) {
     .filters { grid-template-columns: 1fr 1fr; column-gap: 16px; }
     .filters .count, .filters .check { grid-column: 1 / -1; }
   }
-  .detail { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 10px; }
-  .detail :global(h2) { font-size: 1.0625rem; margin: 0; line-height: 1.3; }
-  .detail :global(.hide) { justify-self: end; min-height: 40px; padding: 0 14px; }
-  @media (min-width: 960px) { .detail :global(.hide) { display: none; } }
-  .detail :global(.mini) { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-  .detail :global(figure) { margin: 0; }
+
+  /* The picked place: a card over the map on desktop, a panel at the bottom on phones */
+  .detail { display: grid; gap: 10px; background: var(--paper); padding: 14px; }
+  .detail[hidden] { display: none; }
+  .detail :global(.dhead) { display: flex; align-items: flex-start; gap: 12px; }
+  .detail :global(h2) { font-size: 1.0625rem; margin: 0; line-height: 1.3; flex: 1; padding-top: 8px; }
+  .detail :global(.hide) {
+    font: inherit; font-weight: 700; color: var(--ink); background: transparent; cursor: pointer; flex: none;
+    min-height: 44px; padding: 0 12px; border: 1px solid var(--ink); border-radius: 6px;
+  }
+  .detail :global(.mini) { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0; }
+  .detail :global(.mini a) { display: block; text-decoration: none; }
+  .detail :global(.mini a:hover span) { text-decoration: underline; }
   .detail :global(img) { width: 100%; aspect-ratio: 1; object-fit: cover; }
-  .detail :global(figcaption) { font-size: 0.8125rem; font-weight: 700; margin-top: 4px; }
+  .detail :global(.mini span) { display: block; font-size: 0.8125rem; font-weight: 700; margin-top: 4px; }
+  .detail :global(p) { margin: 0; }
+  @media (min-width: 960px) {
+    .detail {
+      position: absolute; left: 12px; top: 12px; width: min(340px, calc(100% - 24px)); max-height: calc(100% - 24px);
+      overflow: auto; border: 2px solid var(--ink); border-radius: 6px;
+    }
+  }
 
   /* On phones the open map fills the screen and the picked place sits in a panel at the bottom */
   @media (max-width: 959px) {
     :global(body.map-open) { overflow: hidden; }
     :global(body.map-open) .frame { position: fixed; inset: 0; z-index: 30; background: var(--paper); border: 0; display: flex; flex-direction: column; }
-    :global(body.map-open) #map { flex: 1; height: auto; min-height: 0; }
+    :global(body.map-open) .mapbox { flex: 1; min-height: 0; }
+    :global(body.map-open) #map { height: 100%; min-height: 0; }
     :global(body.map-open) .detail:not([hidden]) {
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 31; max-height: 48dvh; overflow: auto;
-      background: var(--paper); border-top: 2px solid var(--ink); padding: 14px var(--gutter) 20px;
+      border-top: 2px solid var(--ink); padding: 14px var(--gutter) 20px;
     }
-    :global(body.map-open) .detail :global(.mini) { grid-template-columns: 1fr 1fr; max-width: 360px; }
+    :global(body.map-open) .detail :global(.mini) { max-width: 360px; }
   }
 </style>

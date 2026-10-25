@@ -3,27 +3,34 @@
 <dialog class="viewer" aria-labelledby="viewer-title" data-viewer>
   <div class="bar">
     <h2 id="viewer-title" data-v-title></h2>
-    <button class="close" type="button" data-v-close>Close</button>
+    <a class="more" data-v-link href="/">Open this place</a>
+    <button class="close" type="button" data-v-close>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Close
+    </button>
   </div>
-  <div class="stage" data-v-stage>
-    <div class="zoom" data-v-zoom>
-      <img data-v-img="before" alt="" width="720" height="720" draggable="false">
-      <img data-v-img="after" alt="" width="720" height="720" draggable="false">
-    </div>
-    <span class="stamp" data-v-stamp aria-live="polite"></span>
-    <div class="zbtns">
-      <button type="button" data-v-zoom-by="1.6" aria-label="Zoom in">+</button>
-      <button type="button" data-v-zoom-by="0.625" aria-label="Zoom out" disabled>&minus;</button>
-    </div>
+  <div class="stages" data-v-stages>
+    <figure class="stage" data-v-stage="before">
+      <div class="zoom"><img data-v-img="before" alt="" width="720" height="720" draggable="false"></div>
+      <figcaption class="stamp"><strong>Before</strong> <span data-v-date="before"></span></figcaption>
+    </figure>
+    <figure class="stage" data-v-stage="after">
+      <div class="zoom"><img data-v-img="after" alt="" width="720" height="720" draggable="false"></div>
+      <figcaption class="stamp"><strong>After</strong> <span data-v-date="after"></span></figcaption>
+    </figure>
   </div>
   <div class="controls">
-    <div class="switch" role="group" aria-label="Which picture to show">
+    <div class="switch" role="group" aria-label="Which picture to show" data-v-switch>
       <button type="button" data-v-show="before" aria-pressed="false">Before</button>
       <button type="button" data-v-show="after" aria-pressed="true">After</button>
     </div>
-    <a class="more" data-v-link href="/">Open this place</a>
+    <div class="zbtns" role="group" aria-label="Zoom">
+      <button type="button" data-v-zoom-by="0.625" aria-label="Zoom out" disabled>&minus;</button>
+      <button type="button" data-v-zoom-by="1.6" aria-label="Zoom in">+</button>
+      <button type="button" class="fit" data-v-fit disabled>Fit</button>
+    </div>
+    <p class="hint muted small" data-v-hint></p>
   </div>
-  <p class="hint muted small" data-v-hint>Pinch or double-tap to zoom in. Swipe to switch between before and after.</p>
 </dialog>
 
 <script is:inline>
@@ -31,30 +38,47 @@
     const d = document.querySelector('[data-viewer]');
     if (!d || !d.showModal) return;
     const q = (s) => d.querySelector(s);
-    const imgs = { before: q('[data-v-img=before]'), after: q('[data-v-img=after]') };
+    const stages = q('[data-v-stages]');
+    const stageOf = { before: q('[data-v-stage=before]'), after: q('[data-v-stage=after]') };
+    const layers = [...d.querySelectorAll('.zoom')];
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
     let side = 'after';
-    const dates = { before: '', after: '' };
     let opener = null;
+
+    // Wide screens show both pictures side by side; narrow ones show one and switch
+    const both = () => stages.dataset.both === 'true';
+    const layout = () => {
+      const r = stages.getBoundingClientRect();
+      stages.dataset.both = String(r.width >= 640 && r.width / Math.max(r.height, 1) >= 1.45);
+      q('[data-v-switch]').hidden = both();
+      q('[data-v-hint]').textContent = coarse
+        ? (both() ? 'Pinch or double-tap to zoom. Both pictures zoom together.' : 'Pinch or double-tap to zoom. Swipe to switch between before and after.')
+        : `Scroll, double-click or use + and − to zoom. Drag to look around.${both() ? ' Both pictures zoom together.' : ' Arrow keys switch between before and after.'}`;
+      render(false);
+    };
+    new ResizeObserver(layout).observe(stages);
 
     const show = (next) => {
       side = next;
       d.querySelectorAll('[data-v-show]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.vShow === side)));
-      imgs.before.classList.toggle('on', side === 'before');
-      imgs.after.classList.toggle('on', side === 'after');
-      q('[data-v-stamp]').textContent = dates[side];
+      stageOf.before.classList.toggle('on', side === 'before');
+      stageOf.after.classList.toggle('on', side === 'after');
     };
 
     const open = (fig, start) => {
       q('[data-v-title]').textContent = fig.dataset.title;
       q('[data-v-link]').href = fig.dataset.href;
       for (const s of ['before', 'after']) {
-        const date = fig.dataset[s + 'Date'];
-        imgs[s].src = fig.dataset[s];
-        imgs[s].alt = `Satellite image, ${date}`;
-        dates[s] = date;
+        const img = q(`[data-v-img=${s}]`);
+        img.src = fig.dataset[s];
+        img.alt = `Satellite image, ${s}, ${fig.dataset[s + 'Date']}`;
+        q(`[data-v-date=${s}]`).textContent = fig.dataset[s + 'Date'];
       }
       show(start);
       d.showModal();
+      reset();
+      layout();
       history.pushState({ viewer: true }, '');
     };
 
@@ -73,32 +97,27 @@
     });
     q('[data-v-close]').addEventListener('click', close);
     d.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
-    d.addEventListener('click', (e) => { if (e.target === d) close(); });
     d.querySelectorAll('[data-v-show]').forEach((b) => b.addEventListener('click', () => show(b.dataset.vShow)));
-    d.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') show('before');
-      if (e.key === 'ArrowRight') show('after');
-    });
 
-    // Zoom and pan, shared by both pictures so the same spot stays in view when switching.
+    // Zoom and pan are shared by both pictures, so the same spot stays in view.
     // Sentinel-2 pixels are 10 m, so past 3x the picture only gets blurrier.
     const MAX = 3;
-    const stage = q('[data-v-stage]');
-    const layer = q('[data-v-zoom]');
-    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
     let z = 1, tx = 0, ty = 0;
+    const box = () => (both() || side === 'before' ? stageOf.before : stageOf.after).getBoundingClientRect();
 
-    const render = (ease) => {
-      const w = stage.clientWidth, h = stage.clientHeight;
+    function render(ease) {
+      const { width: w, height: h } = box();
       tx = Math.min(0, Math.max(w * (1 - z), tx));
       ty = Math.min(0, Math.max(h * (1 - z), ty));
-      layer.style.transition = ease && !still() ? 'transform 200ms cubic-bezier(0.2, 0, 0, 1)' : 'none';
-      layer.style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
-      stage.classList.toggle('zoomed', z > 1.01);
-      d.querySelectorAll('[data-v-zoom-by]').forEach((b) => {
-        b.disabled = Number(b.dataset.vZoomBy) > 1 ? z >= MAX - 0.01 : z <= 1.01;
-      });
-    };
+      for (const l of layers) {
+        l.style.transition = ease && !still() ? 'transform 200ms cubic-bezier(0.2, 0, 0, 1)' : 'none';
+        l.style.transform = `translate(${tx}px, ${ty}px) scale(${z})`;
+      }
+      stages.classList.toggle('zoomed', z > 1.01);
+      q('[data-v-zoom-by="1.6"]').disabled = z >= MAX - 0.01;
+      q('[data-v-zoom-by="0.625"]').disabled = z <= 1.01;
+      q('[data-v-fit]').disabled = z <= 1.01;
+    }
     const zoomAt = (x, y, next, ease) => {
       next = Math.min(MAX, Math.max(1, next));
       tx = x - ((x - tx) * next) / z;
@@ -106,11 +125,12 @@
       z = next;
       render(ease);
     };
-    const reset = () => { z = 1; tx = 0; ty = 0; render(false); };
-    const local = (e) => {
+    function reset(ease) { z = 1; tx = 0; ty = 0; render(ease); }
+    const local = (e, stage) => {
       const r = stage.getBoundingClientRect();
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
+    const middle = () => { const { width, height } = box(); return [width / 2, height / 2]; };
 
     const pts = new Map();
     let start = null, pinch = null, pinched = false, lastTap = null;
@@ -120,111 +140,122 @@
     };
     const grab = (p) => { start = { x: p.x, y: p.y, tx, ty }; };
 
-    stage.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button')) return;
-      stage.setPointerCapture(e.pointerId);
-      pts.set(e.pointerId, local(e));
-      if (pts.size === 1) { grab(local(e)); start.t = e.timeStamp; }
-      if (pts.size === 2) { pinch = { ...spread(), z }; pinched = true; }
-    });
-    stage.addEventListener('pointermove', (e) => {
-      if (!pts.has(e.pointerId)) return;
-      pts.set(e.pointerId, local(e));
-      if (pts.size === 2 && pinch) {
-        const now = spread();
-        tx += now.x - pinch.x;
-        ty += now.y - pinch.y;
-        zoomAt(now.x, now.y, (pinch.z * now.d) / pinch.d, false);
-        pinch.x = now.x; pinch.y = now.y;
-      } else if (pts.size === 1 && start && z > 1.01) {
-        const p = local(e);
-        tx = start.tx + p.x - start.x;
-        ty = start.ty + p.y - start.y;
-        render(false);
-      }
-    });
-    const lift = (e) => {
-      if (!pts.has(e.pointerId)) return;
-      const p = local(e);
-      pts.delete(e.pointerId);
-      if (pts.size === 1) { pinch = null; grab([...pts.values()][0]); return; }
-      if (pts.size > 0 || !start) return;
-      const dx = p.x - start.x, dy = p.y - start.y;
-      const tap = Math.hypot(dx, dy) < 10 && !pinched;
-      if (!pinched && z <= 1.01 && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-        show(side === 'before' ? 'after' : 'before');
-      } else if (tap && lastTap && e.timeStamp - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30) {
-        if (z > 1.01) { z = 1; tx = 0; ty = 0; render(true); } else zoomAt(p.x, p.y, 2.5, true);
-        lastTap = null;
-      } else if (tap) {
-        lastTap = { ...p, t: e.timeStamp };
-      }
-      start = null; pinched = false;
-    };
-    stage.addEventListener('pointerup', lift);
-    stage.addEventListener('pointercancel', lift);
-    stage.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const p = local(e);
-      zoomAt(p.x, p.y, z * Math.exp(-e.deltaY * 0.002), false);
-    }, { passive: false });
-    d.querySelectorAll('[data-v-zoom-by]').forEach((b) => b.addEventListener('click', () => {
-      zoomAt(stage.clientWidth / 2, stage.clientHeight / 2, z * Number(b.dataset.vZoomBy), true);
-    }));
-    d.addEventListener('keydown', (e) => {
-      const mid = [stage.clientWidth / 2, stage.clientHeight / 2];
-      if (e.key === '+' || e.key === '=') zoomAt(...mid, z * 1.6, true);
-      if (e.key === '-') zoomAt(...mid, z / 1.6, true);
-      if (e.key === '0') { z = 1; tx = 0; ty = 0; render(true); }
-    });
-    d.addEventListener('close', reset);
-    if (!matchMedia('(pointer: coarse)').matches) {
-      q('[data-v-hint]').textContent = 'Scroll, double-click or use + and − to zoom. Drag to look around. Arrow keys switch between before and after.';
+    for (const stage of Object.values(stageOf)) {
+      stage.addEventListener('pointerdown', (e) => {
+        stage.setPointerCapture(e.pointerId);
+        pts.set(e.pointerId, local(e, stage));
+        if (pts.size === 1) grab(local(e, stage));
+        if (pts.size === 2) { pinch = { ...spread(), z }; pinched = true; }
+      });
+      stage.addEventListener('pointermove', (e) => {
+        if (!pts.has(e.pointerId)) return;
+        pts.set(e.pointerId, local(e, stage));
+        if (pts.size === 2 && pinch) {
+          const now = spread();
+          tx += now.x - pinch.x;
+          ty += now.y - pinch.y;
+          zoomAt(now.x, now.y, (pinch.z * now.d) / pinch.d, false);
+          pinch.x = now.x; pinch.y = now.y;
+        } else if (pts.size === 1 && start && z > 1.01) {
+          const p = local(e, stage);
+          tx = start.tx + p.x - start.x;
+          ty = start.ty + p.y - start.y;
+          render(false);
+        }
+      });
+      const lift = (e) => {
+        if (!pts.has(e.pointerId)) return;
+        const p = local(e, stage);
+        pts.delete(e.pointerId);
+        if (pts.size === 1) { pinch = null; grab([...pts.values()][0]); return; }
+        if (pts.size > 0 || !start) return;
+        const dx = p.x - start.x, dy = p.y - start.y;
+        const tap = Math.hypot(dx, dy) < 10 && !pinched;
+        if (!pinched && !both() && z <= 1.01 && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          show(side === 'before' ? 'after' : 'before');
+        } else if (tap && lastTap && e.timeStamp - lastTap.t < 320 && Math.hypot(p.x - lastTap.x, p.y - lastTap.y) < 30) {
+          if (z > 1.01) reset(true); else zoomAt(p.x, p.y, 2.5, true);
+          lastTap = null;
+        } else if (tap) {
+          lastTap = { ...p, t: e.timeStamp };
+        }
+        start = null; pinched = false;
+      };
+      stage.addEventListener('pointerup', lift);
+      stage.addEventListener('pointercancel', lift);
+      stage.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const p = local(e, stage);
+        zoomAt(p.x, p.y, z * Math.exp(-e.deltaY * 0.002), false);
+      }, { passive: false });
     }
+
+    d.querySelectorAll('[data-v-zoom-by]').forEach((b) => b.addEventListener('click', () => {
+      zoomAt(...middle(), z * Number(b.dataset.vZoomBy), true);
+    }));
+    q('[data-v-fit]').addEventListener('click', () => reset(true));
+    d.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' && !both()) show('before');
+      if (e.key === 'ArrowRight' && !both()) show('after');
+      if (e.key === '+' || e.key === '=') zoomAt(...middle(), z * 1.6, true);
+      if (e.key === '-') zoomAt(...middle(), z / 1.6, true);
+      if (e.key === '0') reset(true);
+    });
+    d.addEventListener('close', () => reset(false));
   })();
 </script>
 
 <style>
+  /* Fills the screen on every device, so the pictures get all the room there is and nothing scrolls */
   .viewer {
-    width: min(100vw, 760px); max-width: 100vw; max-height: 100dvh; margin: auto; padding: 0;
-    border: 0; background: var(--paper); color: var(--ink);
-    opacity: 1; scale: 1;
-    transition: opacity 200ms cubic-bezier(0.4, 0, 1, 1), scale 200ms cubic-bezier(0.4, 0, 1, 1),
-                overlay 200ms allow-discrete, display 200ms allow-discrete;
+    width: 100vw; height: 100dvh; max-width: 100vw; max-height: 100dvh; margin: 0; padding: 0;
+    border: 0; background: var(--paper); color: var(--ink); overflow: hidden;
+    opacity: 1;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 1, 1), overlay 200ms allow-discrete, display 200ms allow-discrete;
   }
-  .viewer:not([open]) { opacity: 0; scale: 0.98; }
-  .viewer[open] { transition-duration: 250ms; transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
-  @starting-style { .viewer[open] { opacity: 0; scale: 0.98; } }
+  .viewer[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; transition-duration: 250ms; transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+  .viewer:not([open]) { opacity: 0; }
+  @starting-style { .viewer[open] { opacity: 0; } }
   .viewer::backdrop { background: rgb(0 0 0 / 0.8); }
-  @media (max-width: 759px) { .viewer { width: 100vw; height: 100dvh; } }
-  @media (prefers-reduced-motion: reduce) { .viewer, .viewer:not([open]), .viewer[open] { scale: 1; } }
 
-  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px var(--gutter); }
-  .bar h2 { font-size: 1.0625rem; margin: 0; line-height: 1.3; }
+  .bar { display: flex; align-items: center; gap: 16px; padding: 8px var(--gutter); border-bottom: 1px solid var(--line); }
+  .bar h2 { font-size: 1.0625rem; margin: 0; line-height: 1.3; flex: 1; min-width: 0; }
+  .more { font-weight: 700; padding: 10px 0; white-space: nowrap; }
+  @media (max-width: 559px) { .bar .more { display: none; } }
   .close {
     font: inherit; font-weight: 700; min-height: 44px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 6px;
-    background: transparent; color: var(--ink); cursor: pointer; flex: none;
+    background: transparent; color: var(--ink); cursor: pointer; flex: none; display: inline-flex; align-items: center; gap: 8px;
   }
-  .stage { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--paper-2); touch-action: none; user-select: none; -webkit-user-select: none; }
-  .stage.zoomed { cursor: grab; }
-  .stage.zoomed:active { cursor: grabbing; }
+
+  .stages {
+    container-type: size; min-height: 0; padding: 12px var(--gutter);
+    display: grid; grid-auto-flow: column; justify-content: center; align-content: center; gap: 8px;
+  }
+  .stage { margin: 0; position: relative; overflow: hidden; background: var(--paper-2); touch-action: none; user-select: none; -webkit-user-select: none; }
+  .stages[data-both='false'] .stage { width: min(100cqw, 100cqh); aspect-ratio: 1; }
+  .stages[data-both='false'] .stage:not(.on) { display: none; }
+  .stages[data-both='true'] .stage { width: min(calc((100cqw - 8px) / 2), 100cqh); aspect-ratio: 1; }
+  .stages.zoomed .stage { cursor: grab; }
+  .stages.zoomed .stage:active { cursor: grabbing; }
   .zoom { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
-  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 150ms ease-in-out; -webkit-user-drag: none; }
-  .zbtns { position: absolute; top: 10px; right: 10px; display: grid; gap: 6px; }
-  .zbtns button {
-    width: 44px; height: 44px; font: inherit; font-size: 1.5rem; font-weight: 700; line-height: 1; cursor: pointer;
-    background: var(--paper); color: var(--ink); border: 1px solid var(--ink); border-radius: 6px;
+  .zoom img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+  .stamp { position: absolute; left: 10px; bottom: 10px; background: #000; color: #fff; padding: 4px 10px; font-size: 0.9375rem; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+    padding: 10px var(--gutter) 14px; border-top: 1px solid var(--line);
   }
-  .zbtns button:disabled { opacity: 0.45; cursor: default; }
-  .stage img.on { opacity: 1; }
-  .stamp { position: absolute; left: 10px; bottom: 10px; background: #000; color: #fff; font-weight: 700; padding: 4px 10px; }
-  .controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--gutter) 0; }
   .switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
-  .switch button {
+  .switch[hidden] { display: none; }
+  .switch button, .zbtns button {
     font: inherit; font-weight: 700; min-height: 44px; padding: 0 14px; border: 0; background: transparent;
     color: var(--ink); cursor: pointer;
   }
   .switch button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
-  .more { font-weight: 700; padding: 10px 0; }
-  .hint { padding: 4px var(--gutter) 16px; margin: 0; }
+  .zbtns { display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
+  .zbtns button { min-width: 44px; font-size: 1.25rem; padding: 0 12px; }
+  .zbtns button + button { border-left: 1px solid var(--ink); }
+  .zbtns .fit { font-size: 1rem; }
+  .zbtns button:disabled { color: var(--muted); cursor: default; }
+  .hint { margin: 0; flex: 1 1 260px; }
 </style>

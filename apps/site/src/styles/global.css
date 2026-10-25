@@ -45,6 +45,9 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   background: var(--paper);
   color: var(--ink);
   font-family: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
@@ -89,3 +92,7 @@ p { text-wrap: pretty; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
+
+/* Place lists lay out their rows by their own width, so they work in a side column too */
+ul.list { container-type: inline-size; }
+body > main { flex: 1; }
