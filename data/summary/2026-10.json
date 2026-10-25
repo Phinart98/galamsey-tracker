@@ -1,28 +1,28 @@
 {
- "total_ha": 16711,
- "football_pitches": 23405,
- "patches": 6130,
+ "total_ha": 15964,
+ "football_pitches": 22358,
+ "patches": 5889,
  "by_licence": {
   "no licence": {
-   "ha": 12359,
-   "share": 0.74
+   "ha": 11697,
+   "share": 0.733
   },
   "prospecting only": {
-   "ha": 1838,
+   "ha": 1752,
    "share": 0.11
   },
   "small-scale licence": {
    "ha": 91,
-   "share": 0.005
+   "share": 0.006
   },
   "large-scale lease": {
    "ha": 2423,
-   "share": 0.145
+   "share": 0.152
   }
  },
  "no_licence_to_mine": {
-  "ha": 14197,
-  "share": 0.85
+  "ha": 13449,
+  "share": 0.842
  },
  "top_places": [
   {
@@ -39,39 +39,15 @@
   },
   {
    "local_id": 1,
-   "ha": 60.21,
-   "first_seen": "2026-04-07",
-   "last_seen": "2026-06-01",
-   "tile": "T30NYN",
-   "licence": "no licence",
-   "near": null,
-   "near_km": null,
-   "district": "Asante Akim North",
-   "id": "2026-04-6988n0941w"
-  },
-  {
-   "local_id": 1,
    "ha": 47.88,
    "first_seen": "2025-10-24",
    "last_seen": "2026-10-02",
    "tile": "T30NYM",
    "licence": "no licence",
-   "near": null,
-   "near_km": null,
+   "near": "Kibi",
+   "near_km": 5.2,
    "district": "Abuakwa South",
    "id": "2025-10-6206n0527w"
-  },
-  {
-   "local_id": 1,
-   "ha": 47.52,
-   "first_seen": "2026-08-21",
-   "last_seen": "2026-10-16",
-   "tile": "T30NXN",
-   "licence": "no licence",
-   "near": null,
-   "near_km": null,
-   "district": "Sekyere Central",
-   "id": "2026-08-7143n1305w"
   },
   {
    "local_id": 2,
@@ -80,8 +56,8 @@
    "last_seen": "2026-10-02",
    "tile": "T30NXN",
    "licence": "no licence",
-   "near": null,
-   "near_km": null,
+   "near": "Kunso",
+   "near_km": 9.3,
    "district": "Ahafo Ano South East",
    "id": "2025-11-6748n1916w"
   },
@@ -92,8 +68,8 @@
    "last_seen": "2026-08-21",
    "tile": "T30NXN",
    "licence": "no licence",
-   "near": null,
-   "near_km": null,
+   "near": "Kunso",
+   "near_km": 8.2,
    "district": "Ahafo Ano South East",
    "id": "2025-11-6757n1909w"
   },
@@ -104,8 +80,8 @@
    "last_seen": "2026-04-30",
    "tile": "T30NWN",
    "licence": "large-scale lease",
-   "near": null,
-   "near_km": null,
+   "near": "Babianiha",
+   "near_km": 7.2,
    "district": "Dormaa Municipal",
    "id": "2025-10-7226n2943w"
   },
@@ -116,8 +92,8 @@
    "last_seen": "2026-06-01",
    "tile": "T30NWM",
    "licence": "no licence",
-   "near": null,
-   "near_km": null,
+   "near": "Sompre",
+   "near_km": 2.9,
    "district": "Wassa Amenfi West",
    "id": "2025-10-5944n2466w"
   },
@@ -128,8 +104,8 @@
    "last_seen": "2026-06-01",
    "tile": "T30NXN",
    "licence": "no licence",
-   "near": null,
-   "near_km": null,
+   "near": "Mpasatia",
+   "near_km": 12.8,
    "district": "Atwima Mponua",
    "id": "2025-11-6696n1954w"
   },
@@ -140,8 +116,8 @@
    "last_seen": "2026-05-10",
    "tile": "T30NXN",
    "licence": "large-scale lease",
-   "near": null,
-   "near_km": null,
+   "near": "Mpasatia",
+   "near_km": 8.7,
    "district": "Atwima Nwabiagya South",
    "id": "2026-02-6737n1873w"
   },
@@ -152,8 +128,8 @@
    "last_seen": "2026-06-01",
    "tile": "T30NXN",
    "licence": "prospecting only",
-   "near": null,
-   "near_km": null,
+   "near": "Patriensa",
+   "near_km": 4.9,
    "district": "Asante Akim Central Municipal",
    "id": "2025-11-6657n1135w"
   },
@@ -164,10 +140,34 @@
    "last_seen": "2026-10-02",
    "tile": "T30NYM",
    "licence": "prospecting only",
-   "near": null,
-   "near_km": null,
+   "near": "Asamankese",
+   "near_km": 13.4,
    "district": "Ayensuano",
    "id": "2026-01-5944n0570w"
+  },
+  {
+   "local_id": 7,
+   "ha": 30.42,
+   "first_seen": "2025-11-14",
+   "last_seen": "2026-03-14",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": "Bekwai",
+   "near_km": 13.6,
+   "district": "Bekwai Municipal",
+   "id": "2025-11-6499n1699w"
+  },
+  {
+   "local_id": 2,
+   "ha": 28.89,
+   "first_seen": "2025-11-11",
+   "last_seen": "2026-05-17",
+   "tile": "T30NWN",
+   "licence": "no licence",
+   "near": "Agogoso",
+   "near_km": 1.9,
+   "district": "Atwima Mponua",
+   "id": "2025-11-6592n2057w"
   }
  ],
  "top_districts": [
@@ -230,5 +230,5 @@
   "T30NYM",
   "T30NYN"
  ],
- "method_version": "2026.10.2"
+ "method_version": "2026.10.3"
 }
