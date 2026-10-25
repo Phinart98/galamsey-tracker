@@ -7,10 +7,6 @@ import TrendChart from '../components/TrendChart.astro';
 import { check, lead, summary, trend, where, withPairs } from '../lib/data';
 import { LICENCE_SENTENCE, hectares, longDate, num, pct, placeName, shortDate, srcsets } from '../lib/format';
 
-const settled = trend.filter((p) => p.settled !== false);
-const latestSettled = settled.at(-1);
-const yearBefore = latestSettled && trend.find((p) => p.date === `${Number(latestSettled.date.slice(0, 4)) - 1}${latestSettled.date.slice(4)}`);
-const change = latestSettled && yearBefore ? latestSettled.total_ha / yearBefore.total_ha - 1 : null;
 const biggest = withPairs.filter((p) => p.id !== lead?.id).slice(0, 8);
 const wall = withPairs.slice(0, 24);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
@@ -49,15 +45,12 @@ const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 
     {trend.length > 1 && (
       <section class="band" aria-labelledby="worse">
-        <h2 id="worse">Is it getting worse?</h2>
-        {latestSettled && yearBefore && change !== null && (
-          <p class="intro">
-            In the 12 months to {longDate(latestSettled.date)}, {num(latestSettled.total_ha)} hectares were cleared.
-            The year before, it was {num(yearBefore.total_ha)}.
-            {Math.abs(change) < 0.05 ? ' That is about the same.' : change > 0 ? ` That is ${pct(change)} more.` : ` That is ${pct(-change)} less.`}
-            {' '}NASA confirms clearing weeks after it first sees it, so the most recent months are still rising.
-          </p>
-        )}
+        <h2 id="worse">Clearing over time</h2>
+        {/* No year-on-year sentence until a change is checked: the 2025 to 2026 fall was dry-season farm and fire clearing (spike log s20) */}
+        <p class="intro">
+          Each point is the land cleared in the 12 months before it. NASA confirms clearing weeks after it first sees it, so the most recent months still rise.
+          Some of the ups and downs are farm and fire clearing in the dry season, so we do not read a trend from this yet.
+        </p>
         <TrendChart points={trend} />
       </section>
     )}
