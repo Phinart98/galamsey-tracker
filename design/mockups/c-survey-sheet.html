@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galamsey Tracker</title>
+<link rel="stylesheet" href="tokens.css?v=2">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+  body { display: flex; flex-direction: column; min-height: 100dvh; }
+  .sheet { flex: 1; display: grid; gap: 0; padding: 16px; }
+  @media (min-width: 960px) { .sheet { grid-template-columns: 1fr 360px; padding: 24px 32px 32px; gap: 24px; } }
+  .frame { position: relative; border: 2px solid var(--ink); padding: 18px; min-height: 60vh; }
+  .frame .corner { position: absolute; font-size: 0.75rem; color: var(--muted); background: var(--paper); padding: 0 4px; }
+  .frame .tl { top: -9px; left: 12px; } .frame .tr { top: -9px; right: 12px; }
+  .frame .bl { bottom: -9px; left: 12px; } .frame .br { bottom: -9px; right: 12px; }
+  #map { position: absolute; inset: 18px; border: 1px solid var(--line); }
+  .margin { padding-top: 20px; display: grid; gap: 20px; align-content: start; }
+  @media (min-width: 960px) { .margin { padding-top: 0; border-left: 2px solid var(--ink); padding-left: 24px; } }
+  .margin h1 { font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+  .margin p { margin: 0; }
+  .block { border-top: 1px solid var(--line); padding-top: 14px; }
+  .block h2 { font-size: 1rem; margin: 0 0 8px; }
+  .legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 0.9375rem; }
+  .legend li { display: flex; align-items: center; gap: 10px; }
+  .sw { width: 14px; height: 14px; border-radius: 50%; background: var(--signal); flex: none; }
+  .sw.river { border-radius: 0; height: 3px; background: var(--river); }
+  .sw.ind { background: transparent; border: 2px solid var(--ink); }
+  .facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 0.9375rem; }
+  .facts dt { color: var(--muted); } .facts dd { margin: 0; }
+  #detail[hidden], .compare[hidden] { display: none; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: none; overflow: visible; }
+  .pair img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .pair .when { margin-top: 4px; font-size: 0.875rem; font-weight: 700; }
+  .maplibregl-ctrl-attrib { font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="mock-note"><div class="wrap">Mockup C, "Survey sheet". Real data from the October 2026 data test, one area only (Sentinel-2 tile 30NXM). Click a pink circle.</div></div>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="#">Galamsey Tracker</a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="#">This month</a><a href="#">How we know</a><a href="#">Data</a>
+    <button class="theme-btn" type="button">Dark mode</button>
+  </nav>
+</div></header>
+<main class="sheet">
+  <div class="frame" aria-label="Map of new land disturbance">
+    <span class="corner tl">6.33° N, 2.30° W</span><span class="corner tr">6.33° N, 1.29° W</span>
+    <span class="corner bl">5.33° N, 2.30° W</span><span class="corner br">5.33° N, 1.29° W</span>
+    <div id="map"></div>
+  </div>
+  <aside class="margin">
+    <div>
+      <h1>Dunkwa-on-Offin and Obuasi</h1>
+      <p class="src">Sheet 30NXM. Land that lost its plant cover between October 2025 and October 2026.</p>
+    </div>
+    <div class="block">
+      <dl class="facts">
+        <dt>Patches</dt><dd>1,534 of at least 1 hectare</dd>
+        <dt>Total</dt><dd>4,046 hectares</dd>
+        <dt>Checked by eye</dt><dd>5, of which 3 are galamsey</dd>
+        <dt>Data up to</dt><dd>22 October 2026</dd>
+      </dl>
+    </div>
+    <div class="block" id="detail" hidden>
+      <h2 id="d-title"></h2>
+      <div class="compare pair">
+        <div><img id="d-b" src="" alt=""><div class="when">Feb 2025</div></div>
+        <div><img id="d-a" src="" alt=""><div class="when">Jan 2026</div></div>
+      </div>
+      <p id="d-text" class="src" style="margin-top:8px"></p>
+    </div>
+    <div class="block">
+      <h2>Key</h2>
+      <ul class="legend">
+        <li><span class="sw"></span>Land that lost its plants, sized by area</li>
+        <li><span class="sw ind"></span>Licensed industrial mine</li>
+        <li><span class="sw river"></span>Major river</li>
+      </ul>
+    </div>
+    <div class="block src">Sources: NASA OPERA vegetation disturbance alerts, Copernicus Sentinel-2, OpenStreetMap rivers. Basemap by CARTO.</div>
+  </aside>
+</main>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+  const notes = {
+    1: ['Industrial mine', '124 hectares near Obuasi. Tailings dams and an engineered pit.'],
+    2: ['Industrial mine', '27 hectares. Large open pit with haul roads.'],
+    3: ['Galamsey', '25 hectares. Pit ponds spreading along a stream. First seen 1 November 2025.'],
+    4: ['Galamsey', '17 hectares. New pits pushing into forest. First seen 13 November 2025.'],
+    5: ['Galamsey', '17 hectares. An existing pit field grew west. First seen 22 October 2025.'],
+  };
+  const dark = () => (document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+  const style = () => dark() ? 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json' : 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const map = new maplibregl.Map({ container: 'map', style: style(), bounds: [[-2.30, 5.33], [-1.29, 6.33]], attributionControl: { compact: true } });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+  map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
+  function addData() {
+    map.addSource('rivers', { type: 'geojson', data: 'rivers.geojson' });
+    map.addLayer({ id: 'rivers', type: 'line', source: 'rivers', paint: { 'line-color': css('--river'), 'line-width': 2 } });
+    map.addSource('hot', { type: 'geojson', data: 'hotspots.geojson', generateId: true });
+    map.addLayer({ id: 'hot', type: 'circle', source: 'hot', paint: {
+      'circle-color': ['case', ['<=', ['id'], 1], 'rgba(0,0,0,0)', css('--signal')],
+      'circle-stroke-color': ['case', ['<=', ['id'], 1], css('--ink'), css('--paper')],
+      'circle-stroke-width': ['case', ['<=', ['id'], 1], 2.5, 0.75],
+      'circle-radius': ['interpolate', ['linear'], ['sqrt', ['get', 'ha']], 1, 2.5, 11, 18],
+      'circle-opacity': 0.9 } });
+  }
+  map.on('load', addData);
+  map.on('click', 'hot', e => {
+    const f = e.features.reduce((a, b) => (b.properties.ha > a.properties.ha ? b : a));
+    const n = f.id + 1;
+    const [lon, lat] = f.geometry.coordinates;
+    document.getElementById('detail').hidden = false;
+    document.getElementById('d-title').textContent = `${f.properties.ha} hectares near ${lat.toFixed(2)}° N, ${Math.abs(lon).toFixed(2)}° W`;
+    const cmp = document.querySelector('#detail .compare');
+    cmp.hidden = true;
+    document.getElementById('d-a').src = `img/hot${n}_after.jpg`;
+    document.getElementById('d-b').onload = () => { cmp.hidden = false; };
+    document.getElementById('d-b').onerror = () => { cmp.hidden = true; };
+    document.getElementById('d-b').src = `img/hot${n}_before.jpg`;
+    document.getElementById('d-b').alt = 'Before, February 2025';
+    document.getElementById('d-a').alt = 'After, January 2026';
+    document.getElementById('d-text').textContent = notes[n] ? `${notes[n][0]}. ${notes[n][1]}` : 'Not checked by eye yet. Images are made for the largest patches first.';
+  });
+  map.on('mouseenter', 'hot', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'hot', () => map.getCanvas().style.cursor = '');
+  // shared.js flips the theme in its own click handler, which runs after this one
+  document.querySelector('.theme-btn').addEventListener('click', () => setTimeout(() => { map.setStyle(style(), { diff: false }); map.once('style.load', addData); }));
+</script>
+<script src="shared.js?v=2"></script>
+</body>
+</html>

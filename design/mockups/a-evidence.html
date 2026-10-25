@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galamsey Tracker</title>
+<link rel="stylesheet" href="tokens.css?v=2">
+<style>
+  .hero { display: grid; gap: 28px; padding: 40px 0 48px; }
+  @media (min-width: 960px) { .hero { grid-template-columns: 5fr 7fr; gap: 48px; align-items: start; padding-top: 64px; } }
+  .hero h1 { font-size: clamp(2rem, 4.2vw, 3.25rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 20px; font-weight: 800; }
+  .hero .lede { font-size: 1.25rem; line-height: 1.5; margin: 0 0 16px; max-width: 34ch; }
+  .hero p { max-width: 42ch; }
+  .meta { color: var(--muted); font-size: 0.9375rem; }
+  figure { margin: 0; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .pair img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .pair .when { margin-top: 6px; font-size: 0.9375rem; font-weight: 700; }
+  .caption { margin-top: 12px; font-size: 0.9375rem; color: var(--muted); }
+  .caption strong { color: var(--ink); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  .btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 6px; font-weight: 700; text-decoration: none; }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.quiet { border: 1px solid var(--ink); }
+
+  h2 { font-size: 1.5rem; letter-spacing: -0.01em; margin: 0 0 8px; }
+  section { padding: 40px 0; border-top: 1px solid var(--line); }
+  .intro { max-width: 60ch; margin: 0 0 24px; }
+
+  .places { list-style: none; padding: 0; margin: 0; }
+  .place { display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: center; }
+  @media (min-width: 720px) { .place { grid-template-columns: 220px 1fr 160px; } }
+  .thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .place h3 { margin: 0 0 4px; font-size: 1.0625rem; }
+  .place p { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+  .place .v { grid-column: 2; }
+  @media (min-width: 720px) { .place .v { grid-column: auto; text-align: right; } }
+
+  .river { display: grid; gap: 24px; }
+  @media (min-width: 960px) { .river { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
+  .facts { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 0.9375rem; }
+  .facts dt { color: var(--muted); }
+  .facts dd { margin: 0; }
+</style>
+</head>
+<body>
+<div class="mock-note"><div class="wrap">Mockup A, "The evidence". Real data from the October 2026 data test, one area only (Sentinel-2 tile 30NXM).</div></div>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="#">Galamsey Tracker</a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="#">Map</a><a href="#">How we know</a><a href="#">Data</a>
+    <button class="theme-btn" type="button">Dark mode</button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <h1>The forest around Dunkwa-on-Offin keeps turning into mining pits.</h1>
+      <p class="lede">Between October 2025 and October 2026, satellites saw 4,046 hectares of land lose its plant cover in this area. That is about 5,700 football pitches.</p>
+      <p>We looked at the five largest patches by eye. Three are galamsey pits. Two are licensed industrial mines. The two pictures show the same place a year apart.</p>
+      <p class="meta">Data up to 22 October 2026. Sources: NASA OPERA vegetation disturbance alerts and Copernicus Sentinel-2 images.</p>
+      <div class="actions">
+        <a class="btn primary" href="#">See every place on the map</a>
+        <a class="btn quiet" href="#">How we know</a>
+      </div>
+    </div>
+    <figure>
+      <div class="pair">
+        <div><img src="img/hot4_before.jpg" alt="4 February 2025: forest with a few yellow clearings on the left."><div class="when">4 Feb 2025</div></div>
+        <div><img src="img/hot4_after.jpg" alt="25 January 2026: the same place, with new yellow and orange pits spreading into the forest."><div class="when">25 Jan 2026</div></div>
+      </div>
+      <figcaption class="caption"><strong>17 hectares of new pits</strong> near 5.81° N, 2.01° W, first detected on 13 November 2025. Checked by eye: galamsey.</figcaption>
+    </figure>
+  </div>
+
+  <section aria-labelledby="places">
+    <h2 id="places">The biggest changes this year</h2>
+    <p class="intro">Every patch here lost most of its plants in the last 12 months. Satellites cannot tell why. A person looks at each one before we call it mining.</p>
+    <ul class="places">
+      <li class="place">
+        <div class="thumbs"><img src="img/hot3_before.jpg" alt="February 2025"><img src="img/hot3_after.jpg" alt="January 2026"></div>
+        <div><h3>25 hectares near 5.86° N, 1.92° W</h3><p>First seen 1 November 2025. Pit ponds spreading along a stream.</p></div>
+        <div class="v"><span class="verdict yes">Galamsey</span></div>
+      </li>
+      <li class="place">
+        <div class="thumbs"><img src="img/hot5_before.jpg" alt="February 2025"><img src="img/hot5_after.jpg" alt="January 2026"></div>
+        <div><h3>17 hectares near 5.83° N, 1.91° W</h3><p>First seen 22 October 2025. An existing pit field grew west.</p></div>
+        <div class="v"><span class="verdict yes">Galamsey</span></div>
+      </li>
+      <li class="place">
+        <div class="thumbs"><img src="img/hot1_before.jpg" alt="February 2025"><img src="img/hot1_after.jpg" alt="January 2026"></div>
+        <div><h3>124 hectares near Obuasi</h3><p>First seen 3 November 2025. Tailings dams and an engineered pit.</p></div>
+        <div class="v"><span class="verdict ind">Industrial mine</span></div>
+      </li>
+      <li class="place">
+        <div class="thumbs"><img src="img/hot2_before.jpg" alt="December 2024"><img src="img/hot2_after.jpg" alt="January 2026"></div>
+        <div><h3>27 hectares near 5.49° N, 1.85° W</h3><p>First seen 27 October 2025. Large open pit with haul roads.</p></div>
+        <div class="v"><span class="verdict ind">Industrial mine</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="rivers">
+    <div class="river">
+      <figure>
+        <div class="pair">
+          <div><img src="img/offin_dunkwa_before.jpg" alt="Offin River at Dunkwa on 27 January 2017, already brown, with a few mining scars."><div class="when">27 Jan 2017</div></div>
+          <div><img src="img/offin_dunkwa_after.jpg" alt="Offin River at Dunkwa on 25 January 2026, brown, with many more scars and ponds beside it."><div class="when">25 Jan 2026</div></div>
+        </div>
+      </figure>
+      <div>
+        <h2 id="rivers">The Offin River at Dunkwa</h2>
+        <p>The river was already brown in 2017. Since then, the mining has moved onto the banks on both sides.</p>
+        <dl class="facts">
+          <dt>Colour</dt><dd>Brown in every clear image since January 2017</dd>
+          <dt>Last clear view</dt><dd>25 January 2026</dd>
+          <dt>Why so old</dt><dd>Clouds hide the river from June to September</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-foot"><div class="wrap">Open data under CC BY 4.0. Contains modified Copernicus Sentinel data 2017 to 2026 and NASA OPERA data.</div></footer>
+<script src="shared.js?v=2"></script>
+</body>
+</html>
