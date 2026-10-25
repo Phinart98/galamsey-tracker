@@ -192,3 +192,106 @@ What a v1 can honestly show:
 A trend chart needs a fixed water mask (DSWx-HLS or JRC surface-water occurrence, centre of the
 channel only), many more scenes per season, and a stable reference water body. That is research,
 not v1.
+
+## 9. Licence context from the Minerals Commission cadastre (2026-10-25)
+`spike/licences.py`:
+- **Source:** the public GeoJSON behind ghana.revenuedev.org/map, 1,067 active licences. 2 are
+  unparseable and the rest are repaired with `make_valid`.
+- **Classed by the minerals each licence covers.** Restricted Mining Leases cover granite (116),
+  sand, gravel, limestone and salt, which is not a right to dig for gold, so they count as
+  "no licence".
+- **Each cluster gets** the class covering the largest share of its area (at least 25%). Ties go to
+  the more permissive licence.
+
+Results for tile 30NXM (1,534 clusters, 4,046 ha, data up to 2026-10-22):
+
+| Licence class | Clusters | Hectares | Share |
+|---|---|---|---|
+| No licence | 1,123 | 2,849 | 70% |
+| Prospecting only (mining not allowed) | 189 | 482 | 12% |
+| Large-scale lease | 211 | 656 | 16% |
+| Small-scale licence | 11 | 59 | 1% |
+
+Top 5 checks:
+- #1 and #2 are large-scale leases (AngloGold Ashanti; Abosso Goldfields).
+- #3 and #5 are prospecting-only.
+- #4 is a small-scale licence (54% of its area; 34% is in a large-scale lease).
+
+The earlier eye-check called #4 "galamsey". That was wrong in law even though it was right by
+appearance. Hence the two-axis model: does it look like mining, and is mining licensed here.
+
+## 10. Place names (2026-10-25)
+`spike/places.py`:
+- **Districts:** geoBoundaries GHA ADM2 (260 districts, 2019, Ghana Statistical Service, CC BY 4.0).
+- **Settlements:** OSM place=city|town|village. Prefer a town within 15 km, otherwise a village
+  within 8 km.
+- **Result:** all 1,534 clusters are named. Examples: #1 "near Obuasi, Obuasi Municipal", #2 "near
+  Damang, Prestea/Huni Valley", #3-#5 "near Dadieso, Wassa Amenfi East".
+
+## 11. Year-on-year: DIST-ANN is NOT usable for a trend; same-date DIST-ALERT is
+`spike/annual.py`. DIST-ANN-HLS tile 30NXM, confirmed loss of at least 50%, patches of at least 1 ha:
+
+| Year | Hectares |
+|---|---|
+| 2023 | 5,890 |
+| 2024 | 5,682 |
+| 2025 | 2,615 |
+
+The 2025 drop is an artefact, and so is the size of 2023:
+- **2023 starts with a backlog.** January 2023 holds about 4x any other month, because the product
+  starts on 2023-01-01.
+- **The 2025 file is premature.** It was produced on 2026-01-09: December 2025 has 32 sampled pixels
+  against 1,652 for December 2024, because late alerts were not yet confirmed.
+- **The status codes changed.** Codes 9 and 10 appear only from 2024 onward.
+
+`spike/rolling.py`: the trailing 12 months from the DIST-ALERT granule nearest 22 October each year,
+the same rule as the weekly clusters, so the confirmation lag is identical every year.
+
+| 12 months to | Hectares | No licence |
+|---|---|---|
+| 2024-10-22 | 3,834 | 2,646 (69%) |
+| 2025-10-22 | 4,509 | 3,548 (79%) |
+| 2026-10-22 | 4,007 | 2,885 (72%) |
+
+**Reading:** no clear trend in this tile over three years. About 4,000 ha are newly cleared each
+year, roughly three-quarters of it outside any licence to mine.
+- For the site: a same-date rolling series, computed monthly. A backfill from 2024-01 is possible
+  from the DIST-ALERT archive.
+- Never use DIST-ANN totals in a chart without checking that year's lag and status codes.
+- This is one tile, and cloud-driven observation counts also vary by year. State both on /method.
+
+## 12. "Mining signs" score: new water fails; plain DIST clusters are already precise in the belt
+`spike/mining_signs.py`, new water from DSWx-S1:
+- Water in at least 2 of the looks between 2026-08-23 and 2026-10-22, and never water in at least
+  2 looks over the same window in 2025.
+- Only 163 ha of new water in the whole tile. Hotspots #3, #4 and #5 got 0 ha despite visible pit
+  ponds, and the largest hit was AngloGold's tailings dam (7.7 ha).
+- **Reading:** galamsey ponds are mostly smaller than 30 m pixels, or sit in masked terrain. Dropped
+  as a signal.
+
+DIST layer features per cluster (`data/dist_features_30NXM.csv`). The 5 known mining sites have high
+loss (VEG-ANOM-MAX 75-84 vs a median of 70) and long duration (78-196 days, ongoing). They are kept
+as descriptors, not as a score.
+
+**Development check by eye (Claude, not Philip):** random before/after pairs from tile 30NXM.
+- **12 random clusters of at least 3 ha** (seed 7):
+  - 10 had a clear pair, and **all 10 show mining**: pit fields, ponds, orange exposed ground, and
+    2 engineered industrial pits (54, 172).
+  - Sheet: `data/sample12_sheet.png`.
+- **9 random clusters of 1-3 ha** (seed 11):
+  - **8 show mining.** 1 (cluster 1069) is cloud-covered in the after image and cannot be judged.
+    None is clearly farm clearing.
+  - Sheet: `data/sample_small_sheet.png`.
+- **Together with the top 5: 23 of 24 judgeable-or-not patches show mining.**
+
+Context: of 1,534 clusters, 333 are at least 3 ha, and they hold 50% of the area.
+
+**Reading:** inside the core mining belt, DIST confirmed-loss clusters of at least 1 ha are
+overwhelmingly mining, so a hand-weighted score adds fragility without adding accuracy. Instead:
+- report all clusters as "land cleared", with the measured share from a random check;
+- keep the licence class as the second axis;
+- run the same random check (about 20 pairs) per tile before that tile is switched on, because
+  farm clearing is likely more common at the belt's edges.
+
+The pre-launch check for the public figure stays a human (Philip) task: a single session of about
+100 pairs.
