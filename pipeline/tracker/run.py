@@ -10,6 +10,7 @@ pipeline/out (published to R2 by the workflow).
 import argparse
 import datetime as dt
 import json
+import math
 import os
 import traceback
 from collections import OrderedDict
@@ -43,11 +44,22 @@ def _read_json(path, default):
         return json.load(f)
 
 
+def _jsonable(v):
+    """pandas marks missing values as NaN, which is not valid JSON and breaks the site build."""
+    if isinstance(v, float) and math.isnan(v):
+        return None
+    if isinstance(v, dict):
+        return {k: _jsonable(x) for k, x in v.items()}
+    if isinstance(v, list | tuple):
+        return [_jsonable(x) for x in v]
+    return v
+
+
 def _write_json(path, obj):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=1, default=str)
+        json.dump(_jsonable(obj), f, ensure_ascii=False, indent=1, default=str, allow_nan=False)
     os.replace(tmp, path)
 
 

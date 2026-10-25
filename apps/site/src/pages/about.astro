@@ -1,18 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
+import { CONTACT_EMAIL } from '../lib/site';
 ---
-<Base title="About" description="Who makes the Galamsey Tracker, why, and where to report illegal mining in Ghana.">
+<Base title="About" description="Why the Galamsey Tracker exists and where to report illegal mining in Ghana.">
   <article class="wrap prose">
     <h1>About</h1>
     <p>Galamsey is illegal small-scale gold mining. It strips forest, digs pits that fill with water and turns rivers brown with mud and mercury. Ghana's water utility has had to cut supply at treatment plants because the rivers are too dirty to treat.</p>
     <p>The Galamsey Tracker shows where land is being cleared, week by week, using only free satellite data. Nobody has to visit a site or file a report for it to appear here. The aim is that anyone, from a reporter to a district officer to someone who lives nearby, can see the same evidence and check it.</p>
-    <p>It is built and run by <a href="https://www.philipnarteh.me">Philip Narteh</a>, a software engineer in Ghana. It is an independent project, not connected to the government or any company.</p>
+    <p>It is an independent project, not connected to the government or any company.</p>
 
     <h2>Report illegal mining</h2>
     <p>This site cannot take reports or act on them. If you see illegal mining, you can report it to the Minerals Commission or to the National Anti-Illegal Mining Operations Secretariat, NAIMOS. You can also tell your District Assembly.</p>
 
-    <h2>Get in touch</h2>
-    <p>For questions about the data, corrections or press enquiries, <a href="https://github.com/Phinart98/galamsey-tracker/issues">open an issue on GitHub</a>.</p>
+    {CONTACT_EMAIL && (
+      <>
+        <h2>Get in touch</h2>
+        <p>For questions about the data, corrections or press enquiries, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
+      </>
+    )}
   </article>
 </Base>
 

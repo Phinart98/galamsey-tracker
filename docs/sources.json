@@ -42,9 +42,8 @@
    "title": "Harmonized Landsat and Sentinel-2 (HLS)",
    "publisher": "NASA",
    "url": "https://www.earthdata.nasa.gov/data/projects/nsite/solutions/hls",
-   "used_for": "Explains revisit ('every few days') on /method",
-   "status": "cited",
-   "todo": "Check the revisit figure before the sentence is published"
+   "used_for": "Names the combined Landsat and Sentinel-2 series on /method",
+   "status": "cited"
   },
   {
    "id": "sentinel2-earth-search",
@@ -168,7 +167,8 @@
    "publisher": "This project",
    "url": "https://github.com/Phinart98/galamsey-tracker/blob/master/docs/validation/2026-10-data-spike.md",
    "used_for": "Every measured claim below",
-   "status": "live-data"
+   "status": "live-data",
+   "note": "Internal. The repository URL identifies the maintainer, so the site must not link it while the project is anonymous"
   }
  ],
  "claims": [
@@ -235,11 +235,11 @@
   },
   {
    "id": "football-pitch",
-   "text": "A football pitch is 105 by 68 m, 0.714 ha; 1 ha is about one and a half pitches",
+   "text": "A football pitch is 105 by 68 m, 0.714 ha; 1 ha is about 1.4 pitches",
    "where": "home, /method",
    "evidence": [],
    "status": "unverified",
-   "todo": "Cite FIFA/IFAB recommended dimensions. 1 ha is 1.4 pitches, so check the wording"
+   "todo": "Cite FIFA/IFAB recommended dimensions"
   },
   {
    "id": "radar-failed",
@@ -350,13 +350,6 @@
    "todo": "Confirm NAIMOS exists and how to contact each body"
   },
   {
-   "id": "philip-bio",
-   "text": "Built and run by Philip Narteh, a software engineer in Ghana; independent project",
-   "where": "/about",
-   "evidence": [],
-   "status": "to-confirm"
-  },
-  {
    "id": "coverage-areas",
    "text": "Plain-language area names for each tile",
    "where": "home, /map, /method",
@@ -365,6 +358,38 @@
    ],
    "status": "measured",
    "caveat": "Names come from the top districts by cleared area in each tile"
+  },
+  {
+   "id": "satellites",
+   "text": "The clearing data comes from five satellites: Landsat 8 and 9, and Sentinel-2A, 2B and 2C",
+   "where": "/method",
+   "evidence": [
+    "opera-dist-alert",
+    "own-spike-log s17"
+   ],
+   "status": "measured",
+   "caveat": "Read from DIST-ALERT granule names for tile 30NXM, 23 Oct 2025 to 22 Oct 2026: S2A 23, S2B 25, S2C 28, L8 13, L9 13"
+  },
+  {
+   "id": "satellite-operators",
+   "text": "Landsat 8 and 9 are run by NASA and the US Geological Survey; Sentinel-2 by the European Space Agency for the EU's Copernicus programme; NASA combines them as HLS and its OPERA project makes the disturbance data",
+   "where": "/method",
+   "evidence": [
+    "hls"
+   ],
+   "status": "unverified",
+   "todo": "Open and link the USGS Landsat mission page, the ESA Sentinel-2 mission page and the OPERA project page"
+  },
+  {
+   "id": "revisit",
+   "text": "A new picture of the same place about every three days; fewer from June to September",
+   "where": "/method",
+   "evidence": [
+    "opera-dist-alert",
+    "own-spike-log s17"
+   ],
+   "status": "measured",
+   "caveat": "Median gap 3 days, mean 3.8, longest 32; 3 to 5 readings a month in June to September (one tile, one year)"
   }
  ]
 }

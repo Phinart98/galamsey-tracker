@@ -7,9 +7,10 @@ import { longDate } from '../lib/format';
   <article class="wrap prose">
     <h1>How we know</h1>
 
-    <h2>In plain words</h2>
-    <p>NASA satellites photograph Ghana every few days. NASA compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, NASA marks it as land that lost its plant cover.</p>
-    <p>Every Monday we collect those marks for the last 12 months. Where marked spots touch and add up to at least 1 hectare, about one and a half football pitches, we call that a patch.</p>
+    <p>Five satellites photograph this part of Ghana. Two are American: Landsat 8 and Landsat 9, run by NASA and the US Geological Survey. Three are European: Sentinel-2A, 2B and 2C, run by the European Space Agency for the European Union's Copernicus programme.</p>
+    <p>NASA puts their pictures together into one series. A NASA project called OPERA then compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, OPERA marks it as land that lost its plant cover.</p>
+    <p>Over the past year that gave a new picture of the same place about every three days. From June to September clouds hide the ground for weeks, so there are fewer clear pictures in the rainy season.</p>
+    <p>Every Monday we collect those marks for the last 12 months. Where marked spots touch and add up to at least 1 hectare, about 1.4 football pitches, we call that a patch.</p>
     <p>For each patch we do three more things.</p>
     <ul>
       <li>We check it against the Minerals Commission's public register of licences, to see what kind of licence, if any, covers that land.</li>
@@ -35,18 +36,18 @@ import { longDate } from '../lib/format';
       <li><strong>Radar to see through clouds.</strong> We tested a published method that spots mining ponds in Sentinel-1 radar images. Checked against a published map of mining in Ghana, only about 6% of the pixels it flagged were mining. We do not use it.</li>
       <li><strong>River colour.</strong> We measured how muddy rivers look from space. The change from one picture to the next was bigger than the change from one year to the next, so it cannot show a trend. Rivers are brown in almost every clear picture.</li>
       <li><strong>NASA's yearly summary.</strong> NASA also publishes a yearly version of the same data. Its first year includes a backlog and its latest year is published before late clearing is confirmed, which made it look as if clearing had halved. We use the monthly method above instead.</li>
-      <li><strong>New water.</strong> We looked for new ponds in NASA's surface water data. Most mining ponds are smaller than its 30 metre pixels, so it missed them.</li>
+      <li><strong>New water.</strong> We looked for new ponds in NASA's surface water data. It missed them, probably because most mining ponds are smaller than its 30 metre pixels.</li>
     </ul>
 
     <h2>The technical details</h2>
     <dl class="facts">
+      <dt>Satellites</dt><dd>Landsat 8 and 9 (NASA and USGS) and Sentinel-2A, 2B and 2C (ESA, Copernicus), combined by NASA as Harmonized Landsat and Sentinel-2 (HLS). The before and after pictures are Sentinel-2 only.</dd>
       <dt>Clearing data</dt><dd>NASA OPERA DIST-ALERT-HLS version 1, 30 metre pixels, Harmonized Landsat and Sentinel-2. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
       <dt>Licences</dt><dd>Active licences from the Minerals Commission cadastre. A patch takes the licence class that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
       <dt>Names</dt><dd>Nearest OpenStreetMap town within 15 km or village within 8 km. Districts from geoBoundaries.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from Earth Search. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
       <dt>Place references</dt><dd>Each patch keeps a permanent reference made from the month it was first seen and its location. When two patches grow into one, the older reference is kept and the other redirects to it.</dd>
-      <dt>Code</dt><dd>All of it is open on <a href="https://github.com/Phinart98/galamsey-tracker">GitHub</a>, including the test notes for every method above.</dd>
     </dl>
   </article>
 </Base>

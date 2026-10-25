@@ -100,3 +100,14 @@ def test_places_without_a_clear_picture_are_retried_after_a_week():
     assert not needs_chips({"active": True, "ha": 5.0, "chips": {"before": {}, "after": {}}}, today)
     assert not needs_chips({"active": True, "ha": 2.0, "chips": None}, today)
     assert not needs_chips({"active": False, "ha": 5.0, "chips": None}, today)
+
+
+def test_json_files_write_missing_values_as_null_not_nan(tmp_path):
+    import json
+
+    from tracker.run import _write_json
+    path = tmp_path / "x.json"
+    _write_json(str(path), {"near": float("nan"), "rows": [{"near_km": float("nan"), "ha": 2.5}]})
+    text = path.read_text(encoding="utf-8")
+    assert "NaN" not in text
+    assert json.loads(text) == {"near": None, "rows": [{"near_km": None, "ha": 2.5}]}

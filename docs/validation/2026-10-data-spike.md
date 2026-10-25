@@ -393,3 +393,10 @@ checks the snapping. **Reading:** the Pra carries the story. About 40% of all cl
 southern tiles drains past Daboase. The Accra link (Weija) is real but small, and much of Accra's
 water comes from the Volta at Kpong, which galamsey barely touches. Which towns each plant supplies
 must be sourced before anything is published.
+
+## 17. Which satellites, and how often (2026-10-25)
+
+DIST-ALERT granule names for tile 30NXM, 23 October 2025 to 22 October 2026: 102 readings on 97
+days. Sentinel-2A 23, Sentinel-2B 25, Sentinel-2C 28, Landsat 8 13, Landsat 9 13. So three quarters
+of the readings come from the European satellites. Gap between reading days: median 3, mean 3.8,
+longest 32. Readings per month fall from 9 to 12 in the dry season to 3 to 5 from June to September.

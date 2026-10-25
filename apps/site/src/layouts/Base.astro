@@ -4,6 +4,7 @@ import fontUrl from '@fontsource-variable/atkinson-hyperlegible-next/files/atkin
 import Viewer from '../components/Viewer.astro';
 import { lastSuccess, summary, STALE_DAYS } from '../lib/data';
 import { longDate } from '../lib/format';
+import { CONTACT_EMAIL } from '../lib/site';
 
 interface Props { title?: string; description?: string; image?: string }
 const {
@@ -80,7 +81,7 @@ const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_
         {summary && <>Data up to {longDate(summary.data_date)}. Updated every Monday. </>}
         Built from NASA OPERA land disturbance data and Copernicus Sentinel-2 images. Contains modified Copernicus Sentinel data.
       </p>
-      <p>Open source. <a href="https://github.com/Phinart98/galamsey-tracker">Code and data on GitHub</a>. <a href="/data">Download the data</a>.</p>
+      <p><a href="/data">Download the data</a>.{CONTACT_EMAIL && <> Contact: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</>}</p>
     </div>
   </footer>
   <Viewer />

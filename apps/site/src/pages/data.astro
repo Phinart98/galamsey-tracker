@@ -2,9 +2,6 @@
 import Base from '../layouts/Base.astro';
 import { bulletins, summary } from '../lib/data';
 import { longDate, monthName } from '../lib/format';
-
-const REPO = 'https://github.com/Phinart98/galamsey-tracker';
-const RAW = 'https://raw.githubusercontent.com/Phinart98/galamsey-tracker/master/data';
 ---
 <Base title="Data" description="Download the Galamsey Tracker data: every cleared patch as CSV or GeoJSON, monthly totals and the 12-month trend.">
   <article class="wrap prose">
@@ -15,8 +12,8 @@ const RAW = 'https://raw.githubusercontent.com/Phinart98/galamsey-tracker/master
     <ul class="files">
       <li><a href="/places.csv">places.csv</a><span class="muted">Every patch: size, dates, licence class, nearest town, district and location. Opens in Excel or Google Sheets.</span></li>
       <li><a href="/places.geojson">places.geojson</a><span class="muted">The same, as map points, with links to the before and after pictures. Opens in QGIS or geojson.io.</span></li>
-      <li><a href={`${RAW}/trend.json`}>trend.json</a><span class="muted">Hectares cleared in the 12 months to the 22nd of each month, with the share that has no licence to mine.</span></li>
-      <li><a href={`${RAW}/summary/latest.json`}>summary/latest.json</a><span class="muted">This week's totals, by licence class and district.</span></li>
+      <li><a href="/trend.json">trend.json</a><span class="muted">Hectares cleared in the 12 months to the 22nd of each month, with the share that has no licence to mine.</span></li>
+      <li><a href="/summary.json">summary.json</a><span class="muted">This week's totals, by licence class and district.</span></li>
     </ul>
 
     {bulletins.length > 0 && (
@@ -37,7 +34,6 @@ const RAW = 'https://raw.githubusercontent.com/Phinart98/galamsey-tracker/master
       <li>Minerals Commission cadastre, used only to find the licence class.</li>
       <li>District boundaries from geoBoundaries (CC BY 4.0). Town names from OpenStreetMap (ODbL).</li>
     </ul>
-    <p>The code is open source on <a href={REPO}>GitHub</a>.</p>
   </article>
 </Base>
 
