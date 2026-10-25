@@ -1,0 +1,211 @@
+---
+import Base from '../layouts/Base.astro';
+import Pair from '../components/Pair.astro';
+import PlaceRow from '../components/PlaceRow.astro';
+import LicenceTag from '../components/LicenceTag.astro';
+import TrendChart from '../components/TrendChart.astro';
+import { check, coverage, lead, placeNames, summary, trend, withPairs } from '../lib/data';
+import { LICENCE_SENTENCE, hectares, longDate, num, pct, placeName, shortDate, srcsets } from '../lib/format';
+
+const area = coverage[0] ?? 'the area we cover';
+const near = placeNames.join(' and ') || 'the area we cover';
+const settled = trend.filter((p) => p.settled !== false);
+const latestSettled = settled.at(-1);
+const yearBefore = latestSettled && trend.find((p) => p.date === `${Number(latestSettled.date.slice(0, 4)) - 1}${latestSettled.date.slice(4)}`);
+const change = latestSettled && yearBefore ? latestSettled.total_ha / yearBefore.total_ha - 1 : null;
+const biggest = withPairs.filter((p) => p.id !== lead?.id).slice(0, 8);
+const wall = withPairs.slice(0, 24);
+const districts = summary?.top_districts.slice(0, 8) ?? [];
+const districtMax = Math.max(...districts.map((d) => d.ha), 1);
+---
+<Base description={summary ? `${num(summary.total_ha)} hectares of land cleared in 12 months around ${near}. ${pct(summary.no_licence_to_mine.share)} of it has no licence to mine.` : undefined}>
+  <div class="wrap">
+    {summary ? (
+      <section class="hero" aria-labelledby="headline">
+        <div class="say">
+          <h1 id="headline">In the last 12 months, satellites saw {num(summary.total_ha)} hectares of land cleared around {near}.</h1>
+        </div>
+        {lead && (
+          <div class="look">
+            <Pair place={lead} variant="lead" eager>
+              <figcaption class="caption">
+                <strong>{hectares(lead.ha)} cleared {placeName(lead)}</strong>, first seen {longDate(lead.first_seen)}.
+                {' '}{LICENCE_SENTENCE[lead.licence]} <a href={`/places/${lead.id}`}>More about this place</a>
+              </figcaption>
+            </Pair>
+          </div>
+        )}
+        <div class="more">
+          <p class="lede">That is about {num(summary.football_pitches)} football pitches. <strong>{pct(summary.no_licence_to_mine.share)} of it is land with no licence to mine.</strong></p>
+          {check.patches > 0 && <p>We looked at {check.patches} of these patches in satellite pictures and {check.mining} showed signs of mining, like pits and muddy ponds. Satellites cannot say who cleared the land, so we show the pictures and let you judge.</p>}
+          <p class="muted small">Data up to {longDate(summary.data_date)}, updated every Monday. Covers {area}. Sources: NASA and Copernicus.</p>
+          <div class="actions">
+            <a class="btn primary" href="/map">See every place on the map</a>
+            <a class="btn" href="/method">How we know</a>
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="hero"><h1>The first weekly update has not run yet.</h1></section>
+    )}
+
+    {trend.length > 1 && (
+      <section class="band" aria-labelledby="worse">
+        <h2 id="worse">Is it getting worse?</h2>
+        {latestSettled && yearBefore && change !== null && (
+          <p class="intro">
+            In the 12 months to {longDate(latestSettled.date)}, {num(latestSettled.total_ha)} hectares were cleared.
+            The year before, it was {num(yearBefore.total_ha)}.
+            {Math.abs(change) < 0.05 ? ' That is about the same.' : change > 0 ? ` That is ${pct(change)} more.` : ` That is ${pct(-change)} less.`}
+            {' '}NASA confirms clearing weeks after it first sees it, so the most recent months are still rising.
+          </p>
+        )}
+        <TrendChart points={trend} />
+      </section>
+    )}
+
+    {biggest.length > 0 && (
+      <section class="band" aria-labelledby="biggest">
+        <h2 id="biggest">The biggest patches cleared this year</h2>
+        <p class="intro">Each pair shows the same place before the clearing was first seen and in the latest clear picture. Tap a picture to see it large.</p>
+        <ul class="list">{biggest.map((p) => <PlaceRow place={p} />)}</ul>
+        <p><a class="btn" href="/map">See all {num(summary?.patches ?? 0)} places</a></p>
+      </section>
+    )}
+
+    {wall.length > 3 && (
+      <section class="band" aria-labelledby="wall">
+        <h2 id="wall">The {wall.length} largest patches, from above</h2>
+        <p class="intro">Switch between before and after to see what was there.</p>
+        <div class="switch" role="group" aria-label="Which pictures to show" data-wall-switch hidden>
+          <button type="button" aria-pressed="false" data-show="before">Before</button>
+          <button type="button" aria-pressed="true" data-show="after">After</button>
+        </div>
+        <ul class="wall" data-wall>
+          {wall.map((p) => {
+            const a = srcsets(p.chips.after), b = srcsets(p.chips.before);
+            return (
+              <li>
+                <figure data-pair data-title={`${hectares(p.ha)} cleared ${placeName(p)}`} data-href={`/places/${p.id}`}
+                        data-before={b.large} data-after={a.large}
+                        data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
+                  <a class="cell" href={a.large} data-open="after">
+                    <picture class="after">
+                      <source type="image/avif" srcset={a.avif} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" />
+                      <img src={a.src} srcset={a.webp} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" width="360" height="360" loading="lazy" decoding="async"
+                           alt={`${shortDate(p.chips.after.date)}, ${hectares(p.ha)} cleared ${placeName(p)}`} />
+                    </picture>
+                    <picture class="before">
+                      <source type="image/avif" srcset={b.avif} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" />
+                      <img src={b.src} srcset={b.webp} sizes="(min-width: 1000px) 280px, (min-width: 640px) 33vw, 50vw" width="360" height="360" loading="lazy" decoding="async"
+                           alt={`${shortDate(p.chips.before.date)}, the same place before`} />
+                    </picture>
+                  </a>
+                  <figcaption>
+                    <span class="name">{p.near ?? p.district}</span>
+                    <span class="ha">{num(p.ha)} ha</span>
+                  </figcaption>
+                </figure>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+
+    {districts.length > 0 && (
+      <section class="band" aria-labelledby="where">
+        <h2 id="where">Which districts</h2>
+        <p class="intro">Hectares cleared in the last 12 months, by district.</p>
+        <table class="districts">
+          <thead><tr><th scope="col">District</th><th scope="col">Hectares</th></tr></thead>
+          <tbody>
+            {districts.map((d) => (
+              <tr>
+                <th scope="row">{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</th>
+                <td><span class="bar" style={`width:${(d.ha / districtMax) * 100}%`}></span><span class="v">{num(d.ha)}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    )}
+
+    {summary && (
+      <section class="band" aria-labelledby="licences">
+        <h2 id="licences">What licence is on the land</h2>
+        <p class="intro">We check every patch against the Minerals Commission's register of active licences. We never name licence holders.</p>
+        <ul class="licences">
+          {(['no licence', 'prospecting only', 'small-scale licence', 'large-scale lease'] as const).map((l) => (
+            <li><LicenceTag licence={l} /><span class="v">{num(summary.by_licence[l].ha)} ha</span><span class="muted">{pct(summary.by_licence[l].share)}</span></li>
+          ))}
+        </ul>
+        <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. Some clearing inside large-scale leases is the licensed mine itself.</p>
+      </section>
+    )}
+  </div>
+</Base>
+
+<script is:inline>
+  (() => {
+    const sw = document.querySelector('[data-wall-switch]');
+    const wall = document.querySelector('[data-wall]');
+    if (!sw || !wall) return;
+    sw.hidden = false;
+    sw.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+      sw.querySelectorAll('button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+      wall.classList.toggle('show-before', b.dataset.show === 'before');
+      wall.querySelectorAll('[data-open]').forEach((a) => { a.dataset.open = b.dataset.show; });
+    }));
+  })();
+</script>
+
+<style>
+  .hero { display: grid; gap: 20px; padding: 28px 0 40px; }
+  .hero h1 { font-size: clamp(1.75rem, 3.4vw, 2.625rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0; font-weight: 800; max-width: 22ch; }
+  .lede { font-size: 1.25rem; line-height: 1.45; margin: 0 0 14px; max-width: 34ch; }
+  .more p { max-width: 46ch; }
+  .more .actions { margin-top: 20px; }
+  .caption { margin-top: 10px; font-size: 0.9375rem; color: var(--muted); max-width: 60ch; }
+  .caption strong { color: var(--ink); }
+  @media (min-width: 960px) {
+    .hero { grid-template-columns: 5fr 7fr; grid-template-areas: 'say look' 'more look'; column-gap: 48px; row-gap: 20px; padding-top: 56px; align-items: start; }
+    .say { grid-area: say; }
+    .look { grid-area: look; }
+    .more { grid-area: more; }
+  }
+  .list { list-style: none; padding: 0; margin: 0 0 24px; }
+
+  .switch {
+    display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; margin-bottom: 16px;
+    position: sticky; top: 8px; z-index: 3; background: var(--paper);
+  }
+  .switch[hidden] { display: none; }
+  .switch button { font: inherit; font-weight: 700; min-height: 44px; padding: 0 18px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+  .switch button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .wall { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 640px) { .wall { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1000px) { .wall { grid-template-columns: repeat(4, 1fr); } }
+  .wall figure { margin: 0; }
+  .cell { display: block; position: relative; aspect-ratio: 1; background: var(--paper-2); }
+  .cell picture, .cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .cell .before { opacity: 0; transition: opacity 150ms ease-in-out; }
+  .wall.show-before .cell .before { opacity: 1; }
+  .wall figcaption { display: flex; justify-content: space-between; gap: 8px; padding: 6px 2px 12px; font-size: 0.875rem; }
+  .wall .name { font-weight: 700; }
+  .wall .ha { color: var(--muted); white-space: nowrap; }
+
+  .districts { border-collapse: collapse; width: 100%; max-width: 720px; }
+  .districts th, .districts td { padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; font-weight: 400; }
+  .districts thead th { font-weight: 700; font-size: 0.9375rem; }
+  .districts tbody th { width: 45%; padding-right: 16px; }
+  .districts td { display: flex; align-items: center; gap: 10px; }
+  .districts .bar { display: block; height: 16px; background: var(--ink); border-radius: 0 4px 4px 0; min-width: 2px; max-width: calc(100% - 56px); }
+  .districts .v { font-weight: 700; }
+
+  .licences { list-style: none; margin: 0 0 16px; padding: 0; max-width: 560px; }
+  .licences li { display: grid; grid-template-columns: 1fr auto 3.5rem; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .licences li > :global(.tag) { justify-self: start; }
+  .licences .v { font-weight: 700; text-align: right; }
+  .licences .muted { text-align: right; }
+</style>

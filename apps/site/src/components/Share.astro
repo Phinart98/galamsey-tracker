@@ -1,0 +1,20 @@
+---
+interface Props { title: string }
+const { title } = Astro.props;
+---
+<button class="btn primary" type="button" data-share data-title={title}>Share this place</button>
+<script is:inline>
+  document.querySelectorAll('[data-share]').forEach((b) => b.addEventListener('click', async () => {
+    const data = { title: b.dataset.title, url: location.href };
+    if (navigator.share) {
+      try { await navigator.share(data); } catch {}
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(location.href);
+      b.textContent = 'Link copied';
+    } catch {
+      b.textContent = 'Copy the address from the bar above';
+    }
+  }));
+</script>

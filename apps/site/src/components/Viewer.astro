@@ -1,0 +1,121 @@
+---
+---
+<dialog class="viewer" aria-labelledby="viewer-title" data-viewer>
+  <div class="bar">
+    <h2 id="viewer-title" data-v-title></h2>
+    <button class="close" type="button" data-v-close>Close</button>
+  </div>
+  <div class="stage" data-v-stage>
+    <img data-v-img="before" alt="" width="720" height="720">
+    <img data-v-img="after" alt="" width="720" height="720">
+    <span class="stamp" data-v-stamp aria-live="polite"></span>
+  </div>
+  <div class="controls">
+    <div class="switch" role="group" aria-label="Which picture to show">
+      <button type="button" data-v-show="before" aria-pressed="false">Before</button>
+      <button type="button" data-v-show="after" aria-pressed="true">After</button>
+    </div>
+    <a class="more" data-v-link href="/">Open this place</a>
+  </div>
+  <p class="hint muted small">Swipe or use the arrow keys to switch.</p>
+</dialog>
+
+<script is:inline>
+  (() => {
+    const d = document.querySelector('[data-viewer]');
+    if (!d || !d.showModal) return;
+    const q = (s) => d.querySelector(s);
+    const imgs = { before: q('[data-v-img=before]'), after: q('[data-v-img=after]') };
+    let side = 'after';
+    const dates = { before: '', after: '' };
+    let opener = null;
+
+    const show = (next) => {
+      side = next;
+      d.querySelectorAll('[data-v-show]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.vShow === side)));
+      imgs.before.classList.toggle('on', side === 'before');
+      imgs.after.classList.toggle('on', side === 'after');
+      q('[data-v-stamp]').textContent = dates[side];
+    };
+
+    const open = (fig, start) => {
+      q('[data-v-title]').textContent = fig.dataset.title;
+      q('[data-v-link]').href = fig.dataset.href;
+      for (const s of ['before', 'after']) {
+        const date = fig.dataset[s + 'Date'];
+        imgs[s].src = fig.dataset[s];
+        imgs[s].alt = `Satellite image, ${date}`;
+        dates[s] = date;
+      }
+      show(start);
+      d.showModal();
+      history.pushState({ viewer: true }, '');
+    };
+
+    // The phone back button closes the viewer instead of leaving the page
+    const close = () => { if (history.state?.viewer) history.back(); else d.close(); };
+    addEventListener('popstate', () => { if (d.open) d.close(); });
+    // Safari does not focus a tapped link, so the dialog would otherwise return focus to the page top
+    d.addEventListener('close', () => opener?.focus());
+
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('[data-pair] [data-open]');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      opener = a;
+      open(a.closest('[data-pair]'), a.dataset.open);
+    });
+    q('[data-v-close]').addEventListener('click', close);
+    d.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    d.addEventListener('click', (e) => { if (e.target === d) close(); });
+    d.querySelectorAll('[data-v-show]').forEach((b) => b.addEventListener('click', () => show(b.dataset.vShow)));
+    d.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show('before');
+      if (e.key === 'ArrowRight') show('after');
+    });
+
+    let x0 = null;
+    const stage = q('[data-v-stage]');
+    stage.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+    stage.addEventListener('pointerup', (e) => {
+      if (x0 !== null && Math.abs(e.clientX - x0) > 40) show(side === 'before' ? 'after' : 'before');
+      x0 = null;
+    });
+  })();
+</script>
+
+<style>
+  .viewer {
+    width: min(100vw, 760px); max-width: 100vw; max-height: 100dvh; margin: auto; padding: 0;
+    border: 0; background: var(--paper); color: var(--ink);
+    opacity: 1; scale: 1;
+    transition: opacity 200ms cubic-bezier(0.4, 0, 1, 1), scale 200ms cubic-bezier(0.4, 0, 1, 1),
+                overlay 200ms allow-discrete, display 200ms allow-discrete;
+  }
+  .viewer:not([open]) { opacity: 0; scale: 0.98; }
+  .viewer[open] { transition-duration: 250ms; transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+  @starting-style { .viewer[open] { opacity: 0; scale: 0.98; } }
+  .viewer::backdrop { background: rgb(0 0 0 / 0.8); }
+  @media (max-width: 759px) { .viewer { width: 100vw; height: 100dvh; } }
+  @media (prefers-reduced-motion: reduce) { .viewer, .viewer:not([open]), .viewer[open] { scale: 1; } }
+
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px var(--gutter); }
+  .bar h2 { font-size: 1.0625rem; margin: 0; line-height: 1.3; }
+  .close {
+    font: inherit; font-weight: 700; min-height: 44px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 6px;
+    background: transparent; color: var(--ink); cursor: pointer; flex: none;
+  }
+  .stage { position: relative; aspect-ratio: 1; background: var(--paper-2); touch-action: pan-y; user-select: none; }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 150ms ease-in-out; }
+  .stage img.on { opacity: 1; }
+  .stamp { position: absolute; left: 10px; bottom: 10px; background: #000; color: #fff; font-weight: 700; padding: 4px 10px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px var(--gutter) 0; }
+  .switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
+  .switch button {
+    font: inherit; font-weight: 700; min-height: 44px; padding: 0 14px; border: 0; background: transparent;
+    color: var(--ink); cursor: pointer;
+  }
+  .switch button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .more { font-weight: 700; padding: 10px 0; }
+  .hint { padding: 4px var(--gutter) 16px; margin: 0; }
+</style>

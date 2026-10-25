@@ -334,3 +334,17 @@ and that burst leaves the window exactly a year later (for example 6,780 ha to 2
 then 3,885 ha to 22 December 2025). So the site only compares a month with the same month a year
 before. Latest settled pair: 4,740 ha to 22 June 2026 against 4,864 ha to 22 June 2025, about the
 same. The share with no licence to mine rose from about 79% in 2024 to 83 to 86% since.
+
+## 14. Haze that the Sentinel-2 cloud mask misses (2026-10-25)
+
+Two of the first 37 image pairs had an after-picture the scene classification (SCL) called clear,
+but which was fog (Assin Nsuta, 22 October 2026) or broken cloud (Kwabenakwa). A pair like that is
+worse than no pair.
+
+**Test:** the share of pixels that are bright and grey in the true-colour image (every channel at
+least 90 and the channels within 35 of each other). Over all 74 pictures: median 0.002. Clear
+pictures go up to 0.14 (grey mine tailings at Tarkwa) and 0.12 (a small cloud in a corner at
+Damang, still usable). The fogged ones score 0.34 and 0.91.
+
+**Rule:** a picture with more than 25% bright grey pixels is skipped, and the next clearest is
+tried. The two places were re-imaged.

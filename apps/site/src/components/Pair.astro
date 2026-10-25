@@ -1,0 +1,63 @@
+---
+import type { Chip, Place } from '../lib/data';
+import { hectares, longDate, placeName, shortDate, srcsets } from '../lib/format';
+
+interface Props {
+  place: Place & { chips: { before: Chip; after: Chip } };
+  variant?: 'lead' | 'row' | 'page';
+  eager?: boolean;
+}
+const { place, variant = 'row', eager = false } = Astro.props;
+const SIZES = {
+  lead: '(min-width: 960px) 340px, 50vw',
+  row: '(min-width: 720px) 130px, 50vw',
+  page: '(min-width: 960px) 480px, 50vw',
+};
+const shots = (['before', 'after'] as const).map((side) => {
+  const chip = place.chips[side];
+  const s = srcsets(chip);
+  const alt = side === 'before'
+    ? `Satellite image of the place on ${longDate(chip.date)}, before the clearing was first seen`
+    : `Satellite image of the same place on ${longDate(chip.date)}`;
+  return { side, chip, s, alt };
+});
+---
+<figure
+  class:list={['pair', variant]}
+  data-pair
+  data-title={`${hectares(place.ha)} cleared ${placeName(place)}`}
+  data-href={`/places/${place.id}`}
+  data-before={shots[0].s.large}
+  data-after={shots[1].s.large}
+  data-before-date={longDate(shots[0].chip.date)}
+  data-after-date={longDate(shots[1].chip.date)}
+>
+  <div class="shots">
+    {shots.map(({ side, chip, s, alt }) => (
+      <a class="shot" href={s.large} data-open={side}>
+        <picture>
+          <source type="image/avif" srcset={s.avif} sizes={SIZES[variant]} />
+          <img src={s.src} srcset={s.webp} sizes={SIZES[variant]} width="360" height="360" alt={alt}
+               loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
+        </picture>
+        <span class="when">{shortDate(chip.date)}</span>
+      </a>
+    ))}
+  </div>
+  <slot />
+</figure>
+
+<style>
+  figure { margin: 0; }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .shot { display: block; text-decoration: none; }
+  .shot img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--paper-2); }
+  .when { display: block; margin-top: 6px; font-size: 0.9375rem; font-weight: 700; }
+  .shot:hover .when { text-decoration: underline; }
+  .row .when { font-size: 0.875rem; font-weight: 400; }
+  @media (max-width: 719px) {
+    .lead, .row { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
+    .lead .when, .row .when, .pair :global(figcaption) { padding: 0 var(--gutter); }
+    .shots { gap: 2px; }
+  }
+</style>

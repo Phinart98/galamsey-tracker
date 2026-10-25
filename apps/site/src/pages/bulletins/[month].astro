@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import PlaceRow from '../../components/PlaceRow.astro';
+import LicenceTag from '../../components/LicenceTag.astro';
+import { bulletins, placeById, type Summary } from '../../lib/data';
+import { longDate, monthName, num, pct } from '../../lib/format';
+
+export function getStaticPaths() {
+  return bulletins.map((b) => ({ params: { month: b.month }, props: { s: b.summary, month: b.month } }));
+}
+const { s, month } = Astro.props as { s: Summary; month: string };
+const top = s.top_places.map((t) => placeById.get(t.id)).filter((p) => p !== undefined).slice(0, 10);
+---
+<Base title={`${monthName(month)} record`} description={`${num(s.total_ha)} hectares cleared in the 12 months to ${longDate(s.data_date)}. ${pct(s.no_licence_to_mine.share)} with no licence to mine.`}>
+  <article class="wrap">
+    <p class="crumb small"><a href="/data">All monthly records</a></p>
+    <h1>{monthName(month)}</h1>
+    <p class="lede measure">In the 12 months to {longDate(s.data_date)}, satellites saw {num(s.total_ha)} hectares of land cleared in {num(s.patches)} patches. {pct(s.no_licence_to_mine.share)} of it has no licence to mine.</p>
+    <p class="muted small">This page keeps the numbers as they were in {monthName(month)}. The pictures and licence labels below are the latest ones.</p>
+
+    <section class="band">
+      <h2>By licence</h2>
+      <ul class="licences">
+        {(['no licence', 'prospecting only', 'small-scale licence', 'large-scale lease'] as const).map((l) => (
+          <li><LicenceTag licence={l} /><span class="v">{num(s.by_licence[l].ha)} ha</span><span class="muted">{pct(s.by_licence[l].share)}</span></li>
+        ))}
+      </ul>
+    </section>
+
+    {s.top_districts.length > 0 && (
+      <section class="band">
+        <h2>By district</h2>
+        <dl class="facts">{s.top_districts.map((d) => <><dt>{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</dt><dd>{num(d.ha)} ha</dd></>)}</dl>
+      </section>
+    )}
+
+    {top.length > 0 && (
+      <section class="band">
+        <h2>Largest patches</h2>
+        <ul class="list">{top.map((p) => <PlaceRow place={p} />)}</ul>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .crumb { margin: 24px 0 8px; }
+  h1 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 16px; }
+  .lede { font-size: 1.25rem; line-height: 1.45; margin: 0 0 12px; }
+  .licences { list-style: none; margin: 0; padding: 0; max-width: 560px; }
+  .licences li { display: grid; grid-template-columns: 1fr auto 3.5rem; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .licences li > :global(.tag) { justify-self: start; }
+  .licences .v { font-weight: 700; text-align: right; }
+  .licences .muted { text-align: right; }
+  .list { list-style: none; padding: 0; margin: 0; }
+</style>

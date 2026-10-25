@@ -1,0 +1,141 @@
+---
+import '../styles/global.css';
+import fontUrl from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url';
+import Viewer from '../components/Viewer.astro';
+import { lastSuccess, summary, STALE_DAYS } from '../lib/data';
+import { longDate } from '../lib/format';
+
+interface Props { title?: string; description?: string; image?: string }
+const {
+  title,
+  description = 'Satellite evidence of land cleared for gold mining in Ghana, updated every week from NASA and Copernicus data.',
+  image = '/og/home.png',
+} = Astro.props;
+const fullTitle = title ? `${title} | Galamsey Tracker` : 'Galamsey Tracker';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/map', label: 'Map' },
+  { href: '/method', label: 'How we know' },
+  { href: '/data', label: 'Data' },
+  { href: '/about', label: 'About' },
+];
+const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_DAYS * 864e5 : true;
+---
+<!doctype html>
+<html lang="en-GH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{fullTitle}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <meta property="og:title" content={title ?? 'Galamsey Tracker'}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={ogImage}>
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- Without this the headline re-wraps when the font arrives and pushes the lead pictures down -->
+  <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin>
+  <script is:inline>
+    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+  </script>
+  <slot name="head" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-head">
+    <div class="wrap row">
+      <a class="brand" href="/">Galamsey Tracker</a>
+      <nav class="wide" aria-label="Main">
+        {nav.map((n) => <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a>)}
+        <button class="theme" type="button" data-theme-toggle>Dark mode</button>
+      </nav>
+      <details class="menu">
+        <summary>Menu</summary>
+        <nav aria-label="Main">
+          {nav.map((n) => <a href={n.href} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a>)}
+          <button class="theme" type="button" data-theme-toggle>Dark mode</button>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <div class="stale" data-stale data-last={lastSuccess ?? ''} hidden={!staleAtBuild}>
+    <p class="wrap">
+      {lastSuccess
+        ? <>Data last updated {longDate(lastSuccess.slice(0, 10))}. The weekly update is late, so recent changes may be missing.</>
+        : <>The weekly update has not run yet.</>}
+    </p>
+  </div>
+
+  <main id="main"><slot /></main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <p>
+        {summary && <>Data up to {longDate(summary.data_date)}. Updated every Monday. </>}
+        Built from NASA OPERA land disturbance data and Copernicus Sentinel-2 images. Contains modified Copernicus Sentinel data.
+      </p>
+      <p>Open source. <a href="https://github.com/Phinart98/galamsey-tracker">Code and data on GitHub</a>. <a href="/data">Download the data</a>.</p>
+    </div>
+  </footer>
+  <Viewer />
+
+  <script is:inline define:vars={{ staleDays: STALE_DAYS }}>
+    const root = document.documentElement;
+    const dark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const label = () => document.querySelectorAll('[data-theme-toggle]').forEach((b) => { b.textContent = dark() ? 'Light mode' : 'Dark mode'; });
+    label();
+    document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.addEventListener('click', () => {
+      root.dataset.theme = dark() ? 'light' : 'dark';
+      try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+      label();
+      dispatchEvent(new CustomEvent('themechange', { detail: root.dataset.theme }));
+    }));
+    const stale = document.querySelector('[data-stale]');
+    const last = Date.parse(stale.dataset.last);
+    if (!last || Date.now() - last > staleDays * 864e5) stale.hidden = false;
+  </script>
+</body>
+</html>
+
+<style>
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 8px; z-index: 10; background: var(--paper); padding: 8px 12px; }
+  .site-head { border-bottom: 1px solid var(--line); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+  .brand { font-weight: 800; font-size: 1.125rem; text-decoration: none; letter-spacing: -0.01em; padding: 10px 0; }
+  nav { display: flex; align-items: center; gap: 20px; }
+  nav a { text-decoration: none; white-space: nowrap; padding: 10px 0; }
+  nav a:hover, nav a[aria-current='page'] { text-decoration: underline; }
+  .theme {
+    font: inherit; font-size: 0.9375rem; color: var(--ink); background: transparent; white-space: nowrap;
+    border: 1px solid var(--line); border-radius: 6px; padding: 0 12px; min-height: 44px; cursor: pointer;
+  }
+  .menu { display: none; }
+  @media (max-width: 640px) {
+    .wide { display: none; }
+    .menu { display: block; }
+    .menu summary {
+      list-style: none; cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center;
+      padding: 0 14px; border: 1px solid var(--ink); border-radius: 6px;
+    }
+    .menu summary::-webkit-details-marker { display: none; }
+    .menu[open] summary { background: var(--ink); color: var(--paper); }
+    .menu nav {
+      position: absolute; left: 0; right: 0; top: 61px; z-index: 20; flex-direction: column; align-items: stretch; gap: 0;
+      background: var(--paper); border-bottom: 1px solid var(--line); padding: 4px var(--gutter) 16px;
+    }
+    .menu nav a { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 1.125rem; }
+    .menu nav .theme { margin-top: 12px; }
+  }
+  .site-head { position: relative; }
+  .stale { background: var(--signal); color: var(--signal-ink); font-weight: 700; }
+  .stale p { margin: 0; padding-top: 10px; padding-bottom: 10px; }
+  .site-foot { border-top: 1px solid var(--line); margin-top: 48px; padding: 24px 0 40px; font-size: 0.9375rem; color: var(--muted); }
+  .site-foot p { max-width: 70ch; margin: 0 0 8px; }
+</style>

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tracker.chips import usable_chip
+from tracker.chips import hazy, usable_chip
 from tracker.licences import LARGE_SCALE, NONE, PROSPECTING
 from tracker.summary import football_pitches, summarise
 
@@ -73,3 +73,17 @@ def test_chip_with_missing_data_is_rejected():
     scl = np.full((10, 10), 4)
     scl[:, 0:1] = 0             # 10% no data, more than the 2% allowed
     assert not usable_chip(scl)
+
+
+def test_grey_haze_that_the_scene_cloud_mask_missed_is_rejected():
+    fog = np.full((100, 100, 3), 130, "uint8")
+    fog[:, :, 1] = 140
+    assert hazy(fog)
+
+
+def test_bright_mining_ground_and_some_grey_tailings_are_not_haze():
+    rgb = np.zeros((100, 100, 3), "uint8")
+    rgb[:] = (40, 70, 35)               # forest
+    rgb[:50] = (220, 190, 110)          # yellow pits and bare soil
+    rgb[50:65] = (150, 150, 145)        # 15% grey tailings
+    assert not hazy(rgb)

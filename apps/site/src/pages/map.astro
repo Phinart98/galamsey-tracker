@@ -1,0 +1,257 @@
+---
+import Base from '../layouts/Base.astro';
+import PlaceRow from '../components/PlaceRow.astro';
+import { active, check, coverage, summary, tiles } from '../lib/data';
+import { longDate, num } from '../lib/format';
+import maplibre from '../../.data/maplibre.json';
+
+const LIST = 60;
+const bounds = Object.values(tiles).map((t) => t.bounds).filter(Boolean);
+const box = bounds.length
+  ? [Math.min(...bounds.map((b) => b[0])), Math.min(...bounds.map((b) => b[1])), Math.max(...bounds.map((b) => b[2])), Math.max(...bounds.map((b) => b[3]))]
+  : [-3.3, 4.7, -0.3, 7.5];
+---
+<Base title="Map of cleared land" description="Every patch of land of at least 1 hectare that lost its plant cover in the last 12 months, with the licence on the land.">
+  <div class="sheet wrap">
+    <aside class="margin">
+      <h1>Every patch cleared in the last 12 months</h1>
+      <p class="muted small">{coverage.join('. ')}.</p>
+      {summary && (
+        <dl class="facts small">
+          <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
+          <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
+          {check.patches > 0 && <><dt>Checked</dt><dd>{check.mining} of {check.patches} showed signs of mining</dd></>}
+          <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
+        </dl>
+      )}
+      <ul class="key small" aria-label="Map key">
+        <li><span class="sw alarm"></span>No licence to mine, or prospecting only</li>
+        <li><span class="sw ring"></span>Inside a mining licence or lease</li>
+        <li><span class="sw area"></span>Area we cover so far</li>
+      </ul>
+      <p class="small muted">Circles are sized by area. Tap one to see its pictures.</p>
+      <div class="detail" data-detail hidden></div>
+    </aside>
+
+    <div class="mapcol">
+      <button class="btn primary open" type="button" data-open-map>Show on map</button>
+      <div class="frame" data-frame hidden>
+        <div class="maphead">
+          <span class="small muted">© OpenStreetMap, OpenFreeMap</span>
+          <button class="btn close" type="button" data-close-map>Back to list</button>
+        </div>
+        <div id="map" data-map data-lib={maplibre.base} data-bounds={JSON.stringify(box)} data-site={import.meta.env.SITE} role="region" aria-label="Map of cleared land"></div>
+      </div>
+    </div>
+
+    <section class="listcol" aria-labelledby="list-h">
+      <h2 id="list-h">Largest first</h2>
+      <p class="muted small">The {Math.min(LIST, active.length)} largest of {num(active.length)} patches. <a href="/places.csv">Download all of them</a>.</p>
+      <ul class="list">{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
+
+  const el = document.querySelector<HTMLElement>('[data-map]')!;
+  const frame = document.querySelector<HTMLElement>('[data-frame]')!;
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-open-map]')!;
+  const detail = document.querySelector<HTMLElement>('[data-detail]')!;
+  const site = el.dataset.site!.replace(/\/$/, '');
+  const box = JSON.parse(el.dataset.bounds!) as [number, number, number, number];
+  let map: MLMap | null = null;
+
+  const css = (n: string) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const isDark = () => {
+    const t = document.documentElement.dataset.theme;
+    return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  };
+  const style = () => `https://tiles.openfreemap.org/styles/${isDark() ? 'dark' : 'positron'}`;
+  const local = (u: string) => (u.startsWith(site) ? u.slice(site.length) : u);
+  const long = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const ALARM = ['no licence', 'prospecting only'];
+  const LABEL: Record<string, string> = {
+    'no licence': 'No licence to mine', 'prospecting only': 'Prospecting licence only',
+    'small-scale licence': 'Small-scale mining licence', 'large-scale lease': 'Large-scale mining lease',
+  };
+
+  function addData(m: MLMap) {
+    const [w, s, e, n] = box;
+    m.addSource('area', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } } });
+    m.addLayer({ id: 'area', type: 'line', source: 'area', paint: { 'line-color': css('--ink'), 'line-width': 1.5, 'line-dasharray': [3, 2] } });
+    m.addSource('places', { type: 'geojson', data: '/places.geojson', promoteId: 'id' });
+    m.addLayer({
+      id: 'places', type: 'circle', source: 'places',
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['sqrt', ['get', 'ha']], 1, 3, 11, 20],
+        'circle-color': ['case', ['in', ['get', 'licence'], ['literal', ALARM]], css('--signal'), 'rgba(0,0,0,0)'],
+        'circle-stroke-color': ['case', ['boolean', ['feature-state', 'picked'], false], css('--ink'),
+          ['in', ['get', 'licence'], ['literal', ALARM]], css('--paper'), css('--ink')],
+        'circle-stroke-width': ['case', ['boolean', ['feature-state', 'picked'], false], 3, ['in', ['get', 'licence'], ['literal', ALARM]], 0.75, 2],
+        'circle-opacity': 0.9,
+      },
+    });
+  }
+
+  let picked: string | null = null;
+  const phone = () => matchMedia('(max-width: 959px)').matches;
+  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function unpick() {
+    if (map && picked) map.setFeatureState({ source: 'places', id: picked }, { picked: false });
+    map?.setPadding({ top: 0, left: 0, right: 0, bottom: 0 });
+    picked = null;
+    detail.hidden = true;
+    history.replaceState(null, '', location.pathname);
+  }
+
+  function pick(m: MLMap, f: GeoJSON.Feature<GeoJSON.Point>, zoom?: number) {
+    const p = f.properties as Record<string, any>;
+    if (picked) m.setFeatureState({ source: 'places', id: picked }, { picked: false });
+    picked = p.id;
+    m.setFeatureState({ source: 'places', id: p.id }, { picked: true });
+    detail.replaceChildren();
+    const hide = document.createElement('button');
+    hide.type = 'button'; hide.className = 'btn hide'; hide.textContent = 'Hide';
+    hide.addEventListener('click', unpick);
+    detail.append(hide);
+    const h = document.createElement('h2');
+    h.textContent = `${p.ha < 10 ? p.ha.toFixed(1) : Math.round(p.ha)} hectares cleared ${p.name}`;
+    detail.append(h);
+    if (p.before_image) {
+      const pair = document.createElement('div');
+      pair.className = 'mini';
+      for (const side of ['before', 'after']) {
+        const fig = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = local(p[`${side}_image`]); img.width = 360; img.height = 360;
+        img.alt = `Satellite image, ${long(p[`${side}_date`])}`;
+        const cap = document.createElement('figcaption');
+        cap.textContent = long(p[`${side}_date`]);
+        fig.append(img, cap);
+        pair.append(fig);
+      }
+      detail.append(pair);
+    }
+    const lic = document.createElement('p');
+    lic.textContent = `${LABEL[p.licence]}. First seen ${long(p.first_seen)}.`;
+    const link = document.createElement('a');
+    link.href = `/places/${p.id}`; link.textContent = 'Open this place';
+    link.className = 'btn';
+    detail.append(lic, link);
+    detail.hidden = false;
+    history.replaceState(null, '', `#${p.id}`);
+    // On a phone the panel covers the lower half, so centre the place in the part still showing
+    m.easeTo({
+      center: f.geometry.coordinates as [number, number], zoom: zoom ?? Math.max(m.getZoom(), 11),
+      padding: { top: 0, left: 0, right: 0, bottom: phone() ? detail.offsetHeight : 0 },
+      duration: still() ? 0 : 400,
+    });
+  }
+
+  async function open() {
+    frame.hidden = false;
+    openBtn.hidden = true;
+    document.body.classList.add('map-open');
+    if (map) { map.resize(); return; }
+    const lib = el.dataset.lib!;
+    const sheet = document.createElement('link');
+    sheet.rel = 'stylesheet'; sheet.href = `${lib}/maplibre-gl.css`;
+    document.head.append(sheet);
+    const maplibregl: typeof import('maplibre-gl') = await import(/* @vite-ignore */ `${lib}/maplibre-gl.mjs`);
+    const m = new maplibregl.Map({
+      container: el, style: style(), bounds: [[box[0], box[1]], [box[2], box[3]]], fitBoundsOptions: { padding: 24 },
+      attributionControl: false, cooperativeGestures: false,
+    });
+    map = m;
+    m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    m.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
+    m.on('load', () => {
+      addData(m);
+      const want = decodeURIComponent(location.hash.slice(1));
+      if (want) {
+        m.once('idle', () => {
+          const src = m.getSource('places') as GeoJSONSource;
+          src.getData().then((fc: any) => {
+            const f = fc.features.find((x: any) => x.properties.id === want);
+            if (f) pick(m, f, 13);
+          });
+        });
+      }
+    });
+    m.on('click', 'places', (e) => {
+      const f = e.features!.reduce((a, b) => (b.properties!.ha > a.properties!.ha ? b : a));
+      pick(m, f as unknown as GeoJSON.Feature<GeoJSON.Point>);
+    });
+    m.on('mouseenter', 'places', () => { m.getCanvas().style.cursor = 'pointer'; });
+    m.on('mouseleave', 'places', () => { m.getCanvas().style.cursor = ''; });
+    addEventListener('themechange', () => {
+      m.setStyle(style(), { diff: false });
+      m.once('style.load', () => {
+        addData(m);
+        if (picked) m.setFeatureState({ source: 'places', id: picked }, { picked: true });
+      });
+    });
+  }
+
+  function close() {
+    frame.hidden = true;
+    openBtn.hidden = false;
+    document.body.classList.remove('map-open');
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', open);
+  document.querySelector('[data-close-map]')!.addEventListener('click', close);
+  if (matchMedia('(min-width: 960px)').matches || location.hash.length > 1) open();
+</script>
+
+<style>
+  .sheet { display: grid; gap: 20px; padding-top: 24px; grid-template-areas: 'margin' 'map' 'list'; }
+  .margin { grid-area: margin; display: grid; gap: 14px; align-content: start; }
+  .mapcol { grid-area: map; }
+  .listcol { grid-area: list; }
+  @media (min-width: 960px) {
+    .sheet { grid-template-columns: 1fr 360px; grid-template-areas: 'map margin' 'list margin'; column-gap: 32px; }
+    .margin { border-left: 2px solid var(--ink); padding-left: 24px; position: sticky; top: 16px; max-height: calc(100dvh - 32px); overflow: auto; }
+  }
+  h1 { font-size: 1.75rem; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+  .margin p { margin: 0; }
+  .key { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+  .key li { display: flex; align-items: center; gap: 10px; }
+  .sw { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+  .sw.alarm { background: var(--signal); }
+  .sw.ring { border: 2px solid var(--ink); }
+  .sw.area { border-radius: 0; height: 0; border-top: 2px dashed var(--ink); }
+  .frame { border: 2px solid var(--ink); padding: 0; }
+  .maphead { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  .maphead .close { min-height: 40px; }
+  #map { height: 70vh; min-height: 420px; }
+  .open { width: 100%; }
+  @media (min-width: 960px) { .open { display: none; } .maphead .close { display: none; } }
+  .listcol h2 { font-size: 1.5rem; margin: 16px 0 4px; }
+  .list { list-style: none; padding: 0; margin: 12px 0 0; }
+
+  .detail { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 10px; }
+  .detail :global(h2) { font-size: 1.0625rem; margin: 0; line-height: 1.3; }
+  .detail :global(.hide) { justify-self: end; min-height: 40px; padding: 0 14px; }
+  @media (min-width: 960px) { .detail :global(.hide) { display: none; } }
+  .detail :global(.mini) { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .detail :global(figure) { margin: 0; }
+  .detail :global(img) { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .detail :global(figcaption) { font-size: 0.8125rem; font-weight: 700; margin-top: 4px; }
+
+  /* On phones the open map fills the screen and the picked place sits in a panel at the bottom */
+  @media (max-width: 959px) {
+    :global(body.map-open) { overflow: hidden; }
+    :global(body.map-open) .frame { position: fixed; inset: 0; z-index: 30; background: var(--paper); border: 0; display: flex; flex-direction: column; }
+    :global(body.map-open) #map { flex: 1; height: auto; min-height: 0; }
+    :global(body.map-open) .detail:not([hidden]) {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 31; max-height: 48dvh; overflow: auto;
+      background: var(--paper); border-top: 2px solid var(--ink); padding: 14px var(--gutter) 20px;
+    }
+    :global(body.map-open) .detail :global(.mini) { grid-template-columns: 1fr 1fr; max-width: 360px; }
+  }
+</style>

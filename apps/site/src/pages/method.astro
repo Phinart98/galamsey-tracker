@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import { check, coverage, summary } from '../lib/data';
+import { longDate } from '../lib/format';
+---
+<Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what it can and cannot tell you, and what we tried that did not work.">
+  <article class="wrap prose">
+    <h1>How we know</h1>
+
+    <h2>In plain words</h2>
+    <p>NASA satellites photograph Ghana every few days. NASA compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, NASA marks it as land that lost its plant cover.</p>
+    <p>Every Monday we collect those marks for the last 12 months. Where marked spots touch and add up to at least 1 hectare, about one and a half football pitches, we call that a patch.</p>
+    <p>For each patch we do three more things.</p>
+    <ul>
+      <li>We check it against the Minerals Commission's public register of licences, to see what kind of licence, if any, covers that land.</li>
+      <li>We name it after the nearest town or village and its district.</li>
+      <li>For the larger patches, we find a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself.</li>
+    </ul>
+    <p>Satellites see that plants are gone. They cannot see who removed them or why. Farms, roads and building sites also clear land. That is why we show pictures and the licence, and never call a single place illegal.</p>
+
+    <h2>How often it is mining</h2>
+    {check.patches > 0 && <p>We looked at {check.patches} patches in this area by eye, using before and after pictures: the largest ones and a random sample of the rest. {check.mining} of them showed signs of mining, like pits, bare orange ground and muddy ponds.{check.patches > check.mining && ' The others were hidden by cloud or did not clearly show mining.'}</p>}
+    <p>Before we add a new area we repeat that check on a random sample, because at the edges of the gold belt more of the clearing may be farming.</p>
+
+    <h2>Is it getting worse?</h2>
+    <p>Each month we add up the land cleared in the 12 months to the 22nd. Using the same day every month means each number can be compared fairly with the one a year before.</p>
+    <p>NASA only confirms clearing after it has seen the same spot clear several times, which can take weeks, or months in the rainy season. A spot also drops out of NASA's data about a year after it was first seen. So each monthly number combines three readings: one on the day, one two months later and one four months later. Until all three exist, the number is marked as still being confirmed, and it usually goes up.</p>
+
+    <h2>What it covers</h2>
+    <p>So far: {coverage.join('. ')}. We add areas one at a time after checking them. Clearing smaller than 1 hectare, or under thick cloud for the whole year, is missed. Clearing that started more than 12 months ago is not counted as new.</p>
+    {summary && <p>Latest data: {longDate(summary.data_date)}.</p>}
+
+    <h2>What we tried that did not work</h2>
+    <ul>
+      <li><strong>Radar to see through clouds.</strong> We tested a published method that spots mining ponds in Sentinel-1 radar images. Checked against a published map of mining in Ghana, only about 6% of the pixels it flagged were mining. We do not use it.</li>
+      <li><strong>River colour.</strong> We measured how muddy rivers look from space. The change from one picture to the next was bigger than the change from one year to the next, so it cannot show a trend. Rivers are brown in almost every clear picture.</li>
+      <li><strong>NASA's yearly summary.</strong> NASA also publishes a yearly version of the same data. Its first year includes a backlog and its latest year is published before late clearing is confirmed, which made it look as if clearing had halved. We use the monthly method above instead.</li>
+      <li><strong>New water.</strong> We looked for new ponds in NASA's surface water data. Most mining ponds are smaller than its 30 metre pixels, so it missed them.</li>
+    </ul>
+
+    <h2>The technical details</h2>
+    <dl class="facts">
+      <dt>Clearing data</dt><dd>NASA OPERA DIST-ALERT-HLS version 1, 30 metre pixels, Harmonized Landsat and Sentinel-2. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
+      <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
+      <dt>Licences</dt><dd>Active licences from the Minerals Commission cadastre. A patch takes the licence class that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
+      <dt>Names</dt><dd>Nearest OpenStreetMap town within 15 km or village within 8 km. Districts from geoBoundaries.</dd>
+      <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from Earth Search. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
+      <dt>Place references</dt><dd>Each patch keeps a permanent reference made from the month it was first seen and its location. When two patches grow into one, the older reference is kept and the other redirects to it.</dd>
+      <dt>Code</dt><dd>All of it is open on <a href="https://github.com/Phinart98/galamsey-tracker">GitHub</a>, including the test notes for every method above.</dd>
+    </dl>
+  </article>
+</Base>
+
+<style>
+  .prose { max-width: calc(68ch + 2 * var(--gutter)); padding-bottom: 24px; }
+  h1 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; margin: 32px 0 24px; }
+  h2 { font-size: 1.375rem; line-height: 1.2; margin: 40px 0 10px; }
+  p, li { margin: 0 0 14px; }
+  ul { padding-left: 1.2em; }
+  .facts { gap: 12px 20px; }
+  @media (max-width: 560px) { .facts { grid-template-columns: 1fr; gap: 2px; } .facts dd { margin-bottom: 12px; } }
+</style>

@@ -1,0 +1,9 @@
+---
+import type { Licence } from '../lib/data';
+import { LICENCE_SHORT } from '../lib/format';
+
+interface Props { licence: Licence }
+const { licence } = Astro.props;
+const alarm = licence === 'no licence' || licence === 'prospecting only';
+---
+<span class:list={['tag', alarm ? 'alarm' : 'plain']}>{LICENCE_SHORT[licence]}</span>

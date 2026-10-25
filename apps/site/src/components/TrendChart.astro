@@ -1,0 +1,160 @@
+---
+// Rolling 12-month hectares, one point per month. The plot is SVG stretched to fit; every piece of
+// text is HTML placed by percentage, so labels stay readable on a phone.
+import type { TrendPoint } from '../lib/data';
+import { longDate, num, shortDate } from '../lib/format';
+
+interface Props { points: TrendPoint[] }
+const { points } = Astro.props;
+
+const W = 1000, H = 400;
+const max = Math.max(...points.map((p) => p.total_ha), 1);
+const step = max > 4000 ? 2000 : max > 2000 ? 1000 : 500;
+const top = Math.ceil(max / step) * step;
+const ticks = Array.from({ length: top / step + 1 }, (_, i) => i * step);
+const x = (i: number) => (points.length > 1 ? (i / (points.length - 1)) * W : W / 2);
+const y = (v: number) => H - (v / top) * H;
+const firstOpen = points.findIndex((p) => p.settled === false);
+const settledEnd = firstOpen === -1 ? points.length - 1 : Math.max(firstOpen - 1, 0);
+
+const line = (key: 'total' | 'free', from: number, to: number) =>
+  points.slice(from, to + 1).map((p, j) => {
+    const v = key === 'total' ? p.total_ha : p.no_licence_to_mine.ha;
+    return `${j ? 'L' : 'M'}${x(from + j).toFixed(1)},${y(v).toFixed(1)}`;
+  }).join('');
+const wash = `${line('free', 0, points.length - 1)}L${W},${H}L0,${H}Z`;
+const last = points.at(-1)!;
+const years = points.filter((p) => p.date.slice(5, 7) === '01');
+const rows = points.map((p) => ({
+  date: longDate(p.date), short: shortDate(p.date), total: num(p.total_ha),
+  free: num(p.no_licence_to_mine.ha), settled: p.settled !== false,
+}));
+---
+<figure class="trend" data-trend data-rows={JSON.stringify(rows)}>
+  <div class="legend" aria-hidden="true">
+    <span><i class="key total"></i>All cleared land</span>
+    <span><i class="key free"></i>Cleared land with no licence to mine</span>
+    {firstOpen !== -1 && <span><i class="key open"></i>Still being confirmed</span>}
+  </div>
+  <div class="plot" tabindex="0" role="img"
+       aria-label={`Line chart of hectares cleared in the 12 months to each date, from ${longDate(points[0].date)} to ${longDate(last.date)}. The table below has every value.`}>
+    {ticks.map((t) => <span class="tick" style={`bottom:${(t / top) * 100}%`}>{t === 0 ? '0' : `${num(t / 1000)}K`}</span>)}
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      {ticks.map((t) => <line class="grid" x1="0" x2={W} y1={y(t)} y2={y(t)} />)}
+      <path class="wash" d={wash} />
+      <path class="free" d={line('free', 0, settledEnd)} />
+      <path class="total" d={line('total', 0, settledEnd)} />
+      {firstOpen !== -1 && <>
+        <path class="free open" d={line('free', settledEnd, points.length - 1)} />
+        <path class="total open" d={line('total', settledEnd, points.length - 1)} />
+      </>}
+      <line class="cross" data-cross x1="0" x2="0" y1="0" y2={H} />
+    </svg>
+    <span class="dot total" style={`left:${(x(points.length - 1) / W) * 100}%;bottom:${(last.total_ha / top) * 100}%`}></span>
+    <span class="dot free" style={`left:${(x(points.length - 1) / W) * 100}%;bottom:${(last.no_licence_to_mine.ha / top) * 100}%`}></span>
+    <span class="end" style={`bottom:${(last.total_ha / top) * 100}%`}>{num(last.total_ha)}</span>
+    <span class="end" style={`bottom:${(last.no_licence_to_mine.ha / top) * 100}%`}>{num(last.no_licence_to_mine.ha)}</span>
+    <div class="tip" data-tip hidden></div>
+  </div>
+  <div class="years" aria-hidden="true">
+    {years.map((p) => <span style={`left:${(x(points.indexOf(p)) / W) * 100}%`}>{p.date.slice(0, 4)}</span>)}
+  </div>
+  <figcaption class="muted small">Hectares cleared in the 12 months to the 22nd of each month. Using the same day every month means each point compares fairly with the one a year before.</figcaption>
+  <details class="table">
+    <summary>Show the numbers as a table</summary>
+    <table>
+      <thead><tr><th scope="col">12 months to</th><th scope="col">All cleared land (ha)</th><th scope="col">No licence to mine (ha)</th></tr></thead>
+      <tbody>
+        {rows.slice().reverse().map((r) => <tr><td>{r.date}{!r.settled && ' (still being confirmed)'}</td><td>{r.total}</td><td>{r.free}</td></tr>)}
+      </tbody>
+    </table>
+  </details>
+</figure>
+
+<script is:inline>
+  document.querySelectorAll('[data-trend]').forEach((fig) => {
+    const rows = JSON.parse(fig.dataset.rows);
+    const plot = fig.querySelector('.plot');
+    const tip = fig.querySelector('[data-tip]');
+    const cross = fig.querySelector('[data-cross]');
+    let at = rows.length - 1;
+    const render = (i) => {
+      at = Math.max(0, Math.min(rows.length - 1, i));
+      const r = rows[at];
+      const frac = rows.length > 1 ? at / (rows.length - 1) : 0.5;
+      cross.setAttribute('x1', frac * 1000); cross.setAttribute('x2', frac * 1000);
+      cross.classList.add('on');
+      tip.replaceChildren();
+      const head = document.createElement('div'); head.className = 'when';
+      head.textContent = `12 months to ${r.short}${r.settled ? '' : ', still being confirmed'}`;
+      tip.append(head);
+      for (const [k, v, label] of [['total', r.total, 'all cleared'], ['free', r.free, 'no licence to mine']]) {
+        const row = document.createElement('div');
+        const key = document.createElement('i'); key.className = `key ${k}`;
+        const b = document.createElement('b'); b.textContent = `${v} ha`;
+        row.append(key, b, ` ${label}`);
+        tip.append(row);
+      }
+      tip.hidden = false;
+      tip.style.left = `${frac * 100}%`;
+      tip.classList.toggle('flip', frac > 0.6);
+    };
+    const hide = () => { tip.hidden = true; cross.classList.remove('on'); };
+    plot.addEventListener('pointermove', (e) => {
+      const b = plot.getBoundingClientRect();
+      render(Math.round(((e.clientX - b.left) / b.width) * (rows.length - 1)));
+    });
+    plot.addEventListener('pointerleave', hide);
+    plot.addEventListener('focus', () => render(at));
+    plot.addEventListener('blur', hide);
+    plot.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { render(at - 1); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { render(at + 1); e.preventDefault(); }
+    });
+  });
+</script>
+
+<style>
+  .trend { margin: 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 0.9375rem; margin-bottom: 16px; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .key { display: inline-block; width: 18px; height: 0; border-top: 2px solid; flex: none; }
+  .key.total { border-color: var(--ink); }
+  .key.free { border-color: var(--signal); }
+  .key.open { border-top-style: dashed; border-color: var(--muted); }
+  .plot { position: relative; height: 240px; margin: 0 56px 0 44px; outline-offset: 4px; touch-action: pan-y; }
+  @media (min-width: 720px) { .plot { height: 320px; } }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  path, line { vector-effect: non-scaling-stroke; fill: none; }
+  .grid { stroke: var(--line); stroke-width: 1; }
+  .total { stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .free { stroke: var(--signal); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .open { stroke-dasharray: 5 4; }
+  .wash { fill: var(--signal); opacity: 0.1; stroke: none; }
+  .cross { stroke: var(--muted); stroke-width: 1; opacity: 0; }
+  .cross:global(.on) { opacity: 1; }
+  .tick { position: absolute; left: -44px; width: 28px; text-align: right; transform: translateY(50%); font-size: 0.8125rem; color: var(--muted); }
+  .dot { position: absolute; width: 10px; height: 10px; margin: 0 0 -5px -5px; border-radius: 50%; box-shadow: 0 0 0 2px var(--paper); }
+  .dot.total { background: var(--ink); }
+  .dot.free { background: var(--signal); }
+  .end { position: absolute; left: calc(100% + 10px); transform: translateY(50%); font-size: 0.875rem; font-weight: 700; }
+  .years { position: relative; height: 24px; margin: 10px 56px 8px 44px; font-size: 0.8125rem; color: var(--muted); }
+  .years span { position: absolute; transform: translateX(-50%); }
+  .tip {
+    position: absolute; top: 0; transform: translateX(12px); min-width: 190px; padding: 8px 10px; font-size: 0.875rem;
+    background: var(--paper); border: 1px solid var(--ink); border-radius: 6px; pointer-events: none; z-index: 2;
+  }
+  .tip:global(.flip) { transform: translateX(calc(-100% - 12px)); }
+  .tip :global(.when) { color: var(--muted); margin-bottom: 4px; }
+  .tip :global(div) { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .tip :global(.key) { width: 14px; }
+  .tip :global(.key.total) { border-color: var(--ink); }
+  .tip :global(.key.free) { border-color: var(--signal); }
+  figcaption { max-width: 65ch; margin-top: 4px; }
+  .table { margin-top: 16px; }
+  .table summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+  table { border-collapse: collapse; width: 100%; max-width: 640px; font-size: 0.9375rem; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 700; vertical-align: bottom; }
+</style>

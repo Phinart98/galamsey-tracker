@@ -16,12 +16,23 @@ CLOUDY_SCL = (3, 8, 9, 10)   # cloud shadow, medium and high cloud probability, 
 MAX_CLOUD = 0.10
 MAX_NODATA = 0.02
 WIDTHS = (360, 720)
+# The scene cloud mask misses thick haze and broken cloud. Those look bright and grey, while mining
+# ground is bright but yellow or orange. Measured on 74 images: clear ones score 0 to 0.14 (grey
+# tailings), the two fogged ones 0.34 and 0.91 (spike log section 14).
+MAX_GREY = 0.25
 
 
 def usable_chip(scl: np.ndarray) -> bool:
     nodata = float((scl == 0).mean())
     cloudy = float(np.isin(scl, CLOUDY_SCL).mean())
     return nodata <= MAX_NODATA and cloudy <= MAX_CLOUD + 1e-9
+
+
+def hazy(rgb: np.ndarray) -> bool:
+    v = rgb.astype(np.int16)
+    low = v.min(axis=2)
+    grey = (low >= 90) & (v.max(axis=2) - low < 35)
+    return float(grey.mean()) > MAX_GREY
 
 
 def _bbox(lon: float, lat: float, half_km: float) -> list[float]:
@@ -47,7 +58,7 @@ def clearest(lon: float, lat: float, half_km: float, start: dt.date, end: dt.dat
         if not usable_chip(scl):
             continue
         rgb = np.moveaxis(_read(item.assets["visual"].href, bbox), 0, -1)
-        if (rgb.sum(axis=2) == 0).mean() > MAX_NODATA:
+        if (rgb.sum(axis=2) == 0).mean() > MAX_NODATA or hazy(rgb):
             continue
         return item.datetime.date(), rgb
     return None

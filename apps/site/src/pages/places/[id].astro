@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+import Pair from '../../components/Pair.astro';
+import LicenceTag from '../../components/LicenceTag.astro';
+import Share from '../../components/Share.astro';
+import { aliases, hasPair, placeById, places, summary, type Place } from '../../lib/data';
+import { LICENCE_SENTENCE, coords, district, hectares, longDate, placeName } from '../../lib/format';
+
+export function getStaticPaths() {
+  const real = places.map((place) => ({ params: { id: place.id }, props: { place, to: null } }));
+  const merged = Object.entries(aliases)
+    .filter(([from]) => !placeById.has(from))
+    .map(([from, to]) => ({ params: { id: from }, props: { place: null, to } }));
+  return [...real, ...merged];
+}
+
+const { place, to } = Astro.props as { place: Place | null; to: string | null };
+const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'This place has moved';
+---
+{to ? (
+  <html lang="en-GH">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="refresh" content={`0; url=/places/${to}`}>
+      <link rel="canonical" href={new URL(`/places/${to}`, Astro.site)}>
+      <title>{title}</title>
+    </head>
+    <body><p>This patch grew into another one. <a href={`/places/${to}`}>Go to its page</a>.</p></body>
+  </html>
+) : place && (
+  <Base title={title} image={hasPair(place) ? `/og/places/${place.id}.png` : undefined}
+        description={`${hectares(place.ha)} of land cleared ${placeName(place)}, first seen by satellite on ${longDate(place.first_seen)}. ${LICENCE_SENTENCE[place.licence]}`}>
+    <article class="wrap">
+      <p class="crumb small"><a href="/map">All places</a></p>
+      <h1>{title}</h1>
+      <div class="grid">
+        <div class="pic">
+          {hasPair(place)
+            ? <Pair place={place} variant="page" eager />
+            : <p class="nopair">No clear satellite picture of this place yet. Clouds cover it in every recent image. We try again every week.</p>}
+        </div>
+        <div class="about">
+          {!place.active && (
+            <p class="note">This patch is no longer in the last 12 months of clearing. The page stays so links to it keep working.</p>
+          )}
+          <p><LicenceTag licence={place.licence} /></p>
+          <p>{LICENCE_SENTENCE[place.licence]}</p>
+          <dl class="facts">
+            <dt>Size</dt><dd>{hectares(place.ha)}</dd>
+            <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
+            <dt>Last change</dt><dd>{longDate(place.last_seen)}</dd>
+            {place.near && <><dt>Nearest town</dt><dd>{place.near}{place.near_km != null && `, ${place.near_km} km away`}</dd></>}
+            {district(place) && <><dt>District</dt><dd>{district(place)}</dd></>}
+            <dt>Location</dt><dd>{coords(place)}</dd>
+            <dt>Reference</dt><dd>{place.id}</dd>
+          </dl>
+          <div class="actions">
+            <Share title={title} />
+            <a class="btn" href={`/map#${place.id}`}>Show on the map</a>
+          </div>
+        </div>
+      </div>
+
+      <section class="band">
+        <h2>What this page does and does not say</h2>
+        <div class="measure">
+          <p>Satellites saw most of the plant cover here disappear, starting on {longDate(place.first_seen)}. The pictures show the place before and after. Mining leaves pits, bare orange ground and muddy ponds, which you can often see in them.</p>
+          <p>We do not know who cleared this land, and we do not say whether it is illegal. The licence above comes from the Minerals Commission's public register{summary && <> as checked on {longDate(summary.data_date)}</>}.</p>
+          <p><a href="/method">How we know</a></p>
+        </div>
+      </section>
+    </article>
+  </Base>
+)}
+
+<style>
+  .crumb { margin: 24px 0 8px; }
+  h1 { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 24px; max-width: 30ch; }
+  .grid { display: grid; gap: 24px; }
+  @media (min-width: 960px) { .grid { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
+  .about p { margin: 0 0 16px; max-width: 50ch; }
+  .facts { margin: 8px 0 24px; }
+  .note { background: var(--paper-2); padding: 12px 14px; }
+  .nopair { aspect-ratio: 2 / 1; display: grid; place-items: center; padding: 24px; text-align: center; background: var(--paper-2); margin: 0; }
+  .band { margin-top: 40px; }
+</style>
