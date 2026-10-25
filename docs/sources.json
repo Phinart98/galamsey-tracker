@@ -254,6 +254,16 @@
    "used_for": "Forest zone mask: only clearing in the Eastern Guinean forests ecoregion counts",
    "status": "live-data",
    "todo": "Confirm the CC BY 4.0 wording on the RESOLVE page"
+  },
+  {
+   "id": "google-maps-earth-links",
+   "title": "Google Maps (satellite view) and Google Earth web, linked from each place",
+   "publisher": "Google",
+   "url": "https://developers.google.com/maps/documentation/urls/get-started",
+   "licence": "Outbound links only: no Google imagery is copied, embedded or loaded by the site",
+   "used_for": "'See it closer' links on place pages, the picture viewer and the map card",
+   "status": "checked",
+   "checked": "2026-10-25 (Maps URLs format is documented; the Earth web link format is not documented and may change)"
   }
  ],
  "claims": [
@@ -584,6 +594,14 @@
    ],
    "status": "measured",
    "caveat": "1 of 20 sampled early-2025 30NYN patches was mining, and it lies inside the zone; 4% from the 23 Oct 2026 snapshot"
+  },
+  {
+   "id": "google-imagery-age",
+   "text": "Google's pictures are sharper than ours but can be years older, so they may show forest where the land has since been cleared",
+   "where": "place pages, next to the Google links",
+   "evidence": [],
+   "status": "unverified",
+   "todo": "Spot-check the Google Earth picture date for 5 to 10 of the largest places and note it in the spike log"
   }
  ]
 }

@@ -27,7 +27,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
           <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
-          {check.patches > 0 && <><dt>Checked</dt><dd>{check.mining} of {check.patches} showed signs of mining</dd></>}
+          {check.patches > 0 && <><dt>Checked</dt><dd>{check.mining} of {check.patches}, mostly large, showed signs of mining. <a href="/method#mining">Small new ones are more often farms</a></dd></>}
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
@@ -121,7 +121,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
 <script>
   import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
-  import { NO_PICTURE, type NoPicture } from '../lib/format';
+  import { NO_PICTURE, googleMaps, type NoPicture } from '../lib/format';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
@@ -199,7 +199,8 @@ const withoutPic = active.find((p) => !hasPair(p));
       // A pair the picture viewer understands, so tapping a picture opens it large
       const pair = document.createElement('figure');
       pair.className = 'mini';
-      Object.assign(pair.dataset, { pair: '', title, href: `/places/${p.id}` });
+      const [plon, plat] = f.geometry.coordinates;
+      Object.assign(pair.dataset, { pair: '', title, href: `/places/${p.id}`, lat: String(plat), lon: String(plon) });
       for (const side of ['before', 'after']) {
         const small = local(p[`${side}_image`]);
         const large = small.replace(/-360\.webp$/, '-720.webp');
@@ -227,7 +228,12 @@ const withoutPic = active.find((p) => !hasPair(p));
     const link = document.createElement('a');
     link.href = `/places/${p.id}`; link.textContent = 'Open this place';
     link.className = 'btn';
-    detail.append(lic, link);
+    const [lon, lat] = f.geometry.coordinates as [number, number];
+    const google = document.createElement('a');
+    google.href = googleMaps(lat, lon); google.target = '_blank'; google.rel = 'noopener noreferrer';
+    google.textContent = 'Closer on Google Maps (may be older)';
+    google.className = 'google';
+    detail.append(lic, link, google);
     detail.hidden = false;
     history.replaceState(null, '', `#${p.id}`);
     // On a phone the panel covers the lower half, so centre the place in the part still showing
@@ -343,7 +349,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   let shown: Props[] = [];
   let upTo = PAGE;
 
-  const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => f.properties)));
+  const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
 
   function wanted() {
     const f = new FormData(form);
@@ -385,7 +391,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     if (none) none.textContent = NO_PICTURE[p.no_picture as NoPicture] ?? NO_PICTURE.pending;
     const fig = li.querySelector<HTMLElement>('[data-pair]');
     if (fig) {
-      Object.assign(fig.dataset, { title, href: `/places/${p.id}` });
+      Object.assign(fig.dataset, { title, href: `/places/${p.id}`, lat: String(p.lat), lon: String(p.lon) });
       li.querySelectorAll<HTMLAnchorElement>('[data-open]').forEach((shot) => {
         const side = shot.dataset.open!;
         const small = local(p[`${side}_image`]);
@@ -580,6 +586,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   .detail :global(.mini a:hover span) { text-decoration: underline; }
   .detail :global(img) { width: 100%; aspect-ratio: 1; object-fit: cover; }
   .detail :global(.mini span) { display: block; font-size: 0.8125rem; font-weight: 700; margin-top: 4px; }
+  .detail :global(.google) { font-weight: 700; padding: 6px 0; }
   .detail :global(p) { margin: 0; }
   @media (min-width: 960px) {
     .detail {

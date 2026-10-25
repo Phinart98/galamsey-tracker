@@ -32,6 +32,7 @@
       <button type="button" class="fit" data-v-fit disabled>Fit</button>
     </div>
     <a class="more narrow" data-v-link href="/">Open this place</a>
+    <a class="google" data-v-google target="_blank" rel="noopener noreferrer" hidden>Closer on Google Maps (may be older)</a>
     <p class="hint muted small" data-v-hint></p>
   </div>
 </dialog>
@@ -72,6 +73,10 @@
     const open = (fig, start) => {
       q('[data-v-title]').textContent = fig.dataset.title;
       d.querySelectorAll('[data-v-link]').forEach((a) => { a.href = fig.dataset.href; });
+      // Same link as googleMaps() in lib/format.ts: this script is inline, so it cannot import it
+      const g = q('[data-v-google]');
+      g.hidden = !fig.dataset.lat;
+      if (fig.dataset.lat) g.href = `https://www.google.com/maps/@?api=1&map_action=map&center=${(+fig.dataset.lat).toFixed(5)},${(+fig.dataset.lon).toFixed(5)}&zoom=16&basemap=satellite`;
       for (const s of ['before', 'after']) {
         const img = q(`[data-v-img=${s}]`);
         img.src = fig.dataset[s];
@@ -274,5 +279,7 @@
   .zbtns button + button { border-left: 1px solid var(--ink); }
   .zbtns .fit { font-size: 1rem; }
   .zbtns button:disabled { color: var(--muted); cursor: default; }
+  .google { font-weight: 700; padding: 10px 0; }
+  .google[hidden] { display: none; }
   .hint { margin: 0; flex: 1 1 260px; }
 </style>

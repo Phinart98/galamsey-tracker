@@ -57,7 +57,7 @@ const total = summary?.total_ha ?? 0;
             const a = srcsets(p.chips.after), b = srcsets(p.chips.before);
             return (
               <li>
-                <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`}
+                <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`} data-lat={p.lat} data-lon={p.lon}
                         data-before={b.large} data-after={a.large}
                         data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
                   <a class="cell" href={a.large} data-open="after">

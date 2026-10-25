@@ -5,7 +5,7 @@ import LicenceTag from '../../components/LicenceTag.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
 import { aliases, hasPair, placeById, places, summary, type Place } from '../../lib/data';
-import { LICENCE_SENTENCE, NO_PICTURE, noPicture, coords, district, hectares, longDate, placeName } from '../../lib/format';
+import { GOOGLE_NOTE, LICENCE_SENTENCE, NO_PICTURE, noPicture, coords, district, googleEarth, googleMaps, hectares, longDate, placeName } from '../../lib/format';
 
 export function getStaticPaths() {
   const real = places.map((place) => ({ params: { id: place.id }, props: { place, to: null } }));
@@ -59,6 +59,14 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
             <Share title={title} />
             <a class="btn" href={`/map#${place.id}`}>Show on the map</a>
           </div>
+          <div class="google">
+            <h2>See it closer</h2>
+            <div class="actions">
+              <a class="btn" href={googleMaps(place.lat, place.lon)} target="_blank" rel="noopener noreferrer">Google Maps</a>
+              <a class="btn" href={googleEarth(place.lat, place.lon)} target="_blank" rel="noopener noreferrer">Google Earth</a>
+            </div>
+            <p class="muted small">{GOOGLE_NOTE}</p>
+          </div>
         </div>
       </div>
 
@@ -82,6 +90,9 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
   @media (min-width: 960px) { .grid { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
   .about p { margin: 0 0 16px; max-width: 50ch; }
   .facts { margin: 8px 0 24px; }
+  .google { margin-top: 28px; }
+  .google h2 { font-size: 1.0625rem; margin: 0 0 10px; }
+  .google p { margin: 10px 0 0; max-width: 52ch; }
   .note { background: var(--paper-2); padding: 12px 14px; }
   .nopair { aspect-ratio: 2 / 1; display: grid; place-items: center; padding: 24px; text-align: center; background: var(--paper-2); margin: 0; }
   .band { margin-top: 40px; }

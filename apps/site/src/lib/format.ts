@@ -78,3 +78,11 @@ export function noPicture(p: Place): NoPicture {
   if (p.chips && 'missing' in p.chips) return 'cloudy';
   return p.ha < PICTURE_MIN_HA ? 'small' : 'pending';
 }
+
+// Sharper pictures than ours, but often years older and undated in Maps: every link carries GOOGLE_NOTE nearby.
+// Maps uses Google's documented link format (it opens the app on phones); Earth's format is not documented.
+const ll = (lat: number, lon: number) => `${lat.toFixed(5)},${lon.toFixed(5)}`;
+export const googleMaps = (lat: number, lon: number) =>
+  `https://www.google.com/maps/@?api=1&map_action=map&center=${ll(lat, lon)}&zoom=16&basemap=satellite`;
+export const googleEarth = (lat: number, lon: number) => `https://earth.google.com/web/@${ll(lat, lon)},0a,1500d,35y,0h,0t,0r`;
+export const GOOGLE_NOTE = "Google's pictures are sharper than ours but can be years older, so they may show forest where the land has since been cleared. Google Earth shows the date of its picture.";

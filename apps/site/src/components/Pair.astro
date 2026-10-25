@@ -27,6 +27,8 @@ const shots = (['before', 'after'] as const).map((side) => {
   data-pair
   data-title={`${hectares(place.ha)} cleared ${placeName(place)}`}
   data-href={`/places/${place.id}`}
+  data-lat={place.lat}
+  data-lon={place.lon}
   data-before={shots[0].s.large}
   data-after={shots[1].s.large}
   data-before-date={longDate(shots[0].chip.date)}
