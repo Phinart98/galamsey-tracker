@@ -99,6 +99,10 @@ export const check = Object.values(tiles).reduce(
   { patches: 0, mining: 0 },
 );
 
+// The figure the site leads with: 40 patches drawn at random with chance proportional to size, 20 per season,
+// so the share estimates the share of cleared AREA (spike log s26). low/high are a rough 95% range.
+export const areaCheck = { checked: 40, share: 0.82, low: 0.68, high: 0.96 };
+
 // A one-off eye check of 20 random patches under 3 ha first seen in the six months to 25 Oct 2026 (spike log s22)
 export const smallCheck = { checked: 20, mining: 8, farms: 4, unclear: 8 };
 

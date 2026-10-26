@@ -290,13 +290,13 @@
   },
   {
    "id": "mining-share",
-   "text": "104 of 117 randomly checked patches showed signs of mining",
-   "where": "home (\"mostly large ones, small new patches are more often farms\"), /method",
+   "text": "In a random check, about 4 in 5 hectares of the cleared land showed signs of mining (82%, rough range 68 to 96%)",
+   "where": "home, /map, /method#mining (method also gives the earlier 104 of 117 and the small-patch 8 of 20)",
    "evidence": [
     "own-spike-log s12, s15, s22, s26"
    ],
    "status": "measured",
-   "caveat": "Judged by Claude from pictures. The area-weighted, season-split random check (s26) gives about 82% of the cleared area (rough 95% range 68 to 96%); 104 of 117 leaned on large patches; small new patches were 8 of 20 (s22). Philip's one-time check is still to do. Proposed public wording: 'about 4 in 5 hectares' (Philip to decide)"
+   "caveat": "Judged by Claude from pictures (s26: 40 patches, area-weighted, 20 per season). Includes licensed large-scale mines. Philip accepted this wording on 2026-10-26; his own one-time check is still a planned second opinion"
   },
   {
    "id": "trend",

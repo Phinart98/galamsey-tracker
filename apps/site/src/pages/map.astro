@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PlaceRow from '../components/PlaceRow.astro';
-import { active, check, coverage, hasPair, summary, tiles, smallCheck } from '../lib/data';
+import { active, coverage, hasPair, summary, tiles } from '../lib/data';
 import { district, longDate, num } from '../lib/format';
 import maplibre from '../../.data/maplibre.json';
 
@@ -27,7 +27,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
           <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
-          {check.patches > 0 && <><dt>Checked</dt><dd>{check.mining} of {check.patches}, mostly large, showed signs of mining. <a href="/method#small-patches">For small, new patches it was {smallCheck.mining} of {smallCheck.checked}</a></dd></>}
+          <><dt>Checked</dt><dd>About 4 in 5 hectares showed signs of mining in a random check. <a href="/method#mining">How we checked</a></dd></>
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
