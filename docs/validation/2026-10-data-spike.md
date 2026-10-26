@@ -526,3 +526,22 @@ a peak of 25,693 ha (Dec 2024), 23,686 ha (Oct 2025), 17,341 ha (May 2026, the l
 May to May: 20,441 to 17,341 ha, 15% lower. The swing is smaller than before the zone (s18) but the
 late-2024 peak and the fall after it have not been checked by eye, so the site still prints no direction.
 To do before any trend sentence: an eye check of patches that entered and left the window around the peak.
+
+## 25. How old are Google's pictures of our places? (2026-10-26)
+
+Google Earth web, opened with the site's link for the lead place and five of the largest, picture date from
+the status bar (screenshots in `.playwright-mcp/earth-*.png`, not committed).
+
+| Place | Google Earth picture | First seen by us |
+|---|---|---|
+| Kibi (48 ha) | 17 Dec 2024 | 24 Oct 2025 |
+| Obuasi (124 ha) | 28 Dec 2022 | 3 Nov 2025 |
+| Kunso (46 ha) | 9 Jan 2026 | 14 Nov 2025 |
+| Kunso (41 ha) | 13 Dec 2025 | 14 Nov 2025 |
+| Babianiha (38 ha) | 28 Dec 2024 | 25 Oct 2025 |
+| Sompre (38 ha) | 12 Feb 2026 | 27 Oct 2025 |
+
+**Reading:** for 3 of 6, Google's picture was taken before the clearing began, one almost four years before.
+At Kibi it shows standing forest where our 22 Oct 2026 picture shows 48 ha cleared. So the note beside the
+Google links ("can be years older, so they may show forest where the land has since been cleared") is right,
+and Google pictures must stay a close-up aid, never the evidence.

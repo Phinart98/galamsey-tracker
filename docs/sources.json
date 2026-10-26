@@ -599,9 +599,12 @@
    "id": "google-imagery-age",
    "text": "Google's pictures are sharper than ours but can be years older, so they may show forest where the land has since been cleared",
    "where": "place pages, next to the Google links",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Spot-check the Google Earth picture date for 5 to 10 of the largest places and note it in the spike log"
+   "evidence": [
+    "google-maps-earth-links",
+    "own-spike-log s25"
+   ],
+   "status": "measured",
+   "caveat": "Six places checked on 26 Oct 2026: 3 of 6 Google Earth pictures predate the clearing, the oldest from Dec 2022. Google updates its pictures, so this changes over time"
   }
  ]
 }
