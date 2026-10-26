@@ -48,6 +48,8 @@
 @media (min-width: 720px) { :root { --gutter: 32px; } }
 
 * { box-sizing: border-box; }
+/* Classes like .btn set display, which would otherwise beat the hidden attribute and show hidden controls */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;

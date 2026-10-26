@@ -112,7 +112,7 @@ const withoutPic = active.find((p) => !hasPair(p));
       <h2 id="list-h" data-list-h>Largest first</h2>
       <p class="muted small"><span data-list-note>The {Math.min(LIST, active.length)} largest of {num(active.length)} patches.</span> <a href="/places.csv">Download all of them</a>.</p>
       <ul class="list" data-list data-date={summary?.data_date}>{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
-      <button class="btn" type="button" data-more hidden>Show {LIST} more</button>
+      <button class="btn" type="button" data-more hidden={active.length <= LIST}>Show {LIST} more</button>
       {withPic && <template data-row="pic"><PlaceRow place={withPic} /></template>}
       {withoutPic && <template data-row="nopic"><PlaceRow place={withoutPic} /></template>}
     </section>
@@ -348,6 +348,8 @@ const withoutPic = active.find((p) => !hasPair(p));
   let places: Promise<Props[]> | null = null;
   let shown: Props[] = [];
   let upTo = PAGE;
+  // The first page of the list is written at build time; the full list loads only when it is needed
+  let ready = false;
 
   const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
 
@@ -443,6 +445,7 @@ const withoutPic = active.find((p) => !hasPair(p));
       : 'No patches match.';
     upTo = PAGE;
     paint();
+    ready = true;
   }
 
   const params = new URLSearchParams(location.search);
@@ -474,7 +477,8 @@ const withoutPic = active.find((p) => !hasPair(p));
   form.addEventListener('change', apply);
   form.addEventListener('submit', (e) => e.preventDefault());
   form.addEventListener('reset', () => setTimeout(apply));
-  more.addEventListener('click', () => {
+  more.addEventListener('click', async () => {
+    if (!ready) await apply();
     const first = upTo;
     upTo += PAGE;
     paint();
