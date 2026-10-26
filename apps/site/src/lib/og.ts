@@ -29,9 +29,11 @@ async function jpeg(chip: Chip) {
   return `data:image/jpeg;base64,${out.toString('base64')}`;
 }
 
-async function png(root: Node) {
+// JPEG, not PNG: a card is mostly satellite photo, and as PNG it came to about 700 KB, past what WhatsApp
+// will show as a preview (around 300 KB)
+async function card(root: Node) {
   const svg = await satori(root as never, { width: 1200, height: 630, fonts });
-  return new Resvg(svg).render().asPng();
+  return sharp(new Resvg(svg).render().asPng()).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
 }
 
 function shot(src: string, date: string) {
@@ -42,7 +44,7 @@ function shot(src: string, date: string) {
 
 export async function placeCard(o: { title: string; licence: Licence; before: Chip; after: Chip }) {
   const alarm = o.licence === 'no licence' || o.licence === 'prospecting only';
-  return png(h('div', { display: 'flex', flexDirection: 'column', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40 },
+  return card(h('div', { display: 'flex', flexDirection: 'column', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40 },
     h('div', { display: 'flex', gap: 40 }, shot(await jpeg(o.before), shortDate(o.before.date)), shot(await jpeg(o.after), shortDate(o.after.date))),
     h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 28, width: 1120 },
       h('div', { display: 'flex', flexDirection: 'column', gap: 12, width: 840 },
@@ -59,7 +61,7 @@ export async function homeCard(o: { line: string; sub: string; before?: Chip; af
         img(await jpeg(o.before), { width: 270, height: 270, objectFit: 'cover' }),
         img(await jpeg(o.after), { width: 270, height: 270, objectFit: 'cover' }))]
     : [];
-  return png(h('div', { display: 'flex', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40, gap: 48 },
+  return card(h('div', { display: 'flex', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40, gap: 48 },
     h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: pics.length ? 802 : 1120, height: 550 },
       h('div', { fontSize: 30, fontWeight: 700 }, 'Galamsey Tracker'),
       h('div', { display: 'flex', flexDirection: 'column', gap: 20 },

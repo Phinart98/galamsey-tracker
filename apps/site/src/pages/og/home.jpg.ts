@@ -11,5 +11,5 @@ export async function GET() {
     before: lead?.chips.before,
     after: lead?.chips.after,
   });
-  return new Response(new Uint8Array(card), { headers: { 'Content-Type': 'image/png' } });
+  return new Response(new Uint8Array(card), { headers: { 'Content-Type': 'image/jpeg' } });
 }

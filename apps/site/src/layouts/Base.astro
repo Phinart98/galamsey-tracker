@@ -10,7 +10,7 @@ interface Props { title?: string; description?: string; image?: string }
 const {
   title,
   description = 'Satellite evidence of land cleared for gold mining in Ghana, updated every week from NASA and Copernicus data.',
-  image = '/og/home.png',
+  image = '/og/home.jpg',
 } = Astro.props;
 const fullTitle = title ? `${title} | Galamsey Tracker` : 'Galamsey Tracker';
 const canonical = new URL(Astro.url.pathname, Astro.site);
