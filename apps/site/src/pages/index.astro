@@ -4,7 +4,7 @@ import Pair from '../components/Pair.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
-import { check, doorstep, summary, townsNear, trend, water, where } from '../lib/data';
+import { check, doorstep, smallCheck, summary, townsNear, trend, water, where } from '../lib/data';
 import { LICENCE_SENTENCE, hectares, longDate, num, pct, shortDate, srcsets, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(9);
@@ -104,7 +104,7 @@ const total = summary?.total_ha ?? 0;
           <p><strong>{num(summary.football_pitches)} football pitches.</strong> That is how much land {num(summary.total_ha)} hectares is.</p>
           <p><strong>{pct(summary.no_licence_to_mine.share)} of it</strong> is on land with no licence to mine, going by the Minerals Commission's register.</p>
           {check.patches > 0 && (
-            <p><strong>{check.mining} of {check.patches}</strong> patches we checked by eye, mostly large ones, showed signs of mining: pits, bare orange ground and muddy ponds. Small new patches are more often farms. <a href="/method">How we know</a></p>
+            <p><strong>{check.mining} of {check.patches}</strong> patches we checked by eye, mostly large ones, showed signs of mining: pits, bare orange ground and muddy ponds. Small, new patches are harder to judge: <a href="/method#small-patches">{smallCheck.mining} of {smallCheck.checked} we checked showed mining</a>.</p>
           )}
         </div>
       </section>

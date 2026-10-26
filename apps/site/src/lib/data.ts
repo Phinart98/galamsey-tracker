@@ -99,6 +99,9 @@ export const check = Object.values(tiles).reduce(
   { patches: 0, mining: 0 },
 );
 
+// A one-off eye check of 20 random patches under 3 ha first seen in the six months to 25 Oct 2026 (spike log s22)
+export const smallCheck = { checked: 20, mining: 8, farms: 4, unclear: 8 };
+
 export const lastSuccess: string | null = status.weekly?.last_success ?? null;
 export const STALE_DAYS = 14;
 

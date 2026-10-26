@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { check, coverage, summary } from '../lib/data';
+import { check, coverage, summary, smallCheck } from '../lib/data';
 import { longDate } from '../lib/format';
 ---
 <Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what it can and cannot tell you, and what we tried that did not work.">
@@ -28,7 +28,8 @@ import { longDate } from '../lib/format';
       <li>Often along a river or stream, which may turn brown downstream</li>
     </ul>
     <p>Other clearing looks different. Farms are usually neat blocks that turn green again within months. Building sites sit at the edge of towns, with straight roads and roofs.</p>
-    {check.patches > 0 && <p>We looked at {check.patches} patches by eye, in before and after pictures: some of the largest and a random sample of the rest. {check.mining} of them showed signs of mining.{check.patches > check.mining && ' The others were hidden by cloud, or looked like farms or building sites.'} A separate check of 20 small patches first seen in the last six months found clear signs of mining in only 8, and farm fields in 4, so the share is lower for small, new patches. We repeat this check on a new sample before we add a new area, because at the edges of the gold belt more of the clearing is farming.</p>}
+    {check.patches > 0 && <p>We looked at {check.patches} patches by eye, in before and after pictures: some of the largest and a random sample of the rest. {check.mining} of them showed signs of mining.{check.patches > check.mining && ' The others were hidden by cloud, or looked like farms or building sites.'} We repeat this check on a new sample before we add a new area, because at the edges of the gold belt more of the clearing is farming.</p>}
+    <p id="small-patches">Small, new patches are harder to judge. We also looked at {smallCheck.checked} patches picked at random from those under 3 hectares and first seen in the last six months. {smallCheck.mining} showed signs of mining and {smallCheck.farms} looked like farm fields. For the other {smallCheck.unclear} we could not tell: cloud hid some, and some were long cleared strips that could be mining along a river or a new road. So the share that is mining is lower for small, new patches than for large ones.</p>
 
     <h2>How we compare years</h2>
     <p>Each month we add up the land cleared over the 12 months before, measured on the same day each month. That way each total can be compared fairly with the one a year earlier.</p>
