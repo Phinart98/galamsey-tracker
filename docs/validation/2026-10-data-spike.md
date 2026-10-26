@@ -545,3 +545,25 @@ the status bar (screenshots in `.playwright-mcp/earth-*.png`, not committed).
 At Kibi it shows standing forest where our 22 Oct 2026 picture shows 48 ha cleared. So the note beside the
 Google links ("can be years older, so they may show forest where the land has since been cleared") is right,
 and Google pictures must stay a close-up aid, never the evidence.
+
+## 26. What share of the cleared AREA is mining? Area-weighted, season-split random check (2026-10-26)
+
+`spike/share_check.py` (seed 26): 40 active patches from the 23 Oct 2026 snapshot (six tiles, forest zone),
+drawn with chance proportional to hectares, so the share that shows mining estimates the share of cleared
+area. 20 first seen in the dry season (Nov to Mar: 5,070 patches, 13,527 ha, 85% of the area) and 20 in the
+wet season (819 patches, 2,436 ha, 15%). Sheets in `pipeline/out/checks/share/`. Judged by Claude at the
+centre of each 1.6 km picture.
+
+| | Signs of mining | Farm fields | Road or long strip | Other or cannot tell |
+|---|---|---|---|---|
+| Dry season | 17 | 1 (20 Owinso) | 0 | 2 (11 Nkaseim red laterite cut with a camp, 12 Jacobu edge of town) |
+| Wet season | 13 | 3 (24 Agogo, 27 Breman Brakwa, 36 Ntotroso) | 3 (22 Akwatia new road, 23 Manso and 37 Asamankese orange bands) | 1 (39 Kasapin, cloud) |
+
+Mining includes three inside the large licensed mine near Ntotroso and Kyekyewere (14, 34, 35).
+
+**Reading:** weighted by area, 0.85 x 17/20 + 0.15 x 13/20 = **about 82% of the cleared area shows signs
+of mining**, with a rough 95% range of 68% to 96% (40 patches). It is lower in the wet season, when more
+of the new clearing is farm blocks and long orange bands (road works or river-channel mining). This agrees
+with the earlier 104 of 117 (s12, s15), which leaned on large patches, and with s22, where small new
+patches were less often mining. A publishable form: "about 4 in 5 hectares of the cleared land showed signs
+of mining in a random check". Still Claude's judgement only; Philip's one-time check is the second opinion.
