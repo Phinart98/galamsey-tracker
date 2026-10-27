@@ -5,12 +5,12 @@ import Viewer from '../components/Viewer.astro';
 import Src from '../components/Src.astro';
 import { lastSuccess, summary, STALE_DAYS } from '../lib/data';
 import { longDate } from '../lib/format';
-import { CONTACT_EMAIL } from '../lib/site';
+import { CONTACT_EMAIL, WEEKLY } from '../lib/site';
 
 interface Props { title?: string; description?: string; image?: string }
 const {
   title,
-  description = 'Satellite evidence of land cleared for gold mining in Ghana, updated every week from NASA and Copernicus data.',
+  description = 'Satellite evidence of land cleared for gold mining in Ghana, from NASA and Copernicus data.',
   image = '/og/home.jpg',
 } = Astro.props;
 const fullTitle = title ? `${title} | Galamsey Tracker` : 'Galamsey Tracker';
@@ -23,7 +23,7 @@ const nav = [
   { href: '/data', label: 'Data' },
   { href: '/about', label: 'About' },
 ];
-const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_DAYS * 864e5 : true;
+const staleAtBuild = WEEKLY && (lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_DAYS * 864e5 : true);
 ---
 <!doctype html>
 <html lang="en-GH">
@@ -94,7 +94,7 @@ const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_
   <footer class="site-foot">
     <div class="wrap">
       <p>
-        {summary && <>Data up to {longDate(summary.data_date)}. Updated every Monday. </>}
+        {summary && <>Data up to {longDate(summary.data_date)}. {WEEKLY ? 'Updated every Monday. ' : 'This is a preview and is not updated yet. '}</>}
         Built from <Src id="opera-dist-alert">NASA OPERA land disturbance data</Src> and <Src id="sentinel2">Copernicus Sentinel-2</Src> images. Contains modified Copernicus Sentinel data. Licence labels from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>.
       </p>
       <nav class="foot-nav" aria-label="Footer">
@@ -105,7 +105,7 @@ const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_
   </footer>
   <Viewer />
 
-  <script is:inline define:vars={{ staleDays: STALE_DAYS }}>
+  <script is:inline define:vars={{ staleDays: STALE_DAYS, weekly: WEEKLY }}>
     const root = document.documentElement;
     const dark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     const label = () => document.querySelectorAll('[data-theme-toggle]').forEach((b) => { b.setAttribute('aria-label', dark() ? 'Switch to light mode' : 'Switch to dark mode'); });
@@ -127,7 +127,7 @@ const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_
     }
     const stale = document.querySelector('[data-stale]');
     const last = Date.parse(stale.dataset.last);
-    if (!last || Date.now() - last > staleDays * 864e5) stale.hidden = false;
+    if (weekly && (!last || Date.now() - last > staleDays * 864e5)) stale.hidden = false;
   </script>
 </body>
 </html>

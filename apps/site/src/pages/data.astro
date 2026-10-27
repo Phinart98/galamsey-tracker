@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import { bulletins, summary } from '../lib/data';
 import { longDate, monthName } from '../lib/format';
 import Src from '../components/Src.astro';
+import { WEEKLY } from '../lib/site';
 ---
 <Base title="Data" description="Download the Galamsey Tracker data: every cleared patch as CSV or GeoJSON, monthly totals and the 12-month trend.">
   <article class="wrap prose">
@@ -10,7 +11,7 @@ import Src from '../components/Src.astro';
     <p>Everything on this site is free to use, including in news stories, reports and research.</p>
 
     <h2>Downloads</h2>
-    <p>These files hold the site's current data{summary && <>: the land cleared in the 12 months to {longDate(summary.data_date)}</>}. They are replaced every week, and each one carries its date.</p>
+    <p>These files hold the site's current data{summary && <>: the land cleared in the 12 months to {longDate(summary.data_date)}</>}. {WEEKLY ? 'They are replaced every week, and each one carries its date.' : 'Each one carries its date.'}</p>
     <ul class="files">
       <li><a href="/places.csv">places.csv</a><span class="muted">Every patch: size, dates, licence class, nearest town, district and location. Opens in Excel or Google Sheets.</span></li>
       <li><a href="/places.geojson">places.geojson</a><span class="muted">The same, as map points, with links to the before and after pictures. Opens in QGIS or geojson.io.</span></li>
