@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import LabelKey from '../components/LabelKey.astro';
 import PlaceRow from '../components/PlaceRow.astro';
 import { active, coverage, hasPair, summary, tiles } from '../lib/data';
 import { district, longDate, num } from '../lib/format';
@@ -40,6 +41,10 @@ const withoutPic = active.find((p) => !hasPair(p));
       </button>
       <h2 class="fh">Filter the places</h2>
       <form class="filters" id="filters" data-filters hidden>
+        <label>Town or village
+          <input name="town" list="town-options" autocomplete="off" spellcheck="false" placeholder="Type a name" data-town />
+          <datalist id="town-options" data-town-options></datalist>
+        </label>
         <label>Licence on the land
           <select name="licence">
             <option value="">Any licence or none</option>
@@ -111,6 +116,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     <section class="listcol" aria-labelledby="list-h">
       <h2 id="list-h" data-list-h>Largest first</h2>
       <p class="muted small"><span data-list-note>The {Math.min(LIST, active.length)} largest of {num(active.length)} patches.</span> <a href="/places.csv">Download all of them</a>.</p>
+      <LabelKey />
       <ul class="list" data-list data-date={summary?.data_date}>{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
       <button class="btn" type="button" data-more hidden={active.length <= LIST}>Show {LIST} more</button>
       {withPic && <template data-row="pic"><PlaceRow place={withPic} /></template>}
@@ -164,6 +170,23 @@ const withoutPic = active.find((p) => !hasPair(p));
       },
     });
     m.setFilter('places', mapFilter);
+    m.addSource('town', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    m.addLayer({ id: 'town', type: 'line', source: 'town', paint: { 'line-color': css('--ink'), 'line-width': 2, 'line-dasharray': [2, 1.5] } });
+    showTown(m);
+  }
+
+  // The chosen town's 1 km ring, and the map moved to it
+  function showTown(m: MLMap) {
+    const src = m.getSource('town') as GeoJSONSource | undefined;
+    if (!src) return;
+    if (!town) { src.setData({ type: 'FeatureCollection', features: [] }); return; }
+    const dLat = 1000 / 111320, dLon = dLat / Math.cos((town.lat * Math.PI) / 180);
+    const ring = Array.from({ length: 65 }, (_, i) => {
+      const a = (i / 64) * 2 * Math.PI;
+      return [town!.lon + dLon * Math.cos(a), town!.lat + dLat * Math.sin(a)];
+    });
+    src.setData({ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [ring] } });
+    m.fitBounds([[town.lon - dLon * 1.6, town.lat - dLat * 1.6], [town.lon + dLon * 1.6, town.lat + dLat * 1.6]], { duration: still() ? 0 : 600 });
   }
 
   let picked: string | null = null;
@@ -351,6 +374,21 @@ const withoutPic = active.find((p) => !hasPair(p));
   // The first page of the list is written at build time; the full list loads only when it is needed
   let ready = false;
 
+  type Town = { key: string; ids: Set<string>; lat: number; lon: number };
+  let towns: Promise<Map<string, Town>> | null = null;
+  let town: Town | null = null;
+  const loadTowns = () => (towns ??= fetch('/towns.json').then((r) => r.json()).then((rows: [string, string | null, number, number, string[], number, number][]) =>
+    new Map(rows.map(([name, dist, , , ids, lat, lon]) => {
+      const key = dist ? `${name} (${dist})` : name;
+      return [key, { key, ids: new Set(ids), lat, lon }];
+    }))));
+  const townInput = document.querySelector<HTMLInputElement>('[data-town]')!;
+  townInput.addEventListener('focus', async () => {
+    const options = document.querySelector('[data-town-options]')!;
+    if (options.childElementCount) return;
+    options.replaceChildren(...[...(await loadTowns()).keys()].map((k) => Object.assign(document.createElement('option'), { value: k })));
+  }, { once: true });
+
   const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
 
   function wanted() {
@@ -358,11 +396,12 @@ const withoutPic = active.find((p) => !hasPair(p));
     const get = (k: string) => String(f.get(k) ?? '');
     const days = Number(get('since'));
     const cutoff = days ? new Date(Date.parse(`${list.dataset.date}T00:00:00Z`) - days * 864e5).toISOString().slice(0, 10) : '';
-    return { licence: get('licence'), district: get('district'), cutoff, min: Number(get('min')) || 0, pics: get('pics') === '1', sort: get('sort') };
+    return { town: get('town').trim(), licence: get('licence'), district: get('district'), cutoff, min: Number(get('min')) || 0, pics: get('pics') === '1', sort: get('sort') };
   }
   type Wanted = ReturnType<typeof wanted>;
 
-  const matches = (w: Wanted) => (p: Props) => (!w.licence || LICENCES[w.licence].includes(p.licence))
+  const matches = (w: Wanted) => (p: Props) => (!w.town || !!town?.ids.has(p.id))
+    && (!w.licence || LICENCES[w.licence].includes(p.licence))
     && (!w.district || p.district === w.district)
     && (!w.cutoff || p.first_seen >= w.cutoff)
     && p.ha >= w.min
@@ -370,6 +409,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
   function expression(w: Wanted) {
     const all: any[] = ['all'];
+    if (w.town) all.push(['in', ['get', 'id'], ['literal', town ? [...town.ids] : []]]);
     if (w.licence) all.push(['in', ['get', 'licence'], ['literal', LICENCES[w.licence]]]);
     if (w.district) all.push(['==', ['get', 'district'], w.district]);
     if (w.cutoff) all.push(['>=', ['get', 'first_seen'], w.cutoff]);
@@ -421,6 +461,8 @@ const withoutPic = active.find((p) => !hasPair(p));
 
   async function apply() {
     const w = wanted();
+    town = w.town ? (await loadTowns()).get(w.town) ?? null : null;
+    if (map) showTown(map);
     const q = new URLSearchParams();
     for (const [k, v] of new FormData(form)) if (v) q.set(k, String(v));
     history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}${location.hash}`);
@@ -433,11 +475,13 @@ const withoutPic = active.find((p) => !hasPair(p));
       : (a, b) => b.ha - a.ha);
     const ha = shown.reduce((t, p) => t + p.ha, 0);
     const everything = shown.length === all.length;
-    count.textContent = everything
+    count.textContent = town && shown.length
+      ? `${fmt.format(shown.length)} ${shown.length === 1 ? 'patch reaches' : 'patches reach'} within 1 km of ${town.key}, ${fmt.format(Math.round(ha))} hectares. A big patch can reach the ring even when its dot sits outside it.`
+      : everything
       ? `Showing all ${fmt.format(all.length)} patches.`
       : shown.length
         ? `${fmt.format(shown.length)} of ${fmt.format(all.length)} patches match, ${fmt.format(Math.round(ha))} hectares in all.`
-        : 'No patches match. Try fewer filters.';
+        : w.town && !town ? 'No cleared land within 1 km of a place with that name. Pick a name from the list.' : 'No patches match. Try fewer filters.';
     mapCount.textContent = everything ? '' : `${fmt.format(shown.length)} shown.`;
     listHead.textContent = w.sort === 'new' ? 'Newest first' : 'Largest first';
     note.textContent = shown.length
@@ -562,7 +606,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     .filters { border: 1px solid var(--ink); border-top: 0; border-radius: 0 0 6px 6px; padding: 14px; }
   }
   .filters label { display: grid; gap: 4px; font-size: 0.9375rem; font-weight: 700; }
-  .filters select {
+  .filters select, .filters input[name="town"] {
     font: inherit; font-weight: 400; min-height: 44px; padding: 0 10px; width: 100%; min-width: 0;
     color: var(--ink); background: var(--paper); border: 1px solid var(--ink); border-radius: 6px;
   }

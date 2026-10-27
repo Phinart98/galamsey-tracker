@@ -1,16 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import Src from '../components/Src.astro';
 import { CONTACT_EMAIL } from '../lib/site';
 ---
 <Base title="About" description="Why the Galamsey Tracker exists and where to report illegal mining in Ghana.">
   <article class="wrap prose">
     <h1>About</h1>
-    <p>Galamsey is illegal small-scale gold mining. It strips forest, digs pits that fill with water and turns rivers brown with mud and mercury. Ghana's water utility has had to cut supply at treatment plants because the rivers are too dirty to treat.</p>
-    <p>The Galamsey Tracker shows where land is being cleared, week by week, using only free satellite data. Nobody has to visit a site or file a report for it to appear here. The aim is that anyone, from a reporter to a district officer to someone who lives nearby, can see the same evidence and check it.</p>
-    <p>It is an independent project, not connected to the government or any company.</p>
-
+    <p>Galamsey is gold mining without a licence. It strips forest, digs pits that fill with water and turns rivers brown with mud. In 2022 the Daboase water treatment plant on the River Pra, which supplies Sekondi-Takoradi, could run only about two hours a day because its intake was choked with silt, and the city had been on water rationing for three years.</p>
+    <p>The Galamsey Tracker shows where land is being cleared, week by week, using only free satellite data from NASA and the European Union's <Src id="copernicus">Copernicus programme</Src>. Nobody has to visit a site or file a report for it to appear here. The aim is that anyone, from a reporter to a district officer to someone who lives nearby, can see the same evidence and check it.</p>
+    <p>It is an independent project by an ordinary citizen who cares about the problem, not a scientist or a mining expert. It relies on data and methods published by NASA and the European Space Agency, and <a href="/method">explains how it works</a> so anyone can check it. It is not connected to the government or any company.</p>
     <h2>Report illegal mining</h2>
-    <p>This site cannot take reports or act on them. If you see illegal mining, you can report it to the Minerals Commission or to the National Anti-Illegal Mining Operations Secretariat, NAIMOS. You can also tell your District Assembly.</p>
+    <p>This site cannot take reports or act on them. If you see illegal mining, you can report it to the <Src id="minerals-commission">Minerals Commission</Src> or to the National Anti-Illegal Mining Operations Secretariat, NAIMOS. You can also tell your District Assembly.</p>
 
     {CONTACT_EMAIL && (
       <>

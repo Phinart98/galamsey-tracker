@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Pair from '../components/Pair.astro';
 import LicenceTag from '../components/LicenceTag.astro';
+import LabelKey from '../components/LabelKey.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
 import { doorstep, summary, townsNear, trend, water, where } from '../lib/data';
@@ -52,6 +53,7 @@ const total = summary?.total_ha ?? 0;
 
     {lead && (
       <section class="doorstep" aria-label="Towns and villages with the most cleared land nearby">
+        <LabelKey galamsey />
         <ul class="villages">
           {villages.map(({ town, place: p }) => {
             const a = srcsets(p.chips.after), b = srcsets(p.chips.before);
@@ -80,7 +82,7 @@ const total = summary?.total_ha ?? 0;
         </ul>
         <p class="note">
           Each picture is the largest cleared patch within 1 km, in the latest clear satellite picture. Tap it to compare with before.
-          The label is the licence on that patch. Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.
+          Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.
         </p>
       </section>
     )}
@@ -135,7 +137,7 @@ const total = summary?.total_ha ?? 0;
         <h2 id="time">Clearing over time</h2>
         {/* No year-on-year sentence until a change is checked by eye (spike log s20, s24) */}
         <p class="intro">
-          Each point is the land cleared in the 12 months before it. NASA confirms clearing weeks after it first sees it, so the most recent months still rise.
+          Each point is the land cleared in the 12 months before that date. NASA confirms clearing only after seeing it several times, so the latest points are still filling in and usually go up.
           Some of the ups and downs are farm and fire clearing in the dry season, so we do not read a trend from this yet.
         </p>
         <TrendChart points={trend} />
@@ -179,13 +181,12 @@ const total = summary?.total_ha ?? 0;
 <script>
   const box = document.querySelector<HTMLElement>('[data-find]');
   if (box) {
-    type Row = [string, string | null, number, number, string];
+    type Row = [string, string | null, number, number, string[], number, number];
     const q = box.querySelector<HTMLInputElement>('[data-find-q]')!;
     const status = box.querySelector<HTMLElement>('[data-find-status]')!;
     const results = box.querySelector<HTMLUListElement>('[data-find-results]')!;
     const fmt = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 });
     const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    const tidy = (d: string) => d.replace(/\/(\w)/g, (_, c: string) => `/${c.toUpperCase()}`);
     let rows: Promise<Row[]> | null = null;
     const load = () => (rows ??= fetch('/towns.json').then((r) => r.json()));
     box.hidden = false;
@@ -203,15 +204,15 @@ const total = summary?.total_ha ?? 0;
       status.textContent = found.length
         ? ''
         : 'No cleared land found within 1 km of a place with that name. It may be outside the six areas we cover, or missing from OpenStreetMap.';
-      results.replaceChildren(...found.map(({ r: [name, dist, ha, n, id] }) => {
+      results.replaceChildren(...found.map(({ r: [name, dist, ha, n] }) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `/places/${id}`;
+        a.href = `/map?town=${encodeURIComponent(dist ? `${name} (${dist})` : name)}`;
         const b = document.createElement('strong');
         b.textContent = name;
-        a.append(b, dist ? `, ${tidy(dist)}` : '');
+        a.append(b, dist ? `, ${dist}` : '');
         const s = document.createElement('span');
-        s.textContent = `${fmt.format(ha)} ha within 1 km, ${n} ${n === 1 ? 'patch' : 'patches'}. The link shows the largest.`;
+        s.textContent = `${fmt.format(ha)} ha cleared within 1 km, in ${n} ${n === 1 ? 'patch' : 'patches'}. Opens them on the map.`;
         li.append(a, s);
         return li;
       }));
@@ -255,9 +256,10 @@ const total = summary?.total_ha ?? 0;
   .find .status { margin: 10px 0 0; max-width: 60ch; }
   .find .status:empty { display: none; }
   .results { list-style: none; margin: 8px 0 0; padding: 0; max-width: 640px; }
-  .results li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-  .results a { font-size: 1.0625rem; }
-  .results span { color: var(--muted); font-size: 0.9375rem; }
+  /* The rows are made by the search script, so scoped styles need :global to reach them */
+  .results :global(li) { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .results :global(a) { font-size: 1.0625rem; }
+  .results :global(span) { color: var(--muted); font-size: 0.9375rem; }
 
   .facts3 { display: grid; gap: 20px; }
   .facts3 p { margin: 0; max-width: 36ch; font-size: 1.0625rem; }

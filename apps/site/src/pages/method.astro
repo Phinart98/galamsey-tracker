@@ -1,23 +1,35 @@
 ---
 import Base from '../layouts/Base.astro';
-import { areaCheck, check, coverage, summary, smallCheck } from '../lib/data';
+import LicenceTag from '../components/LicenceTag.astro';
+import Src from '../components/Src.astro';
+import { areaCheck, coverage, summary } from '../lib/data';
 import { longDate } from '../lib/format';
 ---
-<Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what it can and cannot tell you, and what we tried that did not work.">
+<Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
   <article class="wrap prose">
     <h1>How we know</h1>
 
-    <p>Five satellites photograph Ghana's southern gold belt. Two are American: Landsat 8 and Landsat 9, run by NASA and the US Geological Survey. Three are European: Sentinel-2A, 2B and 2C, run by the European Space Agency for the European Union's Copernicus programme.</p>
-    <p>NASA puts their pictures together into one series. A NASA project called OPERA then compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, OPERA marks it as land that lost its plant cover.</p>
+    <p>Five satellites photograph Ghana's southern gold belt. Two are American: <Src id="landsat">Landsat 8 and Landsat 9</Src>, run by NASA and the US Geological Survey. Three are European: <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src>, run by the European Space Agency for the European Union's <Src id="copernicus">Copernicus programme</Src>.</p>
+    <p>NASA <Src id="hls">puts their pictures together into one series</Src>. A NASA project called <Src id="opera-project">OPERA</Src> then compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, <Src id="opera-dist-alert">OPERA marks it as land that lost its plant cover</Src>.</p>
     <p>With five satellites passing over, the same spot gets photographed about every three days. In the rainy season, from June to September, clouds often hide the ground for weeks, so there are fewer clear pictures.</p>
     <p>Every Monday we collect those marks for the last 12 months. Where marked spots touch and add up to at least 1 hectare, about 1.4 football pitches, we call that a patch.</p>
     <p>For each patch we do three more things.</p>
     <ul>
-      <li>We check it against the Minerals Commission's public register of licences, to see what kind of licence, if any, covers that land.</li>
+      <li>We check it against the <Src id="minerals-commission">Minerals Commission</Src>'s <Src id="minerals-commission-cadastre">public register of licences</Src>, to see what kind of licence, if any, covers that land.</li>
       <li>We name it after the nearest town or village and its district.</li>
       <li>For the larger patches, we find a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself.</li>
     </ul>
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
+
+    <h2 id="licences">What the licence labels mean</h2>
+    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land{summary && <>, checked on {longDate(summary.data_date)}</>}. We never name licence holders.</p>
+    <dl class="labels">
+      <dt><LicenceTag licence="no licence" /></dt><dd>The register shows no mining licence on this land.</dd>
+      <dt><LicenceTag licence="prospecting only" /></dt><dd>The only licence here is for prospecting. It lets a company explore for gold, but not mine it.</dd>
+      <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining.</dd>
+      <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine. Some clearing here is the licensed mine itself.</dd>
+    </dl>
+    <p>Mining for gold without a licence is illegal in Ghana. That is what people call galamsey. So when a place shows signs of mining in the pictures and the register shows no licence to mine there, that is what galamsey looks like. We still leave the final judgement to you, because the register can be out of date and a few cleared patches are farms or roads.</p>
 
     <h2 id="mining">Is it all mining?</h2>
     <p>Not all of it, but most. In the pictures, mining for gold usually looks like this:</p>
@@ -28,26 +40,24 @@ import { longDate } from '../lib/format';
       <li>Often along a river or stream, which may turn brown downstream</li>
     </ul>
     <p>Other clearing looks different. Farms are usually neat blocks that turn green again within months. Building sites sit at the edge of towns, with straight roads and roofs.</p>
-    <p>To measure how much of the cleared land is mining, we picked {areaCheck.checked} patches at random, with bigger patches more likely to be picked, so the result counts land, not patches. Half were first seen in the dry season and half in the rainy season. Looking at each by eye, about {Math.round(areaCheck.share * 100)}% of the cleared land showed signs of mining. With so few patches the true share could be anywhere from about {Math.round(areaCheck.low * 100)}% to {Math.round(areaCheck.high * 100)}%. In the rainy season more of the new clearing was farm fields and new roads. Mining here includes the big licensed mines, which the licence label on each place tells apart.</p>
-    {check.patches > 0 && <p>Earlier, we looked at {check.patches} patches by eye, in before and after pictures: some of the largest and a random sample of the rest. {check.mining} of them showed signs of mining.{check.patches > check.mining && ' The others were hidden by cloud, or looked like farms or building sites.'} We repeat this check on a new sample before we add a new area, because at the edges of the gold belt more of the clearing is farming.</p>}
-    <p id="small-patches">Small, new patches are harder to judge. We also looked at {smallCheck.checked} patches picked at random from those under 3 hectares and first seen in the last six months. {smallCheck.mining} showed signs of mining and {smallCheck.farms} looked like farm fields. For the other {smallCheck.unclear} we could not tell: cloud hid some, and some were long cleared strips that could be mining along a river or a new road. So the share that is mining is lower for small, new patches than for large ones.</p>
+    <p>To see how much of the cleared land is mining, we picked {areaCheck.checked} patches at random, with bigger patches more likely to be picked, and looked at each one. About {Math.round(areaCheck.share * 100)}% of the cleared land showed signs of mining. With so few patches, the true share could be anywhere from about {Math.round(areaCheck.low * 100)}% to {Math.round(areaCheck.high * 100)}%. Small, new patches are more often farm fields or new roads.</p>
 
-    <h2>How we compare years</h2>
-    <p>Each month we add up the land cleared over the 12 months before, measured on the same day each month. That way each total can be compared fairly with the one a year earlier.</p>
-    <p>NASA confirms clearing only after it has seen the same spot clear several times, which can take weeks, or months in the rainy season. So we check each monthly total again two and four months later. Until then it is marked as still being confirmed, and it usually goes up.</p>
+    <h2>Clearing over time</h2>
+    <p>Each point on the chart on the home page is the land cleared in the 12 months before that date.</p>
+    <p>NASA only confirms clearing after seeing the same spot cleared several times. That can take weeks, or months in the rainy season. So the latest points are still filling in and usually go up. We count them again as NASA confirms more.</p>
 
     <h2 id="covers">What it covers</h2>
-    <p>The tracker does not cover all of Ghana yet. We add areas one at a time, each after checking a sample of its patches by eye. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>
+    <p>The tracker does not cover all of Ghana yet. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>
     <ul>
       {coverage.map((a) => <li>{a.charAt(0).toUpperCase() + a.slice(1)}</li>)}
     </ul>
-    <p>Within those areas we only count clearing in the forest zone, where the gold belts are. When we checked clearing north of the forest, in the Afram Plains, and on the coastal plain near Kasoa and Winneba, almost none of it was mining. It was farms, burnt bush, building sites and lake shore left bare when Lake Volta fell.</p>
-    <p>Within the forest zone, the tracker misses:</p>
+    <p>Within those areas we only count clearing in the forest zone, where the gold is. When we looked at clearing north of the forest, in the Afram Plains, and on the coastal plain near Kasoa and Winneba, almost none of it was mining. It was mostly farms, burnt bush and building sites.</p>
+    <p>The tracker misses:</p>
     <ul>
       <li>Clearing smaller than 1 hectare</li>
       <li>Places hidden by cloud in every picture for a whole year</li>
-      <li>Mining on rivers, such as dredging from boats, because it removes no plants</li>
-      <li>Clearing that started more than 12 months ago, though new clearing at its edges is counted</li>
+      <li>Mining on rivers, such as dredging from boats, because it removes no plants. We are still looking for ways to spot more signs of galamsey like this.</li>
+      <li>Old sites that stopped growing more than 12 months ago. A site that is still growing stays on the map, because its new edges are counted.</li>
     </ul>
     {summary && <p>Latest data: {longDate(summary.data_date)}.</p>}
 
@@ -61,13 +71,14 @@ import { longDate } from '../lib/format';
 
     <h2>The technical details</h2>
     <dl class="facts">
-      <dt>Satellites</dt><dd>Landsat 8 and 9 (NASA and USGS) and Sentinel-2A, 2B and 2C (ESA, Copernicus), combined by NASA as Harmonized Landsat and Sentinel-2 (HLS). The before and after pictures are Sentinel-2 only.</dd>
-      <dt>Clearing data</dt><dd>NASA OPERA DIST-ALERT-HLS version 1, 30 metre pixels, Harmonized Landsat and Sentinel-2. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
+      <dt>Satellites</dt><dd><Src id="landsat">Landsat 8 and 9</Src> (NASA and USGS) and <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src> (ESA, Copernicus), combined by NASA as <Src id="hls">Harmonized Landsat and Sentinel-2 (HLS)</Src>. The before and after pictures are Sentinel-2 only.</dd>
+      <dt>Clearing data</dt><dd><Src id="opera-dist-alert">NASA OPERA DIST-ALERT-HLS version 1</Src>, 30 metre pixels. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
-      <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests ecoregion of RESOLVE Ecoregions 2017. This leaves out the forest-savanna mosaic and coastal savanna, about 4% of the cleared land.</dd>
-      <dt>Licences</dt><dd>Active licences from the Minerals Commission cadastre. A patch takes the licence class that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
-      <dt>Names</dt><dd>Nearest OpenStreetMap town within 15 km or village within 8 km. Districts from geoBoundaries.</dd>
-      <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from Earth Search. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
+      <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests area of <Src id="resolve-ecoregions-2017">RESOLVE Ecoregions 2017</Src>.</dd>
+      <dt>Licences</dt><dd>Active licences from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>. A patch takes the licence that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
+      <dt>Names</dt><dd>Nearest <Src id="openstreetmap">OpenStreetMap</Src> town within 15 km or village within 8 km. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
+      <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from <Src id="sentinel2-earth-search">Earth Search</Src>. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
+      <dt>Rivers</dt><dd>Water plant catchments and rivers from HydroSHEDS: <Src id="hydrobasins">HydroBASINS</Src> and <Src id="hydrorivers">HydroRIVERS</Src>.</dd>
       <dt>Place references</dt><dd>Each patch keeps a permanent reference made from the month it was first seen and its location. When two patches grow into one, the older reference is kept and the other redirects to it.</dd>
     </dl>
   </article>
@@ -80,5 +91,8 @@ import { longDate } from '../lib/format';
   p, li { margin: 0 0 14px; }
   ul { padding-left: 1.2em; }
   .facts { gap: 12px 20px; }
+  .labels { display: grid; grid-template-columns: max-content 1fr; gap: 10px 16px; margin: 0 0 18px; align-items: baseline; }
+  .labels dd { margin: 0; }
+  @media (max-width: 560px) { .labels { grid-template-columns: 1fr; gap: 4px; } .labels dd { margin-bottom: 10px; } }
   @media (max-width: 560px) { .facts { grid-template-columns: 1fr; gap: 2px; } .facts dd { margin-bottom: 12px; } }
 </style>

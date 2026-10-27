@@ -11,7 +11,8 @@
    "licence": "NASA open data, no restrictions",
    "used_for": "Every cleared-land figure: patches, hectares, first-seen dates, trend",
    "status": "live-data",
-   "todo": "Link the product specification document that defines VEG-DIST-STATUS codes 6 and 8 and VEG-DIST-DATE"
+   "todo": "Link the product specification document that defines VEG-DIST-STATUS codes 6 and 8 and VEG-DIST-DATE",
+   "link": "https://lpdaac.usgs.gov/products/opera_l3_dist-alert-hls_v1v001/"
   },
   {
    "id": "opera-dist-ann",
@@ -43,7 +44,8 @@
    "publisher": "NASA",
    "url": "https://www.earthdata.nasa.gov/data/projects/nsite/solutions/hls",
    "used_for": "Names the combined Landsat and Sentinel-2 series on /method",
-   "status": "cited"
+   "status": "cited",
+   "link": "https://hls.gsfc.nasa.gov/"
   },
   {
    "id": "sentinel2-earth-search",
@@ -54,7 +56,8 @@
    "licence": "Copernicus Sentinel data terms; credit 'Contains modified Copernicus Sentinel data [year]'",
    "used_for": "All before/after pictures and share cards",
    "status": "live-data",
-   "todo": "Confirm the exact Copernicus attribution wording (open question in docs/research)"
+   "todo": "Confirm the exact Copernicus attribution wording (open question in docs/research)",
+   "link": "https://element84.com/earth-search/"
   },
   {
    "id": "sentinel2-scl",
@@ -111,7 +114,8 @@
    "licence": "Not stated. We publish only the derived licence class per patch, never boundaries or holder names",
    "used_for": "Licence class of every patch; the 'no licence to mine' share",
    "status": "live-data",
-   "todo": "Decide whether to ask the Minerals Commission about reuse"
+   "todo": "Decide whether to ask the Minerals Commission about reuse",
+   "link": "https://ghana.revenuedev.org/"
   },
   {
    "id": "geoboundaries-gha-adm2",
@@ -121,7 +125,8 @@
    "licence": "CC BY 4.0",
    "used_for": "District of every patch",
    "status": "live-data",
-   "todo": "Check the district count against Ghana's current 261 districts"
+   "todo": "Check the district count against Ghana's current 261 districts",
+   "link": "https://www.geoboundaries.org/"
   },
   {
    "id": "openstreetmap",
@@ -131,7 +136,8 @@
    "access": "https://overpass-api.de/api/interpreter",
    "licence": "ODbL",
    "used_for": "Nearest town or village of every patch; water treatment plant locations (water spike)",
-   "status": "live-data"
+   "status": "live-data",
+   "link": "https://www.openstreetmap.org/copyright"
   },
   {
    "id": "hydrobasins",
@@ -142,7 +148,8 @@
    "used_for": "Hectares cleared upstream of water treatment plants (spike log s16, s23; pipeline/water_plants.geojson) and the catchment on the home page map",
    "status": "checked",
    "checked": "2026-10-25 (licence summary on product page)",
-   "todo": "Read the full licence agreement and confirm the citation"
+   "todo": "Read the full licence agreement and confirm the citation",
+   "link": "https://www.hydrosheds.org/products/hydrobasins"
   },
   {
    "id": "hydrorivers",
@@ -153,7 +160,8 @@
    "used_for": "Rivers draining at least 800 km2 on the home page water map (spike/water_map.py)",
    "status": "checked",
    "checked": "2026-10-25 (downloaded)",
-   "todo": "Read the full licence agreement with HydroBASINS"
+   "todo": "Read the full licence agreement with HydroBASINS",
+   "link": "https://www.hydrosheds.org/products/hydrorivers"
   },
   {
    "id": "openfreemap",
@@ -162,7 +170,8 @@
    "url": "https://openfreemap.org/",
    "licence": "Free, attribution to OpenStreetMap and OpenFreeMap",
    "used_for": "Background map on /map",
-   "status": "live-data"
+   "status": "live-data",
+   "link": "https://openfreemap.org/"
   },
   {
    "id": "worldpop",
@@ -253,7 +262,8 @@
    "licence": "CC BY 4.0",
    "used_for": "Forest zone mask: only clearing in the Eastern Guinean forests ecoregion counts",
    "status": "live-data",
-   "todo": "Confirm the CC BY 4.0 wording on the RESOLVE page"
+   "todo": "Confirm the CC BY 4.0 wording on the RESOLVE page",
+   "link": "https://ecoregions.appspot.com/"
   },
   {
    "id": "google-maps-earth-links",
@@ -264,6 +274,61 @@
    "used_for": "'See it closer' links on place pages, the picture viewer and the map card",
    "status": "checked",
    "checked": "2026-10-25 (Maps URLs format is documented; the Earth web link format is not documented and may change)"
+  },
+  {
+   "id": "opera-project",
+   "title": "OPERA (Observational Products for End-Users from Remote Sensing Analysis)",
+   "publisher": "NASA Jet Propulsion Laboratory",
+   "url": "https://www.jpl.nasa.gov/go/opera",
+   "link": "https://www.jpl.nasa.gov/go/opera",
+   "licence": "Project page",
+   "used_for": "Linked where the site names OPERA",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
+  },
+  {
+   "id": "landsat",
+   "title": "Landsat 8 and 9",
+   "publisher": "NASA and USGS",
+   "url": "https://landsat.gsfc.nasa.gov/",
+   "link": "https://landsat.gsfc.nasa.gov/",
+   "licence": "Mission page",
+   "used_for": "Linked where the site names the Landsat satellites",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
+  },
+  {
+   "id": "sentinel2",
+   "title": "Sentinel-2 mission",
+   "publisher": "European Space Agency, for the EU Copernicus programme",
+   "url": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2",
+   "link": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2",
+   "licence": "Mission page",
+   "used_for": "Linked where the site names Sentinel-2",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
+  },
+  {
+   "id": "copernicus",
+   "title": "Copernicus, the EU's Earth observation programme",
+   "publisher": "European Union",
+   "url": "https://www.copernicus.eu/en",
+   "link": "https://www.copernicus.eu/en",
+   "licence": "Programme page",
+   "used_for": "Linked where the site names Copernicus",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
+  },
+  {
+   "id": "minerals-commission",
+   "title": "Minerals Commission of Ghana",
+   "publisher": "Government of Ghana",
+   "url": "https://www.mincom.gov.gh/",
+   "link": "https://www.mincom.gov.gh/",
+   "licence": "Official site",
+   "used_for": "Linked where the site names the Minerals Commission",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
   }
  ],
  "claims": [
@@ -425,19 +490,20 @@
   },
   {
    "id": "water-shutdowns",
-   "text": "Ghana's water utility has had to cut supply at treatment plants because rivers were too dirty to treat",
-   "where": "/about (live in the current build)",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Find dated reports (Ghana Water Ltd statements or major outlets) or remove"
+   "text": "Daboase could run only about two hours a day in 2022 because its intake was silted; Sekondi-Takoradi had been on rationing for three years",
+   "where": "/about",
+   "evidence": [
+    "gwcl-daboase-news"
+   ],
+   "status": "verified"
   },
   {
    "id": "mercury",
    "text": "Galamsey turns rivers brown with mud and mercury",
    "where": "/about (live in the current build)",
    "evidence": [],
-   "status": "unverified",
-   "todo": "Cite a study of mercury in Ghanaian rivers or remove 'mercury'"
+   "status": "removed",
+   "todo": "Removed from /about on 2026-10-27; source it before using again"
   },
   {
    "id": "reporting-bodies",

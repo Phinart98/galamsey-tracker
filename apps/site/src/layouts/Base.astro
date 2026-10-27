@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import fontUrl from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url';
 import Viewer from '../components/Viewer.astro';
+import Src from '../components/Src.astro';
 import { lastSuccess, summary, STALE_DAYS } from '../lib/data';
 import { longDate } from '../lib/format';
 import { CONTACT_EMAIL } from '../lib/site';
@@ -94,7 +95,7 @@ const staleAtBuild = lastSuccess ? Date.now() - Date.parse(lastSuccess) > STALE_
     <div class="wrap">
       <p>
         {summary && <>Data up to {longDate(summary.data_date)}. Updated every Monday. </>}
-        Built from NASA OPERA land disturbance data and Copernicus Sentinel-2 images. Contains modified Copernicus Sentinel data.
+        Built from <Src id="opera-dist-alert">NASA OPERA land disturbance data</Src> and <Src id="sentinel2">Copernicus Sentinel-2</Src> images. Contains modified Copernicus Sentinel data. Licence labels from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>.
       </p>
       <nav class="foot-nav" aria-label="Footer">
         {nav.map((n) => <a href={n.href}>{n.label}</a>)}

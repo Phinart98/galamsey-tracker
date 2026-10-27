@@ -1,0 +1,19 @@
+---
+// Friends read the licence labels as our verdict. They are the Minerals Commission's register, so say so wherever they appear.
+import Src from './Src.astro';
+import { summary } from '../lib/data';
+import { longDate } from '../lib/format';
+
+interface Props { galamsey?: boolean }
+const { galamsey = false } = Astro.props;
+---
+<p class="labelkey">
+  The labels show what the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src> says about the land{summary && <>, checked {longDate(summary.data_date)}</>}.
+  {galamsey && 'Mining without a licence is illegal in Ghana, and that is what galamsey is. '}
+  <a href="/method#licences">What the labels mean</a>
+</p>
+
+<style>
+  .labelkey { margin: 0; font-size: 0.9375rem; color: var(--muted); max-width: 70ch; }
+  .labelkey :global(a) { color: var(--ink); }
+</style>

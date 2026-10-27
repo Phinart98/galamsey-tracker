@@ -1,0 +1,6 @@
+---
+import { sourceLink } from '../lib/sources';
+
+interface Props { id: string }
+---
+<a href={sourceLink(Astro.props.id)} rel="noopener"><slot /></a>

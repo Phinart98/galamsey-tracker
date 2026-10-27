@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Pair from '../../components/Pair.astro';
 import LicenceTag from '../../components/LicenceTag.astro';
+import LabelKey from '../../components/LabelKey.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
 import { aliases, hasPair, placeById, places, summary, type Place } from '../../lib/data';
@@ -44,8 +45,10 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
           {!place.active && (
             <p class="note">This patch is no longer in the last 12 months of clearing. The page stays so links to it keep working.</p>
           )}
+          <h2 class="lic-h">Licence on this land</h2>
           <p><LicenceTag licence={place.licence} /></p>
           <p>{LICENCE_SENTENCE[place.licence]}</p>
+          <LabelKey galamsey />
           <dl class="facts">
             <dt>Size</dt><dd>{hectares(place.ha)}</dd>
             <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
@@ -89,6 +92,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
   .grid { display: grid; gap: 24px; }
   @media (min-width: 960px) { .grid { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
   .about p { margin: 0 0 16px; max-width: 50ch; }
+  .lic-h { font-size: 1.0625rem; margin: 0 0 8px; }
   .facts { margin: 8px 0 24px; }
   .google { margin-top: 28px; }
   .google h2 { font-size: 1.0625rem; margin: 0 0 10px; }

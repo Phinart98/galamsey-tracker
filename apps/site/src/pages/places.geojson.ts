@@ -1,4 +1,4 @@
-import { active, hasPair } from '../lib/data';
+import { active, hasPair, summary } from '../lib/data';
 import { chipUrl, noPicture, placeName } from '../lib/format';
 
 // Absolute image links, so the file still works after someone downloads it
@@ -7,6 +7,7 @@ const abs = (rel: string) => new URL(chipUrl(rel), import.meta.env.SITE).href;
 export function GET() {
   return new Response(JSON.stringify({
     type: 'FeatureCollection',
+    data_date: summary?.data_date ?? null,
     features: active.map((p) => ({
       type: 'Feature',
       geometry: { type: 'Point', coordinates: [p.lon, p.lat] },

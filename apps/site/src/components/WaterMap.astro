@@ -1,5 +1,7 @@
 ---
 // The Pra catchment, its rivers and the clearing in it, drawn at build time as plain SVG (no map library).
+import fs from 'node:fs';
+import path from 'node:path';
 import base from '../data/water-map.json';
 import { active } from '../lib/data';
 import { num } from '../lib/format';
@@ -56,17 +58,35 @@ const rivers = base.rivers.map((r) => ({
   pra: r.pra,
 }));
 const cities = [
-  { name: 'Kumasi', lon: -1.62, lat: 6.69, anchor: 'start' },
-  { name: 'Sekondi-Takoradi', lon: -1.75, lat: 4.92, anchor: 'end' },
-  { name: 'Accra', lon: -0.2, lat: 5.56, anchor: 'end' },
+  { lon: -1.62, lat: 6.69 },
+  { lon: -1.75, lat: 4.92 },
 ];
 const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
+
+// The other plants' catchments, outlined so readers can see why Daboase stands out (pipeline/water_plants.geojson)
+type Plant = { properties: { plant: string; plant_lat: number; plant_lon: number }; geometry: { type: string; coordinates: any } };
+const plantsFile = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), '../../pipeline/water_plants.geojson'), 'utf8')) as { features: Plant[] };
+const others = plantsFile.features.filter((f) => f.properties.plant !== 'Daboase').map((f) => ({
+  name: f.properties.plant,
+  d: area((f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates) as Ring[][]),
+  x: x(f.properties.plant_lon), y: y(f.properties.plant_lat),
+}));
+// Hand-placed so nothing overlaps at phone width: Barekese and Owabi are 8 km apart and share one label,
+// and Weija's label names Accra because the two sit too close for separate labels
+const labels = [
+  { text: 'Kumasi', lon: -1.62, lat: 6.69, pos: 'right' },
+  { text: 'Sekondi-Takoradi', lon: -1.75, lat: 4.92, pos: 'left' },
+  { text: 'Barekese and Owabi', lon: -1.72, lat: 6.83, pos: 'right up' },
+  { text: 'Weija plant, Accra', lon: -0.337, lat: 5.581, pos: 'left up' },
+  { text: 'Kwanyako plant', lon: -0.619, lat: 5.3675, pos: 'left' },
+];
 ---
 <figure class="watermap">
   <div class="frame">
   <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-labelledby="wm-title">
-    <title id="wm-title">Map of southern Ghana. The Pra and its tributaries drain a large area from north of Kumasi down to the Daboase treatment plant near the coast. {num(praHa)} hectares of the cleared land lie in that area.</title>
+    <title id="wm-title">Map of southern Ghana. The Pra and its tributaries drain a large area from north of Kumasi down to the Daboase treatment plant near the coast. {num(praHa)} hectares of the cleared land lie in that area. The smaller areas that drain to the Barekese, Owabi, Weija and Kwanyako plants are outlined and hold little cleared land.</title>
     <path class="land" d={area(base.land as Ring[][])} />
+    {others.map((o) => <path class="other" d={o.d} />)}
     <path class="pra" d={area(base.pra as Ring[][])} />
     <g class="rivers" fill="none" stroke-linecap="round" stroke-linejoin="round">
       {rivers.map((r) => <path d={r.d} stroke-width={r.w} class:list={{ main: r.pra }} />)}
@@ -74,21 +94,24 @@ const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
     <path class="clearing" d={squaresPath(false)} />
     <path class="clearing in" d={squaresPath(true)} />
     {cities.map((c) => <circle class="city" cx={x(c.lon)} cy={y(c.lat)} r="3.5" />)}
+    {others.map((o) => <rect class="plant small" x={o.x - 5} y={o.y - 5} width="10" height="10" />)}
     <rect class="plant" x={plant.x - 7} y={plant.y - 7} width="14" height="14" />
   </svg>
   <div class="labels" aria-hidden="true">
-    {cities.map((c) => (
-      <span class:list={['label', c.anchor]} style={`left:${(x(c.lon) / WIDTH) * 100}%;top:${(y(c.lat) / HEIGHT) * 100}%`}>{c.name}</span>
+    {labels.map((l) => (
+      <span class:list={['label', l.pos]} style={`left:${(x(l.lon) / WIDTH) * 100}%;top:${(y(l.lat) / HEIGHT) * 100}%`}>{l.text}</span>
     ))}
-    <span class="label start strong" style={`left:${(plant.x / WIDTH) * 100}%;top:${(plant.y / HEIGHT) * 100}%`}>Daboase water plant</span>
+    <span class="label right strong" style={`left:${(plant.x / WIDTH) * 100}%;top:${(plant.y / HEIGHT) * 100}%`}>Daboase water plant</span>
   </div>
   </div>
   <figcaption>
     <ul class="key">
       <li><span class="sw pra-sw"></span>Land that drains to the Daboase plant</li>
       <li><span class="sw in-sw"></span>Cleared land there (bigger square, more land)</li>
-      <li><span class="sw out-sw"></span>Cleared land that drains elsewhere</li>
+      <li><span class="sw other-sw"></span>Land that drains to one of the other water plants</li>
+      <li><span class="sw out-sw"></span>Cleared land that drains to other rivers, not the Pra</li>
     </ul>
+    <p class="why">Daboase stands out because most of the cleared land we cover is in the Pra basin. The land that drains to the other plants holds little of it.</p>
     <p class="credit">{base.credit} Only the {num(active.length)} patches in the six areas we cover are shown.</p>
   </figcaption>
 </figure>
@@ -98,6 +121,7 @@ const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
   svg { display: block; width: 100%; height: auto; background: var(--sea); border: 1px solid var(--line); }
   .land { fill: var(--paper); stroke: var(--muted); stroke-width: 0.8; }
   .pra { fill: var(--river-wash); stroke: var(--river); stroke-width: 1.2; }
+  .other { fill: none; stroke: var(--river); stroke-width: 1.4; stroke-dasharray: 5 3; }
   .rivers path { stroke: var(--river); opacity: 0.55; }
   .rivers path.main { opacity: 1; }
   .clearing { fill: var(--muted); }
@@ -105,12 +129,15 @@ const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
   .frame { position: relative; }
   .city { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
   .plant { fill: var(--ink); stroke: var(--paper); stroke-width: 2; }
+  .plant.small { stroke-width: 1.5; }
   .labels { position: absolute; inset: 0; pointer-events: none; }
   /* Labels are HTML so they stay readable at phone width, where the map is drawn at half size */
-  .label { position: absolute; transform: translate(10px, -50%); font-size: 0.875rem; font-weight: 700; line-height: 1.2; white-space: nowrap;
-           background: var(--paper); padding: 1px 5px; border-radius: 3px; }
-  .label.end { transform: translate(calc(-100% - 10px), -50%); }
-  .label.strong { background: var(--ink); color: var(--paper); transform: translate(14px, -50%); }
+  .label { position: absolute; --dx: 10px; --dy: -50%; transform: translate(var(--dx), var(--dy)); font-size: 0.875rem; font-weight: 700;
+           line-height: 1.2; white-space: nowrap; background: var(--paper); padding: 1px 5px; border-radius: 3px; }
+  .label.left { --dx: calc(-100% - 10px); }
+  .label.up { --dy: calc(-100% - 6px); }
+  .label.down { --dy: 6px; }
+  .label.strong { background: var(--ink); color: var(--paper); --dx: 14px; }
   figcaption { margin-top: 12px; }
   .key { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 6px; font-size: 0.9375rem; }
   .key li { display: flex; align-items: center; gap: 10px; }
@@ -118,5 +145,7 @@ const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
   .pra-sw { background: var(--river-wash); border: 1.5px solid var(--river); }
   .in-sw { background: var(--signal); }
   .out-sw { background: var(--muted); }
+  .other-sw { border: 1.5px dashed var(--river); }
+  .why { margin: 0 0 8px; font-size: 0.9375rem; max-width: 60ch; }
   .credit { margin: 0; font-size: 0.8125rem; color: var(--muted); }
 </style>
