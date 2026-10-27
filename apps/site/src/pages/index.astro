@@ -81,7 +81,7 @@ const total = summary?.total_ha ?? 0;
           })}
         </ul>
         <p class="note">
-          Each picture is the largest cleared patch within 1 km, in the latest clear satellite picture. Tap it to compare with before.
+          Each picture shows one of the largest cleared patches within 1 km, in the latest clear satellite picture. Tap it to compare with before.
           Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.
         </p>
       </section>
@@ -116,7 +116,7 @@ const total = summary?.total_ha ?? 0;
           <h2 id="mud">Where the mud goes</h2>
           <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies in the land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
           <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years. Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
-          <h3>Every treatment plant downstream of the areas we cover</h3>
+          <h3>Five water treatment plants downstream of the areas we cover</h3>
           <ul class="plants">
             {water.map((w) => (
               <li>
@@ -126,7 +126,7 @@ const total = summary?.total_ha ?? 0;
               </li>
             ))}
           </ul>
-          <p class="muted small">Hectares cleared in the last 12 months in the land that drains to each plant. In September 2025 Ghana Water warned that mud in the Ayensu had pushed the Kwanyako plant past what it was built to treat.</p>
+          <p class="muted small">Hectares cleared in the last 12 months in the land that drains to each plant. Smaller water works on these rivers are not listed. In September 2025 Ghana Water warned that mud in the Ayensu had pushed the Kwanyako plant past what it was built to treat.</p>
         </div>
         <div class="look"><WaterMap praHa={pra.ha} /></div>
       </section>
@@ -138,7 +138,7 @@ const total = summary?.total_ha ?? 0;
         {/* No year-on-year sentence until a change is checked by eye (spike log s20, s24) */}
         <p class="intro">
           Each point is the land cleared in the 12 months before that date. NASA confirms clearing only after seeing it several times, so the latest points are still filling in and usually go up.
-          Some of the ups and downs are farm and fire clearing in the dry season, so we do not read a trend from this yet.
+          Some of the ups and downs may be farm and fire clearing in the dry season, so we do not read a trend from this yet.
         </p>
         <TrendChart points={trend} />
       </section>

@@ -329,6 +329,17 @@
    "used_for": "Linked where the site names the Minerals Commission",
    "status": "checked",
    "checked": "2026-10-27 (page loads)"
+  },
+  {
+   "id": "mlnr",
+   "title": "Ministry of Lands and Natural Resources, Ghana",
+   "publisher": "Government of Ghana",
+   "url": "https://mlnr.gov.gh/",
+   "link": "https://mlnr.gov.gh/",
+   "licence": "Official site",
+   "used_for": "/about: NAIMOS sits under this ministry",
+   "status": "checked",
+   "checked": "2026-10-27 (page loads)"
   }
  ],
  "claims": [
@@ -507,11 +518,14 @@
   },
   {
    "id": "reporting-bodies",
-   "text": "Report illegal mining to the Minerals Commission, NAIMOS or the District Assembly",
+   "text": "NAIMOS, under the Ministry of Lands and Natural Resources, leads the fight against illegal mining and has asked the public for information; we found no official reporting line we can confirm",
    "where": "/about (live in the current build)",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Confirm NAIMOS exists and how to contact each body"
+   "evidence": [
+    "naimos-2026",
+    "mlnr"
+   ],
+   "status": "checked",
+   "caveat": "Web search 2026-10-27 found no verified hotline; a number circulated in 2025 was reported to be private. Recheck before launch"
   },
   {
    "id": "coverage-areas",
@@ -614,7 +628,8 @@
     "gwcl-owabi-barekese-news"
    ],
    "status": "unverified",
-   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25 and shown; Owabi and Barekese (Kumasi) are listed without a town until sourced"
+   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25 and shown; Owabi and Barekese (Kumasi) are listed without a town until sourced",
+   "caveat": "The site lists five plants that supply big towns; smaller water works on the same rivers are not listed (fixed 'every treatment plant' wording 2026-10-27)."
   },
   {
    "id": "plant-silting",
