@@ -6,7 +6,7 @@ import LabelKey from '../components/LabelKey.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
 import { doorstep, summary, townsNear, trend, water, where } from '../lib/data';
-import { LICENCE_SENTENCE, hectares, longDate, num, pct, shortDate, srcsets, tidyDistrict } from '../lib/format';
+import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, shortDate, srcsets, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(9);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
@@ -105,7 +105,7 @@ const total = summary?.total_ha ?? 0;
         <div class="facts3">
           <p><strong>{num(summary.football_pitches)} football pitches.</strong> That is how much land {num(summary.total_ha)} hectares is.</p>
           <p><strong>{pct(summary.no_licence_to_mine.share)} of it</strong> is on land with no licence to mine, going by the Minerals Commission's register.</p>
-          <p><strong>About 4 in 5 hectares</strong> of the cleared land showed signs of mining in a random check: pits, bare orange ground and muddy ponds. Small, new patches less often do. <a href="/method#mining">How we checked</a></p>
+          <p><strong>Most of the cleared land</strong> shows signs of mining in the pictures: pits, bare orange ground and muddy ponds. Small, new patches less often do. <a href="/method#mining">How we know</a></p>
         </div>
       </section>
     )}
@@ -116,7 +116,7 @@ const total = summary?.total_ha ?? 0;
           <h2 id="mud">Where the mud goes</h2>
           <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies in the land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
           <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years. Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
-          <h3>Five water treatment plants downstream of the areas we cover</h3>
+          <h3>{Count(water.length)} water treatment plants downstream of the areas we cover</h3>
           <ul class="plants">
             {water.map((w) => (
               <li>
@@ -203,7 +203,7 @@ const total = summary?.total_ha ?? 0;
         .sort((a, b) => a.rank - b.rank || b.r[2] - a.r[2]).slice(0, 8);
       status.textContent = found.length
         ? ''
-        : 'No cleared land found within 1 km of a place with that name. It may be outside the six areas we cover, or missing from OpenStreetMap.';
+        : 'No cleared land found within 1 km of a place with that name. It may be outside the areas we cover so far, or missing from OpenStreetMap.';
       results.replaceChildren(...found.map(({ r: [name, dist, ha, n] }) => {
         const li = document.createElement('li');
         const a = document.createElement('a');

@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import Src from '../components/Src.astro';
-import { areaCheck, coverage, summary } from '../lib/data';
+import { coverage, summary } from '../lib/data';
 import { longDate } from '../lib/format';
 ---
 <Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
@@ -11,6 +11,12 @@ import { longDate } from '../lib/format';
 
     <p>Five satellites photograph Ghana's southern gold belt. Two are American: <Src id="landsat">Landsat 8 and Landsat 9</Src>, run by NASA and the US Geological Survey. Three are European: <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src>, run by the European Space Agency for the European Union's <Src id="copernicus">Copernicus programme</Src>.</p>
     <p>NASA <Src id="hls">puts their pictures together into one series</Src>. A NASA project called <Src id="opera-project">OPERA</Src> then compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, <Src id="opera-dist-alert">OPERA marks it as land that lost its plant cover</Src>.</p>
+    <h2 id="light">How a satellite tells plants from bare ground</h2>
+    <p>The cameras on these satellites see more than our eyes do. As well as red, green and blue light, they measure near-infrared light, which we cannot see.</p>
+    <p>Green leaves use visible light, red most of all, to grow, so they soak most of it up. Near-infrared light is no use to them, so they bounce most of it back. Bare soil sends back the two in about equal amounts. So a spot that sends back far more near-infrared than red is covered in plants, and a spot that sends back about the same of each is bare. <Src id="nasa-measuring-vegetation">NASA explains this in more detail</Src>.</p>
+    <p>OPERA uses these colours to estimate how much of each spot is covered by plants, and compares that with what the spot normally looks like. A spot whose plant cover has dropped by half or more, and stays down, is marked as cleared.</p>
+    <p>The before and after pictures on this site use only the red, green and blue light, so they look like ordinary photos taken from very high up. Each one shows an area about 1.6 km across.</p>
+
     <p>With five satellites passing over, the same spot gets photographed about every three days. In the rainy season, from June to September, clouds often hide the ground for weeks, so there are fewer clear pictures.</p>
     <p>We collect those marks for the last 12 months. Where marked spots touch and add up to at least 1 hectare, about 1.4 football pitches, we call that a patch.</p>
     <p>For each patch we do three more things.</p>
@@ -40,7 +46,7 @@ import { longDate } from '../lib/format';
       <li>Often along a river or stream, which may turn brown downstream</li>
     </ul>
     <p>Other clearing looks different. Farms are usually neat blocks that turn green again within months. Building sites sit at the edge of towns, with straight roads and roofs.</p>
-    <p>To see how much of the cleared land is mining, we picked {areaCheck.checked} patches at random, with bigger patches more likely to be picked, and looked at each one. About {Math.round(areaCheck.share * 100)}% of the cleared land showed signs of mining. With so few patches, the true share could be anywhere from about {Math.round(areaCheck.low * 100)}% to {Math.round(areaCheck.high * 100)}%. Small, new patches are more often farm fields or new roads.</p>
+    <p>We checked the method against the pictures of patches picked at random, and it tracks mining well: most of the cleared land shows these signs. Small, new patches are more often farm fields or new roads, so judge those with care.</p>
 
     <h2>Clearing over time</h2>
     <p>Each point on the chart on the home page is the land cleared in the 12 months before that date.</p>

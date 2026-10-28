@@ -28,7 +28,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
           <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
-          <><dt>Checked</dt><dd>About 4 in 5 hectares showed signs of mining in a random check. <a href="/method#mining">How we checked</a></dd></>
+          <dt>Mining</dt><dd>Most of the land shows signs of mining in the pictures. <a href="/method#mining">How we know</a></dd>
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
@@ -127,7 +127,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
 <script>
   import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
-  import { NO_PICTURE, googleMaps, type NoPicture } from '../lib/format';
+  import { LICENCE_SHORT, NO_PICTURE, googleMaps, hectares, longDate, num, shortDate, type NoPicture } from '../lib/format';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
@@ -146,14 +146,11 @@ const withoutPic = active.find((p) => !hasPair(p));
   };
   const style = () => `https://tiles.openfreemap.org/styles/${isDark() ? 'dark' : 'positron'}`;
   const local = (u: string) => (u.startsWith(site) ? u.slice(site.length) : u);
-  const long = (iso: string) => new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
   const ALARM = ['no licence', 'prospecting only'];
-  const LABEL: Record<string, string> = {
-    'no licence': 'No licence to mine', 'prospecting only': 'Prospecting licence only',
-    'small-scale licence': 'Small-scale mining licence', 'large-scale lease': 'Large-scale mining lease',
-  };
 
   function addData(m: MLMap) {
+    // A theme switch before the first load would otherwise add everything twice
+    if (m.getSource('places')) return;
     const [w, s, e, n] = box;
     m.addSource('area', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } } });
     m.addLayer({ id: 'area', type: 'line', source: 'area', paint: { 'line-color': css('--ink'), 'line-width': 1.5, 'line-dasharray': [3, 2] } });
@@ -176,16 +173,20 @@ const withoutPic = active.find((p) => !hasPair(p));
   }
 
   // The chosen town's 1 km ring, and the map moved to it
+  let framed: typeof town = null;
   function showTown(m: MLMap) {
     const src = m.getSource('town') as GeoJSONSource | undefined;
     if (!src) return;
-    if (!town) { src.setData({ type: 'FeatureCollection', features: [] }); return; }
+    if (!town) { framed = null; src.setData({ type: 'FeatureCollection', features: [] }); return; }
     const dLat = 1000 / 111320, dLon = dLat / Math.cos((town.lat * Math.PI) / 180);
     const ring = Array.from({ length: 65 }, (_, i) => {
       const a = (i / 64) * 2 * Math.PI;
       return [town!.lon + dLon * Math.cos(a), town!.lat + dLat * Math.sin(a)];
     });
     src.setData({ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [ring] } });
+    // Only move the map when the town changes, not on every filter change or theme switch
+    if (town === framed) return;
+    framed = town;
     m.fitBounds([[town.lon - dLon * 1.6, town.lat - dLat * 1.6], [town.lon + dLon * 1.6, town.lat + dLat * 1.6]], { duration: still() ? 0 : 600 });
   }
 
@@ -198,7 +199,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     map?.setPadding({ top: 0, left: 0, right: 0, bottom: 0 });
     picked = null;
     detail.hidden = true;
-    history.replaceState(null, '', location.pathname);
+    history.replaceState(null, '', location.pathname + location.search);
   }
 
   function pick(m: MLMap, f: GeoJSON.Feature<GeoJSON.Point>, zoom?: number) {
@@ -228,14 +229,14 @@ const withoutPic = active.find((p) => !hasPair(p));
         const small = local(p[`${side}_image`]);
         const large = small.replace(/-360\.webp$/, '-720.webp');
         pair.dataset[side] = large;
-        pair.dataset[`${side}Date`] = long(p[`${side}_date`]);
+        pair.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         const a = document.createElement('a');
         a.href = large; a.dataset.open = side;
         const img = document.createElement('img');
         img.src = small; img.width = 360; img.height = 360;
-        img.alt = `Satellite image, ${side}, ${long(p[`${side}_date`])}`;
+        img.alt = `Satellite image, ${side}, ${longDate(p[`${side}_date`])}`;
         const cap = document.createElement('span');
-        cap.textContent = short(p[`${side}_date`]);
+        cap.textContent = shortDate(p[`${side}_date`]);
         a.append(img, cap);
         pair.append(a);
       }
@@ -247,7 +248,7 @@ const withoutPic = active.find((p) => !hasPair(p));
       detail.append(none);
     }
     const lic = document.createElement('p');
-    lic.textContent = `${LABEL[p.licence]}. First seen ${long(p.first_seen)}.`;
+    lic.textContent = `${LICENCE_SHORT[p.licence as keyof typeof LICENCE_SHORT]}. First seen ${longDate(p.first_seen)}.`;
     const link = document.createElement('a');
     link.href = `/places/${p.id}`; link.textContent = 'Open this place';
     link.className = 'btn';
@@ -258,7 +259,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     google.className = 'google';
     detail.append(lic, link, google);
     detail.hidden = false;
-    history.replaceState(null, '', `#${p.id}`);
+    history.replaceState(null, '', `${location.pathname}${location.search}#${p.id}`);
     // On a phone the panel covers the lower half, so centre the place in the part still showing
     m.easeTo({
       center: f.geometry.coordinates as [number, number], zoom: zoom ?? Math.max(m.getZoom(), 11),
@@ -363,10 +364,6 @@ const withoutPic = active.find((p) => !hasPair(p));
     alarm: ALARM, none: ['no licence'], prospecting: ['prospecting only'],
     small: ['small-scale licence'], large: ['large-scale lease'],
   };
-  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const short = (iso: string) => { const [y, mo, d] = iso.split('-').map(Number); return `${d} ${MONTHS[mo - 1]} ${y}`; };
-  const fmt = new Intl.NumberFormat('en-GB');
-  const hectares = (ha: number) => (ha < 10 ? `${ha.toFixed(1)} hectares` : `${fmt.format(Math.round(ha))} hectares`);
   let mapFilter: any = null;
   let places: Promise<Props[]> | null = null;
   let shown: Props[] = [];
@@ -424,11 +421,11 @@ const withoutPic = active.find((p) => !hasPair(p));
     const title = `${hectares(p.ha)} cleared ${p.name}`;
     const a = li.querySelector<HTMLAnchorElement>('h3 a')!;
     a.href = `/places/${p.id}`; a.textContent = title;
-    li.querySelector('.text p')!.textContent = `First seen ${long(p.first_seen)}.`;
+    li.querySelector('.text p')!.textContent = `First seen ${longDate(p.first_seen)}.`;
     const tag = li.querySelector<HTMLElement>('.tag')!;
     tag.classList.toggle('alarm', ALARM.includes(p.licence));
     tag.classList.toggle('plain', !ALARM.includes(p.licence));
-    tag.textContent = LABEL[p.licence];
+    tag.textContent = LICENCE_SHORT[p.licence as keyof typeof LICENCE_SHORT];
     const none = li.querySelector('.nopair');
     if (none) none.textContent = NO_PICTURE[p.no_picture as NoPicture] ?? NO_PICTURE.pending;
     const fig = li.querySelector<HTMLElement>('[data-pair]');
@@ -439,16 +436,16 @@ const withoutPic = active.find((p) => !hasPair(p));
         const small = local(p[`${side}_image`]);
         const file = (size: string) => small.replace(/-360\.webp$/, `-${size}`);
         fig.dataset[side] = file('720.webp');
-        fig.dataset[`${side}Date`] = long(p[`${side}_date`]);
+        fig.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         shot.href = file('720.webp');
         shot.querySelector('source')!.srcset = `${file('360.avif')} 360w, ${file('720.avif')} 720w`;
         const img = shot.querySelector('img')!;
         img.src = small; img.srcset = `${small} 360w, ${file('720.webp')} 720w`;
         img.loading = 'lazy'; img.removeAttribute('fetchpriority');
         img.alt = side === 'before'
-          ? `Satellite image of the place on ${long(p.before_date)}, before the clearing was first seen`
-          : `Satellite image of the same place on ${long(p.after_date)}`;
-        shot.querySelector('.when')!.textContent = short(p[`${side}_date`]);
+          ? `Satellite image of the place on ${longDate(p.before_date)}, before the clearing was first seen`
+          : `Satellite image of the same place on ${longDate(p.after_date)}`;
+        shot.querySelector('.when')!.textContent = shortDate(p[`${side}_date`]);
       });
     }
     return li;
@@ -476,16 +473,16 @@ const withoutPic = active.find((p) => !hasPair(p));
     const ha = shown.reduce((t, p) => t + p.ha, 0);
     const everything = shown.length === all.length;
     count.textContent = town && shown.length
-      ? `${fmt.format(shown.length)} ${shown.length === 1 ? 'patch reaches' : 'patches reach'} within 1 km of ${town.key}, ${fmt.format(Math.round(ha))} hectares. A big patch can reach the ring even when its dot sits outside it.`
+      ? `${num(shown.length)} ${shown.length === 1 ? 'patch reaches' : 'patches reach'} within 1 km of ${town.key}, ${num(ha)} hectares. A big patch can reach the ring even when its dot sits outside it.`
       : everything
-      ? `Showing all ${fmt.format(all.length)} patches.`
+      ? `Showing all ${num(all.length)} patches.`
       : shown.length
-        ? `${fmt.format(shown.length)} of ${fmt.format(all.length)} patches match, ${fmt.format(Math.round(ha))} hectares in all.`
+        ? `${num(shown.length)} of ${num(all.length)} patches match, ${num(ha)} hectares in all.`
         : w.town && !town ? 'No cleared land within 1 km of a place with that name. Pick a name from the list.' : 'No patches match. Try fewer filters.';
-    mapCount.textContent = everything ? '' : `${fmt.format(shown.length)} shown.`;
+    mapCount.textContent = everything ? '' : `${num(shown.length)} shown.`;
     listHead.textContent = w.sort === 'new' ? 'Newest first' : 'Largest first';
     note.textContent = shown.length
-      ? `${shown.length > PAGE ? `The first ${PAGE} of ` : ''}${fmt.format(shown.length)} ${everything ? '' : 'matching '}patches.`
+      ? `${shown.length > PAGE ? `The first ${PAGE} of ` : ''}${num(shown.length)} ${everything ? '' : 'matching '}patches.`
       : 'No patches match.';
     upTo = PAGE;
     paint();
