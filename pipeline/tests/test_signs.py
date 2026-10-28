@@ -103,6 +103,7 @@ def test_a_network_failure_leaves_the_place_for_next_run(monkeypatch, tmp_path):
         raise ConnectionError("Failed to resolve 'earth-search.aws.element84.com'")
 
     monkeypatch.setattr(run, "OUT", str(tmp_path))
+    monkeypatch.setattr(run, "SIGNS_RETRY_WAITS", (0, 0, 0))
     monkeypatch.setattr(run.signs, "reading", reading)
     run.make_signs(TODAY, limit=5, workers=1)
     assert "signs" not in _index(tmp_path)["a"]
@@ -117,3 +118,24 @@ def test_no_clear_scene_is_recorded_so_it_waits_a_week(monkeypatch, tmp_path):
     run.make_signs(TODAY, limit=5, workers=1)
     assert _index(tmp_path)["a"]["signs"] == {"missing": True, "checked": "2026-10-28"}
     assert _index(tmp_path)["a"]["likely_galamsey"] is False
+
+
+def test_a_place_refused_twice_by_the_picture_service_is_tried_again_and_kept(monkeypatch, tmp_path):
+    from pystac_client.exceptions import APIError
+
+    from tracker import run
+
+    _places(tmp_path, [{"id": "a", "active": True, "licence": "no licence", "first_seen": "2026-05-01", "ha": 2.0}])
+    calls = []
+
+    def reading(poly, first_seen, today):
+        calls.append(1)
+        if len(calls) < 3:
+            raise APIError("429 Too Many Requests")
+        return {"water": 0.2, "scene": "2026-09-01"}
+
+    monkeypatch.setattr(run, "OUT", str(tmp_path))
+    monkeypatch.setattr(run, "SIGNS_RETRY_WAITS", (0, 0, 0))
+    monkeypatch.setattr(run.signs, "reading", reading)
+    run.make_signs(TODAY, limit=5, workers=1)
+    assert _index(tmp_path)["a"]["signs"] == {"water": 0.2, "scene": "2026-09-01"}

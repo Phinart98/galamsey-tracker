@@ -101,7 +101,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(inputs.signs_minutes || '45') }}
         # Largest first; places not reached are measured in later weeks, so a failure here must not stop the rest
         continue-on-error: true
-        run: uv run python -m tracker.run signs --limit "${{ inputs.signs_limit || '1500' }}" --workers 8
+        run: uv run python -m tracker.run signs --limit "${{ inputs.signs_limit || '1500' }}" --workers 4
 
       - name: Monthly trend point
         timeout-minutes: 45

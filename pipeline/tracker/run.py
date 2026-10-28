@@ -13,6 +13,7 @@ import datetime as dt
 import json
 import math
 import os
+import time
 import traceback
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
@@ -35,6 +36,8 @@ CHIP_RETRY_DAYS = 7
 # NASA usually publishes a reading within days, but some take up to three weeks. A reading counts
 # from a week after its day, and a late one only shifts that reading to an image a few days older.
 READING_LAG_DAYS = 7
+# Earth Search refused 3,725 of 4,866 readings in the first GitHub run (2026-10-28), so a refused place waits and tries again
+SIGNS_RETRY_WAITS = (20, 40, 80)
 
 PIPELINE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = os.path.dirname(PIPELINE_DIR)
@@ -211,11 +214,14 @@ def make_signs(today: dt.date, limit: int, workers: int = 4):
     print(f"signs: {len(todo)} places to measure")
 
     def measure(rec):
-        try:
-            return rec, signs.reading(polys[rec["id"]], rec["first_seen"], today)
-        except (OSError, APIError) as e:
-            print(f"  {rec['id']}: skipped, {type(e).__name__}; tried again next run")
-            return rec, False
+        for wait in (*SIGNS_RETRY_WAITS, None):
+            try:
+                return rec, signs.reading(polys[rec["id"]], rec["first_seen"], today)
+            except (OSError, APIError) as e:
+                if wait is None:
+                    print(f"  {rec['id']}: skipped, {type(e).__name__}: {str(e)[:120]}; tried again next run")
+                    return rec, False
+                time.sleep(wait)
 
     # Each reading spends most of its time waiting on Earth Search, so several run at once
     with ThreadPoolExecutor(workers) as pool:
