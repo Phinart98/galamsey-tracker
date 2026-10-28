@@ -2,6 +2,7 @@
 
     uv run python -m tracker.run weekly     # patches, licences, names, ids, summary, status
     uv run python -m tracker.run chips      # before/after images for large places that lack them
+    uv run python -m tracker.run signs      # open-water reading for places with no licence to mine
     uv run python -m tracker.run trend      # same-date rolling 12-month totals, one point per month
 
 Small JSON the site needs at build time goes to <repo>/data (committed). Larger files go to
@@ -14,13 +15,14 @@ import math
 import os
 import traceback
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 
 import geopandas as gpd
 import pandas as pd
 from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
-from tracker import chips, licences, nasa, places, summary, water, zone
+from tracker import chips, licences, nasa, places, signs, summary, water, zone
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
@@ -136,6 +138,7 @@ def write_places(clusters, previous, new_aliases, to_ll):
         rec.update({"id": r.id, "active": True, "ha": round(float(r.ha), 2), "first_seen": r.first_seen,
                     "last_seen": r.last_seen, "licence": r.licence, "near": r.near, "near_km": r.near_km,
                     "district": r.district, "lon": round(lon, 5), "lat": round(lat, 5), "tile": r.tile})
+        rec["likely_galamsey"] = signs.likely_galamsey(r.licence, (rec.get("signs") or {}).get("water"))
     _write_json(index_path, index)
 
     aliases_path = os.path.join(DATA, "places", "aliases.json")
@@ -195,6 +198,34 @@ def make_chips(today: dt.date, limit: int):
         rec["chips"] = entry
         print(f"  {rec['id']}: {before[0]} -> {after[0]}")
         _write_json(index_path, index)  # save as we go: a long run that dies keeps its finished images
+    _write_json(index_path, index)
+
+
+def make_signs(today: dt.date, limit: int, workers: int = 4):
+    """Water readings for places with no licence to mine, largest first, so a backlog clears over a few runs."""
+    index_path = os.path.join(OUT, "places", "index.json")
+    index = _read_json(index_path, {})
+    todo = sorted((r for r in index.values() if signs.needs_reading(r, today)), key=lambda r: -r["ha"])[:limit]
+    outlines = gpd.read_file(os.path.join(OUT, "places", "latest.geojson"))
+    polys = dict(zip(outlines["id"], outlines.geometry, strict=True))
+    print(f"signs: {len(todo)} places to measure")
+
+    def measure(rec):
+        try:
+            return rec, signs.reading(polys[rec["id"]], rec["first_seen"], today)
+        except (OSError, APIError) as e:
+            print(f"  {rec['id']}: skipped, {type(e).__name__}; tried again next run")
+            return rec, False
+
+    # Each reading spends most of its time waiting on Earth Search, so several run at once
+    with ThreadPoolExecutor(workers) as pool:
+        for n, (rec, got) in enumerate(pool.map(measure, [r for r in todo if r["id"] in polys]), 1):
+            if got is False:
+                continue
+            rec["signs"] = got or {"missing": True, "checked": str(today)}
+            rec["likely_galamsey"] = signs.likely_galamsey(rec["licence"], rec["signs"].get("water"))
+            if n % 20 == 0:
+                _write_json(index_path, index)  # save as we go: a long run that dies keeps its readings
     _write_json(index_path, index)
 
 
@@ -288,9 +319,10 @@ def trend(today: dt.date, start: str = "2024-01"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("command", choices=["weekly", "chips", "trend"])
+    p.add_argument("command", choices=["weekly", "chips", "signs", "trend"])
     p.add_argument("--today", default=str(dt.date.today()))
     p.add_argument("--limit", type=int, default=60)
+    p.add_argument("--workers", type=int, default=4)
     a = p.parse_args()
     today = dt.date.fromisoformat(a.today)
     status_path = os.path.join(DATA, "status.json")
@@ -309,6 +341,9 @@ def main():
             mine.update({"last_success": mine["last_attempt"], "data_date": data_date, "tiles": tiles, "outcome": "ok"})
         elif a.command == "chips":
             make_chips(today, a.limit)
+            mine["outcome"] = "ok"
+        elif a.command == "signs":
+            make_signs(today, a.limit, a.workers)
             mine["outcome"] = "ok"
         else:
             trend(today)

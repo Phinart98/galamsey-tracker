@@ -19,7 +19,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 180
     defaults:
       run:
         working-directory: pipeline
@@ -71,6 +71,12 @@ jobs:
         # Missing pictures are retried next week, so a failure here must not stop the trend or the upload
         continue-on-error: true
         run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '80' }}"
+
+      - name: Open-water readings for places with no licence to mine
+        timeout-minutes: 30
+        # Largest first; places not reached are measured in later weeks, so a failure here must not stop the rest
+        continue-on-error: true
+        run: uv run python -m tracker.run signs --limit 500 --workers 6
 
       - name: Monthly trend point
         timeout-minutes: 45
