@@ -4,13 +4,10 @@
 *.env
 !.env.example
 
-# Node
+# Node and Astro
 node_modules/
-.pnpm-store/
+.astro/
 dist/
-.output/
-.nuxt/
-.nitro/
 .cache/
 
 # Python
@@ -47,9 +44,6 @@ logs/
 htmlcov/
 .pytest_cache/
 
-# Local mockup (not shipped)
-apps/web/mockup/
-
 # Data files (large, generated)
 *.pmtiles
 *.tif
@@ -59,16 +53,6 @@ apps/web/mockup/
 .playwright-mcp/
 playwright-report/
 test-results/
-dashboard-*.png
-dashboard-*.jpeg
-dashboard-*.jpg
-e2e-*.png
-
-# Vercel
-.vercel/
 
 # Local dev guidance (machine-specific paths — never commit)
 CLAUDE.md
-
-# GFW API fetch dumps from live verification (regenerated each run, large)
-.gfw-fetch/

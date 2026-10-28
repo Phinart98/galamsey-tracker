@@ -1,45 +1,33 @@
 # Contributing to Galamsey Tracker
 
-Thank you for wanting to help. Every pull request moves this forward.
+Thank you for wanting to help.
 
 ## Before you start
 
-- Read the [Code of Conduct](CODE_OF_CONDUCT.md) — it applies to all project spaces.
-- Check [open issues](https://github.com/Phinart98/galamsey-tracker/issues) before opening a new one.
-- For significant changes, open an issue first to discuss the approach.
+- Read the [Code of Conduct](CODE_OF_CONDUCT.md). It applies to all project spaces.
+- For anything bigger than a small fix, open an issue first so we can agree on the approach.
+- Read the method and its limits in [`docs/validation/2026-10-data-spike.md`](docs/validation/2026-10-data-spike.md) before changing how anything is counted.
 
-## Development setup
+## Setting up
 
-See the "Running locally" section in [README.md](README.md).
+See "Running it yourself" in the [README](README.md).
 
 ## How to contribute
 
-1. Fork the repository and create a branch from `main`.
-2. Make your changes. Run tests before committing.
-3. Commit using the format: `heading line` followed by bullet sub-points. No
-   `Co-Authored-By` trailers. No em-dashes in commit messages.
-4. Open a pull request against `main`. Describe what changed and why.
+1. Fork the repository and create a branch from `master`.
+2. Make your change and run the checks below.
+3. Write commit messages as a short heading followed by bullet points.
+4. Open a pull request against `master`. Say what changed and why.
 
-## Code standards
+## Checks
 
-**Python**: ruff + mypy. Run `pre-commit run --all-files` before pushing.
-**TypeScript/Vue**: eslint + prettier. Run `pnpm lint` in `apps/web/`.
-**No secrets in commits**: `.env.local` is gitignored; `.env.example` is the
-source of truth for what secrets exist.
+- **Pipeline:** `cd pipeline && uv run ruff check . && uv run pytest`. New behaviour needs a test.
+- **Site:** `cd apps/site && npm run build`. The build must also pass with no data, which is how CI runs it.
 
-## Methodology contributions
+## Rules that keep the site honest
 
-Every map layer must have a corresponding entry in `docs/methodology/`. If
-you add or modify a data layer, update the methodology doc. No layer ships
-without methodology.
-
-## Translations
-
-English is the primary language. Twi (Akan) is the first translation target.
-Translation files live in `apps/web/locales/`.
-
-## Good first issues
-
-Look for issues tagged `good first issue` on GitHub. Pipeline fixes, UI
-accessibility improvements, and translation contributions are great starting
-points.
+- Every number or claim shown to the public needs an entry in [`docs/sources.json`](docs/sources.json).
+- Describe the licence on the land. Never name licence holders, and never call a single place illegal. "Likely galamsey" is worded as a guess and must stay that way.
+- A change to the method needs evidence first: a check against pictures or a published result, recorded in the validation log, before it reaches the site.
+- Plain English on the site, for readers who are not scientists.
+- No secrets in commits. The weekly job reads them from GitHub repository secrets.

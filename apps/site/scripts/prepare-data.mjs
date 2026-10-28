@@ -1,6 +1,6 @@
 // Gets the place index (and, locally, the images) that are too big to commit.
-// Production: PLACES_INDEX_URL points at index.json on R2 and CHIPS_BASE_URL at the R2 folder.
-// Local: both come from pipeline/out, and the images are copied into public/chips.
+// Normally both come from pipeline/out (locally, and in the weekly workflow after it restores its working files),
+// and the images are copied into public/chips. PLACES_INDEX_URL and CHIPS_BASE_URL can point at a remote copy instead.
 import fs from 'node:fs';
 import path from 'node:path';
 
