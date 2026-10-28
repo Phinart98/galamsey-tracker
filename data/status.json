@@ -1,53 +1,53 @@
 {
  "weekly": {
-  "last_attempt": "2026-10-25T22:33:22+00:00",
+  "last_attempt": "2026-10-28T23:00:15+00:00",
   "outcome": "ok",
-  "last_success": "2026-10-25T22:33:22+00:00",
-  "data_date": "2026-10-23",
+  "last_success": "2026-10-28T23:00:15+00:00",
+  "data_date": "2026-10-26",
   "tiles": {
    "T30NXM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXM_20261022T102049Z_20261024T052937Z_S2B_30_v1",
-    "data_date": "2026-10-22",
-    "patches": 1528
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXM_20261024T102155Z_20261026T050122Z_L8_30_v1",
+    "data_date": "2026-10-24",
+    "patches": 1544
    },
    "T30NWM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWM_20261023T102809Z_20261025T045934Z_L9_30_v1",
-    "data_date": "2026-10-23",
-    "patches": 1991
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWM_20261025T103119Z_20261027T060709Z_S2B_30_v1",
+    "data_date": "2026-10-25",
+    "patches": 2003
    },
    "T30NXN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXN_20261022T102049Z_20261024T053325Z_S2B_30_v1",
-    "data_date": "2026-10-22",
-    "patches": 1521
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXN_20261024T102131Z_20261026T050237Z_L8_30_v1",
+    "data_date": "2026-10-24",
+    "patches": 1542
    },
    "T30NYM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYM_20261022T102049Z_20261024T053509Z_S2B_30_v1",
-    "data_date": "2026-10-22",
-    "patches": 929
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYM_20261026T101031Z_20261028T055449Z_S2A_30_v1",
+    "data_date": "2026-10-26",
+    "patches": 972
    },
    "T30NYN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYN_20261022T102049Z_20261024T053358Z_S2B_30_v1",
-    "data_date": "2026-10-22",
-    "patches": 760
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYN_20261025T101523Z_20261027T015059Z_L9_30_v1",
+    "data_date": "2026-10-25",
+    "patches": 783
    },
    "T30NWN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWN_20261022T104601Z_20261024T025759Z_S2A_30_v1",
-    "data_date": "2026-10-22",
-    "patches": 511
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWN_20261025T103119Z_20261027T060838Z_S2B_30_v1",
+    "data_date": "2026-10-25",
+    "patches": 514
    }
   }
  },
  "method_version": "2026.10.3",
  "chips": {
-  "last_attempt": "2026-10-25T20:53:19+00:00",
+  "last_attempt": "2026-10-28T23:01:12+00:00",
   "outcome": "ok"
  },
  "trend": {
-  "last_attempt": "2026-10-25T21:45:07+00:00",
+  "last_attempt": "2026-10-28T23:11:41+00:00",
   "outcome": "ok"
  },
  "signs": {
-  "last_attempt": "2026-10-28T01:47:51+00:00",
+  "last_attempt": "2026-10-28T23:06:52+00:00",
   "outcome": "ok"
  }
 }
