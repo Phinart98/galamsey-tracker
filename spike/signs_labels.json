@@ -1,0 +1,1148 @@
+[
+ {
+  "source": "s26",
+  "n": 1,
+  "id": "2025-11-6776n1959w",
+  "ha": 4.32,
+  "lat": 6.77605,
+  "lon": -1.95895,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 2,
+  "id": "2025-11-6205n0664w",
+  "ha": 2.61,
+  "lat": 6.20522,
+  "lon": -0.66351,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 3,
+  "id": "2025-11-5789n2541w",
+  "ha": 13.95,
+  "lat": 5.78886,
+  "lon": -2.54129,
+  "first_seen": "2025-11-26",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 4,
+  "id": "2026-01-5959n0961w",
+  "ha": 1.17,
+  "lat": 5.95937,
+  "lon": -0.96103,
+  "first_seen": "2026-01-17",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 5,
+  "id": "2026-02-5562n1567w",
+  "ha": 1.44,
+  "lat": 5.56245,
+  "lon": -1.56675,
+  "first_seen": "2026-02-09",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 6,
+  "id": "2025-12-5771n2164w",
+  "ha": 10.8,
+  "lat": 5.77133,
+  "lon": -2.16428,
+  "first_seen": "2025-12-24",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 7,
+  "id": "2025-12-6473n0931w",
+  "ha": 5.49,
+  "lat": 6.47252,
+  "lon": -0.93058,
+  "first_seen": "2025-12-13",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 8,
+  "id": "2025-11-6080n1988w",
+  "ha": 1.17,
+  "lat": 6.08011,
+  "lon": -1.98829,
+  "first_seen": "2025-11-30",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 9,
+  "id": "2025-12-5811n2030w",
+  "ha": 1.71,
+  "lat": 5.81128,
+  "lon": -2.03023,
+  "first_seen": "2025-12-24",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 10,
+  "id": "2025-11-6098n0815w",
+  "ha": 15.84,
+  "lat": 6.09779,
+  "lon": -0.81475,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 11,
+  "id": "2025-11-6854n2407w",
+  "ha": 2.43,
+  "lat": 6.85387,
+  "lon": -2.4069,
+  "first_seen": "2025-11-19",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 13,
+  "id": "2026-03-6509n1505w",
+  "ha": 3.24,
+  "lat": 6.50927,
+  "lon": -1.50526,
+  "first_seen": "2026-03-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 14,
+  "id": "2025-11-7035n2359w",
+  "ha": 5.04,
+  "lat": 7.03508,
+  "lon": -2.35859,
+  "first_seen": "2025-11-09",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 15,
+  "id": "2025-11-6161n0800w",
+  "ha": 22.86,
+  "lat": 6.16092,
+  "lon": -0.8004,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 16,
+  "id": "2025-11-6231n1561w",
+  "ha": 13.68,
+  "lat": 6.23134,
+  "lon": -1.56056,
+  "first_seen": "2025-11-11",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 17,
+  "id": "2025-12-5787n1917w",
+  "ha": 11.43,
+  "lat": 5.78692,
+  "lon": -1.91702,
+  "first_seen": "2025-12-06",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 18,
+  "id": "2026-02-6314n0861w",
+  "ha": 2.88,
+  "lat": 6.31358,
+  "lon": -0.86075,
+  "first_seen": "2026-02-10",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 19,
+  "id": "2025-11-6335n2012w",
+  "ha": 3.87,
+  "lat": 6.33522,
+  "lon": -2.01207,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 20,
+  "id": "2026-03-5803n0248w",
+  "ha": 1.26,
+  "lat": 5.80324,
+  "lon": -0.24791,
+  "first_seen": "2026-03-10",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 21,
+  "id": "2025-10-5822n2662w",
+  "ha": 2.07,
+  "lat": 5.82151,
+  "lon": -2.66239,
+  "first_seen": "2025-10-25",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 22,
+  "id": "2026-05-6006n0772w",
+  "ha": 2.52,
+  "lat": 6.00623,
+  "lon": -0.77218,
+  "first_seen": "2026-05-05",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 24,
+  "id": "2026-05-6823n0957w",
+  "ha": 1.08,
+  "lat": 6.82331,
+  "lon": -0.9572,
+  "first_seen": "2026-05-02",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 25,
+  "id": "2026-06-6294n0740w",
+  "ha": 1.53,
+  "lat": 6.29409,
+  "lon": -0.74049,
+  "first_seen": "2026-06-02",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 26,
+  "id": "2025-10-5706n2683w",
+  "ha": 8.1,
+  "lat": 5.70564,
+  "lon": -2.68278,
+  "first_seen": "2025-10-24",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 27,
+  "id": "2026-04-5740n0924w",
+  "ha": 5.13,
+  "lat": 5.74036,
+  "lon": -0.92432,
+  "first_seen": "2026-04-10",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 28,
+  "id": "2025-10-5821n2409w",
+  "ha": 2.25,
+  "lat": 5.82103,
+  "lon": -2.40875,
+  "first_seen": "2025-10-28",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 29,
+  "id": "2025-10-6836n1928w",
+  "ha": 11.07,
+  "lat": 6.83649,
+  "lon": -1.92774,
+  "first_seen": "2025-10-24",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 30,
+  "id": "2025-10-5846n2805w",
+  "ha": 3.78,
+  "lat": 5.846,
+  "lon": -2.80465,
+  "first_seen": "2025-10-28",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 31,
+  "id": "2025-10-6244n0613w",
+  "ha": 2.34,
+  "lat": 6.24363,
+  "lon": -0.61308,
+  "first_seen": "2025-10-27",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 32,
+  "id": "2025-10-6180n2230w",
+  "ha": 5.58,
+  "lat": 6.1801,
+  "lon": -2.22954,
+  "first_seen": "2025-10-28",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 33,
+  "id": "2025-10-5572n2105w",
+  "ha": 11.16,
+  "lat": 5.57179,
+  "lon": -2.10484,
+  "first_seen": "2025-10-24",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 34,
+  "id": "2025-10-7044n2349w",
+  "ha": 23.31,
+  "lat": 7.04375,
+  "lon": -2.34894,
+  "first_seen": "2025-10-28",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 35,
+  "id": "2026-04-5474n1882w",
+  "ha": 1.44,
+  "lat": 5.47427,
+  "lon": -1.88173,
+  "first_seen": "2026-04-15",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 36,
+  "id": "2026-04-7039n2280w",
+  "ha": 1.35,
+  "lat": 7.03917,
+  "lon": -2.28023,
+  "first_seen": "2026-04-02",
+  "label": "not"
+ },
+ {
+  "source": "s26",
+  "n": 38,
+  "id": "2025-10-5780n2509w",
+  "ha": 5.85,
+  "lat": 5.77987,
+  "lon": -2.50865,
+  "first_seen": "2025-10-27",
+  "label": "mining"
+ },
+ {
+  "source": "s26",
+  "n": 40,
+  "id": "2025-10-6263n0844w",
+  "ha": 7.38,
+  "lat": 6.26307,
+  "lon": -0.84402,
+  "first_seen": "2025-10-27",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 2,
+  "id": "2026-06-6294n0740w",
+  "ha": 1.53,
+  "lat": 6.29409,
+  "lon": -0.74049,
+  "first_seen": "2026-06-02",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 4,
+  "id": "2026-05-6823n0961w",
+  "ha": 1.89,
+  "lat": 6.82251,
+  "lon": -0.96059,
+  "first_seen": "2026-05-02",
+  "label": "not"
+ },
+ {
+  "source": "s22",
+  "n": 5,
+  "id": "2026-05-6086n2565w",
+  "ha": 1.44,
+  "lat": 6.08577,
+  "lon": -2.56504,
+  "first_seen": "2026-05-02",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 6,
+  "id": "2026-05-6812n1027w",
+  "ha": 1.53,
+  "lat": 6.81221,
+  "lon": -1.02671,
+  "first_seen": "2026-05-09",
+  "label": "not"
+ },
+ {
+  "source": "s22",
+  "n": 7,
+  "id": "2026-05-5984n0968w",
+  "ha": 1.08,
+  "lat": 5.98421,
+  "lon": -0.96785,
+  "first_seen": "2026-05-30",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 8,
+  "id": "2026-05-5643n2728w",
+  "ha": 2.16,
+  "lat": 5.64297,
+  "lon": -2.72765,
+  "first_seen": "2026-05-13",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 9,
+  "id": "2026-10-6840n0734w",
+  "ha": 1.17,
+  "lat": 6.84048,
+  "lon": -0.73395,
+  "first_seen": "2026-10-02",
+  "label": "not"
+ },
+ {
+  "source": "s22",
+  "n": 11,
+  "id": "2026-06-6300n0768w",
+  "ha": 2.16,
+  "lat": 6.30031,
+  "lon": -0.76757,
+  "first_seen": "2026-06-01",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 14,
+  "id": "2026-05-5982n0965w",
+  "ha": 1.8,
+  "lat": 5.98176,
+  "lon": -0.96515,
+  "first_seen": "2026-05-30",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 16,
+  "id": "2026-06-5935n0931w",
+  "ha": 1.8,
+  "lat": 5.93498,
+  "lon": -0.93146,
+  "first_seen": "2026-06-01",
+  "label": "mining"
+ },
+ {
+  "source": "s22",
+  "n": 17,
+  "id": "2026-05-5782n0939w",
+  "ha": 1.35,
+  "lat": 5.78177,
+  "lon": -0.93893,
+  "first_seen": "2026-05-05",
+  "label": "not"
+ },
+ {
+  "source": "s22",
+  "n": 20,
+  "id": "2026-10-5897n2832w",
+  "ha": 1.17,
+  "lat": 5.8973,
+  "lon": -2.83174,
+  "first_seen": "2026-10-02",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 1,
+  "ha": 4.05,
+  "lat": 6.36647,
+  "lon": -2.03547,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 2,
+  "ha": 3.24,
+  "lat": 6.82299,
+  "lon": -1.84104,
+  "first_seen": "2026-03-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 3,
+  "ha": 3.6,
+  "lat": 6.67513,
+  "lon": -1.97084,
+  "first_seen": "2025-11-11",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 4,
+  "ha": 3.42,
+  "lat": 7.15073,
+  "lon": -1.94441,
+  "first_seen": "2025-11-16",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 5,
+  "ha": 4.14,
+  "lat": 6.90122,
+  "lon": -2.00036,
+  "first_seen": "2025-11-22",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 6,
+  "ha": 5.94,
+  "lat": 6.38251,
+  "lon": -1.22756,
+  "first_seen": "2025-10-24",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 7,
+  "ha": 3.15,
+  "lat": 6.7277,
+  "lon": -1.87655,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 8,
+  "ha": 12.51,
+  "lat": 6.83916,
+  "lon": -1.90832,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 9,
+  "ha": 6.84,
+  "lat": 6.36264,
+  "lon": -1.46014,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 10,
+  "ha": 3.87,
+  "lat": 6.52079,
+  "lon": -1.28864,
+  "first_seen": "2025-11-01",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 11,
+  "ha": 1.62,
+  "lat": 6.37868,
+  "lon": -1.9629,
+  "first_seen": "2026-02-19",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 12,
+  "ha": 1.17,
+  "lat": 6.58265,
+  "lon": -1.21479,
+  "first_seen": "2025-11-03",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 13,
+  "ha": 1.89,
+  "lat": 6.29333,
+  "lon": -1.24711,
+  "first_seen": "2025-11-01",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 14,
+  "ha": 1.98,
+  "lat": 6.65693,
+  "lon": -1.83695,
+  "first_seen": "2026-03-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 15,
+  "ha": 1.08,
+  "lat": 6.31512,
+  "lon": -1.99923,
+  "first_seen": "2026-02-24",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 16,
+  "ha": 1.62,
+  "lat": 6.51835,
+  "lon": -1.99612,
+  "first_seen": "2026-01-25",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 17,
+  "ha": 1.8,
+  "lat": 6.48871,
+  "lon": -1.62454,
+  "first_seen": "2026-03-14",
+  "label": "not"
+ },
+ {
+  "source": "T30NXN",
+  "n": 18,
+  "ha": 1.89,
+  "lat": 6.73795,
+  "lon": -1.9095,
+  "first_seen": "2026-02-24",
+  "label": "mining"
+ },
+ {
+  "source": "T30NXN",
+  "n": 19,
+  "ha": 1.53,
+  "lat": 7.17803,
+  "lon": -1.281,
+  "first_seen": "2026-10-02",
+  "label": "not"
+ },
+ {
+  "source": "T30NXN",
+  "n": 20,
+  "ha": 1.26,
+  "lat": 6.55716,
+  "lon": -1.87096,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 1,
+  "ha": 4.23,
+  "lat": 6.08948,
+  "lon": -0.58139,
+  "first_seen": "2025-11-15",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 2,
+  "ha": 3.24,
+  "lat": 6.30301,
+  "lon": -0.49601,
+  "first_seen": "2026-03-07",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 3,
+  "ha": 3.6,
+  "lat": 6.12326,
+  "lon": -0.80828,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 4,
+  "ha": 3.42,
+  "lat": 6.17112,
+  "lon": -0.64889,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 5,
+  "ha": 4.41,
+  "lat": 5.92213,
+  "lon": -0.39123,
+  "first_seen": "2026-01-26",
+  "label": "not"
+ },
+ {
+  "source": "T30NYM",
+  "n": 6,
+  "ha": 6.21,
+  "lat": 6.29906,
+  "lon": -0.76093,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 7,
+  "ha": 3.24,
+  "lat": 5.89473,
+  "lon": -0.60039,
+  "first_seen": "2026-01-26",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 8,
+  "ha": 14.58,
+  "lat": 5.95588,
+  "lon": -0.59972,
+  "first_seen": "2025-12-23",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 9,
+  "ha": 7.02,
+  "lat": 5.95344,
+  "lon": -0.41938,
+  "first_seen": "2026-03-13",
+  "label": "not"
+ },
+ {
+  "source": "T30NYM",
+  "n": 10,
+  "ha": 3.96,
+  "lat": 6.28304,
+  "lon": -0.63363,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 11,
+  "ha": 1.62,
+  "lat": 6.04783,
+  "lon": -0.73408,
+  "first_seen": "2026-03-13",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 12,
+  "ha": 1.17,
+  "lat": 6.20854,
+  "lon": -0.53019,
+  "first_seen": "2026-02-04",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 13,
+  "ha": 1.89,
+  "lat": 6.30087,
+  "lon": -0.83478,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 15,
+  "ha": 1.08,
+  "lat": 5.45745,
+  "lon": -0.7283,
+  "first_seen": "2026-01-12",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 16,
+  "ha": 1.62,
+  "lat": 6.23164,
+  "lon": -0.66028,
+  "first_seen": "2026-01-09",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 17,
+  "ha": 1.89,
+  "lat": 5.98112,
+  "lon": -0.73355,
+  "first_seen": "2026-03-13",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 18,
+  "ha": 1.98,
+  "lat": 6.11833,
+  "lon": -0.79719,
+  "first_seen": "2026-04-07",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 19,
+  "ha": 1.53,
+  "lat": 6.32869,
+  "lon": -1.01005,
+  "first_seen": "2025-12-21",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYM",
+  "n": 20,
+  "ha": 1.26,
+  "lat": 6.20993,
+  "lon": -0.53628,
+  "first_seen": "2026-10-02",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 1,
+  "ha": 4.05,
+  "lat": 6.34932,
+  "lon": -0.59999,
+  "first_seen": "2025-11-15",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 2,
+  "ha": 3.24,
+  "lat": 7.18131,
+  "lon": -0.95795,
+  "first_seen": "2026-04-05",
+  "label": "not"
+ },
+ {
+  "source": "T30NYN",
+  "n": 3,
+  "ha": 3.51,
+  "lat": 6.37521,
+  "lon": -0.94209,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 4,
+  "ha": 3.42,
+  "lat": 6.26619,
+  "lon": -0.7482,
+  "first_seen": "2025-10-27",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 5,
+  "ha": 4.14,
+  "lat": 6.37317,
+  "lon": -0.5118,
+  "first_seen": "2025-11-15",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 6,
+  "ha": 5.58,
+  "lat": 6.62696,
+  "lon": -0.89279,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 7,
+  "ha": 3.24,
+  "lat": 6.44244,
+  "lon": -0.56581,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 10,
+  "ha": 3.87,
+  "lat": 6.35206,
+  "lon": -0.6657,
+  "first_seen": "2026-02-04",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 12,
+  "ha": 1.17,
+  "lat": 6.44211,
+  "lon": -0.92217,
+  "first_seen": "2026-03-26",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 13,
+  "ha": 1.89,
+  "lat": 6.41639,
+  "lon": -0.62041,
+  "first_seen": "2026-03-15",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 14,
+  "ha": 1.98,
+  "lat": 7.01246,
+  "lon": -0.9211,
+  "first_seen": "2026-05-01",
+  "label": "not"
+ },
+ {
+  "source": "T30NYN",
+  "n": 15,
+  "ha": 1.08,
+  "lat": 6.28218,
+  "lon": -0.74434,
+  "first_seen": "2025-12-16",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 16,
+  "ha": 1.62,
+  "lat": 6.41499,
+  "lon": -0.60958,
+  "first_seen": "2026-05-02",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 17,
+  "ha": 1.8,
+  "lat": 6.93944,
+  "lon": -0.84516,
+  "first_seen": "2026-02-18",
+  "label": "not"
+ },
+ {
+  "source": "T30NYN",
+  "n": 18,
+  "ha": 1.98,
+  "lat": 6.3109,
+  "lon": -0.73825,
+  "first_seen": "2025-12-16",
+  "label": "mining"
+ },
+ {
+  "source": "T30NYN",
+  "n": 19,
+  "ha": 1.53,
+  "lat": 7.08748,
+  "lon": -0.5642,
+  "first_seen": "2026-05-01",
+  "label": "not"
+ },
+ {
+  "source": "T30NYN",
+  "n": 20,
+  "ha": 1.26,
+  "lat": 6.34921,
+  "lon": -0.63468,
+  "first_seen": "2026-02-04",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 1,
+  "ha": 4.23,
+  "lat": 7.2366,
+  "lon": -2.95154,
+  "first_seen": "2025-10-25",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 3,
+  "ha": 3.6,
+  "lat": 6.47554,
+  "lon": -2.03066,
+  "first_seen": "2025-11-30",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 4,
+  "ha": 3.42,
+  "lat": 6.70904,
+  "lon": -2.26797,
+  "first_seen": "2026-01-20",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 5,
+  "ha": 4.41,
+  "lat": 6.25592,
+  "lon": -2.12774,
+  "first_seen": "2025-11-22",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 7,
+  "ha": 3.24,
+  "lat": 6.74405,
+  "lon": -2.10871,
+  "first_seen": "2026-03-05",
+  "label": "not"
+ },
+ {
+  "source": "T30NWN",
+  "n": 8,
+  "ha": 14.22,
+  "lat": 6.28598,
+  "lon": -2.26044,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 9,
+  "ha": 8.46,
+  "lat": 6.47286,
+  "lon": -2.04545,
+  "first_seen": "2025-11-30",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 10,
+  "ha": 4.05,
+  "lat": 6.40562,
+  "lon": -2.88258,
+  "first_seen": "2025-11-19",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 11,
+  "ha": 1.62,
+  "lat": 6.70109,
+  "lon": -2.06062,
+  "first_seen": "2026-04-05",
+  "label": "not"
+ },
+ {
+  "source": "T30NWN",
+  "n": 12,
+  "ha": 1.17,
+  "lat": 6.64539,
+  "lon": -2.09342,
+  "first_seen": "2025-10-24",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 13,
+  "ha": 1.98,
+  "lat": 6.48427,
+  "lon": -2.05397,
+  "first_seen": "2025-11-01",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 14,
+  "ha": 2.07,
+  "lat": 6.98181,
+  "lon": -2.68472,
+  "first_seen": "2026-03-16",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 15,
+  "ha": 1.08,
+  "lat": 6.28043,
+  "lon": -2.02113,
+  "first_seen": "2025-11-14",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 16,
+  "ha": 1.71,
+  "lat": 6.2712,
+  "lon": -2.17653,
+  "first_seen": "2025-11-30",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 17,
+  "ha": 1.89,
+  "lat": 6.29203,
+  "lon": -2.0569,
+  "first_seen": "2026-01-17",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 18,
+  "ha": 2.07,
+  "lat": 6.48859,
+  "lon": -2.04393,
+  "first_seen": "2025-11-01",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 19,
+  "ha": 1.62,
+  "lat": 6.38663,
+  "lon": -2.88394,
+  "first_seen": "2026-01-05",
+  "label": "mining"
+ },
+ {
+  "source": "T30NWN",
+  "n": 20,
+  "ha": 1.26,
+  "lat": 6.5808,
+  "lon": -2.01933,
+  "first_seen": "2025-11-03",
+  "label": "mining"
+ }
+]

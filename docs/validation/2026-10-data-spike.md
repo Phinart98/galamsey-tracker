@@ -567,3 +567,46 @@ of the new clearing is farm blocks and long orange bands (road works or river-ch
 with the earlier 104 of 117 (s12, s15), which leaned on large patches, and with s22, where small new
 patches were less often mining. A publishable form: "about 4 in 5 hectares of the cleared land showed signs
 of mining in a random check". Still Claude's judgement only; Philip's one-time check is the second opinion.
+
+## 27. An automatic "mining signs" mark, without machine learning (2026-10-27)
+
+Friends asked which places are probably galamsey. Licence alone is not enough: in the s26 sample, cleared land
+with no licence to mine showed mining in 22 of 32 patches (69%), 14 of 17 at 3 ha or more. So we tested plain
+measurements from one clear Sentinel-2 scene after each patch was first seen (`spike/signs_features.py`):
+bare ground (NDVI < 0.3), a bare-soil index, open water at or within 60 m of the patch (MNDWI > 0), how green
+it is now, and shape (elongation, compactness).
+
+**Labelled patches:** 122 judged by eye (s22, s26, and per-patch verdicts read again from the s15 tile sheets
+for 30NXN, 30NYM, 30NYN, 30NWN; unclear ones left out). 108 could be measured: 94 mining, 14 not (five
+northern farms now outside the forest zone have no outline; a few had no clear scene).
+
+**Stage 1 (`spike/signs_rule.py`, 200 random half splits, thresholds tuned on one half, scored on the other):**
+the best combined rule (green now <= 0.2) gave held-out precision of about 90% at the median but 81% at the
+10th percentile, barely better than marking everything (87%). It fails the 9-in-10 bar.
+
+**What stood out:** all 14 non-mining patches (farm blocks, a housing layout, earthworks and a building site by
+the Accra-Kumasi highway, a laterite cut) had no open water at all. "Any open water at or within 60 m" marked
+75 patches, all 75 mining (recall 80%). Because this rule was noticed after looking, it needs a fresh test:
+30 new random patches with no licence to mine, judged blind before the water readings are opened
+(`spike/signs_holdout.py`, seed 31). Risks to watch: farms beside open rivers, and patches next to someone
+else's ponds. Result below.
+
+**Blind batch 1 (2026-10-28):** 30 random active patches with no licence to mine (pool 5,056), judged from the
+sheets and written to `verdicts.json` before the readings were opened: 23 mining, 3 not (a quarry or building
+site by the coastal highway, two farm blocks), 4 unclear. 29 could be measured. The rule marked 25: 22 mining,
+1 not (a neat block in forest, water 0.031), 2 unclear. It marked every measured mining patch (22 of 22) and
+left out the quarry, one farm and two unclear patches.
+Precision is 22 of 25 (88%) if unclear counts against the rule, 22 of 23 (96%) if unclear is left out. The bar
+did not say how to count unclear, so this batch is **not a pass**: it sits just under 9 in 10 on the strict count.
+**Batch 2, fixed before it runs:** same rule (any MNDWI > 0 at or within 60 m), unchanged; 30 more random
+patches, none from batch 1 or the labels (seed 32); unclear counts against the rule; pass if, pooled over both
+batches, at least 9 in 10 marked patches show mining. If it fails, no mark ships.
+
+**Blind batch 2 (2026-10-28, seed 32, judged and saved before unsealing):** 25 mining, 2 not (a straight line cut,
+greening farmland), 3 unclear. All 30 measured. The rule marked 27: 24 mining, 3 unclear; it left out both
+non-mining patches and missed one mining patch (water 0.0).
+**Pooled over both blind batches: 46 of 52 marked patches showed mining (88%), recall 46 of 47.** Under the rule
+fixed before batch 2, that is a **fail**: no "mining signs" mark ships. What it does show: of the 6 marked
+patches that were not clear mining, only 1 was clearly something else; 5 were unclear from 10 m pictures. The
+open-water reading separates clear mining from clear farms and roads well, but not well enough on the pictures
+we can judge to put a per-place label on the site.
