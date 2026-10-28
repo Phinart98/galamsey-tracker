@@ -14,6 +14,7 @@ export function GET() {
       properties: {
         id: p.id, ha: p.ha, first_seen: p.first_seen, last_seen: p.last_seen, licence: p.licence,
         name: placeName(p), near: p.near, district: p.district,
+        ...(p.likely_galamsey && { likely_galamsey: true }),
         ...(!hasPair(p) && { no_picture: noPicture(p) }),
         ...(hasPair(p) && {
           before_date: p.chips.before.date, before_image: abs(p.chips.before.files['360.webp']),

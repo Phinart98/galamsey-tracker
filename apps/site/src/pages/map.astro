@@ -76,6 +76,7 @@ const withoutPic = active.find((p) => !hasPair(p));
             <option value="50">50 hectares or more</option>
           </select>
         </label>
+        <label class="check"><input type="checkbox" name="likely" value="1"> Only likely galamsey</label>
         <label class="check"><input type="checkbox" name="pics" value="1"> Only places with pictures</label>
         <label>Order of the list
           <select name="sort">
@@ -104,6 +105,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         </div>
         <div class="mapfoot small">
           <ul class="key" aria-label="Map key">
+            <li><span class="sw likely"></span>Likely galamsey</li>
             <li><span class="sw alarm"></span>No licence to mine</li>
             <li><span class="sw ring"></span>Inside a mining licence</li>
             <li><span class="sw area"></span>Area we have covered</li>
@@ -155,12 +157,14 @@ const withoutPic = active.find((p) => !hasPair(p));
     m.addSource('area', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } } });
     m.addLayer({ id: 'area', type: 'line', source: 'area', paint: { 'line-color': css('--ink'), 'line-width': 1.5, 'line-dasharray': [3, 2] } });
     m.addSource('places', { type: 'geojson', data: '/places.geojson', promoteId: 'id' });
+    const likely = ['has', 'likely_galamsey'];
     m.addLayer({
       id: 'places', type: 'circle', source: 'places',
+      layout: { 'circle-sort-key': ['case', likely, 1, 0] },
       paint: {
         'circle-radius': ['interpolate', ['linear'], ['sqrt', ['get', 'ha']], 1, 3, 11, 20],
-        'circle-color': ['case', ['in', ['get', 'licence'], ['literal', ALARM]], css('--signal'), 'rgba(0,0,0,0)'],
-        'circle-stroke-color': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], css('--ink'),
+        'circle-color': ['case', likely, css('--ink'), ['in', ['get', 'licence'], ['literal', ALARM]], css('--signal'), 'rgba(0,0,0,0)'],
+        'circle-stroke-color': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], ['case', likely, css('--signal'), css('--ink')],
           ['in', ['get', 'licence'], ['literal', ALARM]], css('--paper'), css('--ink')],
         'circle-stroke-width': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], 3, ['in', ['get', 'licence'], ['literal', ALARM]], 0.75, 2],
         'circle-opacity': 0.9,
@@ -257,6 +261,11 @@ const withoutPic = active.find((p) => !hasPair(p));
     google.href = googleMaps(lat, lon); google.target = '_blank'; google.rel = 'noopener noreferrer';
     google.textContent = 'Closer on Google Maps (may be older)';
     google.className = 'google';
+    if (p.likely_galamsey) {
+      const badge = document.querySelector<HTMLElement>('.tag.likely')!.cloneNode(true) as HTMLElement;
+      badge.hidden = false;
+      detail.append(badge);
+    }
     detail.append(lic, link, google);
     detail.hidden = false;
     history.replaceState(null, '', `${location.pathname}${location.search}#${p.id}`);
@@ -393,7 +402,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     const get = (k: string) => String(f.get(k) ?? '');
     const days = Number(get('since'));
     const cutoff = days ? new Date(Date.parse(`${list.dataset.date}T00:00:00Z`) - days * 864e5).toISOString().slice(0, 10) : '';
-    return { town: get('town').trim(), licence: get('licence'), district: get('district'), cutoff, min: Number(get('min')) || 0, pics: get('pics') === '1', sort: get('sort') };
+    return { town: get('town').trim(), licence: get('licence'), district: get('district'), cutoff, min: Number(get('min')) || 0, pics: get('pics') === '1', likely: get('likely') === '1', sort: get('sort') };
   }
   type Wanted = ReturnType<typeof wanted>;
 
@@ -402,7 +411,8 @@ const withoutPic = active.find((p) => !hasPair(p));
     && (!w.district || p.district === w.district)
     && (!w.cutoff || p.first_seen >= w.cutoff)
     && p.ha >= w.min
-    && (!w.pics || !!p.before_image);
+    && (!w.pics || !!p.before_image)
+    && (!w.likely || !!p.likely_galamsey);
 
   function expression(w: Wanted) {
     const all: any[] = ['all'];
@@ -412,6 +422,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     if (w.cutoff) all.push(['>=', ['get', 'first_seen'], w.cutoff]);
     if (w.min) all.push(['>=', ['get', 'ha'], w.min]);
     if (w.pics) all.push(['has', 'before_image']);
+    if (w.likely) all.push(['has', 'likely_galamsey']);
     return all.length > 1 ? all : null;
   }
 
@@ -426,6 +437,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     tag.classList.toggle('alarm', ALARM.includes(p.licence));
     tag.classList.toggle('plain', !ALARM.includes(p.licence));
     tag.textContent = LICENCE_SHORT[p.licence as keyof typeof LICENCE_SHORT];
+    li.querySelector<HTMLElement>('.tag.likely')!.hidden = !p.likely_galamsey;
     const none = li.querySelector('.nopair');
     if (none) none.textContent = NO_PICTURE[p.no_picture as NoPicture] ?? NO_PICTURE.pending;
     const fig = li.querySelector<HTMLElement>('[data-pair]');
@@ -559,6 +571,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   .key li { display: flex; align-items: center; gap: 8px; }
   .sw { width: 14px; height: 14px; border-radius: 50%; flex: none; }
   .sw.alarm { background: var(--signal); }
+  .sw.likely { background: var(--ink); }
   .sw.ring { border: 2px solid var(--ink); }
   .sw.area { border-radius: 0; height: 0; border-top: 2px dashed var(--ink); }
   .frame { border: 2px solid var(--ink); padding: 0; background: var(--paper); }
@@ -620,6 +633,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   /* The picked place: a card over the map on desktop, a panel at the bottom on phones */
   .detail { display: grid; gap: 10px; background: var(--paper); padding: 14px; }
   .detail[hidden] { display: none; }
+  .detail > :global(.tag) { justify-self: start; }
   .detail :global(.dhead) { display: flex; align-items: flex-start; gap: 12px; }
   .detail :global(h2) { font-size: 1.0625rem; margin: 0; line-height: 1.3; flex: 1; padding-top: 8px; }
   .detail :global(.hide) {

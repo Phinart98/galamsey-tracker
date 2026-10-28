@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Pair from '../components/Pair.astro';
 import LicenceTag from '../components/LicenceTag.astro';
+import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
@@ -74,6 +75,7 @@ const total = summary?.total_ha ?? 0;
                     <span class="muted">{tidy(town.district)}</span>
                     <span>{haText(town.ha)} ha within 1 km</span>
                     <LicenceTag licence={p.licence} />
+                    {p.likely_galamsey && <LikelyTag />}
                   </figcaption>
                 </figure>
               </li>

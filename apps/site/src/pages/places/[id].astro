@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Pair from '../../components/Pair.astro';
 import LicenceTag from '../../components/LicenceTag.astro';
+import LikelyTag from '../../components/LikelyTag.astro';
 import LabelKey from '../../components/LabelKey.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
@@ -45,10 +46,16 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
           {!place.active && (
             <p class="note">This patch is no longer in the last 12 months of clearing. The page stays so links to it keep working.</p>
           )}
+          {place.likely_galamsey && (
+            <div class="likely">
+              <p><LikelyTag /></p>
+              <p>There is open water in or right beside this patch, and no licence to mine on the land. Mining pits fill with water and farms rarely have ponds, so this is likely galamsey. It is an educated guess from satellite data, not a finding. <a href="/method#likely">How we guess</a></p>
+            </div>
+          )}
           <h2 class="lic-h">Licence on this land</h2>
           <p><LicenceTag licence={place.licence} /></p>
           <p>{LICENCE_SENTENCE[place.licence]}</p>
-          <LabelKey galamsey />
+          <LabelKey galamsey likely={!place.likely_galamsey} />
           <dl class="facts">
             <dt>Size</dt><dd>{hectares(place.ha)}</dd>
             <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
@@ -92,6 +99,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
   .grid { display: grid; gap: 24px; }
   @media (min-width: 960px) { .grid { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
   .about p { margin: 0 0 16px; max-width: 50ch; }
+  .likely { margin-bottom: 24px; }
   .lic-h { font-size: 1.0625rem; margin: 0 0 8px; }
   .facts { margin: 8px 0 24px; }
   .google { margin-top: 28px; }

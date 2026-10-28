@@ -4,16 +4,19 @@ import Src from './Src.astro';
 import { summary } from '../lib/data';
 import { longDate } from '../lib/format';
 
-interface Props { galamsey?: boolean }
-const { galamsey = false } = Astro.props;
+// likely: false where the page already explains the Likely galamsey label next to it
+interface Props { galamsey?: boolean; likely?: boolean }
+const { galamsey = false, likely = true } = Astro.props;
 ---
 <p class="labelkey">
   The labels show what the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src> says about the land{summary && <>, checked {longDate(summary.data_date)}</>}.
   {galamsey && 'Mining without a licence is illegal in Ghana, and that is what galamsey is. '}
   <a href="/method#licences">What the labels mean</a>
 </p>
+{likely && <p class="labelkey"><strong>Likely galamsey</strong> is our own educated guess, not the register: no licence to mine, and open water in or beside the patch, as mining pits fill with water. No label does not mean no galamsey. <a href="/method#likely">How we guess</a></p>}
 
 <style>
+  .labelkey + .labelkey { margin-top: 6px; }
   .labelkey { margin: 0; font-size: 0.9375rem; color: var(--muted); max-width: 70ch; }
   .labelkey :global(a) { color: var(--ink); }
 </style>

@@ -48,16 +48,17 @@ function shot(src: string, date: string) {
     h('div', { position: 'absolute', left: 12, bottom: 12, background: '#000', color: '#fff', fontSize: 26, fontWeight: 700, padding: '4px 12px' }, date));
 }
 
-export async function placeCard(o: { title: string; licence: Licence; before: Chip; after: Chip }) {
+export async function placeCard(o: { title: string; licence: Licence; likely: boolean; before: Chip; after: Chip }) {
   const alarm = o.licence === 'no licence' || o.licence === 'prospecting only';
   return card(h('div', { display: 'flex', flexDirection: 'column', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40 },
     h('div', { display: 'flex', gap: 40 }, shot(await jpeg(o.before), shortDate(o.before.date)), shot(await jpeg(o.after), shortDate(o.after.date))),
     h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 28, width: 1120 },
       h('div', { display: 'flex', flexDirection: 'column', gap: 12, width: 840 },
         h('div', { fontSize: 38, fontWeight: 700, lineHeight: 1.15 }, o.title),
-        h('div', { display: 'flex' },
+        h('div', { display: 'flex', gap: 12 },
           h('div', alarm ? { background: '#B8155A', color: '#fff', fontSize: 24, fontWeight: 700, padding: '2px 12px' }
-                         : { border: '2px solid #000', fontSize: 24, fontWeight: 700, padding: '0 10px' }, LICENCE_SHORT[o.licence]))),
+                         : { border: '2px solid #000', fontSize: 24, fontWeight: 700, padding: '0 10px' }, LICENCE_SHORT[o.licence]),
+          ...(o.likely ? [h('div', { background: '#000', color: '#fff', fontSize: 24, fontWeight: 700, padding: '2px 12px' }, 'Likely galamsey')] : []))),
       h('div', { fontSize: 26, fontWeight: 700, flexShrink: 0 }, 'Galamsey Tracker'))));
 }
 

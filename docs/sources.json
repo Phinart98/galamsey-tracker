@@ -351,6 +351,18 @@
    "used_for": "/method plain explanation: leaves absorb visible light and reflect near-infrared",
    "status": "verified",
    "link": "https://science.nasa.gov/earth/earth-observatory/measuring-vegetation-ndvi-evi/"
+  },
+  {
+   "id": "xu-2006-mndwi",
+   "title": "Modification of normalised difference water index (NDWI) to enhance open water features in remotely sensed imagery",
+   "publisher": "Hanqiu Xu, International Journal of Remote Sensing 27(14), 3025-3033, 2006",
+   "url": "https://doi.org/10.1080/01431160600589179",
+   "access": "journal article (DOI)",
+   "licence": "cited, not redistributed",
+   "used_for": "The open-water test behind the Likely galamsey label (MNDWI above zero means water)",
+   "status": "verified",
+   "link": "https://doi.org/10.1080/01431160600589179",
+   "note": "The publisher returns 403 to scripts (bot protection); the DOI opens in a browser"
   }
  ],
  "claims": [
@@ -697,6 +709,17 @@
    ],
    "status": "measured",
    "caveat": "Six places checked on 26 Oct 2026: 3 of 6 Google Earth pictures predate the clearing, the oldest from Dec 2022. Google updates its pictures, so this changes over time"
+  },
+  {
+   "id": "likely-galamsey",
+   "text": "Likely galamsey: an educated guess shown on places with no licence to mine (none or prospecting only) that have open water (MNDWI > 0) in or within 60 m of the patch; the site says the method was checked and tracks well, with no figures",
+   "where": "list rows, home villages, place pages, map card and dots, /method#likely, places.csv, places.geojson",
+   "evidence": [
+    "own-spike-log s27",
+    "xu-2006-mndwi"
+   ],
+   "status": "measured",
+   "caveat": "Two blind batches: 46 of 52 marked were mining (88%), 46 of 47 mining patches marked; below the 9-in-10 bar set beforehand. Philip decided on 2026-10-28 to show it as an educated guess, worded 'Likely galamsey', not a verdict. Judged by Claude from 10 m pictures; 5 of the 6 misses were unclear pictures"
   }
  ]
 }

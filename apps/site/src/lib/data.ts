@@ -32,6 +32,9 @@ export interface Place {
   lat: number;
   tile: string;
   chips: null | { missing: true; checked: string } | { before: Chip; after: Chip };
+  // Set by the weekly signs step: open water in or beside the patch on land with no licence to mine
+  likely_galamsey?: boolean;
+  signs?: { water: number; scene: string } | { missing: true; checked: string };
 }
 
 export interface Summary {
