@@ -52,6 +52,18 @@ jobs:
           done
           if [ -n "$missing" ]; then echo "::error::Missing secrets:$missing"; exit 1; fi
 
+      # Fail in seconds, not after hours of work, if the publishing token is wrong or has expired
+      - name: Check the Cloudflare token works
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          for url in https://api.cloudflare.com/client/v4/user/tokens/verify                      "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/tokens/verify"; do
+            status=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$url" | jq -r '.result.status // empty')
+            [ "$status" = "active" ] && { echo "Cloudflare token is active"; exit 0; }
+          done
+          echo "::error::The Cloudflare token is not valid or not active"; exit 1
+
       - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
         with:
           python-version: "3.12"
