@@ -8,6 +8,12 @@ on:
       chips_limit:
         description: "Most places to image this run"
         default: "80"
+      signs_limit:
+        description: "Most places to measure for open water this run (6000 clears a backlog)"
+        default: "1500"
+      signs_minutes:
+        description: "Time limit in minutes for the open-water step"
+        default: "45"
 
 concurrency:
   group: weekly-update
@@ -16,10 +22,17 @@ concurrency:
 permissions:
   contents: write
 
+# The pipeline's working files (place list with ids and readings, seeds, outlines, pictures) are kept between runs
+# as one archive on a GitHub release. It is replaced each run, so it never grows the code history.
+env:
+  STATE_TAG: pipeline-state
+  STATE_FILE: pipeline-state.tar.gz
+  PREVIEW_PROJECT: galamsey-tracker
+
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 300
     defaults:
       run:
         working-directory: pipeline
@@ -29,12 +42,12 @@ jobs:
       - name: Check secrets are set
         env:
           EARTHDATA_USERNAME: ${{ secrets.EARTHDATA_USERNAME }}
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          EARTHDATA_PASSWORD: ${{ secrets.EARTHDATA_PASSWORD }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           missing=""
-          for v in EARTHDATA_USERNAME R2_ACCOUNT_ID R2_BUCKET R2_ACCESS_KEY_ID; do
+          for v in EARTHDATA_USERNAME EARTHDATA_PASSWORD CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID; do
             [ -n "${!v}" ] || missing="$missing $v"
           done
           if [ -n "$missing" ]; then echo "::error::Missing secrets:$missing"; exit 1; fi
@@ -53,16 +66,16 @@ jobs:
           printf 'machine urs.earthdata.nasa.gov login %s password %s\n' "$EARTHDATA_USERNAME" "$EARTHDATA_PASSWORD" > ~/.netrc
           chmod 600 ~/.netrc
 
-      - name: Pull previous places, seeds and images from R2
+      - name: Restore the previous run's places, readings and pictures
         env:
-          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: auto
-        run: aws s3 sync "s3://$R2_BUCKET/v1" out --endpoint-url "$R2_ENDPOINT" --exclude "cache/*" --only-show-errors
+          GH_TOKEN: ${{ github.token }}
+        # A missing archive must stop the run: starting from nothing would hand every place a new reference
+        run: |
+          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP"
+          mkdir -p out && tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C out
 
       - name: Weekly patches, licences, names and summary
+        id: weekly
         timeout-minutes: 30
         run: uv run python -m tracker.run weekly
 
@@ -73,24 +86,24 @@ jobs:
         run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '80' }}"
 
       - name: Open-water readings for places with no licence to mine
-        timeout-minutes: 30
+        timeout-minutes: ${{ fromJSON(inputs.signs_minutes || '45') }}
         # Largest first; places not reached are measured in later weeks, so a failure here must not stop the rest
         continue-on-error: true
-        run: uv run python -m tracker.run signs --limit 500 --workers 6
+        run: uv run python -m tracker.run signs --limit "${{ inputs.signs_limit || '1500' }}" --workers 8
 
       - name: Monthly trend point
         timeout-minutes: 45
         run: uv run python -m tracker.run trend
 
-      - name: Push places, seeds and images to R2
-        if: always()
+      - name: Save places, readings and pictures for next run
+        # Only when the restore worked, so a failed restore can never overwrite good state with nothing
+        if: always() && steps.weekly.outcome != 'skipped'
         env:
-          R2_ENDPOINT: https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
-          R2_BUCKET: ${{ secrets.R2_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: auto
-        run: aws s3 sync out "s3://$R2_BUCKET/v1" --endpoint-url "$R2_ENDPOINT" --exclude "cache/*" --exclude "*.log" --only-show-errors
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The town and district cache saves downloading all of Ghana's map data every week
+          tar -czf "$RUNNER_TEMP/$STATE_FILE" -C out places chips cache/places
+          gh release upload "$STATE_TAG" "$RUNNER_TEMP/$STATE_FILE" --clobber
 
       # Always commit status.json, even after a failure: it keeps the repo active so GitHub
       # does not disable this schedule, and it lets the site say when an update is late.
@@ -103,3 +116,19 @@ jobs:
           git add data
           git diff --cached --quiet || git commit -m "data: weekly update $(date -u +%Y-%m-%d)"
           git push
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/site/package-lock.json
+
+      # Until launch the site is a private preview: deploy-preview.mjs builds with PREVIEW=1 and adds noindex
+      - name: Build and publish the site
+        working-directory: apps/site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npm ci
+          npm run deploy:preview -- "$PREVIEW_PROJECT"
