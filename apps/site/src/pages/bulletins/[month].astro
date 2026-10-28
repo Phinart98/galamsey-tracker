@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import PlaceRow from '../../components/PlaceRow.astro';
 import LicenceTag from '../../components/LicenceTag.astro';
 import { bulletins, placeById, type Summary } from '../../lib/data';
-import { longDate, monthName, num, pct } from '../../lib/format';
+import { longDate, monthName, num, pct, tidyDistrict } from '../../lib/format';
 
 export function getStaticPaths() {
   return bulletins.map((b) => ({ params: { month: b.month }, props: { s: b.summary, month: b.month } }));
@@ -30,7 +30,7 @@ const top = s.top_places.map((t) => placeById.get(t.id)).filter((p) => p !== und
     {s.top_districts.length > 0 && (
       <section class="band">
         <h2>By district</h2>
-        <dl class="facts">{s.top_districts.map((d) => <><dt>{d.district.replace(/\/(\w)/g, (_, c) => `/${c.toUpperCase()}`)}</dt><dd>{num(d.ha)} ha</dd></>)}</dl>
+        <dl class="facts">{s.top_districts.map((d) => <><dt>{tidyDistrict(d.district)}</dt><dd>{num(d.ha)} ha</dd></>)}</dl>
       </section>
     )}
 

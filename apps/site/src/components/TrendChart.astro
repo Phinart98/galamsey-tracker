@@ -38,7 +38,7 @@ const rows = points.map((p) => ({
   </div>
   <div class="plot" tabindex="0" role="img"
        aria-label={`Line chart of hectares cleared in the 12 months to each date, from ${longDate(points[0].date)} to ${longDate(last.date)}. The table below has every value.`}>
-    {ticks.map((t) => <span class="tick" style={`bottom:${(t / top) * 100}%`}>{t === 0 ? '0' : `${num(t / 1000)}K`}</span>)}
+    {ticks.map((t) => <span class="tick" style={`bottom:${(t / top) * 100}%`}>{t === 0 ? '0' : `${(t / 1000).toLocaleString('en-GH', { maximumFractionDigits: 1 })}K`}</span>)}
     <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
       {ticks.map((t) => <line class="grid" x1="0" x2={W} y1={y(t)} y2={y(t)} />)}
       <path class="wash" d={wash} />

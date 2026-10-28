@@ -3,8 +3,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import base from '../data/water-map.json';
-import { active } from '../lib/data';
-import { num } from '../lib/format';
+import { active, coverage } from '../lib/data';
+import { count, num } from '../lib/format';
 
 interface Props { praHa: number }
 const { praHa } = Astro.props;
@@ -112,7 +112,7 @@ const labels = [
       <li><span class="sw out-sw"></span>Cleared land that drains to other rivers, not the Pra</li>
     </ul>
     <p class="why">Daboase stands out because most of the cleared land we cover is in the Pra basin. The land that drains to the other plants holds little of it.</p>
-    <p class="credit">{base.credit} Only the {num(active.length)} patches in the six areas we cover are shown.</p>
+    <p class="credit">{base.credit} Only the {num(active.length)} patches in the {count(coverage.length)} areas we cover are shown.</p>
   </figcaption>
 </figure>
 

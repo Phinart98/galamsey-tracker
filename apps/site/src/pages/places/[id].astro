@@ -60,7 +60,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
           </dl>
           <div class="actions">
             <Share title={title} />
-            <a class="btn" href={`/map#${place.id}`}>Show on the map</a>
+            {place.active && <a class="btn" href={`/map#${place.id}`}>Show on the map</a>}
           </div>
           <div class="google">
             <h2>See it closer</h2>

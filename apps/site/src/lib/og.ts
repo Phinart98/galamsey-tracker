@@ -18,12 +18,18 @@ const h = (type: string, style: Record<string, unknown>, ...children: (Node | st
   ({ type, props: { style, children } });
 const img = (src: string, style: Record<string, unknown>): Node => ({ type: 'img', props: { src, style } });
 
+async function download(url: string) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Share card picture failed: ${res.status} ${url}`);
+  return Buffer.from(await res.arrayBuffer());
+}
+
 // Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG
 async function jpeg(chip: Chip) {
   const rel = chip.files['720.webp'];
   const url = chipUrl(rel);
   const buf = url.startsWith('http')
-    ? Buffer.from(await (await fetch(url)).arrayBuffer())
+    ? await download(url)
     : fs.readFileSync(path.join(process.cwd(), 'public', rel));
   const out = await sharp(buf).jpeg({ quality: 82 }).toBuffer();
   return `data:image/jpeg;base64,${out.toString('base64')}`;

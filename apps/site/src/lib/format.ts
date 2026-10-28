@@ -2,6 +2,10 @@ import type { Chip, Licence, Place } from './data';
 
 const nf = new Intl.NumberFormat('en-GB');
 export const num = (n: number) => nf.format(Math.round(n));
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+// Small counts read better as words in a sentence
+export const count = (n: number) => WORDS[n] ?? num(n);
+export const Count = (n: number) => count(n).charAt(0).toUpperCase() + count(n).slice(1);
 export const pct = (share: number | null | undefined) => (share == null ? 'n/a' : `${Math.round(share * 100)}%`);
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
