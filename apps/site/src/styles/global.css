@@ -107,3 +107,8 @@ p { text-wrap: pretty; }
 ul.list { container-type: inline-size; }
 body > main { flex: 1; }
 :root:has(dialog[open]) { overflow: hidden; }
+
+/* Marks the cleared patch: every picture is centred on a point inside it. Same in both themes, on the imagery */
+.chip-frame { position: relative; display: block; }
+.spot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border: 2px solid #fff;
+  border-radius: 50%; box-shadow: 0 0 0 1.5px #000, inset 0 0 0 1.5px #000; pointer-events: none; }

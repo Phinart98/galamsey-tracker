@@ -2,7 +2,7 @@
 
 Weekly satellite evidence of land cleared in Ghana's southern gold belt, with the licence on the land.
 
-Every week the tracker finds patches of land that lost their plant cover in the last 12 months, names each one after the nearest town or village, and shows what the Minerals Commission's public register says about the land. For larger patches it shows a satellite picture from before the clearing and a recent one, so anyone can see the change for themselves. Patches on land with no licence to mine that have open water in or beside them carry a "Likely galamsey" label, because mining pits fill with water and farms rarely have ponds. It is an educated guess, not a finding.
+Every week the tracker finds patches of land that lost their plant cover in the last 12 months, names each one after the nearest town or village, and shows what the Minerals Commission's public register says about the land. For every patch it shows a satellite picture from before the clearing and a recent one, so anyone can see the change for themselves. Patches on land with no licence to mine that have open water in or beside them carry a "Likely galamsey" label, because mining pits fill with water and farms rarely have ponds. It is an educated guess, not a finding.
 
 Nobody has to visit a site or file a report for it to appear. The whole thing runs on free, open data and rebuilds itself every Monday.
 
@@ -62,7 +62,7 @@ npm run dev                                # reads ../../pipeline/out
 
 ## The weekly run
 
-`.github/workflows/weekly.yml` runs every Monday at 06:00 UTC, and can be started by hand. It restores the previous run's working files (place list, readings, pictures) from the `pipeline-state` release, runs the four steps above, saves the working files back to the release, commits `data/`, then builds the site and publishes it to Cloudflare Pages. A failed run still records itself in `data/status.json`, and the site says when an update is late.
+`.github/workflows/weekly.yml` runs every Monday at 06:00 UTC, and can be started by hand. It restores the previous run's working files (place list, readings, pictures) from the `pipeline-state` release, runs the four steps above, saves the working files back to the release, commits `data/`, publishes the pictures to their own Cloudflare Pages project (`galamsey-tracker-pictures`, so neither site passes Pages' limit of 20,000 files), then builds the site and publishes it to Cloudflare Pages. A failed run still records itself in `data/status.json`, and the site says when an update is late.
 
 Repository secrets: `EARTHDATA_USERNAME`, `EARTHDATA_PASSWORD`, `CLOUDFLARE_API_TOKEN` (Cloudflare Pages edit) and `CLOUDFLARE_ACCOUNT_ID`.
 

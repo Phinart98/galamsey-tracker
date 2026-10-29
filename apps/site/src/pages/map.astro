@@ -230,18 +230,22 @@ const withoutPic = active.find((p) => !hasPair(p));
       const [plon, plat] = f.geometry.coordinates;
       Object.assign(pair.dataset, { pair: '', title, href: `/places/${p.id}`, lat: String(plat), lon: String(plon) });
       for (const side of ['before', 'after']) {
-        const small = local(p[`${side}_image`]);
-        const large = small.replace(/-360\.webp$/, '-720.webp');
+        const large = local(p[`${side}_image`]);
         pair.dataset[side] = large;
         pair.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         const a = document.createElement('a');
         a.href = large; a.dataset.open = side;
         const img = document.createElement('img');
-        img.src = small; img.width = 360; img.height = 360;
+        img.src = large; img.width = 720; img.height = 720;
         img.alt = `Satellite image, ${side}, ${longDate(p[`${side}_date`])}`;
+        const frame = document.createElement('div');
+        frame.className = 'chip-frame';
+        const spot = document.createElement('i');
+        spot.className = 'spot'; spot.setAttribute('aria-hidden', 'true');
+        frame.append(img, spot);
         const cap = document.createElement('span');
-        cap.textContent = shortDate(p[`${side}_date`]);
-        a.append(img, cap);
+        cap.textContent = `${side === 'before' ? 'Before' : 'After'}, taken ${shortDate(p[`${side}_date`])}`;
+        a.append(frame, cap);
         pair.append(a);
       }
       detail.append(pair);
@@ -445,13 +449,12 @@ const withoutPic = active.find((p) => !hasPair(p));
       Object.assign(fig.dataset, { title, href: `/places/${p.id}`, lat: String(p.lat), lon: String(p.lon) });
       li.querySelectorAll<HTMLAnchorElement>('[data-open]').forEach((shot) => {
         const side = shot.dataset.open!;
-        const small = local(p[`${side}_image`]);
-        const file = (size: string) => small.replace(/-360\.webp$/, `-${size}`);
-        fig.dataset[side] = file('720.webp');
+        const src = local(p[`${side}_image`]);
+        fig.dataset[side] = src;
         fig.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
-        shot.href = file('720.webp');
+        shot.href = src;
         const img = shot.querySelector('img')!;
-        img.src = small; img.srcset = `${small} 360w, ${file('720.webp')} 720w`;
+        img.src = src;
         img.loading = 'lazy'; img.removeAttribute('fetchpriority');
         img.alt = side === 'before'
           ? `Satellite image of the place on ${longDate(p.before_date)}, before the clearing was first seen`

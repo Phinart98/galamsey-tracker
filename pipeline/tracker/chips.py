@@ -17,7 +17,7 @@ COLLECTIONS = ("sentinel-2-c1-l2a", "sentinel-2-l2a")
 CLOUDY_SCL = (3, 8, 9, 10)   # cloud shadow, medium and high cloud probability, thin cirrus
 MAX_CLOUD = 0.10
 MAX_NODATA = 0.02
-WIDTHS = (360, 720)
+WIDTHS = (720,)
 # A stalled read with no timeout hung a local run for 85 minutes (2026-10-25). Every read now gives
 # up after a minute, and each place gets a few minutes before it waits for next week's retry.
 HTTP = {"GDAL_HTTP_TIMEOUT": "60", "GDAL_HTTP_CONNECTTIMEOUT": "20", "GDAL_HTTP_MAX_RETRY": "2",
@@ -84,8 +84,8 @@ def scene(item, bbox: list[float]) -> np.ndarray | None:
 
 
 def encode(rgb: np.ndarray) -> dict[str, bytes]:
-    """WebP at each width, keyed like '360.webp'. No AVIF: four files per place keeps a deployment under
-    Cloudflare Pages' 20,000-file limit, and every browser shows WebP."""
+    """WebP keyed like '720.webp'. One size only: a chip holds 160 real pixels across, so a smaller copy adds no
+    detail, and two files per place (before and after) keep the pictures under Cloudflare Pages' 20,000-file limit."""
     out = {}
     img = Image.fromarray(rgb)
     for w in WIDTHS:

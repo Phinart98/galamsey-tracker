@@ -7,7 +7,7 @@ on:
     inputs:
       chips_limit:
         description: "Most places to image this run"
-        default: "300"
+        default: "2000"
       signs_limit:
         description: "Most places to measure for open water this run (6000 clears a backlog)"
         default: "1500"
@@ -28,6 +28,8 @@ env:
   STATE_TAG: pipeline-state
   STATE_FILE: pipeline-state.tar.gz
   PREVIEW_PROJECT: galamsey-tracker
+  # The pictures have their own Pages project, so neither site passes Pages' 20,000-file limit
+  PICTURES_PROJECT: galamsey-tracker-pictures
 
 jobs:
   update:
@@ -93,11 +95,11 @@ jobs:
         timeout-minutes: 30
         run: uv run python -m tracker.run weekly
 
-      - name: Before/after images for new large places
-        timeout-minutes: 120
+      - name: Before/after images for places without them
+        timeout-minutes: 130
         # Missing pictures are retried next week, so a failure here must not stop the trend or the upload
         continue-on-error: true
-        run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '300' }}"
+        run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '2000' }}"
 
       - name: Open-water readings for places with no licence to mine
         timeout-minutes: ${{ fromJSON(inputs.signs_minutes || '45') }}
@@ -139,12 +141,22 @@ jobs:
           cache: npm
           cache-dependency-path: apps/site/package-lock.json
 
+      # Before the site, so every picture the new site links to is already there. If this fails, the site is not
+      # rebuilt and last week's site stays up with last week's pictures.
+      - name: Publish the pictures
+        working-directory: apps/site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run deploy:pictures -- "$PICTURES_PROJECT"
+
       # Until launch the site is a private preview: deploy-preview.mjs builds with PREVIEW=1 and adds noindex
       - name: Build and publish the site
         working-directory: apps/site
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CHIPS_BASE_URL: https://${{ env.PICTURES_PROJECT }}.pages.dev
         run: |
           npm ci
           npm run deploy:preview -- "$PREVIEW_PROJECT"

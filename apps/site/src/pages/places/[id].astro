@@ -6,7 +6,7 @@ import LikelyTag from '../../components/LikelyTag.astro';
 import LabelKey from '../../components/LabelKey.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
-import { aliases, hasPair, placeById, places, type Place } from '../../lib/data';
+import { aliases, hasCard, hasPair, placeById, places, type Place } from '../../lib/data';
 import { GOOGLE_NOTE, LICENCE_SENTENCE, NO_PICTURE, noPicture, coords, district, googleEarth, googleMaps, hectares, longDate, placeName } from '../../lib/format';
 
 export function getStaticPaths() {
@@ -31,7 +31,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
     <body><p>This patch grew into another one. <a href={`/places/${to}`}>Go to its page</a>.</p></body>
   </html>
 ) : place && (
-  <Base title={title} image={hasPair(place) ? `/og/places/${place.id}.jpg` : undefined}
+  <Base title={title} image={hasCard(place) ? `/og/places/${place.id}.jpg` : undefined}
         description={`${hectares(place.ha)} of land cleared ${placeName(place)}, first seen by satellite on ${longDate(place.first_seen)}. ${LICENCE_SENTENCE[place.licence]}`}>
     <article class="wrap">
       <p class="crumb small"><a href="/map">All places</a></p>

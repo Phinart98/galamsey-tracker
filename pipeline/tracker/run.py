@@ -30,7 +30,6 @@ from tracker.identity import dedupe_tiles, match_ids
 METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts (spike log s20)
 BELT_BBOX = "-3.3,4.7,-0.3,7.5"   # southern mining belt covered by v1
 WORK_CRS = "EPSG:32630"
-CHIP_MIN_HA = 3.0
 CHIP_HALF_KM = 0.8
 CHIP_RETRY_DAYS = 7
 # NASA usually publishes a reading within days, but some take up to three weeks. A reading counts
@@ -161,9 +160,9 @@ def write_places(clusters, previous, new_aliases, to_ll):
 
 
 def needs_chips(rec: dict, today: dt.date) -> bool:
-    """Large active places with no pictures yet, none clear enough when last tried a week or more ago,
+    """Active places with no pictures yet, none clear enough when last tried a week or more ago,
     or pictures that are out of date because the place kept growing."""
-    if not rec["active"] or rec["ha"] < CHIP_MIN_HA:
+    if not rec["active"]:
         return False
     chips = rec.get("chips")
     if not chips:

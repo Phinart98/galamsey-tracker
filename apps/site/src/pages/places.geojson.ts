@@ -17,8 +17,8 @@ export function GET() {
         ...(p.likely_galamsey && { likely_galamsey: true }),
         ...(!hasPair(p) && { no_picture: noPicture(p) }),
         ...(hasPair(p) && {
-          before_date: p.chips.before.date, before_image: abs(p.chips.before.files['360.webp']),
-          after_date: p.chips.after.date, after_image: abs(p.chips.after.files['360.webp']),
+          before_date: p.chips.before.date, before_image: abs(p.chips.before.files['720.webp']),
+          after_date: p.chips.after.date, after_image: abs(p.chips.after.files['720.webp']),
         }),
       },
     })),

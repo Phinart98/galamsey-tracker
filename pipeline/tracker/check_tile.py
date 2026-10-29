@@ -16,18 +16,19 @@ from pyproj import Transformer
 
 from tracker import chips, nasa, zone
 from tracker.dist import cluster_polygons, loss_mask
-from tracker.run import CHIP_HALF_KM, CHIP_MIN_HA, OUT
+from tracker.run import CHIP_HALF_KM, OUT
 
 GHANA_BBOX = "-3.3,4.5,1.3,11.2"
 SIDE = 320
 PER_SHEET = 10
+BIG_HA = 3.0  # the sample is half from patches this size or more, half from smaller ones
 
 
 def sample(clusters, n: int, seed: int):
     """Half from patches of at least 3 ha and half from smaller ones, so small clearing is checked too."""
     rng = np.random.default_rng(seed)
-    big = clusters[clusters.ha >= CHIP_MIN_HA]
-    small = clusters[clusters.ha < CHIP_MIN_HA]
+    big = clusters[clusters.ha >= BIG_HA]
+    small = clusters[clusters.ha < BIG_HA]
     k = min(n // 2, len(big))
     picks = [big.iloc[i] for i in rng.choice(len(big), k, replace=False)]
     picks += [small.iloc[i] for i in rng.choice(len(small), min(n - k, len(small)), replace=False)]

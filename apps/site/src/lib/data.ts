@@ -16,7 +16,7 @@ function read<T>(file: string, fallback: T): T {
 
 export type Licence = 'no licence' | 'prospecting only' | 'small-scale licence' | 'large-scale lease';
 
-export interface Chip { date: string; files: Record<'360.webp' | '720.webp', string> }
+export interface Chip { date: string; files: Record<'720.webp', string> }
 
 export interface Place {
   id: string;
@@ -88,8 +88,11 @@ export function hasPair(p: Place): p is Place & { chips: { before: Chip; after: 
 
 export const active = places.filter((p) => p.active).sort((a, b) => b.ha - a.ha);
 export const withPairs = active.filter(hasPair);
-// Inactive places keep their page, so they keep their share card too
-export const pictured = places.filter(hasPair);
+// Share cards for places of 3 ha or more (inactive ones keep their page, so they keep their card too).
+// A card per small place would push the site past Cloudflare Pages' 20,000-file limit; they share the home card.
+export const CARD_MIN_HA = 3;
+export const hasCard = (p: Place): p is Place & { chips: { before: Chip; after: Chip } } => hasPair(p) && p.ha >= CARD_MIN_HA;
+export const carded = places.filter(hasCard);
 
 
 

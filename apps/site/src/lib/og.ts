@@ -27,10 +27,9 @@ async function download(url: string) {
 // Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG
 async function jpeg(chip: Chip) {
   const rel = chip.files['720.webp'];
-  const url = chipUrl(rel);
-  const buf = url.startsWith('http')
-    ? await download(url)
-    : fs.readFileSync(path.join(process.cwd(), 'public', rel));
+  // The weekly run has the pictures on disk even when the site links to them on the pictures site
+  const here = [path.join(process.cwd(), 'public', rel), path.join(process.cwd(), '../../pipeline/out', rel)].find((f) => fs.existsSync(f));
+  const buf = here ? fs.readFileSync(here) : await download(chipUrl(rel));
   const out = await sharp(buf).jpeg({ quality: 82 }).toBuffer();
   return `data:image/jpeg;base64,${out.toString('base64')}`;
 }

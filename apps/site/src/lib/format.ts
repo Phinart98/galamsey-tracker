@@ -61,25 +61,17 @@ export const hectares = (ha: number) => (ha < 10 ? `${ha.toFixed(1)} hectares` :
 const CHIPS = (import.meta.env.CHIPS_BASE_URL ?? '').replace(/\/$/, '');
 export const chipUrl = (rel: string) => `${CHIPS}/${rel}`;
 
-export function srcsets(chip: Chip) {
-  return {
-    webp: `${chipUrl(chip.files['360.webp'])} 360w, ${chipUrl(chip.files['720.webp'])} 720w`,
-    src: chipUrl(chip.files['360.webp']),
-    large: chipUrl(chip.files['720.webp']),
-  };
-}
+// One size per picture: a picture holds 160 real pixels across, so a smaller copy would add no detail
+export const chipSrc = (chip: Chip) => chipUrl(chip.files['720.webp']);
 
 // Why a place has no pictures. Most have simply not been tried yet, so never blame cloud unless we looked.
-export type NoPicture = 'cloudy' | 'small' | 'pending';
-export const PICTURE_MIN_HA = 3;
+export type NoPicture = 'cloudy' | 'pending';
 export const NO_PICTURE: Record<NoPicture, string> = {
   cloudy: 'No clear picture yet. Cloud or haze covered this place in every picture we checked.',
-  small: `No pictures. We make them for patches of ${PICTURE_MIN_HA} hectares or more.`,
-  pending: 'No pictures yet. We add them for the largest places first.',
+  pending: 'No pictures yet. New places get them within a week or two, the largest first.',
 };
 export function noPicture(p: Place): NoPicture {
-  if (p.chips && 'missing' in p.chips) return 'cloudy';
-  return p.ha < PICTURE_MIN_HA ? 'small' : 'pending';
+  return p.chips && 'missing' in p.chips ? 'cloudy' : 'pending';
 }
 
 // Sharper pictures than ours, but often years older and undated in Maps: every link carries GOOGLE_NOTE nearby.

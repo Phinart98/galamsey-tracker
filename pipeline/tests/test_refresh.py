@@ -57,8 +57,8 @@ def test_a_retake_keeps_the_before_picture_and_replaces_the_after(monkeypatch, t
 
     from tracker import run
 
-    old = {"before": {"date": "2025-02-04", "files": {"360.webp": "chips/a/before-360.webp"}},
-           "after": {"date": "2026-06-01", "files": {"360.webp": "chips/a/after-360.webp"}}, "ha": 10.0}
+    old = {"before": {"date": "2025-02-04", "files": {"720.webp": "chips/a/before-720.webp"}},
+           "after": {"date": "2026-06-01", "files": {"720.webp": "chips/a/after-720.webp"}}, "ha": 10.0}
     rec = {"id": "a", "active": True, "ha": 20.0, "first_seen": "2025-03-01", "last_seen": "2026-10-20",
            "lon": -2.0, "lat": 6.0, "chips": old}
     (tmp_path / "places").mkdir()

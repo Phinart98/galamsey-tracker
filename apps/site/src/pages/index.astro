@@ -1,16 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import Pair from '../components/Pair.astro';
-import Flip from '../components/Flip.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
 import { doorstep, summary, townsNear, trend, water, where } from '../lib/data';
-import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, srcsets, tidyDistrict } from '../lib/format';
+import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
-const [lead, ...villages] = doorstep(9);
+const [lead, ...villages] = doorstep(10);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 const tidy = (d: string | null) => (d ? tidyDistrict(d) : null);
@@ -46,7 +45,7 @@ const total = summary?.total_ha ?? 0;
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
                 <span>{hectares(lead.town.ha)} cleared within 1 km, in {lead.town.patches} patches. The pictures show the largest, {hectares(lead.place.ha)}, first seen {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} The town shown changes as new clearing is found.</span>
-                <span class="hint">Tap a picture to see it large and zoom in.</span>
+                <span class="hint">The ring sits on the cleared patch. Tap a picture to see it large and zoom in.</span>
               </figcaption>
             </Pair>
           </div>
@@ -60,23 +59,18 @@ const total = summary?.total_ha ?? 0;
       <section class="band doorstep" aria-labelledby="others">
         <div>
           <h2 id="others">Other towns and villages with the most cleared land around them</h2>
-          <p class="intro">Each picture is one of the largest cleared patches within 1 km of the town. Use the arrows to compare before and after, or tap the picture to see it large.</p>
+          <p class="intro">Each pair shows one of the largest cleared patches within 1 km of the town, before and after. The ring sits on the patch. Tap a picture to see it large.</p>
         </div>
         <ul class="villages">
           {villages.map(({ town, place: p }) => (
             <li>
-              <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`} data-lat={p.lat} data-lon={p.lon}
-                      data-before={srcsets(p.chips.before).large} data-after={srcsets(p.chips.after).large}
-                      data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
-                <Flip chips={p.chips} where={`near ${town.name}`} sizes="(min-width: 960px) 280px, 50vw" />
-                <figcaption>
-                  <a class="name" href={`/places/${p.id}`}>{town.name}</a>
-                  <span class="muted">{tidy(town.district)}</span>
-                  <span>{haText(town.ha)} ha within 1 km</span>
-                  <LicenceTag licence={p.licence} />
-                  {p.likely_galamsey && <LikelyTag />}
+              <h3 class="town"><a href={`/places/${p.id}`}>{town.name}</a><span>, {tidy(town.district)}</span></h3>
+              <Pair place={p} variant="row">
+                <figcaption class="card">
+                  <span>{haText(town.ha)} ha cleared within 1 km</span>
+                  <span class="tags"><LicenceTag licence={p.licence} />{p.likely_galamsey && <LikelyTag />}</span>
                 </figcaption>
-              </figure>
+              </Pair>
             </li>
           ))}
         </ul>
@@ -238,18 +232,19 @@ const total = summary?.total_ha ?? 0;
   .who span { font-weight: 400; }
   .caption { display: grid; gap: 4px; margin-top: 10px; max-width: 60ch; }
   .caption .hint { color: var(--muted); font-size: 0.9375rem; }
-  .villages { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px 4px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .villages figure { margin: 0; }
-  .villages figcaption { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 2px 0; font-size: 0.9375rem; line-height: 1.35; }
-  .villages .name { font-weight: 800; font-size: 1.0625rem; }
-  .villages :global(.tag) { margin-top: 4px; white-space: normal; }
+  /* Each place is a pair: tight inside (4 px), wide apart (28 to 40 px), so pairs never run into each other */
+  .villages { list-style: none; margin: 0; padding: 0; display: grid; gap: 36px; grid-template-columns: minmax(0, 1fr); }
+  .card { display: grid; gap: 2px; margin-top: 10px; font-size: 0.9375rem; line-height: 1.35; }
+  .town { font-size: 1.125rem; line-height: 1.3; margin: 0 0 10px; }
+  .town span { font-weight: 400; color: var(--muted); }
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .card :global(.tag) { white-space: normal; }
   .note { margin: 0; font-size: 0.9375rem; color: var(--muted); max-width: 70ch; }
   @media (max-width: 719px) {
-    .villages { margin: 0 calc(-1 * var(--gutter)); column-gap: 2px; }
-    .villages figcaption { padding: 8px var(--gutter) 0; }
     .lead .caption { padding: 0 var(--gutter); }
   }
-  @media (min-width: 720px) { .villages { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 8px; } }
+  @media (min-width: 720px) { .villages { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; } }
+  @media (min-width: 1100px) { .villages { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .field { display: flex; align-items: center; gap: 10px; max-width: 520px; border: 2px solid var(--ink); border-radius: 6px; padding: 0 12px; background: var(--paper); }
   .field:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
   .field input { flex: 1; min-width: 0; min-height: 52px; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 1.125rem; outline: none; }

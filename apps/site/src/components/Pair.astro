@@ -1,6 +1,6 @@
 ---
 import type { Chip, Place } from '../lib/data';
-import { hectares, longDate, placeName, shortDate, srcsets } from '../lib/format';
+import { chipSrc, hectares, longDate, placeName, shortDate } from '../lib/format';
 
 interface Props {
   place: Place & { chips: { before: Chip; after: Chip } };
@@ -8,18 +8,13 @@ interface Props {
   eager?: boolean;
 }
 const { place, variant = 'row', eager = false } = Astro.props;
-const SIZES = {
-  lead: '(min-width: 960px) 340px, 50vw',
-  row: '(min-width: 720px) 130px, 50vw',
-  page: '(min-width: 960px) 480px, 50vw',
-};
 const shots = (['before', 'after'] as const).map((side) => {
   const chip = place.chips[side];
-  const s = srcsets(chip);
+  const src = chipSrc(chip);
   const alt = side === 'before'
     ? `Satellite image of the place on ${longDate(chip.date)}, before the clearing was first seen`
     : `Satellite image of the same place on ${longDate(chip.date)}`;
-  return { side, chip, s, alt };
+  return { side, chip, src, alt };
 });
 ---
 <figure
@@ -29,16 +24,19 @@ const shots = (['before', 'after'] as const).map((side) => {
   data-href={`/places/${place.id}`}
   data-lat={place.lat}
   data-lon={place.lon}
-  data-before={shots[0].s.large}
-  data-after={shots[1].s.large}
+  data-before={shots[0].src}
+  data-after={shots[1].src}
   data-before-date={longDate(shots[0].chip.date)}
   data-after-date={longDate(shots[1].chip.date)}
 >
   <div class="shots">
-    {shots.map(({ side, chip, s, alt }) => (
-      <a class="shot" href={s.large} data-open={side}>
-        <img src={s.src} srcset={s.webp} sizes={SIZES[variant]} width="360" height="360" alt={alt}
-             loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
+    {shots.map(({ side, chip, src, alt }) => (
+      <a class="shot" href={src} data-open={side}>
+        <span class="chip-frame">
+          <img src={src} width="720" height="720" alt={alt}
+               loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
+          <i class="spot" aria-hidden="true"></i>
+        </span>
         <span class="when"><strong>{side === 'before' ? 'Before' : 'After'}</strong> <span>Taken {shortDate(chip.date)}</span></span>
       </a>
     ))}

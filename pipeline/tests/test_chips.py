@@ -47,8 +47,8 @@ def test_a_network_failure_on_one_place_skips_it_and_the_run_carries_on(monkeypa
     assert index["b"]["chips"] == {"missing": True, "checked": "2026-10-25"}
 
 
-def test_encode_makes_webp_only_at_both_widths():
-    # Four files per place keeps a deployment under Cloudflare Pages' 20,000-file limit
+def test_encode_makes_one_720_webp():
+    # Two files per place (before and after) keeps the pictures under Cloudflare Pages' 20,000-file limit
     out = chips.encode(np.full((40, 40, 3), 90, dtype=np.uint8))
-    assert sorted(out) == ["360.webp", "720.webp"]
+    assert sorted(out) == ["720.webp"]
     assert all(blob[8:12] == b"WEBP" for blob in out.values())
