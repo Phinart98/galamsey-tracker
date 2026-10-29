@@ -629,3 +629,20 @@ Scoring: precision = mining among marked, unclear counts against the rule; recal
 all patches judged mining and measured. A variant replaces R0 only if its precision is higher and it keeps at least
 9 in 10 of the mining patches R0 marks. River masking is not tried: galamsey works along rivers, so masking them
 would hide real mining. Result below.
+
+**Result (2026-10-29, verdicts saved before unsealing):** 31 mining, 2 not (a farm that greened up again, neat
+rectangular farm blocks in forest), 7 unclear. Many sheets lack one or more of the four dates, mostly the halfway
+picture in the rainy season, and three patches had only one picture, which accounts for most of the unclear verdicts.
+38 of 40 could be measured.
+
+| Rule | Marked | Mining | Precision (unclear counts against) | Mining patches marked |
+|---|---|---|---|---|
+| R0, water within 60 m, clearest scene | 29 | 26 | 90% | 26 of 29 |
+| R1, water within 60 m in 2 of the clear scenes | 30 | 27 | 90% | 27 of 29 |
+| R2, water inside the patch, clearest scene | 22 | 21 | 95% | 21 of 29 |
+
+R1's precision is not higher than R0's, so it does not replace it. R2 is more precise but keeps only 21 of the 26
+mining patches R0 marks (81%, under the 9 in 10 needed), so it does not replace it either. **R0 stays as it is.**
+Every patch marked in this batch that was not judged mining was unclear, not clearly something else; both clear farms
+were left out. Pooled over all three blind batches, 72 of 81 marked patches showed mining (89%), with unclear
+counting against the rule. The guess stays worded as a guess.
