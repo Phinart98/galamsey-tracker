@@ -36,6 +36,9 @@ import { longDate } from '../lib/format';
       <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining.</dd>
       <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine. Some clearing here is the licensed mine itself.</dd>
     </dl>
+    <h3 id="matching">How a patch is matched to the register</h3>
+    <p>The register does not list licences as single points. It gives each one as an outline on the map. Each cleared patch is an outline too, made of the 30 metre squares where the satellites saw plants lost. We lay one over the other and measure how much of the patch falls inside each kind of licence. The kind that covers the most of the patch gives the label, as long as it covers at least a quarter of it. If none does, the label is no licence.</p>
+    <p>Neither outline is exact. The satellite squares can put the edge of a patch about 30 metres out, and the licence outlines are only as good as the register's own map. So a patch right on the edge of a licence can get the wrong label, while one well inside or well outside will not. A licence on the land also does not tell you who did the digging.</p>
     <p>Mining for gold without a licence is illegal in Ghana. That is what people call galamsey. So when a place shows signs of mining in the pictures and the register shows no licence to mine there, that is what galamsey looks like. We still leave the final judgement to you, because the register can be out of date and a few cleared patches are farms or roads.</p>
 
     <h2 id="likely">How we guess which places are likely galamsey</h2>

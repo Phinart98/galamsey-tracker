@@ -388,6 +388,18 @@
    "caveat": "Only as complete as the public cadastre"
   },
   {
+   "id": "licence-matching",
+   "text": "Each patch gets the licence class covering the largest share of its area (at least a quarter), by laying the patch outline over the register's licence outlines; patch edges can be about 30 m out, so patches on a licence boundary may be mislabelled",
+   "where": "/method#matching",
+   "evidence": [
+    "minerals-commission-cadastre",
+    "opera-dist-alert",
+    "pipeline/tracker/licences.py classify"
+   ],
+   "status": "method",
+   "caveat": "Licence outlines are only as accurate as the register's map; a licence does not show who dug"
+  },
+  {
    "id": "mining-share",
    "text": "Most of the cleared land shows signs of mining in the pictures (stated without figures on the site)",
    "where": "home, /map, /method#mining",
