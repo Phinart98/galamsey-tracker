@@ -84,13 +84,13 @@ def scene(item, bbox: list[float]) -> np.ndarray | None:
 
 
 def encode(rgb: np.ndarray) -> dict[str, bytes]:
-    """AVIF and WebP at each width, keyed like '360.avif'."""
+    """WebP at each width, keyed like '360.webp'. No AVIF: four files per place keeps a deployment under
+    Cloudflare Pages' 20,000-file limit, and every browser shows WebP."""
     out = {}
     img = Image.fromarray(rgb)
     for w in WIDTHS:
         resized = img.resize((w, round(img.height * w / img.width)), Image.LANCZOS)
-        for fmt, opts in (("avif", {"quality": 55}), ("webp", {"quality": 72})):
-            buf = io.BytesIO()
-            resized.save(buf, format=fmt.upper(), **opts)
-            out[f"{w}.{fmt}"] = buf.getvalue()
+        buf = io.BytesIO()
+        resized.save(buf, format="WEBP", quality=72)
+        out[f"{w}.webp"] = buf.getvalue()
     return out

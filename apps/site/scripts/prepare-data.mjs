@@ -17,7 +17,9 @@ if (process.env.PLACES_INDEX_URL) {
 } else if (fs.existsSync(path.join(local, 'places/index.json'))) {
   index = JSON.parse(fs.readFileSync(path.join(local, 'places/index.json'), 'utf8'));
   if (!process.env.CHIPS_BASE_URL && fs.existsSync(path.join(local, 'chips'))) {
-    fs.cpSync(path.join(local, 'chips'), path.join(site, 'public/chips'), { recursive: true });
+    // Older runs also made AVIF copies. The site uses WebP only, so they are left out of the deployment
+    fs.rmSync(path.join(site, 'public/chips'), { recursive: true, force: true });
+    fs.cpSync(path.join(local, 'chips'), path.join(site, 'public/chips'), { recursive: true, filter: (f) => !f.endsWith('.avif') });
   }
 } else {
   console.warn('prepare-data: no place index found, building without places');

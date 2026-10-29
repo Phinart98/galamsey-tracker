@@ -7,7 +7,7 @@ on:
     inputs:
       chips_limit:
         description: "Most places to image this run"
-        default: "80"
+        default: "300"
       signs_limit:
         description: "Most places to measure for open water this run (6000 clears a backlog)"
         default: "1500"
@@ -94,10 +94,10 @@ jobs:
         run: uv run python -m tracker.run weekly
 
       - name: Before/after images for new large places
-        timeout-minutes: 60
+        timeout-minutes: 120
         # Missing pictures are retried next week, so a failure here must not stop the trend or the upload
         continue-on-error: true
-        run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '80' }}"
+        run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '300' }}"
 
       - name: Open-water readings for places with no licence to mine
         timeout-minutes: ${{ fromJSON(inputs.signs_minutes || '45') }}
