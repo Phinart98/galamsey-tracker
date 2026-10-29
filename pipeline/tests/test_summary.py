@@ -97,7 +97,7 @@ def test_places_without_a_clear_picture_are_retried_after_a_week():
     assert needs_chips({"active": True, "ha": 5.0, "chips": None}, today)
     assert needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-17"}}, today)
     assert not needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-20"}}, today)
-    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"before": {}, "after": {}}}, today)
+    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"before": {"date": "2025-02-04"}, "after": {"date": "2026-10-20"}}}, today)
     assert not needs_chips({"active": True, "ha": 2.0, "chips": None}, today)
     assert not needs_chips({"active": False, "ha": 5.0, "chips": None}, today)
 

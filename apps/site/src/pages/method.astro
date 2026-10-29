@@ -24,7 +24,7 @@ import { longDate } from '../lib/format';
     <ul>
       <li>We check it against the <Src id="minerals-commission">Minerals Commission</Src>'s <Src id="minerals-commission-cadastre">public register of licences</Src>, to see what kind of licence, if any, covers that land.</li>
       <li>We name it after the nearest town or village and its district.</li>
-      <li>For the larger patches, we find a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself.</li>
+      <li>For the larger patches, we find a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself. If the patch keeps growing, we take a new recent picture.</li>
     </ul>
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
 
@@ -44,7 +44,7 @@ import { longDate } from '../lib/format';
     <h2 id="likely">How we guess which places are likely galamsey</h2>
     <p>Some patches carry a second label, <LikelyTag />. It is our educated guess, not a finding. A patch gets it when two things are true: the register shows no licence to mine on the land, and there is open water in the patch or within 60 metres of it.</p>
     <p>Why water? Miners dig pits down to the gravel that holds the gold, and the pits fill with water. Farms, roads and building sites rarely leave ponds behind.</p>
-    <p>Besides near-infrared, the satellites measure shortwave infrared, light with even longer waves that we cannot see. Water swallows almost all of it, while soil, rock and plants send a lot of it back. Water still sends back some green light. So a spot that sends back more green light than shortwave infrared is almost certainly water. Scientists call this a water index (<Src id="xu-2006-mndwi">Xu, 2006</Src>). We read it from a clear Sentinel-2 picture taken after the patch was first seen.</p>
+    <p>Besides near-infrared, the satellites measure shortwave infrared, light with even longer waves that we cannot see. Water swallows almost all of it, while soil, rock and plants send a lot of it back. Water still sends back some green light. So a spot that sends back more green light than shortwave infrared is almost certainly water. Scientists call this a water index (<Src id="xu-2006-mndwi">Xu, 2006</Src>). We read it from a clear Sentinel-2 picture taken after the patch was first seen, and read it again if the patch keeps growing.</p>
     <p>We checked the guess against satellite pictures of patches picked at random, and it tracks well: most places it marks show mining, and it marks most of the mining. It still gets some wrong. A farm beside a stream can get the label, and a new pit may not hold water yet.</p>
     <p>No label does not mean no galamsey. We only make this guess on land with no licence to mine, we start with the largest patches, and a patch hidden by cloud waits for a clear picture.</p>
 

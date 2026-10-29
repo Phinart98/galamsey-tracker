@@ -23,7 +23,7 @@ import pandas as pd
 from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
-from tracker import chips, licences, nasa, places, signs, summary, water, zone
+from tracker import chips, licences, nasa, places, refresh, signs, summary, water, zone
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
@@ -161,35 +161,44 @@ def write_places(clusters, previous, new_aliases, to_ll):
 
 
 def needs_chips(rec: dict, today: dt.date) -> bool:
-    """Large active places with no pictures yet, or none clear enough when last tried a week or more ago."""
+    """Large active places with no pictures yet, none clear enough when last tried a week or more ago,
+    or pictures that are out of date because the place kept growing."""
     if not rec["active"] or rec["ha"] < CHIP_MIN_HA:
         return False
     chips = rec.get("chips")
     if not chips:
         return True
-    return bool(chips.get("missing")) and (today - dt.date.fromisoformat(chips["checked"])).days >= CHIP_RETRY_DAYS
+    if chips.get("missing"):
+        return (today - dt.date.fromisoformat(chips["checked"])).days >= CHIP_RETRY_DAYS
+    return refresh.due(chips, rec, chips["after"]["date"], today)
 
 
 def make_chips(today: dt.date, limit: int):
     index_path = os.path.join(OUT, "places", "index.json")
     index = _read_json(index_path, {})
-    todo = sorted((r for r in index.values() if needs_chips(r, today)), key=lambda r: -r["ha"])[:limit]
+    todo = refresh.queue(index.values(), lambda r: needs_chips(r, today), "chips")[:limit]
     print(f"chips: {len(todo)} places to image")
     for rec in todo:
+        old = rec.get("chips") if not (rec.get("chips") or {}).get("missing") else None
         first = dt.date.fromisoformat(rec["first_seen"])
         last = dt.date.fromisoformat(rec["last_seen"])
         try:
-            before = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, first - dt.timedelta(days=450), first - dt.timedelta(days=1))
+            # A retake keeps the before picture: only the place now has changed
+            before = None if old else chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, first - dt.timedelta(days=450), first - dt.timedelta(days=1))
             after = chips.clearest(rec["lon"], rec["lat"], CHIP_HALF_KM, last, today)
         except (OSError, APIError) as e:  # a dropped connection once ended a run 86 places in (2026-10-25)
             print(f"  {rec['id']}: skipped, {type(e).__name__}; tried again next run")
             continue
-        if not before or not after:
+        if old and not after:
+            old["checked"] = str(today)
+            print(f"  {rec['id']}: no clear picture for a retake, keeping the old one")
+            continue
+        if not old and (not before or not after):
             rec["chips"] = {"missing": True, "checked": str(today)}
             print(f"  {rec['id']}: no clear pair yet")
             continue
-        entry = {}
-        for label, (when, rgb) in (("before", before), ("after", after)):
+        entry = {"before": old["before"]} if old else {}
+        for label, (when, rgb) in (("after", after),) if old else (("before", before), ("after", after)):
             files = {}
             for key, blob in chips.encode(rgb).items():
                 rel = f"chips/{rec['id']}/{label}-{key}"
@@ -198,8 +207,8 @@ def make_chips(today: dt.date, limit: int):
                     f.write(blob)
                 files[key] = rel
             entry[label] = {"date": str(when), "files": files}
-        rec["chips"] = entry
-        print(f"  {rec['id']}: {before[0]} -> {after[0]}")
+        rec["chips"] = {**entry, "ha": rec["ha"]}
+        print(f"  {rec['id']}: {entry['before']['date']} -> {after[0]}{' (retake)' if old else ''}")
         _write_json(index_path, index)  # save as we go: a long run that dies keeps its finished images
     _write_json(index_path, index)
 
@@ -208,7 +217,7 @@ def make_signs(today: dt.date, limit: int, workers: int = 4):
     """Water readings for places with no licence to mine, largest first, so a backlog clears over a few runs."""
     index_path = os.path.join(OUT, "places", "index.json")
     index = _read_json(index_path, {})
-    todo = sorted((r for r in index.values() if signs.needs_reading(r, today)), key=lambda r: -r["ha"])[:limit]
+    todo = refresh.queue(index.values(), lambda r: signs.needs_reading(r, today), "signs")[:limit]
     outlines = gpd.read_file(os.path.join(OUT, "places", "latest.geojson"))
     polys = dict(zip(outlines["id"], outlines.geometry, strict=True))
     print(f"signs: {len(todo)} places to measure")
@@ -216,7 +225,10 @@ def make_signs(today: dt.date, limit: int, workers: int = 4):
     def measure(rec):
         for wait in (*SIGNS_RETRY_WAITS, None):
             try:
-                return rec, signs.reading(polys[rec["id"]], rec["first_seen"], today)
+                # A retake reads only recent pictures, or it would find the same clear day as before
+                old = rec.get("signs") or {}
+                since = str(today - dt.timedelta(days=refresh.DAYS)) if "water" in old else rec["first_seen"]
+                return rec, signs.reading(polys[rec["id"]], since, today)
             except (OSError, APIError) as e:
                 if wait is None:
                     print(f"  {rec['id']}: skipped, {type(e).__name__}: {str(e)[:120]}; tried again next run")
@@ -228,7 +240,12 @@ def make_signs(today: dt.date, limit: int, workers: int = 4):
         for n, (rec, got) in enumerate(pool.map(measure, [r for r in todo if r["id"] in polys]), 1):
             if got is False:
                 continue
-            rec["signs"] = got or {"missing": True, "checked": str(today)}
+            if got:
+                rec["signs"] = {**got, "ha": rec["ha"]}
+            elif "water" in (rec.get("signs") or {}):
+                rec["signs"]["checked"] = str(today)  # no clear picture for a retake: keep the old reading
+            else:
+                rec["signs"] = {"missing": True, "checked": str(today)}
             rec["likely_galamsey"] = signs.likely_galamsey(rec["licence"], rec["signs"].get("water"))
             if n % 20 == 0:
                 _write_json(index_path, index)  # save as we go: a long run that dies keeps its readings

@@ -138,4 +138,4 @@ def test_a_place_refused_twice_by_the_picture_service_is_tried_again_and_kept(mo
     monkeypatch.setattr(run, "SIGNS_RETRY_WAITS", (0, 0, 0))
     monkeypatch.setattr(run.signs, "reading", reading)
     run.make_signs(TODAY, limit=5, workers=1)
-    assert _index(tmp_path)["a"]["signs"] == {"water": 0.2, "scene": "2026-09-01"}
+    assert _index(tmp_path)["a"]["signs"] == {"water": 0.2, "scene": "2026-09-01", "ha": 2.0}

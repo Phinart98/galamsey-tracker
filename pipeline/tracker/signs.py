@@ -16,6 +16,7 @@ from rasterio.warp import transform_bounds, transform_geom
 from rasterio.windows import from_bounds
 from shapely.geometry import mapping
 
+from tracker import refresh
 from tracker.chips import COLLECTIONS, EARTH_SEARCH, HTTP
 
 NO_LICENCE_TO_MINE = ("no licence", "prospecting only")
@@ -43,7 +44,9 @@ def needs_reading(rec: dict, today: dt.date) -> bool:
     s = rec.get("signs")
     if not s:
         return True
-    return bool(s.get("missing")) and (today - dt.date.fromisoformat(s["checked"])).days >= RETRY_DAYS
+    if s.get("missing"):
+        return (today - dt.date.fromisoformat(s["checked"])).days >= RETRY_DAYS
+    return refresh.due(s, rec, s["scene"], today)
 
 
 def likely_galamsey(licence: str, water: float | None) -> bool:
