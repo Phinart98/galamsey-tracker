@@ -610,3 +610,22 @@ fixed before batch 2, that is a **fail**: no "mining signs" mark ships. What it 
 patches that were not clear mining, only 1 was clearly something else; 5 were unclear from 10 m pictures. The
 open-water reading separates clear mining from clear farms and roads well, but not well enough on the pictures
 we can judge to put a per-place label on the site.
+
+## 28. Can the "Likely galamsey" check be sharpened? Blind batch 3 (2026-10-29)
+
+**Why:** in batches 1 and 2, five of the six marked patches that were not clear mining were unclear in a single
+before/now pair at 10 m, not clearly something else. So the weak spot is judging, and maybe one-scene noise.
+
+**Fixed before any sheet is looked at** (`spike/signs_s28.py`, seed 33): 40 random active patches with no
+licence to mine, none from the labels or batches 1 and 2. Each sheet shows four dates (before, soon after first
+seen, halfway, latest) so pits that stay open and farms that green up again are easier to tell apart. Verdicts
+(mining, not, unclear) go to `verdicts.json` before the readings are opened. Up to three clear scenes are measured
+per patch, each with the share of open water (MNDWI > 0) inside the patch and within 60 m.
+- **R0**, the rule on the site: water within 60 m in the clearest scene.
+- **R1**: water within 60 m in at least 2 of the clear scenes (with one clear scene, that scene decides).
+- **R2**: water inside the patch itself in the clearest scene.
+
+Scoring: precision = mining among marked, unclear counts against the rule; recall = mining patches marked, out of
+all patches judged mining and measured. A variant replaces R0 only if its precision is higher and it keeps at least
+9 in 10 of the mining patches R0 marks. River masking is not tried: galamsey works along rivers, so masking them
+would hide real mining. Result below.
