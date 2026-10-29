@@ -1,28 +1,28 @@
 {
- "total_ha": 16177,
- "football_pitches": 22656,
- "patches": 5957,
+ "total_ha": 17750,
+ "football_pitches": 24860,
+ "patches": 6558,
  "by_licence": {
   "no licence": {
-   "ha": 11982,
-   "share": 0.741
+   "ha": 12906,
+   "share": 0.727
   },
   "prospecting only": {
-   "ha": 1668,
-   "share": 0.103
+   "ha": 1888,
+   "share": 0.106
   },
   "small-scale licence": {
-   "ha": 99,
+   "ha": 100,
    "share": 0.006
   },
   "large-scale lease": {
-   "ha": 2428,
-   "share": 0.15
+   "ha": 2856,
+   "share": 0.161
   }
  },
  "no_licence_to_mine": {
-  "ha": 13650,
-  "share": 0.844
+  "ha": 14794,
+  "share": 0.833
  },
  "top_places": [
   {
@@ -48,6 +48,18 @@
    "near_km": 8.6,
    "district": "Ahafo Ano South East",
    "id": "2025-11-6748n1916w"
+  },
+  {
+   "local_id": 1,
+   "ha": 67.05,
+   "first_seen": "2025-11-03",
+   "last_seen": "2026-10-16",
+   "tile": "T30NXL",
+   "licence": "no licence",
+   "near": "Abuesi",
+   "near_km": 2.6,
+   "district": "Shama",
+   "id": "2025-11-5001n1651w"
   },
   {
    "local_id": 1,
@@ -122,6 +134,18 @@
    "id": "2025-11-6657n1135w"
   },
   {
+   "local_id": 1,
+   "ha": 32.04,
+   "first_seen": "2025-12-01",
+   "last_seen": "2026-04-15",
+   "tile": "T30NWL",
+   "licence": "large-scale lease",
+   "near": "Tarkwa",
+   "near_km": 8.3,
+   "district": "Tarkwa Nsuaem",
+   "id": "2025-11-5368n2038w"
+  },
+  {
    "local_id": 2,
    "ha": 31.32,
    "first_seen": "2026-01-26",
@@ -144,30 +168,6 @@
    "near_km": 13.6,
    "district": "Bekwai Municipal",
    "id": "2025-11-6499n1699w"
-  },
-  {
-   "local_id": 3,
-   "ha": 30.33,
-   "first_seen": "2026-01-15",
-   "last_seen": "2026-10-01",
-   "tile": "T30NYM",
-   "licence": "no licence",
-   "near": "Apam",
-   "near_km": 9.1,
-   "district": "Gomoa Central",
-   "id": "2026-01-5354n0779w"
-  },
-  {
-   "local_id": 2,
-   "ha": 28.89,
-   "first_seen": "2025-11-11",
-   "last_seen": "2026-05-17",
-   "tile": "T30NWN",
-   "licence": "no licence",
-   "near": "Agogoso",
-   "near_km": 1.9,
-   "district": "Atwima Mponua",
-   "id": "2025-11-6592n2057w"
   }
  ],
  "top_districts": [
@@ -212,19 +212,21 @@
    "ha": 594
   },
   {
-   "district": "Kwaebibirem",
-   "ha": 484
+   "district": "Prestea/huni Valley",
+   "ha": 541
   },
   {
-   "district": "Amansie West",
-   "ha": 423
+   "district": "Tarkwa Nsuaem",
+   "ha": 526
   }
  ],
  "data_date": "2026-10-26",
  "window_days": 365,
  "tiles": [
+  "T30NWL",
   "T30NWM",
   "T30NWN",
+  "T30NXL",
   "T30NXM",
   "T30NXN",
   "T30NYM",
@@ -233,8 +235,8 @@
  "method_version": "2026.10.3",
  "towns_near": {
   "radius_m": 1000,
-  "count": 650,
-  "with_5ha": 255
+  "count": 712,
+  "with_5ha": 270
  },
  "water": [
   {
@@ -250,7 +252,7 @@
   {
    "plant": "Daboase",
    "river": "Pra",
-   "ha": 9166.8
+   "ha": 9250.1
   },
   {
    "plant": "Barekese",

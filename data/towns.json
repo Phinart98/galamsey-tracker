@@ -98,6 +98,25 @@
    ]
   },
   {
+   "name": "Billa Bong",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.2593,
+   "lon": -2.0655,
+   "ha": 37.9,
+   "patches": 8,
+   "ids": [
+    "2025-11-5263n2065w",
+    "2026-03-5265n2070w",
+    "2026-01-5253n2058w",
+    "2025-11-5262n2071w",
+    "2026-03-5263n2063w",
+    "2026-01-5257n2061w",
+    "2025-12-5259n2064w",
+    "2026-01-5259n2068w"
+   ]
+  },
+  {
    "name": "Ayensuano",
    "place": "village",
    "district": "Ayensuano",
@@ -293,6 +312,20 @@
    ]
   },
   {
+   "name": "Komenda Sefwi",
+   "place": "village",
+   "district": "Komenda-edina-eguafo-abirem Municipal",
+   "lat": 5.0938,
+   "lon": -1.5691,
+   "ha": 24.9,
+   "patches": 3,
+   "ids": [
+    "2026-01-5092n1565w",
+    "2026-03-5100n1579w",
+    "2026-03-5095n1575w"
+   ]
+  },
+  {
    "name": "Cocoa Station",
    "place": "village",
    "district": "Birim North",
@@ -401,6 +434,21 @@
     "2025-11-6438n1686w",
     "2025-11-6436n1690w",
     "2025-11-6436n1685w"
+   ]
+  },
+  {
+   "name": "Baku",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9702,
+   "lon": -2.5015,
+   "ha": 22.5,
+   "patches": 4,
+   "ids": [
+    "2025-12-4979n2510w",
+    "2026-08-4977n2500w",
+    "2026-08-4977n2495w",
+    "2026-02-4977n2498w"
    ]
   },
   {
@@ -1146,6 +1194,22 @@
    ]
   },
   {
+   "name": "Akyem",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.2517,
+   "lon": -1.9798,
+   "ha": 12.8,
+   "patches": 5,
+   "ids": [
+    "2025-11-5244n1980w",
+    "2025-11-5257n1984w",
+    "2026-01-5255n1971w",
+    "2025-12-5246n1983w",
+    "2026-03-5253n1976w"
+   ]
+  },
+  {
    "name": "Adukunama",
    "place": "village",
    "district": "Amansie West",
@@ -1484,6 +1548,21 @@
    ]
   },
   {
+   "name": "Ngalekyi",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9686,
+   "lon": -2.4947,
+   "ha": 10.7,
+   "patches": 4,
+   "ids": [
+    "2026-08-4977n2500w",
+    "2026-10-4975n2488w",
+    "2026-08-4977n2495w",
+    "2026-02-4977n2498w"
+   ]
+  },
+  {
    "name": "Hwiremuasi",
    "place": "village",
    "district": "Adansi Asokwa",
@@ -1532,6 +1611,21 @@
    "patches": 1,
    "ids": [
     "2025-11-6809n1855w"
+   ]
+  },
+  {
+   "name": "Sikaneasem",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.3131,
+   "lon": -2.2226,
+   "ha": 10.4,
+   "patches": 4,
+   "ids": [
+    "2025-11-5318n2222w",
+    "2025-11-5310n2224w",
+    "2025-11-5318n2220w",
+    "2025-11-5316n2221w"
    ]
   },
   {
@@ -2001,6 +2095,21 @@
    ]
   },
   {
+   "name": "Dompim",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.1541,
+   "lon": -2.0747,
+   "ha": 8.7,
+   "patches": 4,
+   "ids": [
+    "2025-10-5147n2076w",
+    "2026-01-5153n2083w",
+    "2026-01-5151n2078w",
+    "2026-01-5161n2068w"
+   ]
+  },
+  {
    "name": "Kwamang",
    "place": "town",
    "district": "Kwaebibirem",
@@ -2026,6 +2135,20 @@
     "2025-11-6397n1548w",
     "2025-11-6401n1550w",
     "2026-01-6397n1553w"
+   ]
+  },
+  {
+   "name": "Bomokrom",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.0992,
+   "lon": -2.2838,
+   "ha": 8.6,
+   "patches": 3,
+   "ids": [
+    "2025-12-5099n2289w",
+    "2025-12-5095n2288w",
+    "2025-12-5101n2291w"
    ]
   },
   {
@@ -2328,6 +2451,21 @@
    ]
   },
   {
+   "name": "Maham",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.249,
+   "lon": -2.1817,
+   "ha": 7.9,
+   "patches": 4,
+   "ids": [
+    "2025-11-5257n2175w",
+    "2026-03-5245n2190w",
+    "2026-03-5248n2190w",
+    "2026-01-5244n2177w"
+   ]
+  },
+  {
    "name": "Nyaboo",
    "place": "village",
    "district": "Asante Akim Central Municipal",
@@ -2546,6 +2684,20 @@
    ]
   },
   {
+   "name": "Nsuaem Bibiani",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.2636,
+   "lon": -2.169,
+   "ha": 7.4,
+   "patches": 3,
+   "ids": [
+    "2025-11-5257n2175w",
+    "2025-11-5258n2177w",
+    "2025-12-5273n2171w"
+   ]
+  },
+  {
    "name": "New Aboi",
    "place": "village",
    "district": "Wassa Amenfi East",
@@ -2557,6 +2709,18 @@
     "2025-11-5632n2025w",
     "2026-01-5629n2027w",
     "2026-03-5644n2027w"
+   ]
+  },
+  {
+   "name": "Inchaban",
+   "place": "village",
+   "district": "Shama",
+   "lat": 4.9931,
+   "lon": -1.6816,
+   "ha": 7.4,
+   "patches": 1,
+   "ids": [
+    "2026-01-4998n1677w"
    ]
   },
   {
@@ -2876,6 +3040,19 @@
    ]
   },
   {
+   "name": "Adum Banso",
+   "place": "village",
+   "district": "Mpohor",
+   "lat": 5.0654,
+   "lon": -1.8975,
+   "ha": 6.7,
+   "patches": 2,
+   "ids": [
+    "2025-11-5070n1891w",
+    "2026-01-5059n1898w"
+   ]
+  },
+  {
    "name": "Dompim",
    "place": "village",
    "district": "Kwaebibirem",
@@ -3072,6 +3249,19 @@
    ]
   },
   {
+   "name": "Awolezo",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.0281,
+   "lon": -2.2122,
+   "ha": 6.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5023n2204w",
+    "2025-12-5027n2214w"
+   ]
+  },
+  {
    "name": "Essienkyeim",
    "place": "village",
    "district": "Amansie South",
@@ -3083,6 +3273,20 @@
     "2025-11-6316n2007w",
     "2025-11-6312n2025w",
     "2025-11-6320n2022w"
+   ]
+  },
+  {
+   "name": "Nsuaem",
+   "place": "town",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.0052,
+   "lon": -2.0283,
+   "ha": 6.0,
+   "patches": 3,
+   "ids": [
+    "2025-11-5012n2020w",
+    "2026-01-5009n2021w",
+    "2025-11-5003n2022w"
    ]
   },
   {
@@ -3490,6 +3694,20 @@
    ]
   },
   {
+   "name": "Anwolanga",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9726,
+   "lon": -2.2291,
+   "ha": 5.3,
+   "patches": 3,
+   "ids": [
+    "2026-04-4972n2232w",
+    "2025-12-4980n2229w",
+    "2025-12-4967n2228w"
+   ]
+  },
+  {
    "name": "Aboi-Nkwanta",
    "place": "village",
    "district": "Wassa Amenfi West",
@@ -3776,6 +3994,19 @@
    ]
   },
   {
+   "name": "Asemko",
+   "place": "village",
+   "district": "Ahanta West Municipal",
+   "lat": 4.8302,
+   "lon": -1.8905,
+   "ha": 4.9,
+   "patches": 2,
+   "ids": [
+    "2026-01-4834n1893w",
+    "2026-04-4836n1889w"
+   ]
+  },
+  {
    "name": "Adiembra",
    "place": "village",
    "district": "Atwima Mponua",
@@ -3925,6 +4156,19 @@
    "ids": [
     "2025-11-6626n0838w",
     "2026-03-6632n0840w"
+   ]
+  },
+  {
+   "name": "Kotokuom",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 5.0478,
+   "lon": -2.2743,
+   "ha": 4.6,
+   "patches": 2,
+   "ids": [
+    "2025-11-5050n2274w",
+    "2025-12-5053n2272w"
    ]
   },
   {
@@ -4108,6 +4352,20 @@
    ]
   },
   {
+   "name": "Enyinase",
+   "place": "village",
+   "district": "Komenda-edina-eguafo-abirem Municipal",
+   "lat": 5.0907,
+   "lon": -1.4662,
+   "ha": 4.3,
+   "patches": 3,
+   "ids": [
+    "2025-11-5088n1476w",
+    "2025-11-5086n1470w",
+    "2026-03-5087n1470w"
+   ]
+  },
+  {
    "name": "Yapesa",
    "place": "village",
    "district": "Bosome Freho",
@@ -4279,6 +4537,32 @@
    "patches": 1,
    "ids": [
     "2025-11-6376n0910w"
+   ]
+  },
+  {
+   "name": "Banso",
+   "place": "town",
+   "district": "Nzema East",
+   "lat": 5.1186,
+   "lon": -2.2382,
+   "ha": 4.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5120n2229w",
+    "2026-03-5113n2233w"
+   ]
+  },
+  {
+   "name": "Akosonu",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.0699,
+   "lon": -2.225,
+   "ha": 4.1,
+   "patches": 2,
+   "ids": [
+    "2025-11-5073n2230w",
+    "2026-01-5063n2232w"
    ]
   },
   {
@@ -4678,6 +4962,19 @@
    ]
   },
   {
+   "name": "Ewusiejoe",
+   "place": "village",
+   "district": "Ahanta West Municipal",
+   "lat": 4.8962,
+   "lon": -1.903,
+   "ha": 3.6,
+   "patches": 2,
+   "ids": [
+    "2026-03-4890n1900w",
+    "2026-03-4894n1898w"
+   ]
+  },
+  {
    "name": "Krobo",
    "place": "village",
    "district": "Kwabre East",
@@ -4769,6 +5066,18 @@
    ]
   },
   {
+   "name": "Ahwitieso",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.2338,
+   "lon": -2.0117,
+   "ha": 3.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-5228n2007w"
+   ]
+  },
+  {
    "name": "Amankwadei",
    "place": "village",
    "district": "Bosomtwe",
@@ -4854,6 +5163,19 @@
    "ids": [
     "2026-01-6716n1878w",
     "2026-03-6703n1880w"
+   ]
+  },
+  {
+   "name": "Akoto",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 5.0236,
+   "lon": -2.4691,
+   "ha": 3.4,
+   "patches": 2,
+   "ids": [
+    "2026-04-5019n2474w",
+    "2026-03-5017n2473w"
    ]
   },
   {
@@ -5224,6 +5546,18 @@
    ]
   },
   {
+   "name": "Ngalekpole",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9661,
+   "lon": -2.4825,
+   "ha": 2.9,
+   "patches": 1,
+   "ids": [
+    "2026-10-4975n2488w"
+   ]
+  },
+  {
    "name": "Biemso No.2",
    "place": "village",
    "district": "Ahafo Ano South East",
@@ -5233,6 +5567,18 @@
    "patches": 1,
    "ids": [
     "2025-11-6905n1858w"
+   ]
+  },
+  {
+   "name": "Busua",
+   "place": "town",
+   "district": "Ahanta West Municipal",
+   "lat": 4.8067,
+   "lon": -1.9389,
+   "ha": 2.9,
+   "patches": 1,
+   "ids": [
+    "2026-04-4808n1946w"
    ]
   },
   {
@@ -5246,6 +5592,18 @@
    "ids": [
     "2025-11-6393n1580w",
     "2025-11-6402n1577w"
+   ]
+  },
+  {
+   "name": "Tetrem",
+   "place": "village",
+   "district": "Ahanta West Municipal",
+   "lat": 4.9477,
+   "lon": -1.9788,
+   "ha": 2.9,
+   "patches": 1,
+   "ids": [
+    "2025-11-4953n1969w"
    ]
   },
   {
@@ -5422,6 +5780,42 @@
    ]
   },
   {
+   "name": "Fawomanye",
+   "place": "village",
+   "district": "Cape Coast Metropolitan",
+   "lat": 5.1887,
+   "lon": -1.3158,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5193n1324w"
+   ]
+  },
+  {
+   "name": "Ansapetu",
+   "place": "village",
+   "district": "Cape Coast Metropolitan",
+   "lat": 5.1946,
+   "lon": -1.3196,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5193n1324w"
+   ]
+  },
+  {
+   "name": "Akpanyi Suazo",
+   "place": "village",
+   "district": "Jomoro",
+   "lat": 5.0736,
+   "lon": -2.6693,
+   "ha": 2.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5075n2676w"
+   ]
+  },
+  {
    "name": "Praso Amoada",
    "place": "village",
    "district": "Birim North",
@@ -5458,6 +5852,19 @@
    "ids": [
     "2025-11-6704n1864w",
     "2025-11-6700n1862w"
+   ]
+  },
+  {
+   "name": "Fantekrom",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 4.9163,
+   "lon": -2.1045,
+   "ha": 2.6,
+   "patches": 2,
+   "ids": [
+    "2026-03-4913n2106w",
+    "2026-03-4915n2107w"
    ]
   },
   {
@@ -5523,6 +5930,30 @@
    ]
   },
   {
+   "name": "Antseambua",
+   "place": "village",
+   "district": "Shama",
+   "lat": 5.1069,
+   "lon": -1.5909,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-01-5106n1591w"
+   ]
+  },
+  {
+   "name": "Asamaasa",
+   "place": "village",
+   "district": "Shama",
+   "lat": 5.1013,
+   "lon": -1.59,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-01-5106n1591w"
+   ]
+  },
+  {
    "name": "Antoa",
    "place": "village",
    "district": "Kwabre East",
@@ -5544,6 +5975,18 @@
    "patches": 1,
    "ids": [
     "2025-11-6325n1064w"
+   ]
+  },
+  {
+   "name": "Simpa Junction",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.0839,
+   "lon": -2.11,
+   "ha": 2.6,
+   "patches": 1,
+   "ids": [
+    "2026-01-5089n2109w"
    ]
   },
   {
@@ -5570,6 +6013,19 @@
    "ids": [
     "2025-11-6533n1937w",
     "2026-03-6551n1935w"
+   ]
+  },
+  {
+   "name": "Fawumaye",
+   "place": "village",
+   "district": "Shama",
+   "lat": 5.0651,
+   "lon": -1.5883,
+   "ha": 2.5,
+   "patches": 2,
+   "ids": [
+    "2026-03-5059n1581w",
+    "2026-03-5059n1583w"
    ]
   },
   {
@@ -5830,6 +6286,18 @@
    ]
   },
   {
+   "name": "Komenda Dominase",
+   "place": "village",
+   "district": "Komenda-edina-eguafo-abirem Municipal",
+   "lat": 5.0818,
+   "lon": -1.5498,
+   "ha": 2.3,
+   "patches": 1,
+   "ids": [
+    "2025-11-5086n1557w"
+   ]
+  },
+  {
    "name": "Takyiman Merewadwa",
    "place": "village",
    "district": "Atwima Kwanwoma",
@@ -6011,6 +6479,18 @@
    "ids": [
     "2026-03-6158n0494w",
     "2026-02-6154n0486w"
+   ]
+  },
+  {
+   "name": "Ngelekazo",
+   "place": "village",
+   "district": "Jomoro",
+   "lat": 4.9915,
+   "lon": -2.6068,
+   "ha": 2.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-4996n2608w"
    ]
   },
   {
@@ -6230,6 +6710,18 @@
    ]
   },
   {
+   "name": "Eian",
+   "place": "village",
+   "district": "Ahanta West Municipal",
+   "lat": 4.873,
+   "lon": -1.856,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2026-03-4882n1860w"
+   ]
+  },
+  {
    "name": "Mpasatia",
    "place": "town",
    "district": "Atwima Mponua",
@@ -6299,6 +6791,18 @@
    "patches": 1,
    "ids": [
     "2025-11-6293n1247w"
+   ]
+  },
+  {
+   "name": "Dadwen",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.1305,
+   "lon": -2.0958,
+   "ha": 2.0,
+   "patches": 1,
+   "ids": [
+    "2025-12-5137n2097w"
    ]
   },
   {
@@ -6698,6 +7202,30 @@
    ]
   },
   {
+   "name": "Akango",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.0335,
+   "lon": -2.2331,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-01-5040n2234w"
+   ]
+  },
+  {
+   "name": "Doale",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.0406,
+   "lon": -2.2288,
+   "ha": 1.8,
+   "patches": 1,
+   "ids": [
+    "2026-01-5040n2234w"
+   ]
+  },
+  {
    "name": "Osino",
    "place": "village",
    "district": "Fanteakwa South",
@@ -6830,6 +7358,18 @@
    ]
   },
   {
+   "name": "Ayensudo",
+   "place": "village",
+   "district": "Komenda-edina-eguafo-abirem Municipal",
+   "lat": 5.0917,
+   "lon": -1.4485,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-03-5094n1439w"
+   ]
+  },
+  {
    "name": "Apitiso No.2",
    "place": "village",
    "district": "Obuasi Municipal",
@@ -6911,6 +7451,18 @@
    "patches": 1,
    "ids": [
     "2026-03-6077n2208w"
+   ]
+  },
+  {
+   "name": "Peposo",
+   "place": "town",
+   "district": "Prestea/huni Valley",
+   "lat": 5.3297,
+   "lon": -2.146,
+   "ha": 1.6,
+   "patches": 1,
+   "ids": [
+    "2026-03-5321n2147w"
    ]
   },
   {
@@ -7034,6 +7586,18 @@
    ]
   },
   {
+   "name": "Adelekezo",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 4.945,
+   "lon": -2.1913,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-11-4943n2196w"
+   ]
+  },
+  {
    "name": "Agogoso",
    "place": "town",
    "district": "Atwima Mponua",
@@ -7091,6 +7655,18 @@
    "patches": 1,
    "ids": [
     "2026-10-6386n2640w"
+   ]
+  },
+  {
+   "name": "Nkroful",
+   "place": "town",
+   "district": "Ellembelle",
+   "lat": 4.9677,
+   "lon": -2.3229,
+   "ha": 1.5,
+   "patches": 1,
+   "ids": [
+    "2025-12-4966n2319w"
    ]
   },
   {
@@ -7187,6 +7763,18 @@
    "patches": 1,
    "ids": [
     "2025-12-6584n0817w"
+   ]
+  },
+  {
+   "name": "Anokyi",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9736,
+   "lon": -2.522,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-4979n2516w"
    ]
   },
   {
@@ -7310,6 +7898,18 @@
    ]
   },
   {
+   "name": "Wassa Agona",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.2167,
+   "lon": -2.0233,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-11-5226n2020w"
+   ]
+  },
+  {
    "name": "Adanwomase",
    "place": "village",
    "district": "Kwabre East",
@@ -7355,6 +7955,18 @@
    "patches": 1,
    "ids": [
     "2025-12-5764n2739w"
+   ]
+  },
+  {
+   "name": "Essamang",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.0094,
+   "lon": -2.0855,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-5004n2092w"
    ]
   },
   {
@@ -7499,6 +8111,30 @@
    "patches": 1,
    "ids": [
     "2025-11-6365n2175w"
+   ]
+  },
+  {
+   "name": "Bonsaso",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.1793,
+   "lon": -2.0443,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-5176n2043w"
+   ]
+  },
+  {
+   "name": "Amantin",
+   "place": "town",
+   "district": "Mpohor",
+   "lat": 5.1235,
+   "lon": -1.8536,
+   "ha": 1.4,
+   "patches": 1,
+   "ids": [
+    "2025-12-5132n1855w"
    ]
   },
   {
@@ -8018,6 +8654,66 @@
    ]
   },
   {
+   "name": "Aloakpoke",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 5.0133,
+   "lon": -2.4656,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-5017n2473w"
+   ]
+  },
+  {
+   "name": "Ebi",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 5.0512,
+   "lon": -2.3936,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-5048n2391w"
+   ]
+  },
+  {
+   "name": "Sonsuazo",
+   "place": "village",
+   "district": "Jomoro",
+   "lat": 5.0798,
+   "lon": -2.6435,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-5085n2642w"
+   ]
+  },
+  {
+   "name": "Ohiamadwen",
+   "place": "village",
+   "district": "Jomoro",
+   "lat": 5.0773,
+   "lon": -2.6463,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-03-5085n2642w"
+   ]
+  },
+  {
+   "name": "Ekenyamezor",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 5.0513,
+   "lon": -2.3976,
+   "ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-04-5048n2391w"
+   ]
+  },
+  {
    "name": "Bonkrase",
    "place": "village",
    "district": "Kwahu East",
@@ -8102,6 +8798,42 @@
    ]
   },
   {
+   "name": "Adjumako",
+   "place": "village",
+   "district": "Tarkwa Nsuaem",
+   "lat": 4.9212,
+   "lon": -2.0259,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-4919n2029w"
+   ]
+  },
+  {
+   "name": "Avrebo",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 4.9214,
+   "lon": -2.1632,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-4928n2167w"
+   ]
+  },
+  {
+   "name": "Ahunyame",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 4.9299,
+   "lon": -2.1577,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-03-4928n2167w"
+   ]
+  },
+  {
    "name": "Ogwang",
    "place": "village",
    "district": "Gomoa Central",
@@ -8126,6 +8858,18 @@
    ]
   },
   {
+   "name": "Benso",
+   "place": "town",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.1604,
+   "lon": -1.8938,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-5166n1900w"
+   ]
+  },
+  {
    "name": "Chirano",
    "place": "village",
    "district": "Bibiani-anhwiaso-bekwai Municipal",
@@ -8135,6 +8879,18 @@
    "patches": 1,
    "ids": [
     "2026-03-6280n2315w"
+   ]
+  },
+  {
+   "name": "Mandu",
+   "place": "village",
+   "district": "Komenda-edina-eguafo-abirem Municipal",
+   "lat": 5.0698,
+   "lon": -1.4667,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-09-5074n1469w"
    ]
   },
   {
@@ -8255,6 +9011,18 @@
    "patches": 1,
    "ids": [
     "2026-01-6083n1855w"
+   ]
+  },
+  {
+   "name": "Esuaso",
+   "place": "town",
+   "district": "Tarkwa Nsuaem",
+   "lat": 5.1975,
+   "lon": -1.9323,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2026-01-5201n1935w"
    ]
   },
   {
@@ -8495,6 +9263,30 @@
    "patches": 1,
    "ids": [
     "2026-03-5783n0316w"
+   ]
+  },
+  {
+   "name": "Kutukrom",
+   "place": "village",
+   "district": "Nzema East",
+   "lat": 5.3037,
+   "lon": -2.2058,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-11-5301n2212w"
+   ]
+  },
+  {
+   "name": "Mpeasem",
+   "place": "village",
+   "district": "Jomoro",
+   "lat": 5.3705,
+   "lon": -2.6637,
+   "ha": 1.1,
+   "patches": 1,
+   "ids": [
+    "2025-12-5366n2671w"
    ]
   }
  ]
