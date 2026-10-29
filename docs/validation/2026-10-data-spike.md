@@ -646,3 +646,26 @@ mining patches R0 marks (81%, under the 9 in 10 needed), so it does not replace 
 Every patch marked in this batch that was not judged mining was unclear, not clearly something else; both clear farms
 were left out. Pooled over all three blind batches, 72 of 81 marked patches showed mining (89%), with unclear
 counting against the rule. The guess stays worded as a guess.
+
+## 29. Are we covering where galamsey is? Two southern areas added (2026-10-29)
+
+The six areas switched on were each checked by eye, but never against where galamsey is reported. Our southern
+edge was 5.33 N, and Tarkwa (5.30 N) sat just outside. A 2018 study of 11 Western Region districts
+(`western-region-galamsey-2018`) found the most galamsey sites in Tarkwa Nsuaem, then Amenfi East and Prestea
+Huni-Valley. The Forestry Commission's satellite study of forest reserves (`forestry-commission-reserves-2024`)
+puts most of the damage in Ashanti, Western North and Western. So the south strip down to the coast was the gap.
+
+`uv run python -m tracker.check_tile <tile>` (20 random patches, half of at least 3 ha, seed 7), judged by eye:
+
+| Tile | Area | Showed mining | Not mining |
+|---|---|---|---|
+| 30NXL | Tarkwa Nsuaem, Wassa East, Mpohor, coast to Cape Coast | 13 of 19 | 2 farm blocks, road works, a building site by the highway, an industrial site near Takoradi (1 no pair) |
+| 30NWL | Prestea Huni-Valley, Ellembelle, Nzema East, Ahanta West | 17 of 19 | 2 farm blocks (1 no pair) |
+
+30NXL is the lowest of any area (68%): near the coast, building sites and industry clear land too. It is switched
+on anyway, because it holds Tarkwa Nsuaem, the district with the most galamsey sites in the study above, and leaving
+it out would hide more mining than including it adds noise. Pooled over all eight areas: 134 of 155 (86%).
+
+Not added: the savanna north (Upper East around Talensi and the Tilli forest, Upper West, Savannah, Bono). Galamsey
+is reported there, but the forest-zone mask leaves savanna out because, when checked (s21), most savanna clearing
+was farms and fire. Adding it needs its own test of whether DIST-ALERT can tell mining from farm and fire there.

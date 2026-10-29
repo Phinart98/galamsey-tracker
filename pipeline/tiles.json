@@ -88,5 +88,35 @@
    -2.006,
    7.238
   ]
+ },
+ "T30NXL": {
+  "enabled": true,
+  "place": "Tarkwa and Wassa East",
+  "area": "Tarkwa Nsuaem, Wassa East, Mpohor and the land behind the coast from Sekondi-Takoradi to Cape Coast, in the Western and Central regions",
+  "checked": "2026-10-29",
+  "checked_patches": 19,
+  "showed_mining": 13,
+  "result": "13 of 19 random patches showed mining; 5 were farms, a road and building or industrial sites near the coast (1 had no clear pair)",
+  "bounds": [
+   -2.0987,
+   4.4327,
+   -1.1065,
+   5.4277
+  ]
+ },
+ "T30NWL": {
+  "enabled": true,
+  "place": "Prestea and Nzema",
+  "area": "Prestea Huni-Valley, Ellembelle, Nzema East, Ahanta West and the Ankobra valley, in the Western region",
+  "checked": "2026-10-29",
+  "checked_patches": 19,
+  "showed_mining": 17,
+  "result": "17 of 19 random patches showed mining; 2 were farm blocks (1 had no clear pair)",
+  "bounds": [
+   -3.0,
+   4.4344,
+   -2.0089,
+   5.4284
+  ]
  }
 }

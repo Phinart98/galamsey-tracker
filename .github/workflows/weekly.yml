@@ -14,6 +14,9 @@ on:
       signs_minutes:
         description: "Time limit in minutes for the open-water step"
         default: "45"
+      trend_minutes:
+        description: "Time limit in minutes for the trend step (switching on a new area recounts every month: give it 150)"
+        default: "45"
 
 concurrency:
   group: weekly-update
@@ -107,8 +110,11 @@ jobs:
         continue-on-error: true
         run: uv run python -m tracker.run signs --limit "${{ inputs.signs_limit || '1500' }}" --workers 4
 
+      # The trend is written only when every month is done, so a timeout keeps last week's trend and must not
+      # stop the site from being published
       - name: Monthly trend point
-        timeout-minutes: 45
+        timeout-minutes: ${{ fromJSON(inputs.trend_minutes || '45') }}
+        continue-on-error: true
         run: uv run python -m tracker.run trend
 
       - name: Save places, readings and pictures for next run

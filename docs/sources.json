@@ -106,6 +106,22 @@
    "status": "cited"
   },
   {
+   "id": "western-region-galamsey-2018",
+   "title": "Spatial distribution of galamsey operations in Ghana, a focus on the Western Region",
+   "publisher": "Heliyon (2018)",
+   "url": "https://doaj.org/article/197f814f38264da3b96e8273d6ab5d70",
+   "used_for": "Coverage check (spike log s29): Tarkwa Nsuaem had the most galamsey sites of 11 Western Region districts, then Amenfi East and Prestea Huni-Valley",
+   "status": "cited"
+  },
+  {
+   "id": "forestry-commission-reserves-2024",
+   "title": "Galamsey destroys 9,000 hectares of forest reserves: Forestry Commission research",
+   "publisher": "Daily Graphic",
+   "url": "https://www.graphic.com.gh/news/general-news/ghana-news-galamsey-destroys-9-000-hectares-of-forest-reserves-forestry-commission-research.html",
+   "used_for": "Coverage check (spike log s29): 45 forest reserves affected, mostly in Ashanti, Western North and Western regions",
+   "status": "cited"
+  },
+  {
    "id": "minerals-commission-cadastre",
    "title": "Ghana Minerals Commission mining cadastre, active licences",
    "publisher": "Minerals Commission of Ghana, portal hosted by Revenue Development Foundation",
