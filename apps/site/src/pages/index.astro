@@ -1,13 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
 import Pair from '../components/Pair.astro';
+import Flip from '../components/Flip.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
 import TrendChart from '../components/TrendChart.astro';
 import WaterMap from '../components/WaterMap.astro';
 import { doorstep, summary, townsNear, trend, water, where } from '../lib/data';
-import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, shortDate, srcsets, tidyDistrict } from '../lib/format';
+import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, srcsets, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(9);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
@@ -34,14 +35,17 @@ const total = summary?.total_ha ?? 0;
         </h1>
         <p class="sub">
           Satellites saw {num(summary.total_ha)} hectares of land cleared {where} in the 12 months to {longDate(summary.data_date)}.
-          {lead && ' These are the places with the most of it on their doorstep.'}
+          {lead && ' Here is the town or village with the most of it within 1 km, before and after the clearing.'}
         </p>
         {lead && (
           <div class="lead">
+            <h2 class="who">
+              <span>The town with the most cleared land around it:</span>
+              <a href={`/places/${lead.place.id}`}>{lead.town.name}</a>{lead.town.district && `, ${tidy(lead.town.district)}`}
+            </h2>
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <span class="who"><a href={`/places/${lead.place.id}`}>{lead.town.name}</a>{lead.town.district && `, ${tidy(lead.town.district)}`}</span>
-                <span>{hectares(lead.town.ha)} cleared within 1 km, in {lead.town.patches} patches. The pictures show the largest, {hectares(lead.place.ha)}, first seen {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]}</span>
+                <span>{hectares(lead.town.ha)} cleared within 1 km, in {lead.town.patches} patches. The pictures show the largest, {hectares(lead.place.ha)}, first seen {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} The town shown changes as new clearing is found.</span>
                 <span class="hint">Tap a picture to see it large and zoom in.</span>
               </figcaption>
             </Pair>
@@ -53,39 +57,32 @@ const total = summary?.total_ha ?? 0;
     )}
 
     {lead && (
-      <section class="doorstep" aria-label="Towns and villages with the most cleared land nearby">
-        <LabelKey galamsey />
+      <section class="band doorstep" aria-labelledby="others">
+        <div>
+          <h2 id="others">Other towns and villages with the most cleared land around them</h2>
+          <p class="intro">Each picture is one of the largest cleared patches within 1 km of the town. Use the arrows to compare before and after, or tap the picture to see it large.</p>
+        </div>
         <ul class="villages">
-          {villages.map(({ town, place: p }) => {
-            const a = srcsets(p.chips.after), b = srcsets(p.chips.before);
-            return (
-              <li>
-                <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`} data-lat={p.lat} data-lon={p.lon}
-                        data-before={b.large} data-after={a.large}
-                        data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
-                  <a class="cell" href={a.large} data-open="after">
-                    <picture>
-                      <source type="image/avif" srcset={a.avif} sizes="(min-width: 960px) 280px, 50vw" />
-                      <img src={a.src} srcset={a.webp} sizes="(min-width: 960px) 280px, 50vw" width="360" height="360" loading="lazy" decoding="async"
-                           alt={`Satellite image on ${shortDate(p.chips.after.date)} of the largest cleared patch near ${town.name}`} />
-                    </picture>
-                  </a>
-                  <figcaption>
-                    <a class="name" href={`/places/${p.id}`}>{town.name}</a>
-                    <span class="muted">{tidy(town.district)}</span>
-                    <span>{haText(town.ha)} ha within 1 km</span>
-                    <LicenceTag licence={p.licence} />
-                    {p.likely_galamsey && <LikelyTag />}
-                  </figcaption>
-                </figure>
-              </li>
-            );
-          })}
+          {villages.map(({ town, place: p }) => (
+            <li>
+              <figure data-pair data-title={`${hectares(p.ha)} cleared near ${town.name}`} data-href={`/places/${p.id}`} data-lat={p.lat} data-lon={p.lon}
+                      data-before={srcsets(p.chips.before).large} data-after={srcsets(p.chips.after).large}
+                      data-before-date={longDate(p.chips.before.date)} data-after-date={longDate(p.chips.after.date)}>
+                <Flip chips={p.chips} where={`near ${town.name}`} sizes="(min-width: 960px) 280px, 50vw" />
+                <figcaption>
+                  <a class="name" href={`/places/${p.id}`}>{town.name}</a>
+                  <span class="muted">{tidy(town.district)}</span>
+                  <span>{haText(town.ha)} ha within 1 km</span>
+                  <LicenceTag licence={p.licence} />
+                  {p.likely_galamsey && <LikelyTag />}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
         </ul>
-        <p class="note">
-          Each picture shows one of the largest cleared patches within 1 km, in the latest clear satellite picture. Tap it to compare with before.
-          Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.
-        </p>
+        <LabelKey galamsey />
+        <p class="note">Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.</p>
+        {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(summary.patches)} places on the map</a></div>}
       </section>
     )}
 
@@ -234,14 +231,15 @@ const total = summary?.total_ha ?? 0;
   .hero h1 { font-size: clamp(1.875rem, 4.6vw, 3.5rem); line-height: 1.05; letter-spacing: -0.025em; margin: 0; font-weight: 800; max-width: 21ch; }
   .sub { font-size: 1.1875rem; line-height: 1.45; margin: 0; max-width: 46ch; }
 
-  .doorstep { display: grid; gap: 20px; padding-bottom: 40px; }
+  .doorstep { display: grid; gap: 20px; }
+  .doorstep .intro { margin-bottom: 0; }
+  .doorstep .actions { margin-top: 4px; }
+  .who { font-size: 1.25rem; font-weight: 800; line-height: 1.25; margin: 0 0 12px; }
+  .who span { font-weight: 400; }
   .caption { display: grid; gap: 4px; margin-top: 10px; max-width: 60ch; }
-  .caption .who { font-size: 1.25rem; font-weight: 800; line-height: 1.25; }
   .caption .hint { color: var(--muted); font-size: 0.9375rem; }
   .villages { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px 4px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .villages figure { margin: 0; }
-  .cell { display: block; aspect-ratio: 1; background: var(--paper-2); }
-  .cell img { width: 100%; height: 100%; object-fit: cover; }
   .villages figcaption { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 2px 0; font-size: 0.9375rem; line-height: 1.35; }
   .villages .name { font-weight: 800; font-size: 1.0625rem; }
   .villages :global(.tag) { margin-top: 4px; white-space: normal; }

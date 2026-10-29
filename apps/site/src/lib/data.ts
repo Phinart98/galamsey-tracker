@@ -16,7 +16,7 @@ function read<T>(file: string, fallback: T): T {
 
 export type Licence = 'no licence' | 'prospecting only' | 'small-scale licence' | 'large-scale lease';
 
-export interface Chip { date: string; files: Record<'360.avif' | '360.webp' | '720.avif' | '720.webp', string> }
+export interface Chip { date: string; files: Record<'360.webp' | '720.webp', string> }
 
 export interface Place {
   id: string;

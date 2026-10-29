@@ -37,12 +37,9 @@ const shots = (['before', 'after'] as const).map((side) => {
   <div class="shots">
     {shots.map(({ side, chip, s, alt }) => (
       <a class="shot" href={s.large} data-open={side}>
-        <picture>
-          <source type="image/avif" srcset={s.avif} sizes={SIZES[variant]} />
-          <img src={s.src} srcset={s.webp} sizes={SIZES[variant]} width="360" height="360" alt={alt}
-               loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
-        </picture>
-        <span class="when">{shortDate(chip.date)}</span>
+        <img src={s.src} srcset={s.webp} sizes={SIZES[variant]} width="360" height="360" alt={alt}
+             loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
+        <span class="when"><strong>{side === 'before' ? 'Before' : 'After'}</strong> <span>Taken {shortDate(chip.date)}</span></span>
       </a>
     ))}
   </div>
@@ -54,8 +51,9 @@ const shots = (['before', 'after'] as const).map((side) => {
   .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
   .shot { display: block; text-decoration: none; }
   .shot img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--paper-2); }
-  .when { display: block; margin-top: 6px; font-size: 0.9375rem; font-weight: 700; }
+  .when { display: block; margin-top: 6px; font-size: 0.9375rem; }
   .shot:hover .when { text-decoration: underline; }
+  .when strong { display: block; font-weight: 800; }
   .row .when { font-size: 0.875rem; font-weight: 400; }
   @media (max-width: 719px) {
     .lead, .row { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }

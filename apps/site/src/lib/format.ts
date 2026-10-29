@@ -63,7 +63,6 @@ export const chipUrl = (rel: string) => `${CHIPS}/${rel}`;
 
 export function srcsets(chip: Chip) {
   return {
-    avif: `${chipUrl(chip.files['360.avif'])} 360w, ${chipUrl(chip.files['720.avif'])} 720w`,
     webp: `${chipUrl(chip.files['360.webp'])} 360w, ${chipUrl(chip.files['720.webp'])} 720w`,
     src: chipUrl(chip.files['360.webp']),
     large: chipUrl(chip.files['720.webp']),

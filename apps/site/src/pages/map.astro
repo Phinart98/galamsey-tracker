@@ -450,14 +450,13 @@ const withoutPic = active.find((p) => !hasPair(p));
         fig.dataset[side] = file('720.webp');
         fig.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         shot.href = file('720.webp');
-        shot.querySelector('source')!.srcset = `${file('360.avif')} 360w, ${file('720.avif')} 720w`;
         const img = shot.querySelector('img')!;
         img.src = small; img.srcset = `${small} 360w, ${file('720.webp')} 720w`;
         img.loading = 'lazy'; img.removeAttribute('fetchpriority');
         img.alt = side === 'before'
           ? `Satellite image of the place on ${longDate(p.before_date)}, before the clearing was first seen`
           : `Satellite image of the same place on ${longDate(p.after_date)}`;
-        shot.querySelector('.when')!.textContent = shortDate(p[`${side}_date`]);
+        shot.querySelector('.when span')!.textContent = `Taken ${shortDate(p[`${side}_date`])}`;
       });
     }
     return li;
