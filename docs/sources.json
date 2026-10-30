@@ -256,13 +256,34 @@
    "link": "https://www.citinewsroom.com/2026/04/owabi-barekese-water-treatment-plants-risk-shutdown-over-pollution/"
   },
   {
+   "id": "citi-daboase-2026",
+   "title": "Galamsey on River Pra worsens turbidity at Daboase Water Treatment Plant: raw water turbidity 11,955 NTU on 14 Aug 2026 against a permitted 500 NTU; only two of four intake pumps working; Channel One TV drone footage shows mining directly opposite the Daboase intake pumping station",
+   "publisher": "Citi Newsroom, 14 Aug 2026",
+   "url": "https://www.citinewsroom.com/2026/08/galamsey-on-river-pra-worsens-turbidity-at-daboase-water-treatment-plant/",
+   "link": "https://www.citinewsroom.com/2026/08/galamsey-on-river-pra-worsens-turbidity-at-daboase-water-treatment-plant/",
+   "used_for": "Home water list (Daboase), About",
+   "status": "verified",
+   "checked": "2026-10-30",
+   "caveat": "The article does not name the source of the turbidity figure; it may affect supply to the Takoradi area, no disruption reported"
+  },
+  {
+   "id": "joy-barekese-2025",
+   "title": "A/R GWCL justifies water tariff increment, cites galamsey and aging infrastructure. GWCL Ashanti Regional Manager: if the Offin is not protected, Barekese will be down; the article attributes the tariff to the cost of treating water hit by illegal mining",
+   "publisher": "MyJoyOnline, 15 Apr 2025 (Emmanuel Bright Quaicoe)",
+   "url": "https://www.myjoyonline.com/a-r-gwcl-justifies-water-tariff-increment-cites-galamsey-and-aging-infrastructure/",
+   "link": "https://www.myjoyonline.com/a-r-gwcl-justifies-water-tariff-increment-cites-galamsey-and-aging-infrastructure/",
+   "used_for": "Home water list (Barekese)",
+   "status": "verified",
+   "checked": "2026-10-30"
+  },
+  {
    "id": "gna-daboase-2024",
    "title": "Galamsey: stakeholders call for drastic, coordinated action to save water situation. Ghana Water cut operations at Daboase and Sekyere Hemang by 30% after galamsey pushed turbidity to abnormal levels; Daboase was designed in 1969 for 54 NTU",
    "publisher": "GNA, 21 Mar 2024",
    "url": "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/",
    "link": "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/",
-   "used_for": "Home water list, Daboase news line",
-   "status": "verified",
+   "used_for": "Background only (replaced on the site by the Aug 2026 report)",
+   "status": "cited",
    "checked": "2026-10-29"
   },
   {
@@ -584,10 +605,10 @@
   },
   {
    "id": "water-shutdowns",
-   "text": "Daboase could run only about two hours a day in 2022 because its intake was silted; Sekondi-Takoradi had been on rationing for three years",
+   "text": "In Aug 2026 Pra turbidity at Daboase reached 11,955 NTU against a permitted 500, with mining opposite the intake",
    "where": "/about",
    "evidence": [
-    "gwcl-daboase-news"
+    "citi-daboase-2026"
    ],
    "status": "verified"
   },
@@ -784,15 +805,16 @@
   },
   {
    "id": "plant-news",
-   "text": "Dated news line per plant: Daboase 30% cut (Mar 2024, with Sekyere Hemang), built for 54 NTU; Kwanyako 32,000 NTU vs 2,500 design (Sep 2025), shut 2,541 hours in 2025; Densu water quality falling at Potroase and Weija, Potroase an illegal mining hotspot (May 2026)",
+   "text": "Dated news line per plant, latest relevant report first: Daboase turbidity 11,955 NTU vs permitted 500, mining opposite the intake (Aug 2026); Barekese at risk if the Offin is not protected, tariff partly over illegal-mining treatment costs (Apr 2025); Kwanyako 32,000 NTU vs 2,500 design (Sep 2025), shut 2,541 hours in 2025 (May 2026); Densu water quality falling at Potroase and Weija, Potroase an illegal mining hotspot (May 2026)",
    "where": "home water list",
    "evidence": [
-    "gna-daboase-2024",
+    "citi-daboase-2026",
+    "joy-barekese-2025",
     "gwcl-kwanyako-news",
     "fourth-estate-2026-water"
    ],
    "status": "verified",
-   "caveat": "Checked against the articles 2026-10-29. Kumasi plants get no news line: the Apr 2026 report blames silt, plastic and power, not mining"
+   "caveat": "Checked against the articles 2026-10-30. Philip: prefer the latest relevant report, older only when nothing newer does the job"
   }
  ]
 }

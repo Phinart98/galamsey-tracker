@@ -127,16 +127,3 @@ export function doorstep(n: number) {
   }
   return out;
 }
-
-// The home page's "is it getting worse?" answer: the latest month NASA has finished confirming, and the same
-// month one and two years before. Newer months are left out because they keep rising as late clearing is confirmed.
-export function sameMonthYears(points: TrendPoint[] = trend): TrendPoint[] {
-  const settled = points.filter((p) => p.settled !== false);
-  const latest = settled.at(-1);
-  if (!latest) return [];
-  const month = latest.date.slice(5, 7);
-  const year = Number(latest.date.slice(0, 4));
-  return [year - 2, year - 1, year]
-    .map((y) => settled.find((p) => p.date.startsWith(`${y}-${month}`)))
-    .filter((p): p is TrendPoint => Boolean(p));
-}

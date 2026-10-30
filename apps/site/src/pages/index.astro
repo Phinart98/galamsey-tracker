@@ -4,23 +4,22 @@ import Pair from '../components/Pair.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
-import YearBars from '../components/YearBars.astro';
 import WaterMap from '../components/WaterMap.astro';
 import Src from '../components/Src.astro';
-import { doorstep, sameMonthYears, summary, townsNear, water, where } from '../lib/data';
+import { doorstep, summary, townsNear, water, where } from '../lib/data';
 import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(10);
-const years = sameMonthYears();
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 const tidy = (d: string | null) => (d ? tidyDistrict(d) : null);
 const haText = (ha: number) => (ha < 10 ? ha.toFixed(1) : num(ha));
 // Who each plant supplies and what the news reported, each checked against the article
-// (docs/sources.json claims water-plant-towns and plant-news). Only news that ties the plant to mud or mining.
+// (docs/sources.json claims water-plant-towns and plant-news). Only news that ties the plant to mud or mining,
+// the latest relevant report first.
 const PLANTS: Record<string, { supplies: string; news: { when: string; text: string; src: string; outlet: string }[] }> = {
   Daboase: { supplies: 'Sekondi-Takoradi, with the Inchaban plant', news: [
-    { when: 'March 2024', text: 'Ghana Water said galamsey had made the water so muddy that it cut work at Daboase and the Sekyere Hemang plant by 30%. Daboase was built in 1969 for far cleaner water.', src: 'gna-daboase-2024', outlet: 'GNA' },
+    { when: 'August 2026', text: "Mud in the Pra at Daboase reached more than 20 times the permitted level. Drone footage showed mining right opposite the plant's intake.", src: 'citi-daboase-2026', outlet: 'Citi Newsroom' },
   ] },
   Weija: { supplies: 'central and western Accra', news: [
     { when: 'May 2026', text: 'Potroase, where the Densu comes down from the Atewa hills, has become a hotspot for illegal mining. Water Resources Commission data show the river getting dirtier there and at Weija over five years.', src: 'fourth-estate-2026-water', outlet: 'The Fourth Estate' },
@@ -29,7 +28,9 @@ const PLANTS: Record<string, { supplies: string; news: { when: string; text: str
     { when: 'September 2025', text: 'Ghana Water said mud in the Ayensu reached more than 12 times what the plant was built to treat.', src: 'gwcl-kwanyako-news', outlet: 'GNA' },
     { when: 'May 2026', text: 'Ghana Water records show the plant was shut for 2,541 hours in 2025, more than 100 days, because of mud and silt.', src: 'fourth-estate-2026-water', outlet: 'The Fourth Estate' },
   ] },
-  Barekese: { supplies: 'Greater Kumasi, with Owabi', news: [] },
+  Barekese: { supplies: 'Greater Kumasi, with Owabi', news: [
+    { when: 'April 2025', text: "Ghana Water raised prices partly over the cost of treating water hit by illegal mining. Its Ashanti manager warned that if the Offin, Barekese's main source, is not protected, Barekese will be down.", src: 'joy-barekese-2025', outlet: 'MyJoyOnline' },
+  ] },
   Owabi: { supplies: 'Greater Kumasi, with Barekese', news: [] },
 };
 const pra = water.find((w) => w.plant === 'Daboase');
@@ -119,7 +120,7 @@ const total = summary?.total_ha ?? 0;
         <div class="say">
           <h2 id="mud">Where the mud goes</h2>
           <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies on land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
-          <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years (<Src id="gwcl-daboase-news">3News</Src>). Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
+          <p>When it rains, mud from cleared land and mining pits washes into the rivers, and the more mud there is, the harder and dearer the water is to treat. Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
           <h3>{Count(water.length)} water treatment plants downstream of the areas we cover</h3>
           <ul class="plants">
             {water.map((w) => (
@@ -136,18 +137,6 @@ const total = summary?.total_ha ?? 0;
           <p class="muted small">Hectares cleared in the last 12 months on the land that drains to each plant. Smaller water works on these rivers are not listed.</p>
         </div>
         <div class="look"><WaterMap praHa={pra.ha} /></div>
-      </section>
-    )}
-
-    {years.length > 1 && (
-      <section class="band" aria-labelledby="time">
-        <h2 id="time">Is it getting worse?</h2>
-        <p class="intro">We cannot tell yet. Here is the land cleared in the same 12 months, a year apart.</p>
-        <YearBars points={years} />
-        <p class="note">
-          The numbers go up and down, but part of that is farm clearing and bush burning in the dry season, which the satellites cannot tell apart from mining, and we have not checked the change by eye.
-          We stop at {longDate(years.at(-1)!.date)} because NASA is still confirming clearing after that date, so newer totals keep going up. <a href="/method#trend">See every month on a chart</a>
-        </p>
       </section>
     )}
 
