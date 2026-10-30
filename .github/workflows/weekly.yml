@@ -15,7 +15,7 @@ on:
         description: "Time limit in minutes for the open-water step"
         default: "45"
       trend_minutes:
-        description: "Time limit in minutes for the trend step (switching on a new area recounts every month: give it 150)"
+        description: "Time limit in minutes for the trend step (switching on a new area recounts every month: give it 150, with chips_limit 300 so the run fits in 6 hours)"
         default: "45"
 
 concurrency:
@@ -30,21 +30,21 @@ permissions:
 env:
   STATE_TAG: pipeline-state
   STATE_FILE: pipeline-state.tar.gz
-  PREVIEW_PROJECT: galamsey-tracker
+  SITE_PROJECT: galamsey-tracker
   # The pictures have their own Pages project, so neither site passes Pages' 20,000-file limit
   PICTURES_PROJECT: galamsey-tracker-pictures
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    # GitHub's most for one job. The step limits add up to less, so saving and publishing always get their turn,
+    # as long as a long trend run (trend_minutes 150) comes with a small chips_limit
+    timeout-minutes: 360
     defaults:
       run:
         working-directory: pipeline
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0  # full history, so the data commit can be rebased onto commits pushed during the run
 
       - name: Check secrets are set
         env:
@@ -135,13 +135,21 @@ jobs:
         run: |
           git config user.name "galamsey-tracker-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data
-          git diff --cached --quiet || git commit -m "data: weekly update $(date -u +%Y-%m-%d)"
-          # Someone may have pushed while the run was going: put the data commit on top instead of failing.
-          # data/ is made entirely by this run from the newest saved state, so its files win any conflict
-          # (in a rebase "theirs" is the commit being replayed, which is this run's).
-          git pull --rebase -X theirs origin "$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          # Others may have pushed since this run checked out its code (a queued run checks out early). This run's
+          # data/ files are made from the newest saved state, so they are copied whole over the newest branch:
+          # no merge, so a file is never a mix of two runs. Files only the branch has are kept.
+          cp -r data "$RUNNER_TEMP/data"
+          for try in 1 2 3; do
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            cp -r "$RUNNER_TEMP/data/." data/
+            git add data
+            git diff --cached --quiet && { echo "No data changes"; exit 0; }
+            git commit -m "data: weekly update $(date -u +%Y-%m-%d)"
+            git push origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            sleep 15
+          done
+          echo "::error::Could not push the data commit"; exit 1
 
       - uses: actions/setup-node@v4
         with:
@@ -158,7 +166,6 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npm run deploy:pictures -- "$PICTURES_PROJECT"
 
-      # Until launch the site is a private preview: deploy-preview.mjs builds with PREVIEW=1 and adds noindex
       - name: Build and publish the site
         working-directory: apps/site
         env:
@@ -169,4 +176,4 @@ jobs:
           CONTACT_EMAIL: hello@galamseytracker.org
         run: |
           npm ci
-          npm run deploy:preview -- "$PREVIEW_PROJECT"
+          npm run deploy:site -- "$SITE_PROJECT"

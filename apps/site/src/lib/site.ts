@@ -4,5 +4,5 @@ export const CONTACT_EMAIL: string = import.meta.env.CONTACT_EMAIL ?? '';
 
 export const mailto = (subject: string) => `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
 
-// Preview builds (scripts/deploy-preview.mjs) are a frozen snapshot, so they must not promise weekly updates
+// Hidden test copies (PREVIEW=1, scripts/deploy-site.mjs) are frozen snapshots, so they must not promise weekly updates
 export const WEEKLY: boolean = !import.meta.env.PREVIEW;

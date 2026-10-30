@@ -8,7 +8,7 @@ Only the `master` branch and the site built from it are supported. The earlier v
 
 Please do not open a public GitHub issue for security problems.
 
-Email phinart98@gmail.com with:
+Email hello@galamseytracker.org with:
 - what the problem is
 - how to reproduce it
 - what an attacker could do with it

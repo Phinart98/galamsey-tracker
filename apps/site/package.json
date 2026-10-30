@@ -7,7 +7,7 @@
     "build": "node scripts/prepare-data.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "deploy:preview": "node scripts/deploy-preview.mjs",
+    "deploy:site": "node scripts/deploy-site.mjs",
     "deploy:pictures": "node scripts/deploy-pictures.mjs"
   },
   "dependencies": {
