@@ -1,6 +1,6 @@
 {
  "about": "Every outside source the tracker relies on, and every claim the public site makes or plans to make, with how it is backed. Status values. Sources: live-data (our code reads it directly), checked (opened and the specific fact confirmed, with date), cited (from docs/research, not re-opened for this use), rejected (tested or considered and not used). Claims: measured (our own test, see evidence), sourced (backed by a checked source), unverified (needs a source before it is published), to-confirm (Philip must confirm). Rule: add a source here the moment research uses it. Nothing marked unverified or to-confirm goes on the public site. This file is the full reading list. The public site's reference list is derived from it: a source is listed on the site only if a claim published on the site cites it, like a paper's references.",
- "updated": "2026-10-30",
+ "updated": "2026-10-31",
  "sources": [
   {
    "id": "opera-dist-alert",
@@ -432,6 +432,69 @@
    "status": "verified",
    "link": "https://doi.org/10.1080/01431160600589179",
    "note": "The publisher returns 403 to scripts (bot protection); the DOI opens in a browser"
+  },
+  {
+   "id": "opera-dist-hls-psd",
+   "title": "OPERA DIST-HLS Product Specification, version 1: VEG-DIST-STATUS 6 = confirmed loss of at least 50%, ongoing; 8 = confirmed loss of at least 50%, finished",
+   "publisher": "NASA JPL OPERA / LP DAAC",
+   "url": "https://lpdaac.usgs.gov/documents/1766/OPERA_DIST_HLS_Product_Specification_V1.pdf",
+   "used_for": "Which pixels count as cleared (status 6 and 8)",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "ghana-act-703",
+   "title": "Minerals and Mining Act, 2006 (Act 703). s.9: activities are limited to what the mineral right permits; s.37: a prospecting licence lets the holder prospect (search) for the mineral, make boreholes and excavations for prospecting; mining needs a mining lease (s.39 onwards); s.76 and definitions: restricted licences and leases are for industrial minerals (basalt, clay, granite, gravel, gypsum, laterite, limestone, marble, rock, sand, sandstone, slate, talc, salt)",
+   "publisher": "Republic of Ghana (copy hosted by the Natural Resource Governance Institute)",
+   "url": "https://resourcegovernance.org/sites/default/files/Minerals%20and%20Mining%20Act%20703%20Ghana.pdf",
+   "used_for": "Prospecting does not allow mining; restricted leases do not cover gold",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "ifab-law-1",
+   "title": "IFAB Laws of the Game, Law 1: international matches 100 to 110 m by 64 to 75 m",
+   "publisher": "IFAB",
+   "url": "https://www.theifab.com/laws/latest/the-field-of-play/",
+   "used_for": "Football pitch size",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "fifa-stadium-guidelines",
+   "title": "FIFA Football Stadiums Guidelines 5.3: recommended field of play 105 m by 68 m",
+   "publisher": "FIFA",
+   "url": "https://publications.fifa.com/en/football-stadiums-guidelines/technical-guideline/stadium-guidelines/pitch-dimensions-and-surrounding-areas",
+   "used_for": "Football pitch size (0.714 ha)",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "copernicus-legal-notice",
+   "title": "Legal notice on the use of Copernicus Sentinel Data and Service Information: free, full and open access; credit \"Copernicus Sentinel data [Year]\", or \"Contains modified Copernicus Sentinel data [Year]\" when adapted",
+   "publisher": "European Commission",
+   "url": "https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice",
+   "used_for": "Footer credit with the picture years",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "usgs-landsat-9",
+   "title": "Landsat 9: a partnership between USGS and NASA; NASA built and launched it, USGS runs flight operations and data",
+   "publisher": "USGS",
+   "url": "https://www.usgs.gov/landsat-missions/landsat-9",
+   "used_for": "Who runs Landsat",
+   "status": "verified",
+   "checked": "2026-10-31"
+  },
+  {
+   "id": "citi-chanfang-2025",
+   "title": "NAIMOS task force destroys chanfang machines in Ankobra River crackdown: chanfang dredging machines used for river mining",
+   "publisher": "Citi Newsroom, 8 Oct 2025",
+   "url": "https://www.citinewsroom.com/2025/10/naimos-task-force-destroys-chanfang-machines-in-ankobra-river-crackdown/",
+   "used_for": "River dredging is a form of galamsey",
+   "status": "verified",
+   "checked": "2026-10-31"
   }
  ],
  "claims": [
@@ -503,18 +566,23 @@
    "text": "Status 6 and 8 mean confirmed loss of at least 50% of plant cover, ongoing or finished",
    "where": "/method",
    "evidence": [
-    "opera-dist-alert"
+    "opera-dist-alert",
+    "opera-dist-hls-psd"
    ],
-   "status": "unverified",
-   "todo": "Link the product specification"
+   "status": "verified",
+   "checked": "2026-10-31"
   },
   {
    "id": "football-pitch",
    "text": "A football pitch is 105 by 68 m, 0.714 ha; 1 ha is about 1.4 pitches",
    "where": "home, /method",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Cite FIFA/IFAB recommended dimensions"
+   "evidence": [
+    "fifa-stadium-guidelines",
+    "ifab-law-1"
+   ],
+   "status": "verified",
+   "checked": "2026-10-31",
+   "caveat": "105 by 68 m is FIFA's recommended size; the Laws allow 100 to 110 by 64 to 75 m"
   },
   {
    "id": "radar-failed",
@@ -561,17 +629,21 @@
    "id": "prospecting-no-mining",
    "text": "A prospecting licence allows exploration but not mining",
    "where": "home, place pages",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Cite the Minerals and Mining Act 2006 (Act 703) or Minerals Commission guidance"
+   "evidence": [
+    "ghana-act-703"
+   ],
+   "status": "verified",
+   "checked": "2026-10-31"
   },
   {
    "id": "restricted-leases",
    "text": "Restricted leases for granite, sand or salt do not allow gold mining",
    "where": "/method",
-   "evidence": [],
-   "status": "unverified",
-   "todo": "Cite Act 703 or Minerals Commission licence types"
+   "evidence": [
+    "ghana-act-703"
+   ],
+   "status": "verified",
+   "checked": "2026-10-31"
   },
   {
    "id": "upstream-hectares",
@@ -589,8 +661,8 @@
    "text": "Which towns each plant supplies (Daboase: Sekondi-Takoradi; Weija: west Accra; Barekese and Owabi: Kumasi; Kpong supplies much of Accra)",
    "where": "planned",
    "evidence": [],
-   "status": "unverified",
-   "todo": "Ghana Water Ltd or news sources for each"
+   "status": "removed",
+   "caveat": "Duplicate of water-plant-towns, which is verified"
   },
   {
    "id": "catchment-areas",
@@ -657,10 +729,14 @@
    "text": "Landsat 8 and 9 are run by NASA and the US Geological Survey; Sentinel-2 by the European Space Agency for the EU's Copernicus programme; NASA combines them as HLS and its OPERA project makes the disturbance data",
    "where": "/method",
    "evidence": [
-    "hls"
+    "usgs-landsat-9",
+    "sentinel2",
+    "copernicus",
+    "hls",
+    "opera-project"
    ],
-   "status": "unverified",
-   "todo": "Open and link the USGS Landsat mission page, the ESA Sentinel-2 mission page and the OPERA project page"
+   "status": "verified",
+   "checked": "2026-10-31"
   },
   {
    "id": "revisit",
@@ -689,24 +765,25 @@
    "text": "Mining on rivers, such as dredging from boats, is missed because it removes no plants",
    "where": "/method",
    "evidence": [
-    "opera-dist-alert"
+    "opera-dist-alert",
+    "citi-chanfang-2025"
    ],
-   "status": "unverified",
+   "status": "verified",
    "caveat": "Follows from what DIST measures (loss of plant cover)",
-   "todo": "Cite a source that river dredging is a form of galamsey in Ghana"
+   "checked": "2026-10-31"
   },
   {
    "id": "reuse-terms",
-   "text": "NASA OPERA is public domain; Copernicus Sentinel-2 free with credit; geoBoundaries CC BY 4.0; OpenStreetMap ODbL",
+   "text": "NASA OPERA: NASA open data, no limits on use; Copernicus Sentinel-2: free, full and open, with the credit \"Contains modified Copernicus Sentinel data [Year]\"; geoBoundaries GHA ADM2: CC BY 4.0 (checked via the geoBoundaries API); OpenStreetMap: ODbL",
    "where": "/data",
    "evidence": [
     "opera-dist-alert",
-    "sentinel2-earth-search",
+    "copernicus-legal-notice",
     "geoboundaries-gha-adm2",
     "openstreetmap"
    ],
-   "status": "unverified",
-   "todo": "Open each licence page and confirm the wording"
+   "status": "verified",
+   "checked": "2026-10-31"
   },
   {
    "id": "pra-upstream",

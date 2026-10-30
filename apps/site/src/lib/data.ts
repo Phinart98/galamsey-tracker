@@ -88,6 +88,11 @@ export function hasPair(p: Place): p is Place & { chips: { before: Chip; after: 
 
 export const active = places.filter((p) => p.active).sort((a, b) => b.ha - a.ha);
 export const withPairs = active.filter(hasPair);
+// Copernicus asks for "Contains modified Copernicus Sentinel data [Year]": the years our pictures were taken
+const pictureYearList = withPairs.flatMap((p) => [p.chips.before.date, p.chips.after.date]).map((d) => d.slice(0, 4)).sort();
+export const pictureYears = pictureYearList.length
+  ? pictureYearList[0] === pictureYearList.at(-1) ? pictureYearList[0] : `${pictureYearList[0]}-${pictureYearList.at(-1)}`
+  : String(new Date().getFullYear());
 // Share cards for places of 3 ha or more (inactive ones keep their page, so they keep their card too).
 // A card per small place would push the site past Cloudflare Pages' 20,000-file limit; they share the home card.
 export const CARD_MIN_HA = 3;
