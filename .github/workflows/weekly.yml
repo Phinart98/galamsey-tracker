@@ -165,6 +165,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CHIPS_BASE_URL: https://${{ env.PICTURES_PROJECT }}.pages.dev
+          # Cloudflare Email Routing forwards it to a private inbox. Setting it shows the contact lines and Help improve it
+          CONTACT_EMAIL: hello@galamseytracker.org
         run: |
           npm ci
           npm run deploy:preview -- "$PREVIEW_PROJECT"

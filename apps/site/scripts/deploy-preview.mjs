@@ -13,7 +13,9 @@ const run = (cmd, env = {}) => execSync(cmd, { cwd: site, stdio: 'inherit', env:
 
 // Pictures live on their own Pages project (deploy-pictures.mjs), never inside this site
 const pictures = process.env.CHIPS_BASE_URL ?? 'https://galamsey-tracker-pictures.pages.dev';
-run('npm run build', { SITE_URL: `https://${project}.pages.dev`, PREVIEW: '1', CHIPS_BASE_URL: pictures });
+// Canonical and share links use the real domain (bought 2026-10-31), which serves this same Pages project
+const siteUrl = process.env.SITE_URL ?? 'https://galamseytracker.org';
+run('npm run build', { SITE_URL: siteUrl, PREVIEW: '1', CHIPS_BASE_URL: pictures });
 fs.writeFileSync(path.join(dist, '_headers'), '/*\n  X-Robots-Tag: noindex, nofollow\n');
 fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 // Pages refuses more than 20,000 files per site: stop with a clear message before that happens
