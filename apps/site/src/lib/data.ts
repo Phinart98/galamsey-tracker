@@ -57,7 +57,7 @@ export interface TrendPoint {
   date: string;
   total_ha: number;
   no_licence_to_mine: { ha: number; share: number | null };
-  tiles: string[];
+  covered: string[];
   settled?: boolean;
 }
 
@@ -88,11 +88,12 @@ export function hasPair(p: Place): p is Place & { chips: { before: Chip; after: 
 
 export const active = places.filter((p) => p.active).sort((a, b) => b.ha - a.ha);
 export const withPairs = active.filter(hasPair);
-// Copernicus asks for "Contains modified Copernicus Sentinel data [Year]": the years our pictures were taken
-const pictureYearList = withPairs.flatMap((p) => [p.chips.before.date, p.chips.after.date]).map((d) => d.slice(0, 4)).sort();
+// Copernicus asks for "Contains modified Copernicus Sentinel data [Year]": the years of every picture on the site,
+// inactive places' pages included. Empty when there are no pictures.
+const pictureYearList = places.filter(hasPair).flatMap((p) => [p.chips.before.date, p.chips.after.date]).map((d) => d.slice(0, 4)).sort();
 export const pictureYears = pictureYearList.length
   ? pictureYearList[0] === pictureYearList.at(-1) ? pictureYearList[0] : `${pictureYearList[0]}-${pictureYearList.at(-1)}`
-  : String(new Date().getFullYear());
+  : '';
 // Share cards for places of 3 ha or more (inactive ones keep their page, so they keep their card too).
 // A card per small place would push the site past Cloudflare Pages' 20,000-file limit; they share the home card.
 export const CARD_MIN_HA = 3;
@@ -108,6 +109,14 @@ export const where = coverage.length > 1
   ? `across ${coverage.length} areas of Ghana's southern gold belt`
   : `around ${placeNames[0] ?? 'the area we cover'}`;
 export const lastSuccess: string | null = status.weekly?.last_success ?? null;
+// The day of the last good weekly run, which is also when the licence register was last read
+export const lastSuccessDate: string | null = lastSuccess?.slice(0, 10) ?? null;
+// Trend points counted over every area switched on now. A new area recounts every month, and until that has
+// finished the older points cover fewer areas, so they are left off the chart rather than mixed in.
+export const trendNow = trend.filter((p) => {
+  const on = Object.keys(tiles);
+  return p.covered?.length === on.length && on.every((t) => p.covered.includes(t));
+});
 export const STALE_DAYS = 14;
 
 export interface Town { name: string; place: string; district: string | null; lat: number; lon: number; ha: number; patches: number; ids: string[] }

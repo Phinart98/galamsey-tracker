@@ -4,7 +4,8 @@ import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import Src from '../components/Src.astro';
 import TrendChart from '../components/TrendChart.astro';
-import { coverage, lastSuccess, summary, trend } from '../lib/data';
+import { coverage, lastSuccessDate, summary, trendNow } from '../lib/data';
+import { WEEKLY } from '../lib/site';
 import { longDate } from '../lib/format';
 import { CONTACT_EMAIL } from '../lib/site';
 ---
@@ -31,7 +32,7 @@ import { CONTACT_EMAIL } from '../lib/site';
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
 
     <h2 id="licences">What the licence labels mean</h2>
-    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land. We check the register every week{lastSuccess && <>, last on {longDate(lastSuccess.slice(0, 10))}</>}. The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
+    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land. {WEEKLY ? <>We check the register every week{lastSuccessDate && <>, last on {longDate(lastSuccessDate)}</>}.</> : lastSuccessDate && <>We last checked the register on {longDate(lastSuccessDate)}.</>} The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
     <dl class="labels">
       <dt><LicenceTag licence="no licence" /></dt><dd>The register shows no mining licence on this land.</dd>
       <dt><LicenceTag licence="prospecting only" /></dt><dd>The only licence here is for prospecting. It lets a company explore for gold, but not mine it.</dd>
@@ -65,7 +66,9 @@ import { CONTACT_EMAIL } from '../lib/site';
     <p>Each point on the chart is the land cleared in the 12 months before that date. Counting a whole year each time evens out the seasons, so one year can be compared with the next.</p>
     <p>NASA only confirms clearing after seeing the same spot cleared several times. That can take weeks, or months in the rainy season. So the latest points are still filling in and usually go up. We count them again as NASA confirms more.</p>
     <p>We do not read a trend from it yet. Part of the ups and downs is farm clearing and bush burning in the dry season, and we have not checked the changes by eye.</p>
-    {trend.length > 1 && <TrendChart points={trend} />}
+    {trendNow.length > 1
+      ? <TrendChart points={trendNow} />
+      : <p class="muted">We are counting every month again to include the newest areas we cover. The chart comes back when that is done.</p>}
 
     <h2 id="covers">What it covers</h2>
     <p>The tracker does not cover all of Ghana yet. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>

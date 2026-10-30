@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import base from '../data/water-map.json';
+import Src from './Src.astro';
 import { active, coverage } from '../lib/data';
 import { count, num } from '../lib/format';
 
@@ -112,7 +113,7 @@ const labels = [
       <li><span class="sw out-sw"></span>Cleared land that drains to other rivers, not the Pra</li>
     </ul>
     <p class="why">Daboase stands out because most of the cleared land we cover is in the Pra basin.</p>
-    <p class="credit">Map: country outline from geoBoundaries, rivers and drainage areas from HydroSHEDS. It shows only the {num(active.length)} patches in the {count(coverage.length)} areas we cover, so clearing outside them is not on it.</p>
+    <p class="credit">Map: country outline from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>, rivers and drainage areas from HydroSHEDS (<Src id="hydrorivers">HydroRIVERS</Src> and <Src id="hydrobasins">HydroBASINS</Src>, Lehner and Grill 2013). It shows only the {num(active.length)} patches in the {count(coverage.length)} areas we cover, so clearing outside them is not on it.</p>
   </figcaption>
 </figure>
 

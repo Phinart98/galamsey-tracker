@@ -1,17 +1,19 @@
 ---
 // Friends read the licence labels as our verdict. They are the Minerals Commission's register, so say so wherever they appear.
 import Src from './Src.astro';
-import { lastSuccess } from '../lib/data';
+import { lastSuccessDate } from '../lib/data';
 import { longDate } from '../lib/format';
+import { WEEKLY } from '../lib/site';
 
-// likely: false where the page already explains the Likely galamsey label next to it
-interface Props { galamsey?: boolean; likely?: boolean }
-const { galamsey = false, likely = true } = Astro.props;
+// likely: false where the page already explains the Likely galamsey label next to it.
+// current: false on the page of a place that has left the weekly count, whose label is from its last week in it.
+interface Props { galamsey?: boolean; likely?: boolean; current?: boolean }
+const { galamsey = false, likely = true, current = true } = Astro.props;
 // The register is fetched afresh on every weekly run, so the last successful run is when it was last checked
-const checked = lastSuccess?.slice(0, 10) ?? null;
+const checked = current ? lastSuccessDate : null;
 ---
 <p class="labelkey">
-  The labels come from the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src>.{checked && <> We check it every week, last on {longDate(checked)}.</>}
+  The labels come from the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src>.{checked && (WEEKLY ? <> We check it every week, last on {longDate(checked)}.</> : <> We last checked it on {longDate(checked)}.</>)}{!current && ' This label is from the last week this patch was in our count.'}
   {galamsey && 'Mining without a licence is illegal in Ghana, and that is what galamsey is. '}
   <a href="/method#licences">Read what each label means</a>
 </p>

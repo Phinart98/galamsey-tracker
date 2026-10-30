@@ -55,7 +55,7 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
           <h2 class="lic-h">Licence on this land</h2>
           <p><LicenceTag licence={place.licence} /></p>
           <p>{LICENCE_SENTENCE[place.licence]}</p>
-          <LabelKey galamsey likely={!place.likely_galamsey} />
+          <LabelKey galamsey likely={!place.likely_galamsey} current={place.active} />
           <dl class="facts">
             <dt>Size</dt><dd>{hectares(place.ha)}</dd>
             <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
