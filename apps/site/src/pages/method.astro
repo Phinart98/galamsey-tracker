@@ -3,14 +3,16 @@ import Base from '../layouts/Base.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import Src from '../components/Src.astro';
-import { coverage, summary } from '../lib/data';
+import TrendChart from '../components/TrendChart.astro';
+import { coverage, lastSuccess, summary, trend } from '../lib/data';
 import { longDate } from '../lib/format';
+import { CONTACT_EMAIL } from '../lib/site';
 ---
-<Base title="How we know" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
+<Base title="How it works" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
   <article class="wrap prose">
-    <h1>How we know</h1>
+    <h1>How it works</h1>
 
-    <p>Five satellites photograph Ghana's southern gold belt. Two are American: <Src id="landsat">Landsat 8 and Landsat 9</Src>, run by NASA and the US Geological Survey. Three are European: <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src>, run by the European Space Agency for the European Union's <Src id="copernicus">Copernicus programme</Src>.</p>
+    <p>Five satellites photograph Ghana's southern gold belt. Two are American: <Src id="landsat">Landsat 8 and Landsat 9</Src>, run by NASA and the US Geological Survey. Three are European: <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src>, run by the European Space Agency for the European Union's Copernicus programme.</p>
     <p>NASA <Src id="hls">puts their pictures together into one series</Src>. A NASA project called <Src id="opera-project">OPERA</Src> then compares each new picture of a spot with what that spot normally looks like. When most of the plants there disappear and stay gone, <Src id="opera-dist-alert">OPERA marks it as land that lost its plant cover</Src>.</p>
     <h2 id="light">How a satellite tells plants from bare ground</h2>
     <p>The cameras on these satellites see more than our eyes do. As well as red, green and blue light, they measure near-infrared light, which we cannot see.</p>
@@ -29,51 +31,54 @@ import { longDate } from '../lib/format';
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
 
     <h2 id="licences">What the licence labels mean</h2>
-    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land{summary && <>, checked on {longDate(summary.data_date)}</>}. We never name licence holders.</p>
+    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land. We check the register every week{lastSuccess && <>, last on {longDate(lastSuccess.slice(0, 10))}</>}. The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
     <dl class="labels">
       <dt><LicenceTag licence="no licence" /></dt><dd>The register shows no mining licence on this land.</dd>
       <dt><LicenceTag licence="prospecting only" /></dt><dd>The only licence here is for prospecting. It lets a company explore for gold, but not mine it.</dd>
-      <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining.</dd>
-      <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine. Some clearing here is the licensed mine itself.</dd>
+      <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining, so some clearing here may be licensed mining.</dd>
+      <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine, so some clearing here may be the licensed mine itself.</dd>
     </dl>
     <h3 id="matching">How a patch is matched to the register</h3>
     <p>The register does not list licences as single points. It gives each one as an outline on the map. Each cleared patch is an outline too, made of the 30 metre squares where the satellites saw plants lost. We lay one over the other and measure how much of the patch falls inside each kind of licence. The kind that covers the most of the patch gives the label, as long as it covers at least a quarter of it. If none does, the label is no licence.</p>
     <p>Neither outline is exact. The satellite squares can put the edge of a patch about 30 metres out, and the licence outlines are only as good as the register's own map. So a patch right on the edge of a licence can get the wrong label, while one well inside or well outside will not. A licence on the land also does not tell you who did the digging.</p>
-    <p>Mining for gold without a licence is illegal in Ghana. That is what people call galamsey. So when a place shows signs of mining in the pictures and the register shows no licence to mine there, that is what galamsey looks like. We still leave the final judgement to you, because the register can be out of date and a few cleared patches are farms or roads.</p>
+    <p>Mining for gold without a licence is illegal in Ghana. That is what people call galamsey. So when a place shows signs of mining in the pictures and the register shows no licence to mine there, that is what galamsey looks like. We still leave the final judgement to you, because the register can be out of date and a few cleared patches could be farms or roads.</p>
 
-    <h2 id="likely">How we guess which places are likely galamsey</h2>
-    <p>Some patches carry a second label, <LikelyTag />. It is our educated guess, not a finding. A patch gets it when two things are true: the register shows no licence to mine on the land, and there is open water in the patch or within 60 metres of it.</p>
-    <p>Why water? Miners dig pits down to the gravel that holds the gold, and the pits fill with water. Farms, roads and building sites rarely leave ponds behind.</p>
-    <p>Besides near-infrared, the satellites measure shortwave infrared, light with even longer waves that we cannot see. Water swallows almost all of it, while soil, rock and plants send a lot of it back. Water still sends back some green light. So a spot that sends back more green light than shortwave infrared is almost certainly water. Scientists call this a water index (<Src id="xu-2006-mndwi">Xu, 2006</Src>). We read it from a clear Sentinel-2 picture taken after the patch was first seen, and read it again if the patch keeps growing.</p>
-    <p>We checked the guess against satellite pictures of patches picked at random, and it tracks well: most places it marks show mining, and it marks most of the mining. It still gets some wrong. A farm beside a stream can get the label, and a new pit may not hold water yet.</p>
-    <p>No label does not mean no galamsey. We only make this guess on land with no licence to mine, we start with the largest patches, and a patch hidden by cloud waits for a clear picture.</p>
-
-    <h2 id="mining">Is it all mining?</h2>
-    <p>Not all of it, but most. In the pictures, mining for gold usually looks like this:</p>
+    <h2 id="mining">Is it mining?</h2>
+    <p>Not all of it, but most of it looks like mining. In the pictures, mining for gold usually looks like this:</p>
     <ul>
       <li>Pits, often in rows or clusters, many of them filled with water</li>
       <li>Ponds of brown, orange or green water</li>
       <li>Bare yellow or orange ground where there was forest or farmland</li>
       <li>Often along a river or stream, which may turn brown downstream</li>
     </ul>
-    <p>Other clearing looks different. Farms are usually neat blocks that turn green again within months. Building sites sit at the edge of towns, with straight roads and roofs.</p>
-    <p>We checked the method against the pictures of patches picked at random, and it tracks mining well: most of the cleared land shows these signs. Small, new patches are more often farm fields or new roads, so judge those with care.</p>
+    <p>Other clearing looks different. Farms are usually neat blocks that turn green again within months. Building sites sit at the edge of towns, with straight roads and roofs. Small, new patches are more often farm fields or new roads, so judge those with care.</p>
 
-    <h2>Clearing over time</h2>
-    <p>Each point on the chart on the home page is the land cleared in the 12 months before that date.</p>
+    <h3 id="likely">How we guess which places are likely galamsey</h3>
+    <p>Some patches carry a second label, <LikelyTag />. It is our educated guess, not a finding. A patch gets it when two things are true: the register shows no licence to mine on the land, and there is open water in the patch or within 60 metres of it.</p>
+    <p>Why water? Miners dig pits down to the gravel that holds the gold, and the pits fill with water. Farms, roads and building sites rarely leave ponds behind.</p>
+    <p>Besides near-infrared, the satellites measure shortwave infrared, light with even longer waves that we cannot see. Water swallows almost all of it, while soil, rock and plants send a lot of it back. Water still sends back some green light. So a spot that sends back more green light than shortwave infrared is almost certainly water. Scientists call this a water index (<Src id="xu-2006-mndwi">Xu, 2006</Src>). We read it from a clear Sentinel-2 picture taken after the patch was first seen, and read it again if the patch keeps growing.</p>
+    <p>We chose 60 metres, about two of the satellite's 30 metre squares, before we tested anything. The edge of a patch can be one square out, and a wider ring would start to catch rivers and ponds that have nothing to do with the patch.</p>
+    <p>We checked the method and this guess against satellite pictures of patches picked at random. Most of the cleared land showed the signs of mining above, and most places the guess marks showed mining. It still gets some wrong. A farm beside a stream can get the label, and a new pit may not hold water yet.</p>
+    <p>No label does not mean no galamsey. We only make this guess on land with no licence to mine, we start with the largest patches, and a patch hidden by cloud waits for a clear picture.</p>
+
+    <h2 id="trend">Clearing over time</h2>
+    <p>Each point on the chart is the land cleared in the 12 months before that date. Counting a whole year each time evens out the seasons, so one year can be compared with the next.</p>
     <p>NASA only confirms clearing after seeing the same spot cleared several times. That can take weeks, or months in the rainy season. So the latest points are still filling in and usually go up. We count them again as NASA confirms more.</p>
+    <p>We do not read a trend from it yet. Part of the ups and downs is farm clearing and bush burning in the dry season, and we have not checked the changes by eye.</p>
+    {trend.length > 1 && <TrendChart points={trend} />}
 
     <h2 id="covers">What it covers</h2>
     <p>The tracker does not cover all of Ghana yet. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>
     <ul>
       {coverage.map((a) => <li>{a.charAt(0).toUpperCase() + a.slice(1)}</li>)}
     </ul>
-    <p>Within those areas we only count clearing in the forest zone, where the gold is. When we looked at clearing north of the forest, in the Afram Plains, and on the coastal plain near Kasoa and Winneba, most of what we looked at was farms, burnt bush and building sites, not mining.</p>
+    <p>Within those areas we only count clearing in the forest zone. Galamsey happens outside forests too. But north of the forest, in the Afram Plains, and on the coastal plain near Kasoa and Winneba, most of the clearing we looked at was farms, burnt bush and building sites. Farmers there clear and burn land every dry season. The satellites cannot tell that apart from mining, so counting it would bury the mining. Most of the southern gold belt lies in the forest zone, so this leaves out only a small share of the cleared land.</p>
+    <p>For the same reason the tracker does not cover the north of Ghana, such as the Upper East, where galamsey is also reported. The land there is savanna, with the same farm clearing and burning, so the method would need checking there first.</p>
     <p>The tracker misses:</p>
     <ul>
       <li>Clearing smaller than 1 hectare</li>
       <li>Places hidden by cloud in every picture for a whole year</li>
-      <li>Mining on rivers, such as dredging from boats, because it removes no plants. We are still looking for ways to spot more signs of galamsey like this.</li>
+      <li>Mining on rivers, such as dredging from boats, because it removes no plants. We are still looking for ways to spot more signs of galamsey like this.{CONTACT_EMAIL && <> If you have an idea, <a href="/about#help">tell us</a>.</>}</li>
       <li>Old sites that stopped growing more than 12 months ago. A site that is still growing stays on the map, because its new edges are counted.</li>
     </ul>
     {summary && <p>Latest data: {longDate(summary.data_date)}.</p>}
@@ -91,7 +96,7 @@ import { longDate } from '../lib/format';
       <dt>Satellites</dt><dd><Src id="landsat">Landsat 8 and 9</Src> (NASA and USGS) and <Src id="sentinel2">Sentinel-2A, 2B and 2C</Src> (ESA, Copernicus), combined by NASA as <Src id="hls">Harmonized Landsat and Sentinel-2 (HLS)</Src>. The before and after pictures are Sentinel-2 only.</dd>
       <dt>Clearing data</dt><dd><Src id="opera-dist-alert">NASA OPERA DIST-ALERT-HLS version 1</Src>, 30 metre pixels. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
-      <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests area of <Src id="resolve-ecoregions-2017">RESOLVE Ecoregions 2017</Src>.</dd>
+      <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests area of <Src id="resolve-ecoregions-2017">RESOLVE Ecoregions 2017</Src>. Outside it, farm clearing and burning in the dry season far outweigh the mining.</dd>
       <dt>Licences</dt><dd>Active licences from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>. A patch takes the licence that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
       <dt>Names</dt><dd>Nearest <Src id="openstreetmap">OpenStreetMap</Src> town within 15 km or village within 8 km. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from <Src id="sentinel2-earth-search">Earth Search</Src>. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
@@ -105,6 +110,7 @@ import { longDate } from '../lib/format';
   .prose { max-width: calc(68ch + 2 * var(--gutter)); padding-bottom: 24px; }
   h1 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.1; letter-spacing: -0.02em; margin: 32px 0 24px; }
   h2 { font-size: 1.375rem; line-height: 1.2; margin: 40px 0 10px; }
+  h3 { font-size: 1.125rem; line-height: 1.25; margin: 28px 0 8px; }
   p, li { margin: 0 0 14px; }
   ul { padding-left: 1.2em; }
   .facts { gap: 12px 20px; }

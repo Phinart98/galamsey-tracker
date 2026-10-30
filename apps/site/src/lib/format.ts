@@ -34,10 +34,10 @@ export const LICENCE_SHORT: Record<Licence, string> = {
 };
 
 export const LICENCE_SENTENCE: Record<Licence, string> = {
-  'no licence': 'There is no mining licence on this land.',
-  'prospecting only': 'The only licence here is for prospecting, which does not allow mining.',
-  'small-scale licence': 'This land is inside a small-scale mining licence.',
-  'large-scale lease': 'This land is inside a large-scale mining lease.',
+  'no licence': 'The register shows no mining licence on this land.',
+  'prospecting only': 'The register shows only a prospecting licence here, which does not allow mining.',
+  'small-scale licence': 'The register shows this land inside a small-scale mining licence.',
+  'large-scale lease': 'The register shows this land inside a large-scale mining lease.',
 };
 
 // geoBoundaries writes some district names with a lower-case word after a slash

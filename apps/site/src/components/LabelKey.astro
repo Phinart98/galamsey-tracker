@@ -1,19 +1,21 @@
 ---
 // Friends read the licence labels as our verdict. They are the Minerals Commission's register, so say so wherever they appear.
 import Src from './Src.astro';
-import { summary } from '../lib/data';
+import { lastSuccess } from '../lib/data';
 import { longDate } from '../lib/format';
 
 // likely: false where the page already explains the Likely galamsey label next to it
 interface Props { galamsey?: boolean; likely?: boolean }
 const { galamsey = false, likely = true } = Astro.props;
+// The register is fetched afresh on every weekly run, so the last successful run is when it was last checked
+const checked = lastSuccess?.slice(0, 10) ?? null;
 ---
 <p class="labelkey">
-  The labels show what the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src> says about the land{summary && <>, checked {longDate(summary.data_date)}</>}.
+  The labels come from the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src>.{checked && <> We check it every week, last on {longDate(checked)}.</>}
   {galamsey && 'Mining without a licence is illegal in Ghana, and that is what galamsey is. '}
-  <a href="/method#licences">What the labels mean</a>
+  <a href="/method#licences">Read what each label means</a>
 </p>
-{likely && <p class="labelkey"><strong>Likely galamsey</strong> is our own educated guess, not the register: no licence to mine, and open water in or beside the patch, as mining pits fill with water. No label does not mean no galamsey. <a href="/method#likely">How we guess</a></p>}
+{likely && <p class="labelkey"><strong>Likely galamsey</strong> is our own guess, not part of the register. We add it where the register shows no licence to mine and the satellite sees water in or next to the cleared patch, because mining pits fill with water. A place without this label can still be galamsey. <a href="/method#likely">How the guess works</a></p>}
 
 <style>
   .labelkey + .labelkey { margin-top: 6px; }

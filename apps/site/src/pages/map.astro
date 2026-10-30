@@ -28,7 +28,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
           <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
-          <dt>Mining</dt><dd>Most of the land shows signs of mining in the pictures. <a href="/method#mining">How we know</a></dd>
+          <dt>Mining</dt><dd>Most of the land shows signs of mining in the pictures. <a href="/method#mining">How we checked</a></dd>
           <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
@@ -48,8 +48,8 @@ const withoutPic = active.find((p) => !hasPair(p));
         <label>Licence on the land
           <select name="licence">
             <option value="">Any licence or none</option>
-            <option value="alarm">No licence to mine</option>
-            <option value="none">No licence at all</option>
+            <option value="alarm">No licence to mine (none, or prospecting only)</option>
+            <option value="none">No licence of any kind</option>
             <option value="prospecting">Prospecting licence only</option>
             <option value="small">Small-scale mining licence</option>
             <option value="large">Large-scale mining lease</option>
@@ -117,7 +117,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
     <section class="listcol" aria-labelledby="list-h">
       <h2 id="list-h" data-list-h>Largest first</h2>
-      <p class="muted small"><span data-list-note>The {Math.min(LIST, active.length)} largest of {num(active.length)} patches.</span> <a href="/places.csv">Download all of them</a>.</p>
+      <p class="muted small"><span data-list-note>Showing {num(Math.min(LIST, active.length))} of {num(active.length)} patches, largest first.</span> <a href="/places.csv">Download all of them</a>.</p>
       <LabelKey />
       <ul class="list" data-list data-date={summary?.data_date}>{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
       <button class="btn" type="button" data-more hidden={active.length <= LIST}>Show {LIST} more</button>
@@ -381,6 +381,8 @@ const withoutPic = active.find((p) => !hasPair(p));
   let places: Promise<Props[]> | null = null;
   let shown: Props[] = [];
   let upTo = PAGE;
+  let order = 'largest first';
+  let total = 0;
   // The first page of the list is written at build time; the full list loads only when it is needed
   let ready = false;
 
@@ -468,6 +470,10 @@ const withoutPic = active.find((p) => !hasPair(p));
   function paint() {
     list.replaceChildren(...shown.slice(0, upTo).map(row));
     more.hidden = shown.length <= upTo;
+    // "The first 60" was unclear when the list is newest first, so say the order
+    note.textContent = shown.length
+      ? `Showing ${num(Math.min(upTo, shown.length))} of ${num(shown.length)} ${shown.length === total ? '' : 'matching '}patches, ${order}.`
+      : 'No patches match.';
   }
 
   async function apply() {
@@ -480,6 +486,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     mapFilter = expression(w);
     if (map?.getLayer('places')) map.setFilter('places', mapFilter);
     const all = await load();
+    total = all.length;
     shown = all.filter(matches(w));
     shown.sort(w.sort === 'new'
       ? (a, b) => (a.first_seen === b.first_seen ? b.ha - a.ha : a.first_seen < b.first_seen ? 1 : -1)
@@ -495,9 +502,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         : w.town && !town ? 'No cleared land within 1 km of a place with that name. Pick a name from the list.' : 'No patches match. Try fewer filters.';
     mapCount.textContent = everything ? '' : `${num(shown.length)} shown.`;
     listHead.textContent = w.sort === 'new' ? 'Newest first' : 'Largest first';
-    note.textContent = shown.length
-      ? `${shown.length > PAGE ? `The first ${PAGE} of ` : ''}${num(shown.length)} ${everything ? '' : 'matching '}patches.`
-      : 'No patches match.';
+    order = w.sort === 'new' ? 'newest first' : 'largest first';
     upTo = PAGE;
     paint();
     ready = true;

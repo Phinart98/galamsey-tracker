@@ -4,21 +4,33 @@ import Pair from '../components/Pair.astro';
 import LicenceTag from '../components/LicenceTag.astro';
 import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
-import TrendChart from '../components/TrendChart.astro';
+import YearBars from '../components/YearBars.astro';
 import WaterMap from '../components/WaterMap.astro';
-import { doorstep, summary, townsNear, trend, water, where } from '../lib/data';
+import Src from '../components/Src.astro';
+import { doorstep, sameMonthYears, summary, townsNear, water, where } from '../lib/data';
 import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(10);
+const years = sameMonthYears();
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 const tidy = (d: string | null) => (d ? tidyDistrict(d) : null);
 const haText = (ha: number) => (ha < 10 ? ha.toFixed(1) : num(ha));
-// Who each plant supplies: docs/sources.json claim water-plant-towns. Kumasi's plants are not sourced yet.
-const SUPPLIES: Record<string, string> = {
-  Daboase: 'Sekondi-Takoradi',
-  Weija: 'central and western Accra',
-  Kwanyako: 'Winneba, Swedru and Kasoa',
+// Who each plant supplies and what the news reported, each checked against the article
+// (docs/sources.json claims water-plant-towns and plant-news). Only news that ties the plant to mud or mining.
+const PLANTS: Record<string, { supplies: string; news: { when: string; text: string; src: string; outlet: string }[] }> = {
+  Daboase: { supplies: 'Sekondi-Takoradi, with the Inchaban plant', news: [
+    { when: 'March 2024', text: 'Ghana Water said galamsey had made the water so muddy that it cut work at Daboase and the Sekyere Hemang plant by 30%. Daboase was built in 1969 for far cleaner water.', src: 'gna-daboase-2024', outlet: 'GNA' },
+  ] },
+  Weija: { supplies: 'central and western Accra', news: [
+    { when: 'May 2026', text: 'Potroase, where the Densu comes down from the Atewa hills, has become a hotspot for illegal mining. Water Resources Commission data show the river getting dirtier there and at Weija over five years.', src: 'fourth-estate-2026-water', outlet: 'The Fourth Estate' },
+  ] },
+  Kwanyako: { supplies: 'Winneba, Swedru and Kasoa', news: [
+    { when: 'September 2025', text: 'Ghana Water said mud in the Ayensu reached more than 12 times what the plant was built to treat.', src: 'gwcl-kwanyako-news', outlet: 'GNA' },
+    { when: 'May 2026', text: 'Ghana Water records show the plant was shut for 2,541 hours in 2025, more than 100 days, because of mud and silt.', src: 'fourth-estate-2026-water', outlet: 'The Fourth Estate' },
+  ] },
+  Barekese: { supplies: 'Greater Kumasi, with Owabi', news: [] },
+  Owabi: { supplies: 'Greater Kumasi, with Barekese', news: [] },
 };
 const pra = water.find((w) => w.plant === 'Daboase');
 const total = summary?.total_ha ?? 0;
@@ -33,8 +45,7 @@ const total = summary?.total_ha ?? 0;
             : `In the last 12 months, satellites saw ${num(summary.total_ha)} hectares of land cleared ${where}.`}
         </h1>
         <p class="sub">
-          Satellites saw {num(summary.total_ha)} hectares of land cleared {where} in the 12 months to {longDate(summary.data_date)}.
-          {lead && ' Here is the town or village with the most of it within 1 km, before and after the clearing.'}
+          Satellites saw {num(summary.total_ha)} hectares of land cleared {where} in the 12 months up to {longDate(summary.data_date)}.
         </p>
         {lead && (
           <div class="lead">
@@ -44,8 +55,8 @@ const total = summary?.total_ha ?? 0;
             </h2>
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <span>{hectares(lead.town.ha)} cleared within 1 km, in {lead.town.patches} patches. The pictures show the largest, {hectares(lead.place.ha)}, first seen {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} The town shown changes as new clearing is found.</span>
-                <span class="hint">The ring sits on the cleared patch. Tap a picture to see it large and zoom in.</span>
+                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show the largest patch ({hectares(lead.place.ha)}), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
+                <span class="hint">The ring sits on the cleared patch. Tap a picture to enlarge and zoom in.</span>
               </figcaption>
             </Pair>
           </div>
@@ -59,7 +70,7 @@ const total = summary?.total_ha ?? 0;
       <section class="band doorstep" aria-labelledby="others">
         <div>
           <h2 id="others">Other towns and villages with the most cleared land around them</h2>
-          <p class="intro">Each pair shows one of the largest cleared patches within 1 km of the town, before and after. The ring sits on the patch. Tap a picture to see it large.</p>
+          <p class="intro">Each pair shows one of the largest cleared patches within 1 km of the town, before and after. The ring sits on the patch. Tap a picture to enlarge and zoom in.</p>
         </div>
         <ul class="villages">
           {villages.map(({ town, place: p }) => (
@@ -75,7 +86,7 @@ const total = summary?.total_ha ?? 0;
           ))}
         </ul>
         <LabelKey galamsey />
-        <p class="note">Town and village points come from OpenStreetMap, which misses many villages, so the true count is higher.</p>
+        <p class="note">Town and village points come from OpenStreetMap, which misses many villages, so the true count may be higher.</p>
         {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(summary.patches)} places on the map</a></div>}
       </section>
     )}
@@ -98,7 +109,7 @@ const total = summary?.total_ha ?? 0;
         <div class="facts3">
           <p><strong>{num(summary.football_pitches)} football pitches.</strong> That is how much land {num(summary.total_ha)} hectares is.</p>
           <p><strong>{pct(summary.no_licence_to_mine.share)} of it</strong> is on land with no licence to mine, going by the Minerals Commission's register.</p>
-          <p><strong>Most of the cleared land</strong> shows signs of mining in the pictures: pits, bare orange ground and muddy ponds. Small, new patches less often do. <a href="/method#mining">How we know</a></p>
+          <p><strong>Most of the cleared land</strong> shows signs of mining in the pictures: pits, bare orange ground and muddy ponds. Small, new patches less often do. <a href="/method#mining">How we checked</a></p>
         </div>
       </section>
     )}
@@ -107,33 +118,36 @@ const total = summary?.total_ha ?? 0;
       <section class="band water" aria-labelledby="mud">
         <div class="say">
           <h2 id="mud">Where the mud goes</h2>
-          <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies in the land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
-          <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years. Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
+          <p class="big">{pct(pra.ha / total)} of the cleared land, {num(pra.ha)} hectares, lies on land that drains into the River Pra above the Daboase water treatment plant. Daboase supplies Sekondi-Takoradi.</p>
+          <p>When it rains, mud from cleared land and mining pits washes into the rivers. In February 2022 Ghana Water said the Daboase plant could run only two hours a day because its intake on the Pra was heavily silted, and Sekondi-Takoradi had been on water rationing for three years (<Src id="gwcl-daboase-news">3News</Src>). Clearing upstream does not tell us how much mud reaches a plant on a given day.</p>
           <h3>{Count(water.length)} water treatment plants downstream of the areas we cover</h3>
           <ul class="plants">
             {water.map((w) => (
               <li>
                 <span class="p"><strong>{w.plant}</strong> on the {w.river}</span>
                 <span class="v">{num(w.ha)} ha</span>
-                {SUPPLIES[w.plant] && <span class="t">Supplies {SUPPLIES[w.plant]}</span>}
+                {PLANTS[w.plant] && <span class="t">Supplies {PLANTS[w.plant].supplies}</span>}
+                {PLANTS[w.plant]?.news.map((n) => (
+                  <span class="n"><span class="when">{n.when}</span> {n.text} <Src id={n.src}>{n.outlet}</Src></span>
+                ))}
               </li>
             ))}
           </ul>
-          <p class="muted small">Hectares cleared in the last 12 months in the land that drains to each plant. Smaller water works on these rivers are not listed. In September 2025 Ghana Water warned that mud in the Ayensu had pushed the Kwanyako plant past what it was built to treat.</p>
+          <p class="muted small">Hectares cleared in the last 12 months on the land that drains to each plant. Smaller water works on these rivers are not listed.</p>
         </div>
         <div class="look"><WaterMap praHa={pra.ha} /></div>
       </section>
     )}
 
-    {trend.length > 1 && (
+    {years.length > 1 && (
       <section class="band" aria-labelledby="time">
-        <h2 id="time">Clearing over time</h2>
-        {/* No year-on-year sentence until a change is checked by eye (spike log s20, s24) */}
-        <p class="intro">
-          Each point is the land cleared in the 12 months before that date. NASA confirms clearing only after seeing it several times, so the latest points are still filling in and usually go up.
-          Some of the ups and downs may be farm and fire clearing in the dry season, so we do not read a trend from this yet.
+        <h2 id="time">Is it getting worse?</h2>
+        <p class="intro">We cannot tell yet. Here is the land cleared in the same 12 months, a year apart.</p>
+        <YearBars points={years} />
+        <p class="note">
+          The numbers go up and down, but part of that is farm clearing and bush burning in the dry season, which the satellites cannot tell apart from mining, and we have not checked the change by eye.
+          We stop at {longDate(years.at(-1)!.date)} because NASA is still confirming clearing after that date, so newer totals keep going up. <a href="/method#trend">See every month on a chart</a>
         </p>
-        <TrendChart points={trend} />
       </section>
     )}
 
@@ -159,13 +173,13 @@ const total = summary?.total_ha ?? 0;
     {summary && (
       <section class="band" aria-labelledby="licences">
         <h2 id="licences">What licence is on the land</h2>
-        <p class="intro">We check every patch against the Minerals Commission's register of active licences. We never name licence holders.</p>
+        <p class="intro">We check every patch against the Minerals Commission's register of active licences. The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
         <ul class="licences">
           {(['no licence', 'prospecting only', 'small-scale licence', 'large-scale lease'] as const).map((l) => (
             <li><LicenceTag licence={l} /><span class="v">{num(summary.by_licence[l].ha)} ha</span><span class="muted">{pct(summary.by_licence[l].share)}</span></li>
           ))}
         </ul>
-        <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. Some clearing inside large-scale leases is the licensed mine itself.</p>
+        <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. Clearing inside a small-scale licence or a large-scale lease may be licensed mining.</p>
       </section>
     )}
   </div>
@@ -269,6 +283,8 @@ const total = summary?.total_ha ?? 0;
   .plants li { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .plants .v { font-weight: 700; text-align: right; }
   .plants .t { grid-column: 1 / -1; color: var(--muted); font-size: 0.9375rem; }
+  .plants .n { grid-column: 1 / -1; font-size: 0.9375rem; line-height: 1.45; margin-top: 4px; }
+  .plants .when { font-weight: 700; }
   @media (min-width: 1000px) { .water { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 48px; align-items: start; } .water .look { position: sticky; top: 16px; } }
 
   .districts { border-collapse: collapse; width: 100%; max-width: 720px; margin-bottom: 24px; }

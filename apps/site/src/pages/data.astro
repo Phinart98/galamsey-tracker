@@ -11,7 +11,7 @@ import { WEEKLY } from '../lib/site';
     <p>Everything on this site is free to use, including in news stories, reports and research.</p>
 
     <h2>Downloads</h2>
-    <p>These files hold the site's current data{summary && <>: the land cleared in the 12 months to {longDate(summary.data_date)}</>}. {WEEKLY ? 'They are replaced every week, and each one carries its date.' : 'Each one carries its date.'}</p>
+    <p>These files hold the site's current data{summary && <>: the land cleared in the 12 months up to {longDate(summary.data_date)}</>}. {WEEKLY ? 'They are replaced every week, and each one carries its date.' : 'Each one carries its date.'}</p>
     <ul class="files">
       <li><a href="/places.csv">places.csv</a><span class="muted">Every patch: size, dates, licence class, nearest town, district and location. Opens in Excel or Google Sheets.</span></li>
       <li><a href="/places.geojson">places.geojson</a><span class="muted">The same, as map points, with links to the before and after pictures. Opens in QGIS or geojson.io.</span></li>
@@ -28,7 +28,7 @@ import { WEEKLY } from '../lib/site';
     )}
 
     <h2>What is not here</h2>
-    <p>We do not publish the outlines of mining licences or the names of licence holders. The licence register belongs to the Minerals Commission, and you can see it on its <a href="https://ghana.revenuedev.org/">public portal</a>.</p>
+    <p>We do not publish the outlines of mining licences or who holds them. The register belongs to the Minerals Commission, and you can see both on its <a href="https://ghana.revenuedev.org/">public portal</a>. We leave the names out because a licence on the land does not show who cleared it.</p>
 
     <h2>Where the data comes from</h2>
     <p>We built this from other people's open data. Each source sets its own terms for reuse.</p>

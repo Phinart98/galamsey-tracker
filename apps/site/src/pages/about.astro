@@ -13,6 +13,8 @@ import { CONTACT_EMAIL } from '../lib/site';
     <p>This site cannot take reports or act on them. The government's taskforce against illegal mining is NAIMOS, under the <Src id="mlnr">Ministry of Lands and Natural Resources</Src>, and it has asked the public for information. We have not found an official reporting line we can confirm, so check any phone number with the Ministry before you rely on it.</p>
     {CONTACT_EMAIL && (
       <>
+        <h2 id="help">Help improve it</h2>
+        <p>The tracker misses some kinds of galamsey, such as dredging on rivers, because they do not clear land. We are looking for ways to spot them. If you have an idea, data that could help, or want to work together, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
         <h2>Get in touch</h2>
         <p>For questions about the data, corrections or press enquiries, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
       </>

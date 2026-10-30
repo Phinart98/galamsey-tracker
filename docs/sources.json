@@ -1,6 +1,6 @@
 {
  "about": "Every outside source the tracker relies on, and every claim the public site makes or plans to make, with how it is backed. Status values. Sources: live-data (our code reads it directly), checked (opened and the specific fact confirmed, with date), cited (from docs/research, not re-opened for this use), rejected (tested or considered and not used). Claims: measured (our own test, see evidence), sourced (backed by a checked source), unverified (needs a source before it is published), to-confirm (Philip must confirm). Rule: add a source here the moment research uses it. Nothing marked unverified or to-confirm goes on the public site. This file is the full reading list. The public site's reference list is derived from it: a source is listed on the site only if a claim published on the site cites it, like a paper's references.",
- "updated": "2026-10-25",
+ "updated": "2026-10-30",
  "sources": [
   {
    "id": "opera-dist-alert",
@@ -217,7 +217,8 @@
    ],
    "used_for": "Which towns the Pra plant at Daboase supplies, for the water story",
    "status": "checked",
-   "checked": "2026-10-25: 3News, 9 Feb 2022: rationing in Sekondi-Takoradi for three years; intake silted 'due to a number of reasons including activities of illegal mining'; pump runs about two hours a day"
+   "checked": "2026-10-25: 3News, 9 Feb 2022: rationing in Sekondi-Takoradi for three years; intake silted 'due to a number of reasons including activities of illegal mining'; pump runs about two hours a day",
+   "link": "https://3news.com/featured/gwcl-considers-shutdown-of-daboase-plant/"
   },
   {
    "id": "gwcl-weija-news",
@@ -233,7 +234,7 @@
   },
   {
    "id": "gwcl-kwanyako-news",
-   "title": "Kwanyaku headworks on the Ayensu: serves 30+ districts incl. Winneba, Swedru, Kasoa; pollution pushed turbidity past design capacity and could force a shutdown (GNA, 1 Sep 2025). It does not report an actual shutdown",
+   "title": "Kwanyaku headworks on the Ayensu: serves 30+ districts incl. Winneba, Swedru, Kasoa; pollution pushed turbidity past design capacity and could force a shutdown (GNA, 1 Sep 2025). It does not report an actual shutdown. Turbidity reached 32,000 NTU the week before; designed for at most 2,500 NTU",
    "publisher": "GNA (Sept 2025); Citi Newsroom (Sept 2025, April 2026)",
    "url": "https://gna.org.gh/2025/09/ghana-water-ltd-moves-to-avert-possible-shutdown-of-kwanyaku-headworks-amid-rising-pollution/",
    "also": [
@@ -242,16 +243,47 @@
    ],
    "used_for": "Which towns Kwanyako supplies",
    "status": "checked",
-   "checked": "2026-10-25: GNA, 1 Sept 2025: Kwanyaku Headworks supplies more than 30 districts including Winneba, Swedru and Kasoa; turbidity 32,000 NTU against a 2,500 NTU design; pollution 'possibly linked to illegal mining'"
+   "checked": "2026-10-25: GNA, 1 Sept 2025: Kwanyaku Headworks supplies more than 30 districts including Winneba, Swedru and Kasoa; turbidity 32,000 NTU against a 2,500 NTU design; pollution 'possibly linked to illegal mining'",
+   "link": "https://gna.org.gh/2025/09/ghana-water-ltd-moves-to-avert-possible-shutdown-of-kwanyaku-headworks-amid-rising-pollution/"
   },
   {
    "id": "gwcl-owabi-barekese-news",
-   "title": "Owabi and Barekese: the two main plants supplying Greater Kumasi, at risk from pollution",
+   "title": "Owabi and Barekese, the two main plants supplying Greater Kumasi, risk shutdown over power fluctuations, siltation and plastic pollution (Citi Newsroom, 9 Apr 2026). It does not mention mining",
    "publisher": "Citi Newsroom",
-   "url": "https://www.citinewsroom.com/tag/adam-muntawakilu/",
+   "url": "https://www.citinewsroom.com/2026/04/owabi-barekese-water-treatment-plants-risk-shutdown-over-pollution/",
    "used_for": "Which areas Owabi and Barekese supply",
-   "status": "cited",
-   "todo": "Find the specific article and a GWL source"
+   "status": "verified",
+   "link": "https://www.citinewsroom.com/2026/04/owabi-barekese-water-treatment-plants-risk-shutdown-over-pollution/"
+  },
+  {
+   "id": "gna-daboase-2024",
+   "title": "Galamsey: stakeholders call for drastic, coordinated action to save water situation. Ghana Water cut operations at Daboase and Sekyere Hemang by 30% after galamsey pushed turbidity to abnormal levels; Daboase was designed in 1969 for 54 NTU",
+   "publisher": "GNA, 21 Mar 2024",
+   "url": "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/",
+   "link": "https://gna.org.gh/2024/03/galamsey-stakeholders-call-for-drastic-coordinated-action-to-save-water-situation/",
+   "used_for": "Home water list, Daboase news line",
+   "status": "verified",
+   "checked": "2026-10-29"
+  },
+  {
+   "id": "ghanaiantimes-daboase-2021",
+   "title": "Illegal mining affecting water production in Daboase. Daboase and Inchaban serve Sekondi-Takoradi; galamsey on the Pra cuts production (GWCL Western Regional Chief Manager)",
+   "publisher": "Ghanaian Times, 21 Apr 2021",
+   "url": "https://ghanaiantimes.com.gh/illegal-mining-affecting-water-production-in-daboase",
+   "link": "https://ghanaiantimes.com.gh/illegal-mining-affecting-water-production-in-daboase",
+   "used_for": "Daboase supplies Sekondi-Takoradi",
+   "status": "verified",
+   "checked": "2026-10-29"
+  },
+  {
+   "id": "fourth-estate-2026-water",
+   "title": "Gold rush: galamsey boom sends communities in hunt for water. Kwanyako headworks shut for 2,541 hours in 2025 (GWCL records), citing turbidity and siltation; Water Resources Commission data show Densu water quality declining at Potroase and Weija over five years; Potroase a hotspot for illegal mining; Densu feeds Weija, serving Accra Central, Dansoman, Gbawe, Weija, Mallam and parts of Kasoa",
+   "publisher": "The Fourth Estate, 6 May 2026 (Theresa Weyerane Adiali)",
+   "url": "https://www.thefourthestategh.com/2026/05/gold-rush-galamsey-boom-sends-communities-in-hunt-for-water",
+   "link": "https://www.thefourthestategh.com/2026/05/gold-rush-galamsey-boom-sends-communities-in-hunt-for-water",
+   "used_for": "Home water list, Kwanyako and Weija news lines",
+   "status": "verified",
+   "checked": "2026-10-29"
   },
   {
    "id": "forestry-commission-2026",
@@ -670,16 +702,17 @@
   },
   {
    "id": "water-plant-towns",
-   "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies central and western Accra; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Kumasi",
-   "where": "home (water section, built 2026-10-25, not live)",
+   "text": "Daboase (Pra) supplies Sekondi-Takoradi; Weija supplies central and western Accra; Kwanyako supplies Winneba, Swedru and Kasoa; Owabi and Barekese supply Greater Kumasi",
+   "where": "home water list",
    "evidence": [
+    "ghanaiantimes-daboase-2021",
     "gwcl-daboase-news",
     "gwcl-weija-news",
+    "fourth-estate-2026-water",
     "gwcl-kwanyako-news",
     "gwcl-owabi-barekese-news"
    ],
-   "status": "unverified",
-   "todo": "Daboase, Weija and Kwanyako checked 2026-10-25 and shown; Owabi and Barekese (Kumasi) are listed without a town until sourced",
+   "status": "verified",
    "caveat": "The site lists five plants that supply big towns; smaller water works on the same rivers are not listed (fixed 'every treatment plant' wording 2026-10-27)."
   },
   {
@@ -748,6 +781,18 @@
    ],
    "status": "measured",
    "caveat": "Two blind batches: 46 of 52 marked were mining (88%), 46 of 47 mining patches marked; below the 9-in-10 bar set beforehand. Philip decided on 2026-10-28 to show it as an educated guess, worded 'Likely galamsey', not a verdict. Judged by Claude from 10 m pictures; 5 of the 6 misses were unclear pictures"
+  },
+  {
+   "id": "plant-news",
+   "text": "Dated news line per plant: Daboase 30% cut (Mar 2024, with Sekyere Hemang), built for 54 NTU; Kwanyako 32,000 NTU vs 2,500 design (Sep 2025), shut 2,541 hours in 2025; Densu water quality falling at Potroase and Weija, Potroase an illegal mining hotspot (May 2026)",
+   "where": "home water list",
+   "evidence": [
+    "gna-daboase-2024",
+    "gwcl-kwanyako-news",
+    "fourth-estate-2026-water"
+   ],
+   "status": "verified",
+   "caveat": "Checked against the articles 2026-10-29. Kumasi plants get no news line: the Apr 2026 report blames silt, plastic and power, not mining"
   }
  ]
 }

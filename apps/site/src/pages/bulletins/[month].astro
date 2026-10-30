@@ -11,11 +11,11 @@ export function getStaticPaths() {
 const { s, month } = Astro.props as { s: Summary; month: string };
 const top = s.top_places.map((t) => placeById.get(t.id)).filter((p) => p !== undefined).slice(0, 10);
 ---
-<Base title={`${monthName(month)} record`} description={`${num(s.total_ha)} hectares cleared in the 12 months to ${longDate(s.data_date)}. ${pct(s.no_licence_to_mine.share)} with no licence to mine.`}>
+<Base title={`${monthName(month)} record`} description={`${num(s.total_ha)} hectares cleared in the 12 months up to ${longDate(s.data_date)}. ${pct(s.no_licence_to_mine.share)} with no licence to mine.`}>
   <article class="wrap">
     <p class="crumb small"><a href="/data">All monthly records</a></p>
     <h1>{monthName(month)}</h1>
-    <p class="lede measure">In the 12 months to {longDate(s.data_date)}, satellites saw {num(s.total_ha)} hectares of land cleared in {num(s.patches)} patches. {pct(s.no_licence_to_mine.share)} of it has no licence to mine.</p>
+    <p class="lede measure">In the 12 months up to {longDate(s.data_date)}, satellites saw {num(s.total_ha)} hectares of land cleared in {num(s.patches)} patches. {pct(s.no_licence_to_mine.share)} of it has no licence to mine.</p>
     <p class="muted small">This page keeps the numbers as they were in {monthName(month)}. The pictures and licence labels below are the latest ones.</p>
 
     <section class="band">
