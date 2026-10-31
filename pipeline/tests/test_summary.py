@@ -92,11 +92,11 @@ def test_bright_mining_ground_and_some_grey_tailings_are_not_haze():
     assert not hazy(rgb)
 
 
-def test_places_without_a_clear_picture_are_retried_after_a_week():
+def test_places_without_a_clear_picture_are_retried_after_three_days():
     today = dt.date(2026, 10, 25)
     assert needs_chips({"active": True, "ha": 5.0, "chips": None}, today)
-    assert needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-17"}}, today)
-    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-20"}}, today)
+    assert needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-22"}}, today)
+    assert not needs_chips({"active": True, "ha": 5.0, "chips": {"missing": True, "checked": "2026-10-23"}}, today)
     assert not needs_chips({"active": True, "ha": 5.0, "chips": {"before": {"date": "2025-02-04"}, "after": {"date": "2026-10-20"}}}, today)
     assert needs_chips({"active": True, "ha": 1.0, "chips": None}, today)  # every place gets pictures
     assert not needs_chips({"active": False, "ha": 5.0, "chips": None}, today)

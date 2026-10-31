@@ -31,7 +31,7 @@ METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts 
 BELT_BBOX = "-3.3,4.7,-0.3,7.5"   # southern mining belt covered by v1
 WORK_CRS = "EPSG:32630"
 CHIP_HALF_KM = 0.8
-CHIP_RETRY_DAYS = 7
+CHIP_RETRY_DAYS = 3  # under a week, so every weekly run retries every cloudy place
 # NASA usually publishes a reading within days, but some take up to three weeks. A reading counts
 # from a week after its day, and a late one only shifts that reading to an image a few days older.
 READING_LAG_DAYS = 7
