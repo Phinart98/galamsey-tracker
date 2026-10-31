@@ -495,6 +495,16 @@
    "used_for": "River dredging is a form of galamsey",
    "status": "verified",
    "checked": "2026-10-31"
+  },
+  {
+   "id": "cloudflare-web-analytics",
+   "title": "Cloudflare Web Analytics: privacy-first web analytics",
+   "publisher": "Cloudflare",
+   "url": "https://www.cloudflare.com/web-analytics/",
+   "link": "https://www.cloudflare.com/web-analytics/",
+   "used_for": "How the site counts visits: no cookies or localStorage, no fingerprinting, no visitor personal data",
+   "status": "verified",
+   "checked": "2026-10-31"
   }
  ],
  "claims": [
@@ -892,6 +902,16 @@
    ],
    "status": "verified",
    "caveat": "Checked against the articles 2026-10-30. Philip: prefer the latest relevant report, older only when nothing newer does the job"
+  },
+  {
+   "id": "visit-counts",
+   "text": "The site counts visits with Cloudflare Web Analytics, which uses no cookies and does not collect visitors' personal data",
+   "where": "about",
+   "evidence": [
+    "cloudflare-web-analytics"
+   ],
+   "status": "verified",
+   "caveat": "Cloudflare: 'does not use any client-side state, such as cookies or localStorage'; docs (developers.cloudflare.com/web-analytics/about/): 'does not collect or use your visitors' personal data'. Enabled on Pages project galamsey-tracker only, 2026-10-31"
   }
  ]
 }
