@@ -19,6 +19,9 @@ export function getStaticPaths() {
 
 const { place, to } = Astro.props as { place: Place | null; to: string | null };
 const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'This place has moved';
+// Why a place has no Likely galamsey label: licensed land never gets it, otherwise it depends on the water reading
+const licensed = place?.licence === 'small-scale licence' || place?.licence === 'large-scale lease';
+const reading = place?.signs && !('missing' in place.signs) ? place.signs : null;
 ---
 {to ? (
   <html lang="en-GH">
@@ -49,13 +52,23 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
           {place.likely_galamsey && (
             <div class="likely">
               <p><LikelyTag /></p>
-              <p>There is open water in or right beside this patch, and no licence to mine on the land. Mining pits fill with water and farms rarely have ponds, so this is likely galamsey. It is an educated guess from satellite data, not a finding. <a href="/method#likely">How we guess</a></p>
+              <p>There is open water in or right beside this patch, and no licence to mine on the land. Mining pits fill with water and farms rarely have ponds, so this is likely galamsey. It is our educated guess from satellite data, not part of the register and not a finding. <a href="/method#likely">How we guess</a></p>
             </div>
           )}
           <h2 class="lic-h">Licence on this land</h2>
           <p><LicenceTag licence={place.licence} /></p>
           <p>{LICENCE_SENTENCE[place.licence]}</p>
-          <LabelKey galamsey likely={!place.likely_galamsey} current={place.active} />
+          <LabelKey galamsey likely={false} current={place.active} />
+          {!place.likely_galamsey && (
+            <p class="whyno">
+              {licensed
+                ? <><strong>Likely galamsey</strong> is our own guess, and we only add it where the register shows no licence to mine. This land has a mining licence, so it does not get the label.</>
+                : <><strong>Likely galamsey</strong> is our own guess. We add it where there is no licence to mine and the satellite sees water in or next to the cleared patch. {reading
+                    ? `In the clearest picture we have, from ${longDate(reading.scene)}, there was no open water in or next to this patch, so it does not get the label.`
+                    : 'We have not had a clear picture to check this patch for water yet. We check more patches every week, largest first.'}</>}
+              {!licensed && ' A place without this label can still be galamsey.'} <a href="/method#likely">How the guess works</a>
+            </p>
+          )}
           <dl class="facts">
             <dt>Size</dt><dd>{hectares(place.ha)}</dd>
             <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
@@ -100,6 +113,8 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
   @media (min-width: 960px) { .grid { grid-template-columns: 7fr 5fr; gap: 48px; align-items: start; } }
   .about p { margin: 0 0 16px; max-width: 50ch; }
   .likely { margin-bottom: 24px; }
+  .about .whyno { margin: 6px 0 16px; font-size: 0.9375rem; color: var(--muted); max-width: 70ch; }
+  .whyno a { color: var(--ink); }
   .lic-h { font-size: 1.0625rem; margin: 0 0 8px; }
   .facts { margin: 8px 0 24px; }
   .google { margin-top: 28px; }
