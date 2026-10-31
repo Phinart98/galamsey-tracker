@@ -85,10 +85,6 @@ Repository secrets: `EARTHDATA_USERNAME`, `EARTHDATA_PASSWORD`, `CLOUDFLARE_API_
   - OpenStreetMap names and the OpenFreeMap base map are under the ODbL, with credit.
   - The Minerals Commission register is used only to classify the licence on each patch. Its outlines and holder names are not republished.
 
-## Earlier version
-
-The first version (Nuxt, FastAPI, Supabase, citizen reports) is kept at the tag [`v0-nuxt-supabase`](https://github.com/Phinart98/galamsey-tracker/tree/v0-nuxt-supabase). It never got reliable source data, and this version replaced it in October 2026.
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Ideas and data can also go to hello@galamseytracker.org. For security issues, see [SECURITY.md](SECURITY.md).

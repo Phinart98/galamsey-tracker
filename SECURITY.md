@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the `master` branch and the site built from it are supported. The earlier version at the tag `v0-nuxt-supabase` is no longer running.
+Only the `master` branch and the site built from it are supported.
 
 ## Reporting a vulnerability
 
