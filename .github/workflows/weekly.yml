@@ -2,7 +2,7 @@ name: Weekly update
 
 on:
   schedule:
-    - cron: "0 6 * * 1"   # Mondays 06:00 UTC, after the weekend's DIST-ALERT granules land
+    - cron: "17 5 * * 1"  # Mondays 05:17 UTC. Off the hour: GitHub delays runs set on the hour most (2 Nov 2026 started 9 h late)
   workflow_dispatch:
     inputs:
       chips_limit:

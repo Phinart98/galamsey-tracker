@@ -62,7 +62,7 @@ npm run dev                                   # reads ../../pipeline/out
 
 ## The weekly run
 
-[`.github/workflows/weekly.yml`](.github/workflows/weekly.yml) runs every Monday at 06:00 UTC, and can be started by hand. It:
+[`.github/workflows/weekly.yml`](.github/workflows/weekly.yml) runs every Monday morning (05:17 UTC), and can be started by hand. It:
 
 1. restores the previous run's working files (place list, readings, pictures) from the `pipeline-state` release,
 2. runs the four pipeline commands above,
