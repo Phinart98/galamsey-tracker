@@ -1,15 +1,19 @@
 {
- "total_ha": 17995,
- "football_pitches": 25203,
- "patches": 6638,
+ "total_ha": 18027,
+ "football_pitches": 25247,
+ "patches": 6650,
  "by_licence": {
   "no licence": {
-   "ha": 13100,
-   "share": 0.728
+   "ha": 13114,
+   "share": 0.727
   },
   "prospecting only": {
-   "ha": 1932,
-   "share": 0.107
+   "ha": 1942,
+   "share": 0.108
+  },
+  "restricted lease": {
+   "ha": 9,
+   "share": 0.0
   },
   "small-scale licence": {
    "ha": 102,
@@ -21,7 +25,7 @@
   }
  },
  "no_licence_to_mine": {
-  "ha": 15032,
+  "ha": 15055,
   "share": 0.835
  },
  "top_places": [
@@ -177,11 +181,11 @@
   },
   {
    "district": "Aowin",
-   "ha": 944
+   "ha": 947
   },
   {
    "district": "Atwima Mponua",
-   "ha": 803
+   "ha": 805
   },
   {
    "district": "Atiwa West",
@@ -189,11 +193,11 @@
   },
   {
    "district": "Wassa Amenfi Central",
-   "ha": 789
+   "ha": 788
   },
   {
    "district": "Wassa Amenfi West",
-   "ha": 739
+   "ha": 742
   },
   {
    "district": "Amansie Central",
@@ -201,7 +205,7 @@
   },
   {
    "district": "Amansie South",
-   "ha": 704
+   "ha": 706
   },
   {
    "district": "Ahafo Ano South East",
@@ -220,7 +224,7 @@
    "ha": 532
   }
  ],
- "data_date": "2026-10-29",
+ "data_date": "2026-10-31",
  "window_days": 365,
  "tiles": [
   "T30NWL",
@@ -235,7 +239,7 @@
  "method_version": "2026.10.3",
  "towns_near": {
   "radius_m": 1000,
-  "count": 722,
+  "count": 723,
   "with_5ha": 276
  },
  "water": [
@@ -252,7 +256,7 @@
   {
    "plant": "Daboase",
    "river": "Pra",
-   "ha": 9486.0
+   "ha": 9488.1
   },
   {
    "plant": "Barekese",

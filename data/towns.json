@@ -1,5 +1,5 @@
 {
- "data_date": "2026-10-29",
+ "data_date": "2026-10-31",
  "radius_m": 1000,
  "towns": [
   {
@@ -460,6 +460,21 @@
    ]
   },
   {
+   "name": "Baku",
+   "place": "village",
+   "district": "Ellembelle",
+   "lat": 4.9702,
+   "lon": -2.5015,
+   "ha": 22.6,
+   "patches": 4,
+   "ids": [
+    "2025-12-4979n2510w",
+    "2026-08-4977n2500w",
+    "2026-08-4977n2495w",
+    "2026-02-4977n2498w"
+   ]
+  },
+  {
    "name": "Poano",
    "place": "village",
    "district": "Bekwai Municipal",
@@ -473,21 +488,6 @@
     "2025-11-6438n1686w",
     "2025-11-6436n1690w",
     "2025-11-6436n1685w"
-   ]
-  },
-  {
-   "name": "Baku",
-   "place": "village",
-   "district": "Ellembelle",
-   "lat": 4.9702,
-   "lon": -2.5015,
-   "ha": 22.5,
-   "patches": 4,
-   "ids": [
-    "2025-12-4979n2510w",
-    "2026-08-4977n2500w",
-    "2026-08-4977n2495w",
-    "2026-02-4977n2498w"
    ]
   },
   {
@@ -1828,6 +1828,21 @@
    ]
   },
   {
+   "name": "Akotombra Nkwanta",
+   "place": "town",
+   "district": "Aowin",
+   "lat": 5.9779,
+   "lon": -2.9423,
+   "ha": 9.8,
+   "patches": 4,
+   "ids": [
+    "2026-04-5987n2942w",
+    "2026-03-5978n2939w",
+    "2026-01-5972n2939w",
+    "2026-03-5981n2942w"
+   ]
+  },
+  {
    "name": "Papueso",
    "place": "village",
    "district": "Aowin",
@@ -1885,21 +1900,6 @@
     "2025-11-5690n2129w",
     "2025-11-5693n2139w",
     "2026-02-5693n2124w"
-   ]
-  },
-  {
-   "name": "Akotombra Nkwanta",
-   "place": "town",
-   "district": "Aowin",
-   "lat": 5.9779,
-   "lon": -2.9423,
-   "ha": 9.7,
-   "patches": 4,
-   "ids": [
-    "2026-04-5987n2942w",
-    "2026-03-5978n2939w",
-    "2026-01-5972n2939w",
-    "2026-03-5981n2942w"
    ]
   },
   {
@@ -2735,6 +2735,20 @@
    ]
   },
   {
+   "name": "Patakru",
+   "place": "village",
+   "district": "Bodi",
+   "lat": 6.2817,
+   "lon": -2.9222,
+   "ha": 7.6,
+   "patches": 3,
+   "ids": [
+    "2026-02-6280n2915w",
+    "2026-01-6279n2913w",
+    "2026-03-6279n2918w"
+   ]
+  },
+  {
    "name": "Bonsaiso",
    "place": "village",
    "district": "Amansie South",
@@ -3411,19 +3425,6 @@
    ]
   },
   {
-   "name": "Patakru",
-   "place": "village",
-   "district": "Bodi",
-   "lat": 6.2817,
-   "lon": -2.9222,
-   "ha": 5.8,
-   "patches": 2,
-   "ids": [
-    "2026-02-6280n2915w",
-    "2026-01-6279n2913w"
-   ]
-  },
-  {
    "name": "Nkyenenkyene",
    "place": "village",
    "district": "Kwahu South",
@@ -3543,19 +3544,6 @@
    ]
   },
   {
-   "name": "Nsuta",
-   "place": "village",
-   "district": "Asutifi North",
-   "lat": 7.0878,
-   "lon": -2.6073,
-   "ha": 5.7,
-   "patches": 2,
-   "ids": [
-    "2026-01-7086n2601w",
-    "2026-01-7080n2609w"
-   ]
-  },
-  {
    "name": "Adaboi",
    "place": "village",
    "district": "Upper Denkyira West",
@@ -3566,6 +3554,19 @@
    "ids": [
     "2025-11-6094n1984w",
     "2025-11-6090n1988w"
+   ]
+  },
+  {
+   "name": "Nsuta",
+   "place": "village",
+   "district": "Asutifi North",
+   "lat": 7.0878,
+   "lon": -2.6073,
+   "ha": 5.6,
+   "patches": 2,
+   "ids": [
+    "2026-01-7086n2601w",
+    "2026-01-7080n2609w"
    ]
   },
   {
@@ -4158,6 +4159,19 @@
    ]
   },
   {
+   "name": "Kramokrom",
+   "place": "village",
+   "district": "Aowin",
+   "lat": 5.7691,
+   "lon": -2.7868,
+   "ha": 4.8,
+   "patches": 2,
+   "ids": [
+    "2026-10-5769n2784w",
+    "2026-10-5774n2789w"
+   ]
+  },
+  {
    "name": "Koka",
    "place": "village",
    "district": "Kwaebibirem",
@@ -4716,19 +4730,6 @@
    ]
   },
   {
-   "name": "Krofofrom",
-   "place": "village",
-   "district": "Wassa Amenfi West",
-   "lat": 5.63,
-   "lon": -2.4741,
-   "ha": 4.0,
-   "patches": 2,
-   "ids": [
-    "2026-02-5627n2483w",
-    "2026-01-5627n2479w"
-   ]
-  },
-  {
    "name": "Manukrom",
    "place": "village",
    "district": "Adansi Akrofuom",
@@ -4869,6 +4870,19 @@
     "2025-12-5912n2393w",
     "2026-01-5903n2401w",
     "2026-03-5907n2403w"
+   ]
+  },
+  {
+   "name": "Krofofrom",
+   "place": "village",
+   "district": "Wassa Amenfi West",
+   "lat": 5.63,
+   "lon": -2.4741,
+   "ha": 3.8,
+   "patches": 2,
+   "ids": [
+    "2026-02-5627n2483w",
+    "2026-01-5627n2479w"
    ]
   },
   {
@@ -7416,6 +7430,18 @@
    ]
   },
   {
+   "name": "Akrobo",
+   "place": "village",
+   "district": "Tano South Municipal",
+   "lat": 7.2327,
+   "lon": -2.0254,
+   "ha": 1.7,
+   "patches": 1,
+   "ids": [
+    "2026-10-7223n2025w"
+   ]
+  },
+  {
    "name": "Mile 4",
    "place": "village",
    "district": "Aowin",
@@ -7581,18 +7607,6 @@
    "patches": 1,
    "ids": [
     "2026-03-6590n1596w"
-   ]
-  },
-  {
-   "name": "Kramokrom",
-   "place": "village",
-   "district": "Aowin",
-   "lat": 5.7691,
-   "lon": -2.7868,
-   "ha": 1.6,
-   "patches": 1,
-   "ids": [
-    "2026-10-5769n2784w"
    ]
   },
   {
