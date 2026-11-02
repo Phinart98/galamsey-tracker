@@ -46,8 +46,14 @@ def match_ids(new: gpd.GeoDataFrame, previous: gpd.GeoDataFrame | None,
     out = new.copy()
     ids, seeds, aliases, used = [], [], {}, set()
     seeds_prev = previous.to_crs(new.crs) if previous is not None and len(previous) else None
+    # Old ids stay reserved, so a new patch never takes over an old place's page and pictures
+    taken = set(seeds_prev.id) if seeds_prev is not None else set()
     for _, row in new.iterrows():
         inside = seeds_prev[seeds_prev.within(row.geometry)] if seeds_prev is not None else None
+        # One old seed can sit inside two patches (tile copies that overlap by less than half).
+        # The first, larger patch keeps the id and the other becomes a new place.
+        if inside is not None:
+            inside = inside[~inside.id.isin(used)]
         if inside is not None and len(inside):
             inside = inside.sort_values(["first_seen", "id"])
             winner = inside.iloc[0]
@@ -60,7 +66,7 @@ def match_ids(new: gpd.GeoDataFrame, previous: gpd.GeoDataFrame | None,
             lon, lat = to_lonlat(seed.x, seed.y)
             base = candidate = make_id(lon, lat, row.first_seen)
             n = 2
-            while candidate in used:
+            while candidate in used or candidate in taken:
                 candidate, n = f"{base}-{n}", n + 1
             ids.append(candidate)
             seeds.append(seed)

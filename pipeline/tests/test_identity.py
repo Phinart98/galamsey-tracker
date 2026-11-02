@@ -68,3 +68,21 @@ def test_same_tile_patches_are_never_merged_even_when_they_touch():
     a = _gdf([{"tile": "T30NXM", "ha": 5.0, "geometry": box(0, 0, 100, 100)},
               {"tile": "T30NXM", "ha": 4.0, "geometry": box(0, 0, 100, 90)}])
     assert len(dedupe_tiles([a])) == 2
+
+
+def test_an_old_seed_inside_two_patches_gives_them_two_different_ids():
+    # Tile copies that overlap by less than half are both kept, and an old seed can sit inside both
+    prev = _gdf([{"id": "2025-11-old", "first_seen": "2025-11-01", "geometry": Point(50, 50)}])
+    new = _gdf([{"ha": 10.0, "first_seen": "2025-11-01", "geometry": box(0, 0, 100, 100)},
+                {"ha": 6.0, "first_seen": "2025-11-01", "geometry": box(40, 40, 140, 100)}])
+    out, _ = match_ids(new, prev, to_lonlat=lambda x, y: (-2.0, 5.8))
+    assert out.id.tolist()[0] == "2025-11-old"
+    assert out.id.is_unique
+
+
+def test_a_new_id_never_reuses_an_old_place_id():
+    # An old place that is no longer active keeps its id, so a new patch on the same spot must not take it over
+    prev = _gdf([{"id": "2026-10-5800n2000w", "first_seen": "2026-10-01", "geometry": Point(900, 900)}])
+    new = _gdf([{"ha": 3.0, "first_seen": "2026-10-01", "geometry": box(0, 0, 100, 100)}])
+    out, _ = match_ids(new, prev, to_lonlat=lambda x, y: (-2.0, 5.8))
+    assert out.iloc[0].id == "2026-10-5800n2000w-2"
