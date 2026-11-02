@@ -35,6 +35,7 @@ def test_summary_totals_and_licence_shares_add_up():
 def test_summary_lists_every_licence_class_even_when_empty():
     s = summarise(_clusters(), top=2)
     assert s["by_licence"]["small-scale licence"] == {"ha": 0, "share": 0.0}
+    assert s["by_licence"]["restricted lease"] == {"ha": 0, "share": 0.0}
 
 
 def test_no_licence_to_mine_combines_no_licence_and_prospecting_only():

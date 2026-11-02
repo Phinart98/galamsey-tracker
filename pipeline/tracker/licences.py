@@ -19,20 +19,18 @@ NONE = "no licence"
 PROSPECTING = "prospecting only"
 SMALL_SCALE = "small-scale licence"
 LARGE_SCALE = "large-scale lease"
+# Restricted leases are for industrial minerals (Act 703): in the register granite, sand, gravel, limestone, clay
+# and salt. They allow quarrying, not gold mining, so they get their own label rather than "no licence".
+RESTRICTED = "restricted lease"
 # Equal shares go to the more permissive licence: the fairest reading for whoever holds it.
-RANK = {PROSPECTING: 1, SMALL_SCALE: 2, LARGE_SCALE: 3}
-# Restricted leases cover granite, sand, gravel, limestone and salt: none is a right to dig for gold.
-INDUSTRIAL = {"granite", "sand", "sand/ gravel", "gravel", "limestone", "salt", "clay", "feldspar", "kaolin"}
+RANK = {PROSPECTING: 1, RESTRICTED: 2, SMALL_SCALE: 3, LARGE_SCALE: 4}
 MIN_SHARE = 0.25
 
 
-def licence_class(licence_type: str, minerals: list[str]) -> str | None:
-    names = {m.strip().lower() for m in minerals if m}
+def licence_class(licence_type: str) -> str | None:
     t = licence_type.lower()
-    if names and names <= INDUSTRIAL:
-        return None
-    if "restricted" in t and not names:
-        return None
+    if "restricted" in t:
+        return RESTRICTED
     if "prospecting" in t or "reconnaissance" in t:
         return PROSPECTING
     if "small scale" in t:
@@ -58,7 +56,7 @@ def parse(geojson: dict) -> tuple[gpd.GeoDataFrame, int]:
             bad += 1
             continue
         props = f.get("properties") or {}
-        cls = licence_class(props.get("type") or "", [a.get("name", "") for a in props.get("assets") or []])
+        cls = licence_class(props.get("type") or "")
         if cls:
             rows.append({"cls": cls, "geometry": geom})
     return gpd.GeoDataFrame(rows, geometry="geometry", crs=4326), bad

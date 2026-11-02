@@ -1,10 +1,10 @@
 """The numbers the site prints, computed in one place so every page agrees."""
 import pandas as pd
 
-from tracker.licences import LARGE_SCALE, NONE, PROSPECTING, SMALL_SCALE
+from tracker.licences import LARGE_SCALE, NONE, PROSPECTING, RESTRICTED, SMALL_SCALE
 
 PITCH_HA = 0.714  # a 105 x 68 m football pitch
-CLASSES = (NONE, PROSPECTING, SMALL_SCALE, LARGE_SCALE)
+CLASSES = (NONE, PROSPECTING, RESTRICTED, SMALL_SCALE, LARGE_SCALE)
 
 
 def football_pitches(ha: float) -> int:
