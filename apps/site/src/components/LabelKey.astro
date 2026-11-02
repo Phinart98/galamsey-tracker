@@ -13,7 +13,7 @@ const { galamsey = false, likely = true, current = true } = Astro.props;
 const checked = current ? lastSuccessDate : null;
 ---
 <p class="labelkey">
-  The labels come from the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src>.{checked && (WEEKLY ? <> We check it every week, last on {longDate(checked)}.</> : <> We last checked it on {longDate(checked)}.</>)}{!current && ' This label is from the last week this patch was in our count.'}
+  The labels come from the <Src id="minerals-commission-cadastre">Minerals Commission's public licence register</Src>.{checked && (WEEKLY ? <> We check it at every update, last on {longDate(checked)}.</> : <> We last checked it on {longDate(checked)}.</>)}{!current && ' This label is from the last week this patch was in our count.'}
   {galamsey && 'Mining without a licence is illegal in Ghana, and that is what galamsey is. '}
   <a href="/method#licences">Read what each label means</a>
 </p>

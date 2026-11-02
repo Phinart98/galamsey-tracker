@@ -25,10 +25,16 @@ export function monthName(ym: string) {
   return `${MONTHS[m - 1]} ${y}`;
 }
 
+// Every licence label, in the order pages list them (summaries made before November 2026 lack 'restricted lease')
+export const LICENCES = Object.keys({
+  'no licence': 0, 'prospecting only': 0, 'restricted lease': 0, 'small-scale licence': 0, 'large-scale lease': 0,
+} satisfies Record<Licence, number>) as Licence[];
+
 // The wording rule: describe the licence on the land, never a verdict on the people or the site
 export const LICENCE_SHORT: Record<Licence, string> = {
   'no licence': 'No licence to mine',
   'prospecting only': 'Prospecting licence only',
+  'restricted lease': 'Stone or sand lease',
   'small-scale licence': 'Small-scale mining licence',
   'large-scale lease': 'Large-scale mining lease',
 };
@@ -36,6 +42,7 @@ export const LICENCE_SHORT: Record<Licence, string> = {
 export const LICENCE_SENTENCE: Record<Licence, string> = {
   'no licence': 'The register shows no mining licence on this land.',
   'prospecting only': 'The register shows only a prospecting licence here, which does not allow mining.',
+  'restricted lease': 'The register shows this land inside a lease for quarrying stone or digging sand, gravel or clay. It does not allow mining gold.',
   'small-scale licence': 'The register shows this land inside a small-scale mining licence.',
   'large-scale lease': 'The register shows this land inside a large-scale mining lease.',
 };

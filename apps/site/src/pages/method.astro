@@ -27,15 +27,16 @@ import { CONTACT_EMAIL } from '../lib/site';
     <ul>
       <li>We check it against the <Src id="minerals-commission">Minerals Commission</Src>'s <Src id="minerals-commission-cadastre">public register of licences</Src>, to see what kind of licence, if any, covers that land.</li>
       <li>We name it after the nearest town or village and its district.</li>
-      <li>For every patch, we find a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself. Each picture is 1.6 km across, and a ring in the middle sits on the patch. If the patch keeps growing, we take a new recent picture.</li>
+      <li>For every patch, we look for a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself. Each picture is 1.6 km across, and a ring in the middle sits on the patch. If the patch keeps growing, we take a new recent picture.</li>
     </ul>
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
 
     <h2 id="licences">What the licence labels mean</h2>
-    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land. {WEEKLY ? <>We check the register every week{lastSuccessDate && <>, last on {longDate(lastSuccessDate)}</>}.</> : lastSuccessDate && <>We last checked the register on {longDate(lastSuccessDate)}.</>} The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
+    <p>Every patch carries a label. It is not our judgement: it is what the Minerals Commission's <Src id="minerals-commission-cadastre">public register</Src> says about that land. {WEEKLY ? <>We check the register at every weekly update{lastSuccessDate && <>, last on {longDate(lastSuccessDate)}</>}.</> : lastSuccessDate && <>We last checked the register on {longDate(lastSuccessDate)}.</>} The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
     <dl class="labels">
       <dt><LicenceTag licence="no licence" /></dt><dd>The register shows no mining licence on this land.</dd>
       <dt><LicenceTag licence="prospecting only" /></dt><dd>The only licence here is for prospecting. It lets a company explore for gold, but not mine it.</dd>
+      <dt><LicenceTag licence="restricted lease" /></dt><dd>The land is inside a lease for quarrying stone or digging sand, gravel or clay. It allows that work, not mining gold.</dd>
       <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining, so some clearing here may be licensed mining.</dd>
       <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine, so some clearing here may be the licensed mine itself.</dd>
     </dl>
@@ -84,7 +85,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       <li>Mining on rivers, such as dredging from boats, because it removes no plants. We are still looking for ways to spot more signs of galamsey like this.{CONTACT_EMAIL && <> If you have an idea, <a href="/about#help">tell us</a>.</>}</li>
       <li>Old sites that stopped growing more than 12 months ago. A site that is still growing stays on the map, because its new edges are counted.</li>
     </ul>
-    {summary && <p>Latest data: {longDate(summary.data_date)}.</p>}
+    {summary && <p>Satellite data up to {longDate(summary.data_date)}.</p>}
 
     <h2>What we tried that did not work</h2>
     <ul>
@@ -100,7 +101,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       <dt>Clearing data</dt><dd><Src id="opera-dist-alert">NASA OPERA DIST-ALERT-HLS version 1</Src>, 30 metre pixels. We count pixels with status 6 or 8 (confirmed loss of at least 50% of plant cover, ongoing or finished) first detected in the last 365 days.</dd>
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
       <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests area of <Src id="resolve-ecoregions-2017">RESOLVE Ecoregions 2017</Src>. Outside it, farm clearing and burning in the dry season far outweigh the mining.</dd>
-      <dt>Licences</dt><dd>Active licences from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>. A patch takes the licence that covers the largest share of it, if that share is at least 25%. Restricted leases for granite, sand or salt count as no licence to mine gold.</dd>
+      <dt>Licences</dt><dd>Active licences from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>. A patch takes the licence that covers the largest share of it, if that share is at least 25%. Leases for stone, sand, gravel or clay (the register calls them restricted leases) get their own label, because they allow quarrying but not gold mining.</dd>
       <dt>Names</dt><dd>Nearest <Src id="openstreetmap">OpenStreetMap</Src> town within 15 km or village within 8 km. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from <Src id="sentinel2-earth-search">Earth Search</Src>. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
       <dt>Rivers</dt><dd>Water plant catchments and rivers from HydroSHEDS: <Src id="hydrobasins">HydroBASINS</Src> and <Src id="hydrorivers">HydroRIVERS</Src>.</dd>

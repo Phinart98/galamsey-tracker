@@ -26,10 +26,10 @@ const withoutPic = active.find((p) => !hasPair(p));
       <p class="muted small">Covers <a href="/method#covers">{coverage.length === 1 ? coverage[0] : `${coverage.length} areas of the southern gold belt`}</a>.</p>
       {summary && (
         <dl class="facts small">
-          <dt>Patches</dt><dd>{num(summary.patches)} of at least 1 hectare</dd>
+          <dt>Patches</dt><dd>{num(active.length)} of at least 1 hectare</dd>
           <dt>Total</dt><dd>{num(summary.total_ha)} hectares</dd>
           <dt>Mining</dt><dd>Most of the land shows signs of mining in the pictures. <a href="/method#mining">How we checked</a></dd>
-          <dt>Data up to</dt><dd>{longDate(summary.data_date)}</dd>
+          <dt>Satellite data up to</dt><dd>{longDate(summary.data_date)}</dd>
         </dl>
       )}
       <div class="fwrap" data-fwrap hidden>
@@ -51,6 +51,7 @@ const withoutPic = active.find((p) => !hasPair(p));
             <option value="alarm">No licence to mine (none, or prospecting only)</option>
             <option value="none">No licence of any kind</option>
             <option value="prospecting">Prospecting licence only</option>
+            <option value="restricted">Stone or sand lease</option>
             <option value="small">Small-scale mining licence</option>
             <option value="large">Large-scale mining lease</option>
           </select>
@@ -374,7 +375,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   const mapCount = document.querySelector<HTMLElement>('[data-map-count]')!;
   const PAGE = 60;
   const LICENCES: Record<string, string[]> = {
-    alarm: ALARM, none: ['no licence'], prospecting: ['prospecting only'],
+    alarm: ALARM, none: ['no licence'], prospecting: ['prospecting only'], restricted: ['restricted lease'],
     small: ['small-scale licence'], large: ['large-scale lease'],
   };
   let mapFilter: any = null;

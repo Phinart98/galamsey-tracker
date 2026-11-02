@@ -1,6 +1,7 @@
 // Everything the pages print comes through here, read once at build time.
 import fs from 'node:fs';
 import path from 'node:path';
+import { count } from './format';
 
 const SITE = process.cwd();
 const REPO = path.resolve(SITE, '../..');
@@ -14,7 +15,7 @@ function read<T>(file: string, fallback: T): T {
   }
 }
 
-export type Licence = 'no licence' | 'prospecting only' | 'small-scale licence' | 'large-scale lease';
+export type Licence = 'no licence' | 'prospecting only' | 'restricted lease' | 'small-scale licence' | 'large-scale lease';
 
 export interface Chip { date: string; files: Record<'720.webp', string> }
 
@@ -106,7 +107,7 @@ export const coverage = Object.values(tiles).map((t) => t.area);
 export const placeNames = Object.values(tiles).map((t) => t.place);
 // Where the totals come from, short enough for a headline however many areas are switched on
 export const where = coverage.length > 1
-  ? `across ${coverage.length} areas of Ghana's southern gold belt`
+  ? `across ${count(coverage.length)} areas of Ghana's southern gold belt`
   : `around ${placeNames[0] ?? 'the area we cover'}`;
 export const lastSuccess: string | null = status.weekly?.last_success ?? null;
 // The day of the last good weekly run, which is also when the licence register was last read

@@ -84,7 +84,7 @@ const staleAtBuild = WEEKLY && (lastSuccess ? Date.now() - Date.parse(lastSucces
   <div class="stale" data-stale data-last={lastSuccess ?? ''} hidden={!staleAtBuild}>
     <p class="wrap">
       {lastSuccess
-        ? <>Data last updated {longDate(lastSuccessDate!)}. The weekly update is late, so recent changes may be missing.</>
+        ? <>We last updated the site on {longDate(lastSuccessDate!)}. The weekly update is late, so recent changes may be missing.</>
         : <>The weekly update has not run yet.</>}
     </p>
   </div>
@@ -94,7 +94,7 @@ const staleAtBuild = WEEKLY && (lastSuccess ? Date.now() - Date.parse(lastSucces
   <footer class="site-foot">
     <div class="wrap">
       <p>
-        {summary && <>Data up to {longDate(summary.data_date)}. {WEEKLY ? 'Updated every Monday. ' : 'This is a preview and is not updated yet. '}</>}
+        {summary && <>Satellite data up to {longDate(summary.data_date)}. </>}{WEEKLY ? <>We update the site every Monday{lastSuccessDate && <>, last on {longDate(lastSuccessDate)}</>}. </> : 'This is a preview and is not updated yet. '}
         Built from <Src id="opera-dist-alert">NASA OPERA land disturbance data</Src> and <Src id="sentinel2">Copernicus Sentinel-2</Src> images. Contains modified Copernicus Sentinel data{pictureYears && ` ${pictureYears}`}. Licence labels from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>.
       </p>
       <nav class="foot-nav" aria-label="Footer">

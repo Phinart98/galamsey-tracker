@@ -554,22 +554,24 @@
   {
    "id": "trend",
    "text": "Hectares cleared in the 12 months before each monthly point, measured on the same day each month, compared with a year before",
-   "where": "home chart",
+   "where": "/method#trend chart",
    "evidence": [
     "opera-dist-alert",
     "own-spike-log s11, s13"
    ],
-   "status": "measured"
+   "status": "measured",
+   "checked": "2026-11-02"
   },
   {
    "id": "confirmation-lag",
    "text": "NASA confirms clearing weeks or months after first seeing it, and drops it from the data about a year later",
-   "where": "/method, home",
+   "where": "/method",
    "evidence": [
     "own-spike-log s13"
    ],
    "status": "measured",
-   "todo": "Also cite the DIST-ALERT specification for confirmation and expiry rules"
+   "todo": "Also cite the DIST-ALERT specification for confirmation and expiry rules",
+   "checked": "2026-11-02"
   },
   {
    "id": "status-codes",
@@ -647,24 +649,25 @@
   },
   {
    "id": "restricted-leases",
-   "text": "Restricted leases for granite, sand or salt do not allow gold mining",
-   "where": "/method",
+   "text": "Restricted leases are for stone, sand, gravel or clay and do not allow gold mining, so they get their own label",
+   "where": "/method, /, place pages",
    "evidence": [
     "ghana-act-703"
    ],
    "status": "verified",
-   "checked": "2026-10-31"
+   "checked": "2026-11-02"
   },
   {
    "id": "upstream-hectares",
-   "text": "N hectares cleared upstream of each water treatment plant (Daboase 9,025 ha, about 40% of all clearing in 15 southern tiles)",
-   "where": "planned",
+   "text": "Hectares cleared in the last 12 months on the land that drains to each water treatment plant, computed by the weekly run (data/summary/latest.json water)",
+   "where": "home water section and map",
    "evidence": [
     "hydrobasins",
     "openstreetmap",
     "own-spike-log s16"
    ],
-   "status": "measured"
+   "status": "measured",
+   "checked": "2026-11-02"
   },
   {
    "id": "plant-supplies",
@@ -697,7 +700,7 @@
   {
    "id": "mercury",
    "text": "Galamsey turns rivers brown with mud and mercury",
-   "where": "/about (live in the current build)",
+   "where": "nowhere (removed from /about on 2026-10-27)",
    "evidence": [],
    "status": "removed",
    "todo": "Removed from /about on 2026-10-27; source it before using again"
@@ -705,13 +708,14 @@
   {
    "id": "reporting-bodies",
    "text": "NAIMOS, under the Ministry of Lands and Natural Resources, leads the fight against illegal mining and has asked the public for information; we found no official reporting line we can confirm",
-   "where": "/about (live in the current build)",
+   "where": "/about",
    "evidence": [
     "naimos-2026",
     "mlnr"
    ],
    "status": "checked",
-   "caveat": "Web search 2026-10-27 found no verified hotline; a number circulated in 2025 was reported to be private. Recheck before launch"
+   "caveat": "Web search 2026-10-27 found no verified hotline; a number circulated in 2025 was reported to be private. Recheck before launch",
+   "checked": "2026-11-02"
   },
   {
    "id": "coverage-areas",
@@ -797,8 +801,8 @@
   },
   {
    "id": "pra-upstream",
-   "text": "More than half of the land cleared in the last 12 months (8,946 of 15,964 ha) drains down the Pra past the Daboase treatment plant",
-   "where": "home (water section, built 2026-10-25, not live)",
+   "text": "Share of the cleared land that drains to the Daboase plant, and the map's sentence on why Daboase stands out, both worked out from each week's numbers",
+   "where": "home water section and map",
    "evidence": [
     "opera-dist-alert",
     "hydrobasins",
@@ -806,7 +810,8 @@
     "own-spike-log s16, s23"
    ],
    "status": "measured",
-   "caveat": "Clearing upstream is not a measure of what reaches the plant. Computed by the weekly run (summary 'water')"
+   "caveat": "Clearing upstream is not a measure of what reaches the plant. Computed by the weekly run (summary 'water')",
+   "checked": "2026-11-02"
   },
   {
    "id": "water-plant-towns",
@@ -836,15 +841,16 @@
   },
   {
    "id": "towns-near-clearing",
-   "text": "At least N towns and villages have land cleared within 1 km of them (N from the weekly run: 644 on 23 Oct 2026)",
-   "where": "home headline (built 2026-10-25, not live)",
+   "text": "At least N towns and villages have land cleared within 1 km of them (N from each weekly run)",
+   "where": "home headline and share card",
    "evidence": [
     "openstreetmap",
     "opera-dist-alert",
     "own-spike-log s19"
    ],
    "status": "measured",
-   "caveat": "OSM misses villages unevenly, so a floor; distance from the place's OSM point; 645 after the forest-zone mask (665 before), 23 Oct 2026 snapshot Weekly run since 2026-10-25 (data/towns.json); an OSM village mapped twice within 2 km counts once."
+   "caveat": "OSM misses villages unevenly, so a floor; distance from the place's OSM point; 645 after the forest-zone mask (665 before), 23 Oct 2026 snapshot Weekly run since 2026-10-25 (data/towns.json); an OSM village mapped twice within 2 km counts once.",
+   "checked": "2026-11-02"
   },
   {
    "id": "trend-fall-2025-2026",

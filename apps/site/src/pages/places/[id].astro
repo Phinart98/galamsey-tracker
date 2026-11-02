@@ -20,7 +20,7 @@ export function getStaticPaths() {
 const { place, to } = Astro.props as { place: Place | null; to: string | null };
 const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'This place has moved';
 // Why a place has no Likely galamsey label: licensed land never gets it, otherwise it depends on the water reading
-const licensed = place?.licence === 'small-scale licence' || place?.licence === 'large-scale lease';
+const licensed = place?.licence === 'small-scale licence' || place?.licence === 'large-scale lease' || place?.licence === 'restricted lease';
 const reading = place?.signs && !('missing' in place.signs) ? place.signs : null;
 ---
 {to ? (
@@ -62,7 +62,7 @@ const reading = place?.signs && !('missing' in place.signs) ? place.signs : null
           {!place.likely_galamsey && (
             <p class="whyno">
               {licensed
-                ? <><strong>Likely galamsey</strong> is our own guess, and we only add it where the register shows no licence to mine. This land has a mining licence, so it does not get the label.</>
+                ? <><strong>Likely galamsey</strong> is our own guess, and we only add it where the register shows no licence to mine. {place.licence === 'restricted lease' ? 'This land has a lease for quarrying stone or digging sand' : 'This land has a mining licence'}, so it does not get the label.</>
                 : <><strong>Likely galamsey</strong> is our own guess. We add it where there is no licence to mine and the satellite sees water in or next to the cleared patch. {reading
                     ? `In the clearest picture we have, from ${longDate(reading.scene)}, there was no open water in or next to this patch, so it does not get the label.`
                     : 'We have not had a clear picture to check this patch for water yet. We check more patches every week, largest first.'}</>}

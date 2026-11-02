@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import base from '../data/water-map.json';
 import Src from './Src.astro';
-import { active, coverage } from '../lib/data';
+import { active, coverage, summary, water } from '../lib/data';
 import { count, num } from '../lib/format';
 
 interface Props { praHa: number }
@@ -64,6 +64,16 @@ const cities = [
 ];
 const plant = { x: x(base.plant.lon), y: y(base.plant.lat) };
 
+// Said from this week's numbers, so the sentence stays true when the clearing moves
+const total = summary?.total_ha ?? 0;
+const othersHa = water.filter((w) => w.plant !== 'Daboase').reduce((t, w) => t + w.ha, 0);
+const why = praHa > total / 2
+  ? 'Daboase stands out because more than half of the cleared land we cover drains to it.'
+  : praHa > othersHa
+    ? 'Daboase stands out because more of the cleared land we cover drains to it than to all the other plants together.'
+    : 'The map shows the land that drains to the Daboase plant on the Pra.';
+const othersSay = othersHa < praHa / 4 ? 'hold far less cleared land' : 'hold less cleared land';
+
 // The other plants' catchments, outlined so readers can see why Daboase stands out (pipeline/water_plants.geojson)
 type Plant = { properties: { plant: string; plant_lat: number; plant_lon: number }; geometry: { type: string; coordinates: any } };
 const plantsFile = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), '../../pipeline/water_plants.geojson'), 'utf8')) as { features: Plant[] };
@@ -85,7 +95,7 @@ const labels = [
 <figure class="watermap">
   <div class="frame">
   <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-labelledby="wm-title">
-    <title id="wm-title">Map of southern Ghana. The Pra and its tributaries drain a large area from north of Kumasi down to the Daboase treatment plant near the coast. {num(praHa)} hectares of the cleared land lie in that area. The smaller areas that drain to the Barekese, Owabi, Weija and Kwanyako plants are outlined and hold little cleared land.</title>
+    <title id="wm-title">Map of southern Ghana. The Pra and its tributaries drain a large area from north of Kumasi down to the Daboase treatment plant near the coast. {num(praHa)} hectares of the cleared land lie in that area. The smaller areas that drain to the Barekese, Owabi, Weija and Kwanyako plants are outlined and {othersSay}.</title>
     <path class="land" d={area(base.land as Ring[][])} />
     {others.map((o) => <path class="other" d={o.d} />)}
     <path class="pra" d={area(base.pra as Ring[][])} />
@@ -112,7 +122,7 @@ const labels = [
       <li><span class="sw other-sw"></span>Land that drains to one of the other water plants</li>
       <li><span class="sw out-sw"></span>Cleared land that drains to other rivers, not the Pra</li>
     </ul>
-    <p class="why">Daboase stands out because most of the cleared land we cover is in the Pra basin.</p>
+    <p class="why">{why}</p>
     <p class="credit">Map: country outline from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>, rivers and drainage areas from HydroSHEDS (<Src id="hydrorivers">HydroRIVERS</Src> and <Src id="hydrobasins">HydroBASINS</Src>, Lehner and Grill 2013). It shows only the {num(active.length)} patches in the {count(coverage.length)} areas we cover, so clearing outside them is not on it.</p>
   </figcaption>
 </figure>

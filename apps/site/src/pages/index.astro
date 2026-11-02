@@ -6,8 +6,8 @@ import LikelyTag from '../components/LikelyTag.astro';
 import LabelKey from '../components/LabelKey.astro';
 import WaterMap from '../components/WaterMap.astro';
 import Src from '../components/Src.astro';
-import { doorstep, summary, townsNear, water, where } from '../lib/data';
-import { Count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
+import { active, doorstep, summary, townsNear, water, where } from '../lib/data';
+import { Count, LICENCES, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(10);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
@@ -46,7 +46,7 @@ const total = summary?.total_ha ?? 0;
             : `In the last 12 months, satellites saw ${num(summary.total_ha)} hectares of land cleared ${where}.`}
         </h1>
         <p class="sub">
-          Satellites saw {num(summary.total_ha)} hectares of land cleared {where} in the 12 months up to {longDate(summary.data_date)}.
+          Satellites saw <strong>{num(summary.total_ha)} hectares</strong> of land cleared {where} in the 12 months leading up to <strong>{longDate(summary.data_date)}</strong>.
         </p>
         {lead && (
           <div class="lead">
@@ -88,7 +88,7 @@ const total = summary?.total_ha ?? 0;
         </ul>
         <LabelKey galamsey />
         <p class="note">Town and village points come from OpenStreetMap, which misses many villages, so the true count may be higher.</p>
-        {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(summary.patches)} places on the map</a></div>}
+        {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(active.length)} places on the map</a></div>}
       </section>
     )}
 
@@ -164,11 +164,11 @@ const total = summary?.total_ha ?? 0;
         <h2 id="licences">What licence is on the land</h2>
         <p class="intro">We check every patch against the Minerals Commission's register of active licences. The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
         <ul class="licences">
-          {(['no licence', 'prospecting only', 'small-scale licence', 'large-scale lease'] as const).map((l) => (
+          {LICENCES.filter((l) => summary.by_licence[l]).map((l) => (
             <li><LicenceTag licence={l} /><span class="v">{num(summary.by_licence[l].ha)} ha</span><span class="muted">{pct(summary.by_licence[l].share)}</span></li>
           ))}
         </ul>
-        <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. Clearing inside a small-scale licence or a large-scale lease may be licensed mining.</p>
+        <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. A stone or sand lease allows quarrying, not gold mining. Clearing inside a small-scale licence or a large-scale lease may be licensed mining.</p>
       </section>
     )}
   </div>
