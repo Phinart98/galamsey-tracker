@@ -1,9 +1,8 @@
 ---
 // The Pra catchment, its rivers and the clearing in it, drawn at build time as plain SVG (no map library).
-import fs from 'node:fs';
-import path from 'node:path';
 import base from '../data/water-map.json';
 import Src from './Src.astro';
+import { catchments, inside } from '../lib/plants';
 import { active, coverage, summary, water } from '../lib/data';
 import { count, num } from '../lib/format';
 
@@ -21,17 +20,6 @@ const y = (lat: number) => +((N0 - lat) * scale).toFixed(1);
 const ring = (r: Ring) => `M${r.map(([lon, lat]) => `${x(lon)} ${y(lat)}`).join('L')}Z`;
 const line = (r: Ring) => `M${r.map(([lon, lat]) => `${x(lon)} ${y(lat)}`).join('L')}`;
 const area = (polys: Ring[][]) => polys.map((p) => p.map(ring).join('')).join('');
-
-function inside([lon, lat]: number[], polys: Ring[][]) {
-  let hit = false;
-  for (const poly of polys) for (const r of poly) {
-    for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
-      const [xi, yi] = r[i], [xj, yj] = r[j];
-      if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) hit = !hit;
-    }
-  }
-  return hit;
-}
 
 // About 4.4 km cells. A square's area follows the hectares cleared in it, so a full square is CELL_MAX_HA or more.
 const CELL = 0.04;
@@ -74,14 +62,8 @@ const why = praHa > total / 2
     : 'The map shows the land that drains to the Daboase plant on the Pra.';
 const othersSay = othersHa < praHa / 4 ? 'hold far less cleared land' : 'hold less cleared land';
 
-// The other plants' catchments, outlined so readers can see why Daboase stands out (pipeline/water_plants.geojson)
-type Plant = { properties: { plant: string; plant_lat: number; plant_lon: number }; geometry: { type: string; coordinates: any } };
-const plantsFile = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), '../../pipeline/water_plants.geojson'), 'utf8')) as { features: Plant[] };
-const others = plantsFile.features.filter((f) => f.properties.plant !== 'Daboase').map((f) => ({
-  name: f.properties.plant,
-  d: area((f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates) as Ring[][]),
-  x: x(f.properties.plant_lon), y: y(f.properties.plant_lat),
-}));
+// The other plants' catchments, outlined so readers can see why Daboase stands out
+const others = catchments.filter((c) => c.name !== 'Daboase').map((c) => ({ name: c.name, d: area(c.polys), x: x(c.lon), y: y(c.lat) }));
 // Hand-placed so nothing overlaps at phone width: Barekese and Owabi are 8 km apart and share one label,
 // and Weija's label names Accra because the two sit too close for separate labels
 const labels = [

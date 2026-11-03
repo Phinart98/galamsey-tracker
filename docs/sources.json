@@ -918,6 +918,24 @@
    ],
    "status": "verified",
    "caveat": "Cloudflare: 'does not use any client-side state, such as cookies or localStorage'; docs (developers.cloudflare.com/web-analytics/about/): 'does not collect or use your visitors' personal data'. Enabled on Pages project galamsey-tracker only, 2026-10-31"
+  },
+  {
+   "id": "pitches-per-hour",
+   "text": "On average about N football pitches of land cleared every hour: the 12-month total divided by 365 days and 24 hours, in 0.714 ha pitches. An average, not a claim that clearing is rising",
+   "where": "/share images and posts",
+   "evidence": [
+    "football-pitch"
+   ],
+   "status": "measured",
+   "checked": "2026-11-03"
+  },
+  {
+   "id": "share-posts",
+   "text": "Weekly share images restate site figures: hectares within 1 km of the lead town, hectares on land draining to each city's plant (claims upstream-hectares, water-plant-towns), the largest Likely galamsey patch in each catchment",
+   "where": "/share",
+   "evidence": [],
+   "status": "measured",
+   "checked": "2026-11-03"
   }
  ]
 }
