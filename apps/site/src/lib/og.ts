@@ -77,67 +77,84 @@ export async function homeCard(o: { line: string; sub: string; before?: Chip; af
 }
 
 // Portrait images for posting (1080 x 1350, the shape that fills a phone screen on X, Instagram and WhatsApp).
-// One look for all of them: paper, black type, the site's magenta for the one number that matters, a black
-// footer with the address. Pictures keep their satellite colours and carry the same ring as on the site.
+// Design (2026-11-03, second pass): the satellite picture is the headline, so the town image runs edge to edge;
+// the water image follows the mud from a cleared patch down the river to the reader's tap; the rate image draws
+// one day's clearing as football pitches you can count. Site colours, plus river blue for water.
 const PW = 1080, PH = 1350, PAD = 64, INNER = PW - PAD * 2;
-const INK = '#000', PAPER = '#F5F6F3', SIGNAL = '#B8155A', SIGNAL_DARK = '#FF6FA6';
+const INK = '#000', PAPER = '#F5F6F3', SIGNAL = '#B8155A', PINK = '#FF6FA6', RIVER = '#1D5C8C';
+const svgUri = (svg: string) => `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 
-function footer(dark = false) {
-  return h('div', { display: 'flex', width: PW, height: 96, background: dark ? PAPER : INK, color: dark ? INK : '#fff' },
-    h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: INNER, marginLeft: PAD, fontSize: 30, fontWeight: 700 },
-      h('div', {}, 'Galamsey Tracker'), h('div', { fontWeight: 400 }, 'galamseytracker.org')));
+// White ring with a thin black edge, hollow so the patch shows through (same as the site). SVG, because satori
+// offsets nested bordered circles by a pixel or two.
+const ring = (d: number) => svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${d}" height="${d}"><circle cx="${d / 2}" cy="${d / 2}" r="${d * 0.38}" fill="none" stroke="#000" stroke-width="${d * 0.17}"/><circle cx="${d / 2}" cy="${d / 2}" r="${d * 0.38}" fill="none" stroke="#fff" stroke-width="${d * 0.1}"/></svg>`);
+const PITCH = svgUri('<svg xmlns="http://www.w3.org/2000/svg" width="84" height="56"><rect width="84" height="56" fill="#FF6FA6"/><rect x="3" y="3" width="78" height="50" fill="none" stroke="#000" stroke-width="2"/><line x1="42" y1="3" x2="42" y2="53" stroke="#000" stroke-width="2"/><circle cx="42" cy="28" r="9" fill="none" stroke="#000" stroke-width="2"/><rect x="3" y="16" width="10" height="24" fill="none" stroke="#000" stroke-width="2"/><rect x="71" y="16" width="10" height="24" fill="none" stroke="#000" stroke-width="2"/></svg>');
+
+function brandRow(color: string, muted: string) {
+  return h('div', { display: 'flex', justifyContent: 'space-between', width: INNER, fontSize: 28 },
+    h('div', { fontWeight: 700, color }, 'Galamsey Tracker'), h('div', { color: muted }, 'galamseytracker.org'));
 }
 
-// White ring with a thin black edge inside and out, hollow so the patch shows through (same as the site).
-// Drawn as SVG: satori offsets nested and bordered circles by a pixel or two.
-const RING = `data:image/svg+xml;base64,${Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="52" height="52"><circle cx="26" cy="26" r="20" fill="none" stroke="#000" stroke-width="9"/><circle cx="26" cy="26" r="20" fill="none" stroke="#fff" stroke-width="5"/></svg>').toString('base64')}`;
-function ring(size: number) {
-  return img(RING, { position: 'absolute', left: size / 2 - 26, top: size / 2 - 26, width: 52, height: 52 });
+// The town with the most cleared land around it: the after picture edge to edge, the before small in a corner
+export async function townPost(o: { headline: string; sub: string; before: Chip; after: Chip }) {
+  const IMG = 1000, INSET = 300;
+  return card(h('div', { display: 'flex', flexDirection: 'column', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff' },
+    h('div', { display: 'flex', position: 'relative', width: PW, height: IMG, overflow: 'hidden' },
+      img(await jpeg(o.after), { position: 'absolute', left: 0, top: -(PW - IMG) / 2, width: PW, height: PW }),
+      img(ring(64), { position: 'absolute', left: PW / 2 - 32, top: IMG / 2 - 32, width: 64, height: 64 }),
+      h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: 40, top: 40, border: '6px solid #fff', background: '#fff' },
+        img(await jpeg(o.before), { width: INSET, height: INSET }),
+        h('div', { fontSize: 24, fontWeight: 700, color: INK, padding: '8px 10px 4px' }, `Before, ${shortDate(o.before.date)}`)),
+      h('div', { position: 'absolute', left: 40, bottom: 32, background: INK, fontSize: 26, fontWeight: 700, padding: '6px 14px' }, `After, ${shortDate(o.after.date)}`)),
+    h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: PW - 80, marginLeft: 40, height: PH - IMG, padding: '34px 0 30px' },
+      h('div', { display: 'flex', flexDirection: 'column' },
+        h('div', { fontSize: 58, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.headline),
+        h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 16, color: '#DDD' }, o.sub)),
+      brandRow('#fff', '#AAA'))),
+    PW, PH, 85);
 }
 
-async function pairRow(before: Chip, after: Chip, size: number) {
-  const one = async (chip: Chip, word: string) => h('div', { display: 'flex', position: 'relative', width: size, height: size },
-    img(await jpeg(chip), { width: size, height: size, objectFit: 'cover' }),
-    ring(size),
-    h('div', { position: 'absolute', left: 0, bottom: 0, display: 'flex', flexDirection: 'column', background: INK, color: '#fff', padding: '8px 14px' },
-      h('div', { fontSize: 26, fontWeight: 700 }, word), h('div', { fontSize: 24 }, shortDate(chip.date))));
-  return h('div', { display: 'flex', gap: INNER - size * 2 }, await one(before, 'Before'), await one(after, 'After'));
+// A city's water: a cleared patch upstream, then the river, the plant and the reader's tap
+export async function waterPost(o: { title: string; big: string; line: string; river: string; plant: string; tap: string; picture?: Chip }) {
+  const PIC = 470, LINE = PAD + PIC / 2, TOP = 136;
+  const stop = (title: string, sub: string, y: number, filled: boolean) => [
+    h('div', { position: 'absolute', left: LINE - 22, top: y - 22, width: 44, height: 44, borderRadius: '50%', background: filled ? RIVER : PAPER, border: `8px solid ${RIVER}` }),
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: LINE + 50, top: y - 30, width: 640 },
+      h('div', { fontSize: 40, fontWeight: 700, lineHeight: 1.1 }, title), h('div', { fontSize: 28, lineHeight: 1.3, color: '#333', marginTop: 6 }, sub))];
+  const pic = o.picture ? [
+    img(await jpeg(o.picture), { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC }),
+    img(ring(56), { position: 'absolute', left: PAD + PIC / 2 - 28, top: TOP + PIC / 2 - 28, width: 56, height: 56 }),
+    h('div', { position: 'absolute', left: PAD, top: TOP + PIC - 44, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, `One cleared patch upstream, ${shortDate(o.picture.date)}`),
+  ] : [h('div', { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC, background: '#DDD' })];
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { position: 'absolute', left: PAD, top: 56, width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+    ...pic,
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD + PIC + 40, top: TOP + 14, width: INNER - PIC - 40 },
+      h('div', { fontSize: 128, fontWeight: 700, lineHeight: 0.95, letterSpacing: -4, color: SIGNAL }, o.big),
+      h('div', { fontSize: 40, fontWeight: 700, color: SIGNAL }, 'hectares'),
+      h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 18 }, o.line)),
+    h('div', { position: 'absolute', left: LINE - 5, top: TOP + PIC, width: 10, height: 470, background: RIVER }),
+    ...stop(o.river, 'Rain washes mud from the cleared land into it', TOP + PIC + 130, false),
+    ...stop(o.plant, 'More mud makes the water harder and dearer to treat', TOP + PIC + 300, false),
+    ...stop('Your tap', o.tap, TOP + PIC + 470, true),
+    h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
+      brandRow('#fff', '#fff'))),
+    PW, PH, 85);
 }
 
-function page(children: Node[], dark = false) {
-  return h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: PW, height: PH, background: dark ? INK : PAPER, color: dark ? '#fff' : INK, fontFamily: 'Atkinson' },
-    h('div', { display: 'flex', flexDirection: 'column', width: INNER, marginLeft: PAD, marginTop: PAD }, ...children),
-    footer(dark));
-}
-
-// The town with the most cleared land around it, and its largest patch before and after
-export async function townPost(o: { headline: string; sub: string; stat: string; note: string; before: Chip; after: Chip }) {
-  return card(page([
-    h('div', { width: INNER, fontSize: 66, fontWeight: 700, lineHeight: 1.08, letterSpacing: -1 }, o.headline),
-    h('div', { width: INNER, fontSize: 34, lineHeight: 1.3, marginTop: 20, marginBottom: 40 }, o.sub),
-    await pairRow(o.before, o.after, 468),
-    h('div', { width: INNER, fontSize: 60, fontWeight: 700, color: SIGNAL, marginTop: 36, letterSpacing: -1 }, o.stat),
-    h('div', { width: INNER, fontSize: 32, lineHeight: 1.35, marginTop: 14 }, o.note),
-  ]), PW, PH, 85);
-}
-
-// A city's water: the hectares cleared on the land that drains to its treatment plant
-export async function waterPost(o: { top: string; big: string; line: string; note: string; before?: Chip; after?: Chip }) {
-  const pics = o.before && o.after ? [await pairRow(o.before, o.after, 468), h('div', { width: INNER, fontSize: 28, lineHeight: 1.3, marginTop: 16, color: '#333' }, o.note)] : [];
-  return card(page([
-    h('div', { width: INNER, fontSize: 38, fontWeight: 700 }, o.top),
-    h('div', { width: INNER, fontSize: 170, fontWeight: 700, lineHeight: 1, letterSpacing: -4, color: SIGNAL, marginTop: 24 }, o.big),
-    h('div', { width: INNER, fontSize: 40, lineHeight: 1.25, marginTop: 20, marginBottom: 40 }, o.line),
-    ...pics,
-  ]), PW, PH, 85);
-}
-
-// The average rate, said as football pitches an hour
-export async function ratePost(o: { top: string; big: string; line: string; sub: string }) {
-  return card(page([
-    h('div', { width: INNER, fontSize: 38, fontWeight: 700 }, o.top),
-    h('div', { width: INNER, fontSize: 440, fontWeight: 700, lineHeight: 1, letterSpacing: -12, color: SIGNAL_DARK, marginTop: 60 }, o.big),
-    h('div', { width: INNER, fontSize: 84, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1, marginTop: 10 }, o.line),
-    h('div', { width: INNER, fontSize: 34, lineHeight: 1.35, marginTop: 48, color: '#DDD' }, o.sub),
-  ], true), PW, PH, 85);
+// One day's clearing, on average, drawn as football pitches you can count
+export async function ratePost(o: { top: string; perDay: number; line: string; sub: string }) {
+  const rows: Node[] = [];
+  const shown = Math.min(o.perDay, 100);
+  for (let r = 0; r * 10 < shown; r++) {
+    rows.push(h('div', { display: 'flex', gap: 12 }, ...Array.from({ length: Math.min(10, shown - r * 10) }, () => img(PITCH, { width: 84, height: 56 }))));
+  }
+  return card(h('div', { display: 'flex', flexDirection: 'column', position: 'relative', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff', padding: `${PAD}px ${PAD}px 0` },
+    h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.top),
+    h('div', { display: 'flex', alignItems: 'flex-end', gap: 28, marginTop: 30 },
+      h('div', { fontSize: 230, fontWeight: 700, lineHeight: 0.85, letterSpacing: -8, color: PINK }, String(o.perDay)),
+      h('div', { fontSize: 54, fontWeight: 700, lineHeight: 1.05, width: 560, paddingBottom: 6 }, o.line)),
+    h('div', { display: 'flex', flexDirection: 'column', gap: 14, marginTop: 64 }, ...rows),
+    h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, color: '#CCC', marginTop: 40 }, o.sub),
+    h('div', { display: 'flex', position: 'absolute', left: PAD, bottom: 40 }, brandRow('#fff', '#AAA'))),
+    PW, PH, 85);
 }
