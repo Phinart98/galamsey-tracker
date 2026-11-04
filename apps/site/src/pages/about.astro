@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Src from '../components/Src.astro';
-import { CONTACT_EMAIL } from '../lib/site';
+import { CONTACT_EMAIL, X_HANDLE, X_URL } from '../lib/site';
 ---
 <Base title="About" description="Why the Galamsey Tracker exists and where to report illegal mining in Ghana.">
   <article class="wrap prose">
@@ -19,6 +19,7 @@ import { CONTACT_EMAIL } from '../lib/site';
         <p>The tracker misses some kinds of galamsey, such as dredging on rivers, because they do not clear land. We are looking for ways to spot them. If you have an idea, data that could help, or want to work together, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
         <h2>Get in touch</h2>
         <p>For questions about the data, corrections or press enquiries, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. A person reads every message.</p>
+        <p>We post pictures from each week's update on X at <a href={X_URL}>@{X_HANDLE}</a>.</p>
       </>
     )}
   </article>

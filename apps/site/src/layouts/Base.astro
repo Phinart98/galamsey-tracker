@@ -5,7 +5,7 @@ import Viewer from '../components/Viewer.astro';
 import Src from '../components/Src.astro';
 import { lastSuccess, lastSuccessDate, pictureYears, summary, STALE_DAYS } from '../lib/data';
 import { longDate } from '../lib/format';
-import { CONTACT_EMAIL, WEEKLY } from '../lib/site';
+import { CONTACT_EMAIL, WEEKLY, X_HANDLE, X_URL } from '../lib/site';
 
 interface Props { title?: string; description?: string; image?: string }
 const {
@@ -39,6 +39,7 @@ const staleAtBuild = WEEKLY && (lastSuccess ? Date.now() - Date.parse(lastSucces
   <meta property="og:image" content={ogImage}>
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content={`@${X_HANDLE}`}>
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <!-- Without this the headline re-wraps when the font arrives and pushes the lead pictures down -->
@@ -100,7 +101,7 @@ const staleAtBuild = WEEKLY && (lastSuccess ? Date.now() - Date.parse(lastSucces
       <nav class="foot-nav" aria-label="Footer">
         {nav.map((n) => <a href={n.href}>{n.label}</a>)}
       </nav>
-      <p><a href="/data">Download the data</a>.{CONTACT_EMAIL && <> Contact: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</>}</p>
+      <p><a href="/data">Download the data</a>. Weekly pictures on X: <a href={X_URL} rel="me">@{X_HANDLE}</a>.{CONTACT_EMAIL && <> Contact: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</>}</p>
     </div>
   </footer>
   <Viewer />
