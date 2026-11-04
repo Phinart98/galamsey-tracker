@@ -1,0 +1,35 @@
+---
+// One ready post: the picture, a button to save it, and the words to copy, in the order they are used on X
+import type { Post } from '../../src/lib/share';
+
+interface Props { post: Post; heading?: string; level?: 'h3' | 'h4'; textLabel?: string }
+const { post, heading, level = 'h3', textLabel = '1. The post' } = Astro.props;
+const H = level;
+const fields: [string, string][] = [
+  [textLabel, post.text],
+  ['2. Image description (tap "Add description" on the picture)', post.alt],
+  ['3. Your first reply to it, with the link', post.reply],
+];
+---
+<article id={post.slug} class="card">
+  {heading && <H class="card-title">{heading}</H>}
+  <a href={`/${post.slug}.jpg`} class="pic"><img src={`/${post.slug}.jpg`} alt={post.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
+  <p class="save"><a class="btn" href={`/${post.slug}.jpg`} download={`galamsey-${post.slug}.jpg`}>Save the picture</a></p>
+  {fields.map(([label, value]) => (
+    <div class="copy">
+      <div class="head"><span class="label">{label}</span><button type="button" class="btn" data-copy>Copy</button></div>
+      <p data-text>{value}</p>
+    </div>
+  ))}
+</article>
+
+<style>
+  .card { display: grid; gap: 12px; align-content: start; }
+  .card-title { margin: 0; }
+  .pic img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
+  .save { margin: 0; }
+  .copy { display: grid; gap: 6px; }
+  .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .label { font-weight: 700; }
+  [data-text] { white-space: pre-line; margin: 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
+</style>
