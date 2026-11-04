@@ -28,7 +28,7 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
     </div>
   </header>
   <main class="wrap">
-    <p class="lede">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}. </>}{lastSuccessDate && <>Last weekly update: {longDate(lastSuccessDate)}. </>}Only you can see this page.</p>
+    <p class="lede">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}. </>}{lastSuccessDate && <>Last weekly update: {longDate(lastSuccessDate)}. </>}This page is not linked or listed anywhere. Keep the address to yourself.</p>
 
     <section id="next">
       <h1>Next posts</h1>
@@ -50,7 +50,7 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
       <div class="posts">
         {sharePosts.map((p) => (
           <article id={p.slug} class="post">
-            <p class="kind">{p.kind}</p>
+            {!p.title.startsWith(p.kind) && <p class="kind">{p.kind}</p>}
             <h3>{p.title}</h3>
             <a href={`/${p.slug}.jpg`}><img src={`/${p.slug}.jpg`} alt={p.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
             <p><a class="btn" href={`/${p.slug}.jpg`} download={`galamsey-${p.slug}.jpg`}>Save the image</a></p>
@@ -110,8 +110,8 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
     section { margin-bottom: 56px; max-width: 70ch; }
     #posts { max-width: none; }
     .slots { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
-    .slots li { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .day { font-weight: 700; min-width: 15ch; }
+    .slots li { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .day { font-weight: 700; }
     .pitch { color: var(--signal); font-weight: 700; }
     .posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 48px 32px; margin-top: 24px; }
     .kind { margin: 0; color: var(--muted); font-size: 0.9375rem; }

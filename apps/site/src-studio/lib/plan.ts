@@ -1,10 +1,10 @@
 // The posting calendar: which post goes out on which day, worked out from the date so it needs no upkeep.
 // Monday the town of the week (after the weekly run), Wednesday a city's water in turn, Friday one of the other
-// kinds in turn, so no kind repeats within two weeks. News about a place we cover beats the plan on any day.
+// kinds in turn (new clearing, district, rate, licence), so no Friday kind repeats within four weeks. News about a place we cover beats the plan on any day.
 import { sharePosts } from '../../src/lib/share';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba'];
-const FRIDAY = ['rate', 'licence', 'district'];
+const FRIDAY = ['new', 'district', 'rate', 'licence'];
 
 function isoWeek(d: Date) {
   const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));

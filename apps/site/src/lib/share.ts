@@ -22,6 +22,10 @@ export interface Post {
 
 const posts: Post[] = [];
 const dataDate = summary ? longDate(summary.data_date) : '';
+// A number that moves on by one each week of data, so the automatic posts rotate subjects and wording without
+// anyone choosing: same data, same pick; next week, the next pick
+const WEEK = summary ? Math.floor(Date.parse(summary.data_date) / (7 * 864e5)) : 0;
+const pick = <T>(list: T[], salt = 0): T => list[(WEEK + salt) % list.length];
 
 // 1. The town with the most cleared land around it (the same town the home page leads with)
 const lead = doorstep(1)[0];
@@ -33,7 +37,11 @@ if (lead && summary) {
     kind: 'Town of the week',
     title: `Town of the week: ${town.name}`,
     alt: `Two satellite pictures of the same land near ${town.name}${district ? `, ${district}` : ''}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: wide patches of bare orange ground.`,
-    text: `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.\n\nThe pictures show the largest patch, before and after. ${LICENCE_SENTENCE[place.licence]}`,
+    text: pick([
+      `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.\n\nThe pictures show the largest patch, before and after. ${LICENCE_SENTENCE[place.licence]}`,
+      `No town we track has more cleared land around it than ${town.name}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
+      `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.\n\nWithin 1 km of the town, ${hectares(town.ha)} of land was cleared in the last 12 months, about ${num(pitches(town.ha))} football pitches. ${LICENCE_SENTENCE[place.licence]}`,
+    ]),
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
     render: () => townPost({
       // Non-breaking spaces keep "1 km" and "12 months" on one line
@@ -61,19 +69,25 @@ const CITIES = [
     lead: 'Winneba, Swedru and Kasoa get their water from the Kwanyako treatment plant on the Ayensu.' },
 ];
 const pictured = (p: Place): p is Place & { chips: { before: Chip; after: Chip } } => hasPair(p);
-for (const c of CITIES) {
+CITIES.forEach((c, ci) => {
   const ha = water.filter((w) => c.plants.includes(w.plant)).reduce((t, w) => t + w.ha, 0);
-  if (ha < 1) continue;
+  if (ha < 1) return;
   const polys = catchments.filter((k) => c.plants.includes(k.name)).flatMap((k) => k.polys);
-  // The largest patch there that carries the Likely galamsey label, so the picture shows what the post is about
-  const largest = active.filter(pictured).find((p) => p.likely_galamsey && inside([p.lon, p.lat], polys));
+  // One of the three largest patches there with the Likely galamsey label, a different one each week, so the
+  // picture shows what the post is about and the same city's card does not repeat its picture
+  const candidates = active.filter(pictured).filter((p) => p.likely_galamsey && inside([p.lon, p.lat], polys)).slice(0, 3);
+  const largest = candidates.length ? pick(candidates, ci) : undefined;
   const haText = num(Math.round(ha));
   posts.push({
     slug: c.slug,
     kind: 'City water',
     title: `From this to your tap in ${c.city}`,
     alt: `${haText} hectares of land cleared in 12 months on the land that drains to ${c.name}.${largest ? ` A satellite picture of one cleared patch upstream, ${placeName(largest)}, with a line following the water from it` : ' A line follows the water'} down ${c.river.replace('The ', 'the ')} to ${c.plant} and to taps in ${c.city}.`,
-    text: `${c.lead} In the last 12 months, satellites saw ${haText} hectares of land cleared on the land that drains to it.\n\nWhen it rains, mud from cleared land and mining pits washes into the river, and the water gets harder and dearer to treat.`,
+    text: pick([
+      `${c.lead} In the last 12 months, satellites saw ${haText} hectares of land cleared on the land that drains to it.\n\nWhen it rains, mud from cleared land and mining pits washes into the river, and the water gets harder and dearer to treat.`,
+      `${haText} hectares of land cleared in 12 months, all on land that drains to ${c.name}. ${c.tap}.\n\nWhen it rains, mud from that land washes into the river the plant draws from.`,
+      `Water for taps in ${c.city} is treated at ${c.name}. On the land that drains to it, satellites saw ${haText} hectares of land cleared in the last 12 months.\n\nMore mud in the river makes the water harder and dearer to treat.`,
+    ], ci),
     reply: `Every water plant downstream of the clearing, with the map: ${SITE}/#mud`,
     render: () => waterPost({
       title: `From this to your tap in ${c.city}`, big: haText,
@@ -81,7 +95,7 @@ for (const c of CITIES) {
       river: c.river, plant: c.plant, tap: c.tap, picture: largest?.chips.after,
     }),
   });
-}
+});
 
 // 3. The average rate, as football pitches a day (an average of our own 12-month total, not a claim that it is rising)
 if (summary && summary.total_ha > 0) {
@@ -104,30 +118,32 @@ That is ${num(summary.total_ha)} hectares in the 12 months leading up to ${dataD
   });
 }
 
-// 4. One district: its total and its three largest pictured patches (the district with the most clearing)
-const topDistrict = summary?.top_districts[0];
-if (topDistrict) {
-  const name = tidyDistrict(topDistrict.district);
-  const inDistrict = active.filter(pictured).filter((p) => p.district === topDistrict.district).slice(0, 3);
-  if (inDistrict.length === 3) {
-    posts.push({
-      slug: 'district',
-      kind: 'District spotlight',
-      title: `District spotlight: ${name}`,
-      alt: `${num(topDistrict.ha)} hectares of land cleared in 12 months in ${name}. Satellite pictures of its three largest cleared patches: ${inDistrict.map((p) => placeName(p)).join(', ')}.`,
-      text: `${name} has more cleared land than any other district we track: ${num(topDistrict.ha)} hectares in 12 months, about ${num(pitches(topDistrict.ha))} football pitches.
+// 4. One district: its total and its three largest pictured patches. It rotates through the five districts with the
+// most clearing, one a week, so the spotlight moves around the belt
+const districtsReady = (summary?.top_districts ?? []).slice(0, 5)
+  .map((d, rank) => ({ ...d, rank, inDistrict: active.filter(pictured).filter((p) => p.district === d.district).slice(0, 3) }))
+  .filter((d) => d.inDistrict.length === 3);
+if (districtsReady.length) {
+  const d = pick(districtsReady);
+  const name = tidyDistrict(d.district);
+  const standing = d.rank === 0 ? 'the district with the most cleared land' : `one of the ${count(Math.min(5, districtsReady.length))} districts with the most cleared land`;
+  posts.push({
+    slug: 'district',
+    kind: 'District spotlight',
+    title: `District spotlight: ${name}`,
+    alt: `${num(d.ha)} hectares of land cleared in 12 months in ${name}. Satellite pictures of its three largest cleared patches: ${d.inDistrict.map((p) => placeName(p)).join(', ')}.`,
+    text: `${name} is ${standing} we track: ${num(d.ha)} hectares in 12 months, about ${num(pitches(d.ha))} football pitches.
 
 These are its three largest cleared patches, seen by satellite.`,
-      reply: `Every patch in ${name}, on the map: ${SITE}/map?district=${encodeURIComponent(topDistrict.district)}`,
-      render: () => districtPost({
-        title: `${name}, the district with the most cleared land`,
-        big: `${num(topDistrict.ha)} ha`,
-        line: `cleared in the 12 months leading up to ${dataDate}`,
-        stat: `About ${num(pitches(topDistrict.ha))} football pitches`,
-        places: inDistrict.map((p) => ({ label: `${hectares(p.ha)}, ${p.near ? `near ${p.near}` : 'unnamed place'}`, after: p.chips.after })),
-      }),
-    });
-  }
+    reply: `Every patch in ${name}, on the map: ${SITE}/map?district=${encodeURIComponent(d.district)}`,
+    render: () => districtPost({
+      title: `${name}, ${standing}`,
+      big: `${num(d.ha)} ha`,
+      line: `cleared in the 12 months leading up to ${dataDate}`,
+      stat: `About ${num(pitches(d.ha))} football pitches`,
+      places: d.inDistrict.map((p) => ({ label: `${hectares(p.ha)}, ${p.near ? `near ${p.near}` : 'unnamed place'}`, after: p.chips.after })),
+    }),
+  });
 }
 
 // 5. The licence on the cleared land, as one split bar
@@ -177,6 +193,32 @@ ${LICENCE_SENTENCE[place.licence]}`,
       before: place.chips.before, after: place.chips.after,
     }),
   });
+}
+
+// 7. New clearing: the largest pictured patch satellites first saw in the last two (or four) months. New land every week.
+if (summary) {
+  // New places often wait a while for a cloud-free picture, so look back four months when two find nothing
+  const within = (days: number) => active.filter(pictured).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= Date.parse(summary.data_date) - days * 864e5)[0];
+  const months = within(60) ? 'two' : 'four';
+  const fresh = within(60) ?? within(120);
+  if (fresh) {
+    const where = placeName(fresh);
+    posts.push({
+      slug: 'new',
+      kind: 'New clearing',
+      title: `New clearing ${where}`,
+      alt: `Two satellite pictures of the same land ${where}. Before, ${longDate(fresh.chips.before.date)}. After, ${longDate(fresh.chips.after.date)}: newly bare ground.`,
+      text: `${hectares(fresh.ha)} of land cleared ${where}, first seen by satellite on ${longDate(fresh.first_seen)}.
+
+It is the largest patch satellites first saw in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+      reply: `Before and after up close: ${SITE}/places/${fresh.id}/`,
+      render: () => townPost({
+        headline: `${hectares(fresh.ha)} of land newly cleared ${where}`,
+        sub: `First seen by satellite on ${longDate(fresh.first_seen)}, the largest new patch in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+        before: fresh.chips.before, after: fresh.chips.after,
+      }),
+    });
+  }
 }
 
 export const sharePosts = posts;
