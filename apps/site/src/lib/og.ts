@@ -119,6 +119,8 @@ export async function waterPost(o: { title: string; big: string; line: string; r
   // The river and its three stops drawn as one SVG, so the line runs exactly through every circle's centre
   const STOPS = [130, 300, 470];
   const track = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="60" height="500"><rect x="25" y="0" width="10" height="${STOPS[2]}" fill="${RIVER}"/>${
+    // One small chevron midway between stops, pointing downstream: the water flows from the picture to the tap
+    [0, ...STOPS.slice(0, 2)].map((y, i) => (y + STOPS[i]) / 2).map((y) => `<path d="M17 ${y - 7} L30 ${y + 6} L43 ${y - 7}" fill="none" stroke="${RIVER}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`).join('')}${
     STOPS.map((y, i) => `<circle cx="30" cy="${y}" r="20" fill="${i === 2 ? RIVER : PAPER}" stroke="${RIVER}" stroke-width="8"/>`).join('')}</svg>`);
   const stop = (title: string, sub: string, y: number) =>
     h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: LINE + 50, top: y - 30, width: 640 },

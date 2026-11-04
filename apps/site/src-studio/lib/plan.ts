@@ -18,7 +18,8 @@ function isoWeek(d: Date) {
   return Math.ceil(((t.getTime() - start.getTime()) / 864e5 + 1) / 7);
 }
 
-export interface Slot { date: string; day: string; post: Post | null; title: string; news: boolean; pitch: boolean }
+// `post` is what to post that day. For a day ahead it is a preview, and `note` says what may still change
+export interface Slot { date: string; day: string; post: Post | null; title: string; news: boolean; pitch: boolean; note: string }
 
 // The next `days` days from `from`, one slot per weekday. `stories` are this week's news posts with their dates
 export function plan(from: Date, days: number, stories: { date: string; post: Post }[]): Slot[] {
@@ -47,12 +48,20 @@ export function plan(from: Date, days: number, stories: { date: string; post: Po
         news = true;
       }
     }
-    if (!news && post && d.getTime() >= nextRun && NAMES_A_PLACE.has(slug)) title = `${post.kind}, picked from Monday's new data`;
+    const newWeek = d.getTime() >= nextRun;
+    let note = '';
+    if (news && i > 0) note = `The studio picks the story that morning. If no story names a place we cover, post ${FALLBACK_NAME[wd]}${newWeek ? ", made from Monday's new data" : ' below'}.`;
+    else if (newWeek && post && NAMES_A_PLACE.has(slug)) {
+      title = `${post.kind}, picked from Monday's new data`;
+      note = 'It is made from the data that arrives on Monday morning, so it shows here from then.';
+    } else if (newWeek && i > 0) note = "Shown with this week's numbers. Monday's update may change them a little.";
     if (!post && !news) continue;
     out.push({
       date: d.toISOString().slice(0, 10),
       day: d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }),
-      post: i === 0 || !news ? post : null,
+      // Days in a new data week that name a place have nothing to show yet
+      post: newWeek && (NAMES_A_PLACE.has(slug)) ? (i === 0 ? post : null) : post,
+      note,
       title,
       news,
       // The monthly email goes with the first posting day of each month

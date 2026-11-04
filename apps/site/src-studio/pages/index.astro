@@ -75,9 +75,18 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
 
     <section id="week">
       <h2>Coming up</h2>
+      <p class="note">Tap a day to see its post.</p>
       <ol class="slots">
         {next.map((s) => (
-          <li><span class="day">{s.day}</span><span>{s.title}</span>{s.pitch && <span class="extra">Plus this month's email</span>}</li>
+          <li>
+            <details class="day-item">
+              <summary><span class="day">{s.day}</span><span class="what">{s.title}</span>{s.pitch && <span class="extra">Plus this month's email</span>}</summary>
+              <div class="day-body">
+                {s.note && <p class="note">{s.note}</p>}
+                {s.post && <div class="preview"><PostCard post={s.post} level="h4" idPrefix={`${s.date}-`} /></div>}
+              </div>
+            </details>
+          </li>
         ))}
       </ol>
     </section>
@@ -102,7 +111,7 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
       <details>
         <summary>Every post this week ({sharePosts.length})</summary>
         <p class="note">All kinds of post, made from Monday's data. Use one if a planned post does not suit the day.</p>
-        <div class="cards">{sharePosts.map((p) => <PostCard post={p} heading={p.title} level="h4" />)}</div>
+        <div class="cards">{sharePosts.map((p) => <PostCard post={p} heading={p.title} level="h4" idPrefix="all-" />)}</div>
       </details>
 
       <details id="email">
@@ -181,10 +190,21 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
     .extra { color: var(--signal); font-weight: 700; margin: 12px 0 0; }
     .slots .extra { margin: 0; }
     .slots { list-style: none; padding: 0; margin: 0; max-width: 70ch; }
-    .slots li { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .slots li { border-bottom: 1px solid var(--line); }
+    .day-item { border: 0; }
+    .day-item summary { display: grid; gap: 2px; padding: 12px 0 12px 28px; position: relative; list-style: none; font-weight: 400; }
+    .day-item summary::-webkit-details-marker { display: none; }
+    /* A plain chevron that turns when the day is open */
+    .day-item summary::before { content: ''; position: absolute; left: 4px; top: 19px; width: 8px; height: 8px;
+      border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(-45deg); transition: transform 160ms ease-out; }
+    .day-item[open] summary::before { transform: rotate(45deg); }
+    @media (prefers-reduced-motion: reduce) { .day-item summary::before { transition: none; } }
+    .day-item[open] { padding-bottom: 0; }
+    .day-body { padding: 0 0 20px 28px; }
+    .preview { max-width: 440px; }
     .day { font-weight: 700; }
-    details { border-top: 1px solid var(--line); }
-    details:last-of-type { border-bottom: 1px solid var(--line); }
+    #more details { border-top: 1px solid var(--line); }
+    #more details:last-of-type { border-bottom: 1px solid var(--line); }
     summary { cursor: pointer; font-weight: 700; padding: 14px 0; min-height: 44px; }
     details[open] { padding-bottom: 24px; }
     .note { color: var(--muted); max-width: 70ch; margin: 0 0 16px; }

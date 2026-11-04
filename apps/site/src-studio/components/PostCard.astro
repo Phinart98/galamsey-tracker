@@ -2,8 +2,8 @@
 // One ready post: the picture, a button to save it, and the words to copy, in the order they are used on X
 import type { Post } from '../../src/lib/share';
 
-interface Props { post: Post; heading?: string; level?: 'h3' | 'h4'; textLabel?: string }
-const { post, heading, level = 'h3', textLabel = '1. The post' } = Astro.props;
+interface Props { post: Post; heading?: string; level?: 'h2' | 'h3' | 'h4'; textLabel?: string; idPrefix?: string }
+const { post, heading, level = 'h3', textLabel = '1. The post', idPrefix = '' } = Astro.props;
 const H = level;
 const fields: [string, string][] = [
   [textLabel, post.text],
@@ -11,7 +11,7 @@ const fields: [string, string][] = [
   ['3. Your first reply to it, with the link', post.reply],
 ];
 ---
-<article id={post.slug} class="card">
+<article id={`${idPrefix}${post.slug}`} class="card">
   {heading && <H class="card-title">{heading}</H>}
   <a href={`/${post.slug}.jpg`} class="pic"><img src={`/${post.slug}.jpg`} alt={post.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
   <p class="save"><a class="btn" href={`/${post.slug}.jpg`} download={`galamsey-${post.slug}.jpg`}>Save the picture</a></p>
