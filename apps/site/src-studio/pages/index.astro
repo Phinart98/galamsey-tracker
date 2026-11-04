@@ -6,6 +6,7 @@ import { summary, lastSuccessDate } from '../../src/lib/data';
 import { longDate } from '../../src/lib/format';
 import { plan } from '../lib/plan';
 import { templates } from '../lib/templates';
+import { news } from '../lib/news';
 
 const today = new Date();
 const slots = plan(new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())), 14);
@@ -29,20 +30,52 @@ const postTitle = new Map(sharePosts.map((p) => [p.slug, p.title]));
 <body>
   <header class="top">
     <div class="wrap">
-      <p class="brand">Galamsey Tracker studio</p>
+      <h1 class="brand">Galamsey Tracker studio</h1>
       <button class="icon theme" type="button" data-theme-toggle aria-label="Switch to dark mode">
         <svg class="moon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
         <svg class="sun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <nav aria-label="Studio"><a href="#next">Next posts</a><a href="#posts">All posts</a><a href="#templates">Templates</a><a href="#how">How we post</a></nav>
+      <nav aria-label="Studio"><a href="#news">News</a><a href="#next">Next posts</a><a href="#posts">All posts</a><a href="#templates">Templates</a><a href="#how">How we post</a></nav>
     </div>
   </header>
   <main class="wrap">
     <p class="lede">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}. </>}{lastSuccessDate && <>Last weekly update: {longDate(lastSuccessDate)}. </>}This page is not linked or listed anywhere. Keep the address to yourself.</p>
 
+    <section id="news">
+      <h2>News this week</h2>
+      <p>Galamsey stories from the last seven days, newest first, checked every morning. Where a story names a town or district we cover, its satellite pictures are ready to post as a quote of the story.</p>
+      {news.length === 0 && <p>No stories found today. The news feeds may be down; the list refreshes tomorrow morning.</p>}
+      <ul class="news">
+        {news.map((n) => (
+          <li>
+            <a href={n.link} rel="noreferrer">{n.title}</a>
+            <span class="meta">{n.source}, {new Date(n.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })}</span>
+            {n.match && <a class="pitch" href={`#${n.match.post.slug}`}>Names {n.match.name}: ready post below</a>}
+          </li>
+        ))}
+      </ul>
+      {news.some((n) => n.match) && (
+        <div class="posts">
+          {news.flatMap((n) => (n.match ? [n.match.post] : [])).map((p) => (
+            <article id={p.slug} class="post">
+              <h3>{p.title}</h3>
+              <a href={`/${p.slug}.jpg`}><img src={`/${p.slug}.jpg`} alt={p.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
+              <p><a class="btn" href={`/${p.slug}.jpg`} download={`galamsey-${p.slug}.jpg`}>Save the image</a></p>
+              {[['Post (quote the story with it)', p.text], ['Image description (alt text)', p.alt], ['First reply, with the link', p.reply]].map(([label, value]) => (
+                <div class="copy">
+                  <div class="head"><h4>{label}</h4><button type="button" class="btn" data-copy>Copy</button></div>
+                  <p data-text>{value}</p>
+                </div>
+              ))}
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+
     <section id="next">
-      <h1>Next posts</h1>
-      <p>Post from @GalamseyTracker at about 19:00 GMT. On the best post of the week, quote it from your own account with one line in your own words. If galamsey news breaks about a place we cover, ask Claude for a "One place" post instead.</p>
+      <h2>Next posts</h2>
+      <p>Post from @GalamseyTracker at about 13:00 GMT. On the best post of the week, quote it from your own account with one line in your own words. If the news below names a place we cover, post its ready "In the news" picture instead.</p>
       <ol class="slots">
         {slots.map((s) => (
           <li>
@@ -64,7 +97,11 @@ const postTitle = new Map(sharePosts.map((p) => [p.slug, p.title]));
             <h3>{p.title}</h3>
             <a href={`/${p.slug}.jpg`}><img src={`/${p.slug}.jpg`} alt={p.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
             <p><a class="btn" href={`/${p.slug}.jpg`} download={`galamsey-${p.slug}.jpg`}>Save the image</a></p>
-            {[['Post', p.text], ['Image description (alt text)', p.alt], ['First reply, with the link', p.reply]].map(([label, value]) => (
+            {[['Post', p.text], ['Image description (alt text)', p.alt], ['First reply, with the link', p.reply], ['Instagram and TikTok caption', `${p.text}
+
+Link in bio: galamseytracker.org
+
+#galamsey #Ghana #StopGalamsey #satellite`]].map(([label, value]) => (
               <div class="copy">
                 <div class="head"><h4>{label}</h4><button type="button" class="btn" data-copy>Copy</button></div>
                 <p data-text>{value}</p>
@@ -142,7 +179,7 @@ const postTitle = new Map(sharePosts.map((p) => [p.slug, p.title]));
     body { background: var(--paper); color: var(--ink); }
     .top { border-bottom: 1px solid var(--line); }
     .top .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
-    .brand { margin: 0; font-weight: 800; flex: 1; }
+    .brand { margin: 0; font-weight: 800; font-size: 1.0625rem; flex: 1; }
     .icon { font: inherit; color: var(--ink); background: transparent; cursor: pointer; display: inline-flex; align-items: center;
             justify-content: center; min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; padding: 0; }
     .icon:hover { border-color: var(--ink); }
@@ -157,9 +194,12 @@ const postTitle = new Map(sharePosts.map((p) => [p.slug, p.title]));
     nav { display: flex; gap: 20px; flex-wrap: wrap; }
     nav a { color: var(--ink); }
     .lede { color: var(--muted); margin: 24px 0; }
-    h1 { margin: 0 0 8px; }
+    #news h2, #next h2 { margin-top: 0; }
     section { margin-bottom: 56px; max-width: 70ch; }
-    #posts, #templates { max-width: none; }
+    #posts, #templates, #news { max-width: none; }
+    .news { list-style: none; padding: 0; margin: 16px 0 0; max-width: 70ch; }
+    .news li { display: grid; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .meta { color: var(--muted); font-size: 0.9375rem; }
     .templates { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px 32px; margin-top: 24px; }
     .tpl h3 { margin: 0 0 6px; }
     .use { margin: 0; color: var(--muted); font-size: 0.9375rem; }

@@ -1,0 +1,66 @@
+name: Daily posting studio
+
+# Rebuilds only the private posting studio every morning, so its "News this week" list and the ready posts for
+# places in the news are fresh before the 13:00 GMT posting slot. Uses last Monday's data. The weekly update
+# also rebuilds the studio after its run.
+on:
+  schedule:
+    - cron: "17 11 * * *"  # Every day 11:17 UTC (off the hour, GitHub delays on-the-hour schedules)
+  workflow_dispatch:
+
+concurrency:
+  group: studio
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  STATE_TAG: pipeline-state
+  STATE_FILE: pipeline-state.tar.gz
+  PICTURES_PROJECT: galamsey-tracker-pictures
+
+jobs:
+  studio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Skip if the studio is not set up
+        id: check
+        env:
+          STUDIO_PROJECT: ${{ secrets.STUDIO_PROJECT }}
+        run: |
+          if [ -z "$STUDIO_PROJECT" ]; then echo "No STUDIO_PROJECT secret, studio skipped"; echo "go=false" >> "$GITHUB_OUTPUT"; else echo "go=true" >> "$GITHUB_OUTPUT"; fi
+
+      # Only the place list is needed. The pictures are read from the pictures site
+      - name: Get the place list from the last weekly run
+        if: steps.check.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP"
+          mkdir -p pipeline/out
+          tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json'
+          ls -la pipeline/out/places
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.go == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/site/package-lock.json
+
+      - name: Build and publish the posting studio
+        if: steps.check.outputs.go == 'true'
+        working-directory: apps/site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CHIPS_BASE_URL: https://${{ env.PICTURES_PROJECT }}.pages.dev
+          STUDIO_PROJECT: ${{ secrets.STUDIO_PROJECT }}
+        run: |
+          npm ci
+          npm run build:studio
+          npx --yes wrangler@4 pages deploy dist-studio --project-name "$STUDIO_PROJECT" --branch main --commit-dirty=true
