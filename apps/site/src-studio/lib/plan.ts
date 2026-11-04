@@ -6,67 +6,81 @@ import { sharePosts, type Post } from '../../src/lib/share';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba'];
 const FRIDAY = ['rate', 'licence'];
-const NEWS_DAYS: Record<number, string> = { 2: 'new', 4: 'district' }; // weekday: the post when there is no fresh story
+const BACKUP: Record<number, string> = { 2: 'new', 4: 'district' }; // news days: the post when no story fits
+const BACKUP_NAME: Record<number, string> = { 2: 'the newest clearing', 4: 'a district spotlight' };
 const NAMES_A_PLACE = new Set(['town', 'district', 'new']);
-const FALLBACK_NAME: Record<number, string> = { 2: 'the newest clearing', 4: 'a district spotlight' };
 const FRESH_HOURS = 48; // a story older than this is not worth quoting
+const DAY = 864e5;
 
 function isoWeek(d: Date) {
   const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
   t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
   const start = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
-  return Math.ceil(((t.getTime() - start.getTime()) / 864e5 + 1) / 7);
+  return Math.ceil(((t.getTime() - start.getTime()) / DAY + 1) / 7);
 }
 
-// `post` is what to post that day. For a day ahead it is a preview, and `note` says what may still change
-export interface Slot { date: string; day: string; post: Post | null; title: string; news: boolean; pitch: boolean; note: string }
+// True for the first Monday-to-Friday day of its month: the day of the monthly email
+function firstWeekday(d: Date) {
+  let x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+  while (x.getUTCDay() === 0 || x.getUTCDay() === 6) x = new Date(x.getTime() + DAY);
+  return x.getTime() === d.getTime();
+}
 
-// The next `days` days from `from`, one slot per weekday. `stories` are this week's news posts with their dates
-export function plan(from: Date, days: number, stories: { date: string; post: Post }[]): Slot[] {
+export interface Story { date: string; title: string; link: string; source: string; post: Post }
+export interface Slot {
+  date: string;
+  day: string;
+  status: 'done' | 'today' | 'ahead';
+  title: string;
+  post: Post | null; // what to post; null when it is made from data that has not arrived yet
+  story: Story | null; // on a news day: the story to quote
+  note: string; // what may still change, in one sentence
+  email: boolean;
+}
+
+export const mondayOf = (d: Date) => new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * DAY);
+
+// The five weekdays from `monday`, seen from `today` (both at 00:00 UTC). `stories` are news posts, newest first
+export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
   const bySlug = new Map(sharePosts.map((p) => [p.slug, p]));
-  const out: Slot[] = [];
-  // The weekly run on the next Monday brings new data, and posts that name a place are picked from it then
-  const nextRun = from.getTime() + (((8 - from.getUTCDay()) % 7) || 7) * 864e5;
-  const fresh = stories.filter((s) => from.getTime() + 864e5 - Date.parse(s.date) <= FRESH_HOURS * 3600e3);
-  for (let i = 0; i < days; i++) {
-    const d = new Date(from.getTime() + i * 864e5);
+  // The weekly run on the next Monday brings new data. Posts that name a place are made from it then
+  const nextRun = today.getTime() + (((8 - today.getUTCDay()) % 7) || 7) * DAY;
+  const fresh = stories.filter((s) => today.getTime() + DAY - Date.parse(s.date) <= FRESH_HOURS * 3600e3);
+  return [0, 1, 2, 3, 4].map((i): Slot => {
+    const d = new Date(monday.getTime() + i * DAY);
     const wd = d.getUTCDay();
-    if (wd === 0 || wd === 6) continue;
+    const status = d.getTime() < today.getTime() ? 'done' : d.getTime() === today.getTime() ? 'today' : 'ahead';
     const w = isoWeek(d);
-    const slug = wd === 1 ? 'town' : wd === 3 ? WATER[w % WATER.length] : wd === 5 ? FRIDAY[w % FRIDAY.length] : NEWS_DAYS[wd];
-    let post = bySlug.get(slug) ?? null;
-    let title = post?.title ?? '';
-    let news = false;
-    if (wd in NEWS_DAYS) {
-      if (i === 0 && fresh.length) {
-        // Today: the newest story that names a place we cover
-        post = fresh[0].post;
-        title = `In the news: ${post.title.replace(/^One place: /, '')}`;
-        news = true;
-      } else if (i > 0) {
-        title = `A place in today's news (if there is none: ${FALLBACK_NAME[wd]})`;
-        news = true;
-      }
-    }
-    const newWeek = d.getTime() >= nextRun;
+    const slug = wd === 1 ? 'town' : wd === 3 ? WATER[w % WATER.length] : wd === 5 ? FRIDAY[w % FRIDAY.length] : BACKUP[wd];
+    const newData = d.getTime() >= nextRun;
+    const known = bySlug.get(slug);
+    let post = newData && NAMES_A_PLACE.has(slug) ? null : known ?? null;
+    let title = post?.title ?? `${known?.kind ?? 'Post'}, made from Monday's new data`;
+    let story: Story | null = null;
     let note = '';
-    if (news && i > 0) note = `The studio picks the story that morning. If no story names a place we cover, post ${FALLBACK_NAME[wd]}${newWeek ? ", made from Monday's new data" : ' below'}.`;
-    else if (newWeek && post && NAMES_A_PLACE.has(slug)) {
-      title = `${post.kind}, picked from Monday's new data`;
+    if (wd in BACKUP) {
+      title = `A place in the news, or ${BACKUP_NAME[wd]}`;
+      if (status === 'today' && fresh.length) {
+        story = fresh[0];
+        post = story.post;
+        title = `In the news: ${post.title.replace(/^One place: /, '')}`;
+      } else if (status === 'today') {
+        note = `No story from the last two days names a place we cover, so post ${BACKUP_NAME[wd]}.`;
+      } else if (status === 'ahead') {
+        note = `Decided that morning from the news. If no story names a place we cover, post ${BACKUP_NAME[wd]}${post ? ', shown here' : ", made from Monday's new data"}.`;
+      }
+    } else if (!post) {
       note = 'It is made from the data that arrives on Monday morning, so it shows here from then.';
-    } else if (newWeek && i > 0) note = "Shown with this week's numbers. Monday's update may change them a little.";
-    if (!post && !news) continue;
-    out.push({
+    } else if (newData) {
+      note = "Shown with this week's numbers. Monday's update may change them a little.";
+    }
+    // A past day only says what kind of post it was: the rotation has moved on, so its name could be wrong
+    if (status === 'done') { title = wd in BACKUP ? `A place in the news, or ${BACKUP_NAME[wd]}` : known?.kind ?? title; post = null; note = ''; story = null; }
+    return {
       date: d.toISOString().slice(0, 10),
       day: d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }),
-      // Days in a new data week that name a place have nothing to show yet
-      post: newWeek && (NAMES_A_PLACE.has(slug)) ? (i === 0 ? post : null) : post,
-      note,
-      title,
-      news,
-      // The monthly email goes with the first posting day of each month
-      pitch: d.getUTCDate() <= 7 && !out.some((s) => s.date.slice(0, 7) === d.toISOString().slice(0, 7)),
-    });
-  }
-  return out;
+      status, title, post, story, note,
+      email: firstWeekday(d),
+    };
+  });
 }

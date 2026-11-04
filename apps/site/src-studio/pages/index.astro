@@ -1,27 +1,27 @@
 ---
 // The private posting studio. Not linked from the site, noindex, robots disallow. Rebuilt every morning.
-// It answers one question first: what do I post today? Everything else folds away below.
+// One rule keeps it clear: every post on the page belongs to a day. This week's five days, then next week's.
 import '../../src/styles/global.css';
-import { sharePosts } from '../../src/lib/share';
 import { summary } from '../../src/lib/data';
 import { longDate } from '../../src/lib/format';
-import { plan } from '../lib/plan';
+import { mondayOf, week, type Story } from '../lib/plan';
 import { templates } from '../lib/templates';
 import { news } from '../lib/news';
 import PostCard from '../components/PostCard.astro';
 
+const DAY = 864e5;
 const now = new Date();
-const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-const stories = news.flatMap((n) => (n.match ? [{ date: n.date, post: n.match.post }] : []));
-const slots = plan(from, 14, stories);
-const todayKey = from.toISOString().slice(0, 10);
-const today = slots[0]?.date === todayKey ? slots[0] : null;
-const next = slots.filter((s) => s !== today).slice(0, 5);
-const todayName = from.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
-// Places in the news that are not already today's post: ready if a story breaks and is worth quoting
-const otherNews = stories.map((s) => s.post).filter((p) => p !== today?.post);
-const words = templates();
-const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+const stories: Story[] = news.flatMap((n) => (n.match ? [{ date: n.date, title: n.title, link: n.link, source: n.source, post: n.match.post }] : []));
+// On a weekend "this week" is the coming one
+const weekend = today.getUTCDay() === 0 || today.getUTCDay() === 6;
+const thisMonday = weekend ? new Date(mondayOf(today).getTime() + 7 * DAY) : mondayOf(today);
+const weeks = [
+  { id: 'this-week', name: weekend ? 'Next week' : 'This week', days: week(thisMonday, today, stories) },
+  { id: 'next-week', name: weekend ? 'The week after' : 'Next week', days: week(new Date(thisMonday.getTime() + 7 * DAY), today, stories) },
+];
+const email = templates().find((t) => t.slug === 'email');
+const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -48,93 +48,68 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
   </header>
 
   <main class="wrap">
-    <section id="today" class="today">
-      <h1>{todayName}</h1>
-      {today?.post ? (
-        <>
-          <p class="when">Post this at 13:00 from <strong>@GalamseyTracker</strong>{today.news && <>, as a quote of the news story it is about</>}.</p>
-          <div class="today-grid">
-            <PostCard post={today.post} heading={today.title} level="h2" />
-            <aside class="steps">
-              <h2>How to post it</h2>
-              <ol>
-                <li>Save the picture.</li>
-                <li>In X, start a post{today.news && <> by quoting the story's post from the newsroom's account</>}. Paste the post and add the picture.</li>
-                <li>Tap "Add description" on the picture and paste the image description.</li>
-                <li>Post it, then reply to your own post with the first reply. The link goes there, never in the post.</li>
-              </ol>
-              {today.pitch && <p class="extra">Also today: this month's email to one journalist or group. <a href="#email">The email template</a>.</p>}
-              {today.news && <p class="extra">Find the newsroom's post of the story on X by searching its headline. If you cannot find it, post without the quote.</p>}
-            </aside>
-          </div>
-        </>
-      ) : (
-        <p class="when">No post today. Weekends are off. {next[0] && <>Next: {next[0].day}, {next[0].title}.</>}</p>
-      )}
-    </section>
+    <h1>{todayName}</h1>
+    <p class="rule">One post every weekday at 13:00 from <strong>@GalamseyTracker</strong>. Tap a day to see its post.{weekend && <> No post today: weekends are off.</>}</p>
 
-    <section id="week">
-      <h2>Coming up</h2>
-      <p class="note">Tap a day to see its post.</p>
-      <ol class="slots">
-        {next.map((s) => (
-          <li>
-            <details class="day-item">
-              <summary><span class="day">{s.day}</span><span class="what">{s.title}</span>{s.pitch && <span class="extra">Plus this month's email</span>}</summary>
-              <div class="day-body">
-                {s.note && <p class="note">{s.note}</p>}
-                {s.post && <div class="preview"><PostCard post={s.post} level="h4" idPrefix={`${s.date}-`} /></div>}
-              </div>
-            </details>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    <section id="more">
-      <h2>When you need more</h2>
-
-      <details>
-        <summary>Galamsey news this week ({news.length} stories{otherNews.length ? `, ${otherNews.length} with a ready picture` : ''})</summary>
-        <p class="note">Checked every morning. Stories that name a town or district we cover come with that place's satellite picture, ready to quote the story with. Check the story is about that place and not another place of the same name.</p>
-        {otherNews.length > 0 && <div class="cards">{otherNews.map((p) => <PostCard post={p} heading={p.title.replace(/^One place: /, 'In the news: ')} level="h4" textLabel="1. Your quote of the story" />)}</div>}
-        <ul class="news">
-          {news.map((n) => (
-            <li>
-              <a href={n.link} rel="noreferrer">{n.title}</a>
-              <span class="meta">{n.source}, {shortDate(n.date)}{n.match && <>. Names {n.match.name}</>}</span>
+    {weeks.map((w) => (
+      <section id={w.id}>
+        <h2>{w.name}</h2>
+        <ol class="days">
+          {w.days.map((s) => (
+            <li class:list={['day', s.status]}>
+              {s.status === 'done' ? (
+                <div class="row"><span class="when">{s.day}<span class="past">Past</span></span><span class="what">{s.title}</span>{s.email && <a class="extra" href="#email">This month's email, if not sent yet</a>}</div>
+              ) : (
+              <details open={s.status === 'today'}>
+                <summary>
+                  <span class="when">{s.day}{s.status === 'today' && <span class="tag">Today</span>}{s.status === 'done' && <span class="past">Past</span>}</span>
+                  <span class="what">{s.title}</span>
+                  {s.email && <span class="extra">Plus this month's email</span>}
+                </summary>
+                <div class="body">
+                  {s.status === 'today' && s.post && (
+                    <div class="steps">
+                      <p class="steps-title">How to post it</p>
+                      <ol>
+                        <li>Save the picture.</li>
+                        <li>{s.story ? <>Find the story's post on X (search its headline) and tap Quote.</> : <>In X, start a new post.</>} Paste the post and add the picture.</li>
+                        <li>Tap "Add description" on the picture and paste the image description.</li>
+                        <li>Post it. Then reply to your own post with the first reply: the link goes there, never in the post.</li>
+                      </ol>
+                    </div>
+                  )}
+                  {s.note && <p class="note">{s.note}</p>}
+                  {s.email && <p class="note">Also send this month's email to one journalist or group: <a href="#email">the email template</a>.</p>}
+                  {s.post && <div class="card-wrap"><PostCard post={s.post} story={s.story} level="h4" idPrefix={`${s.date}-`} /></div>}
+                </div>
+              </details>
+              )}
             </li>
           ))}
-        </ul>
-      </details>
+        </ol>
+      </section>
+    ))}
 
-      <details>
-        <summary>Every post this week ({sharePosts.length})</summary>
-        <p class="note">All kinds of post, made from Monday's data. Use one if a planned post does not suit the day.</p>
-        <div class="cards">{sharePosts.map((p) => <PostCard post={p} heading={p.title} level="h4" idPrefix="all-" />)}</div>
-      </details>
-
+    <section id="extras">
       <details id="email">
-        <summary>Email template, once a month</summary>
-        <p class="note">To one journalist, NGO or researcher whose work fits. Change the first line to say why you picked them.</p>
-        {words.filter((t) => t.slug === 'email').flatMap((t) => t.fields).map(([label, value]) => (
+        <summary>The monthly email</summary>
+        <p class="note">Once a month, to one journalist, NGO or researcher whose work fits. Change the first line to say why you picked them.</p>
+        {email?.fields.map(([label, value]) => (
           <div class="copy"><div class="head"><span class="label">{label}</span><button type="button" class="btn" data-copy>Copy</button></div><p data-text>{value}</p></div>
         ))}
       </details>
-
       <details>
-        <summary>The plan, in short</summary>
+        <summary>How the plan works</summary>
         <ul class="plan">
           <li><strong>Goal:</strong> the satellite evidence reaches people who can act on it: city readers, the diaspora, journalists and NGOs. Not retweets for their own sake.</li>
-          <li><strong>Where:</strong> X only for now. @GalamseyTracker posts, your own account quotes the best post of the week with one line in your words.</li>
-          <li><strong>When:</strong> one post every weekday at 13:00 GMT. Monday a town, Wednesday a city's water, Friday the big numbers. Tuesday and Thursday a place in the news, because the numbers only change on Mondays.</li>
+          <li><strong>Where:</strong> X only for now. @GalamseyTracker posts. Your own account quotes the best post of the week with one line in your words.</li>
+          <li><strong>The week:</strong> Monday a town, Wednesday a city's water, Friday the big numbers. Tuesday and Thursday a place in the news, picked that morning, because the numbers only change on Mondays.</li>
           <li><strong>Growth:</strong> a new account is seen mostly through others. Quoting the newsrooms' galamsey stories with the satellite picture of that place puts it in front of their readers.</li>
           <li><strong>Every post:</strong> one picture, one true fact, no question to readers, the link in the first reply, no blame and no names. "Likely galamsey" is our guess.</li>
-          <li><strong>Judge it after four weeks:</strong> followers, views per post, and visits from X in Cloudflare Web Analytics. If news posts do better, post more of them.</li>
+          <li><strong>Judge it after four weeks:</strong> followers, views per post, and visits from X in Cloudflare Web Analytics.</li>
         </ul>
       </details>
-
-      <p class="foot">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}. </>}This page is private. Keep the address to yourself.</p>
+      <p class="foot">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}, and the news checked this morning. </>}This page is private. Keep the address to yourself.</p>
     </section>
   </main>
 
@@ -149,7 +124,7 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
       label();
     }));
     // A link to something inside a folded section opens it
-    const open = () => { const t = location.hash && document.querySelector(location.hash); const d = t && t.closest('details'); if (d) d.open = true; };
+    const open = () => { const t = location.hash && document.querySelector(location.hash); const d = t && (t.tagName === 'DETAILS' ? t : t.closest('details')); if (d) d.open = true; };
     addEventListener('hashchange', open); open();
   </script>
   <script>
@@ -177,41 +152,47 @@ const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { d
       :root:not([data-theme='light']) .theme .sun { display: block; }
       :root:not([data-theme='light']) .theme .moon { display: none; }
     }
-    section { margin: 32px 0 48px; }
+    main { padding-top: 28px; padding-bottom: 48px; }
     h1 { margin: 0 0 6px; }
-    .when { margin: 0 0 20px; font-size: 1.0625rem; }
-    .today-grid { display: grid; gap: 24px; }
-    @media (min-width: 900px) { .today-grid { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 48px; align-items: start; } }
-    .steps { border: 2px solid var(--ink); padding: 16px 20px; order: -1; }
-    @media (min-width: 900px) { .steps { order: 0; } }
-    .steps h2 { margin: 0 0 8px; font-size: 1.125rem; }
-    .steps ol { margin: 0; padding-left: 1.25em; }
-    .steps li { margin-bottom: 8px; }
-    .extra { color: var(--signal); font-weight: 700; margin: 12px 0 0; }
-    .slots .extra { margin: 0; }
-    .slots { list-style: none; padding: 0; margin: 0; max-width: 70ch; }
-    .slots li { border-bottom: 1px solid var(--line); }
-    .day-item { border: 0; }
-    .day-item summary { display: grid; gap: 2px; padding: 12px 0 12px 28px; position: relative; list-style: none; font-weight: 400; }
-    .day-item summary::-webkit-details-marker { display: none; }
+    .rule { margin: 0 0 32px; max-width: 70ch; }
+    section { margin-bottom: 40px; }
+    h2 { margin: 0 0 8px; }
+
+    .days { list-style: none; padding: 0; margin: 0; max-width: 960px; }
+    .day { border-bottom: 1px solid var(--line); }
+    .day:first-child { border-top: 1px solid var(--line); }
+    .day.today { border: 2px solid var(--ink); margin: 6px 0; }
+    .row { display: grid; gap: 2px; padding: 14px 12px 14px 40px; }
+    .day summary { display: grid; gap: 2px; padding: 14px 12px 14px 40px; position: relative; cursor: pointer; list-style: none; min-height: 44px; }
+    .day summary::-webkit-details-marker { display: none; }
     /* A plain chevron that turns when the day is open */
-    .day-item summary::before { content: ''; position: absolute; left: 4px; top: 19px; width: 8px; height: 8px;
+    .day summary::before { content: ''; position: absolute; left: 16px; top: 22px; width: 8px; height: 8px;
       border-right: 2px solid var(--ink); border-bottom: 2px solid var(--ink); transform: rotate(-45deg); transition: transform 160ms ease-out; }
-    .day-item[open] summary::before { transform: rotate(45deg); }
-    @media (prefers-reduced-motion: reduce) { .day-item summary::before { transition: none; } }
-    .day-item[open] { padding-bottom: 0; }
-    .day-body { padding: 0 0 20px 28px; }
-    .preview { max-width: 440px; }
-    .day { font-weight: 700; }
-    #more details { border-top: 1px solid var(--line); }
-    #more details:last-of-type { border-bottom: 1px solid var(--line); }
-    summary { cursor: pointer; font-weight: 700; padding: 14px 0; min-height: 44px; }
-    details[open] { padding-bottom: 24px; }
-    .note { color: var(--muted); max-width: 70ch; margin: 0 0 16px; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px 32px; margin-bottom: 24px; }
-    .news { list-style: none; padding: 0; margin: 0; max-width: 70ch; }
-    .news li { display: grid; gap: 2px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-    .meta { color: var(--muted); font-size: 0.9375rem; }
+    .day details[open] summary::before { transform: rotate(45deg); }
+    @media (prefers-reduced-motion: reduce) { .day summary::before { transition: none; } }
+    .when { font-weight: 700; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+    .tag { font-size: 0.875rem; background: var(--ink); color: var(--paper); padding: 1px 8px; border-radius: 4px; }
+    .past { font-size: 0.875rem; font-weight: 400; color: var(--muted); }
+    .day.done .what { color: var(--muted); }
+    .extra { color: var(--signal); font-weight: 700; }
+    .body { padding: 0 12px 24px 40px; display: grid; gap: 16px; }
+    @media (min-width: 900px) {
+      .day.today .body { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); align-items: start; gap: 16px 40px; }
+      .day.today .card-wrap { grid-row: 1 / span 3; grid-column: 1; }
+      .day.today .steps, .day.today .body > .note { grid-column: 2; }
+    }
+    .card-wrap { max-width: 420px; }
+    .steps { background: var(--ink); color: var(--paper); padding: 14px 18px; }
+    .steps-title { margin: 0 0 6px; font-weight: 700; }
+    .steps ol { margin: 0; padding-left: 1.25em; }
+    .steps li { margin-bottom: 6px; }
+    .note { margin: 0; color: var(--muted); max-width: 60ch; }
+
+    #extras details { border-top: 1px solid var(--line); max-width: 960px; }
+    #extras details:last-of-type { border-bottom: 1px solid var(--line); }
+    #extras summary { cursor: pointer; font-weight: 700; padding: 14px 0; min-height: 44px; }
+    #extras details[open] { padding-bottom: 24px; }
+    #extras .note { margin-bottom: 12px; }
     .plan { max-width: 70ch; padding-left: 1.25em; margin: 0; }
     .plan li { margin-bottom: 10px; }
     .copy { display: grid; gap: 6px; margin-top: 12px; max-width: 70ch; }
