@@ -5,6 +5,7 @@ import { sharePosts } from '../../src/lib/share';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba'];
 const FRIDAY = ['new', 'district', 'rate', 'licence'];
+const NAMES_A_PLACE = new Set(['town', 'district', 'new']);
 
 function isoWeek(d: Date) {
   const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
@@ -19,6 +20,8 @@ export interface Slot { date: string; day: string; slug: string; title: string; 
 export function plan(from: Date, days = 14): Slot[] {
   const have = new Set(sharePosts.map((p) => p.slug));
   const out: Slot[] = [];
+  // The weekly run on the next Monday brings new data, and posts that name a place are picked from it then
+  const nextRun = from.getTime() + (((8 - from.getUTCDay()) % 7) || 7) * 864e5;
   for (let i = 0; i < days; i++) {
     const d = new Date(from.getTime() + i * 864e5);
     const wd = d.getUTCDay();
@@ -32,7 +35,8 @@ export function plan(from: Date, days = 14): Slot[] {
     out.push({
       date: d.toISOString().slice(0, 10),
       day: d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }),
-      slug, title: post.title,
+      slug,
+      title: d.getTime() >= nextRun && NAMES_A_PLACE.has(slug) ? `${post.kind} (picked from that Monday's new data)` : post.title,
       // A pitch email on the first posting day of each month
       pitch: d.getUTCDate() <= 7 && !out.some((s) => s.date.slice(0, 7) === d.toISOString().slice(0, 7)),
     });

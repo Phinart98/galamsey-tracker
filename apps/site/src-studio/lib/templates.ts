@@ -1,7 +1,8 @@
 // Ready words for every place the evidence can go beyond X: an email, WhatsApp, Facebook, LinkedIn, Reddit and
 // Hacker News. Every number comes from this week's data, so each template stays current with no editing.
 // Same rules as the posts: no em dashes or semicolons, never call a place illegal, never name anyone.
-import { doorstep, summary, townsNear, water } from '../../src/lib/data';
+import { summary, townsNear, water } from '../../src/lib/data';
+import { townOfWeek } from '../../src/lib/share';
 import { hectares, longDate, num, pct, tidyDistrict } from '../../src/lib/format';
 
 const SITE = 'https://galamseytracker.org';
@@ -17,7 +18,7 @@ export function templates(): Template[] {
   const pra = water.find((w) => w.plant === 'Daboase');
   const weija = water.find((w) => w.plant === 'Weija');
   const praShare = pra ? pct(pra.ha / summary.total_ha) : '';
-  const lead = doorstep(1)[0];
+  const lead = townOfWeek;
   const town = lead ? `${lead.town.name}${lead.town.district ? `, ${tidyDistrict(lead.town.district)}` : ''}` : '';
   const towns = townsNear ? num(townsNear.count) : '';
 
@@ -67,7 +68,7 @@ You can look up any town and see the before and after pictures: ${SITE}`]],
 
 ${facts.slice(0, 2).join(' ')}${pra ? ` ${facts[2]}` : ''}
 
-${town ? `The town with the most cleared land around it this week is ${town}. ` : ''}You can search for your own town or village and see before and after satellite pictures of every patch, with what the licence register says about the land.
+${town ? `${lead!.rank === 0 ? 'The town with the most cleared land around it is' : 'This week the pictures show'} ${town}. ` : ''}You can search for your own town or village and see before and after satellite pictures of every patch, with what the licence register says about the land.
 
 ${SITE}`]],
     },

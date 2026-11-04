@@ -27,8 +27,11 @@ const dataDate = summary ? longDate(summary.data_date) : '';
 const WEEK = summary ? Math.floor(Date.parse(summary.data_date) / (7 * 864e5)) : 0;
 const pick = <T>(list: T[], salt = 0): T => list[(WEEK + salt) % list.length];
 
-// 1. The town with the most cleared land around it (the same town the home page leads with)
-const lead = doorstep(1)[0];
+// 1. Town of the week: one of the eight towns with the most cleared land around it, a different one each week of
+// data (the top town stays first for months, so always posting it would repeat the same place)
+const ranked = doorstep(8);
+const leadRank = ranked.length ? WEEK % ranked.length : 0;
+const lead = ranked[leadRank];
 if (lead && summary) {
   const { town, place } = lead;
   const district = town.district ? tidyDistrict(town.district) : null;
@@ -39,7 +42,7 @@ if (lead && summary) {
     alt: `Two satellite pictures of the same land near ${town.name}${district ? `, ${district}` : ''}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: wide patches of bare orange ground.`,
     text: pick([
       `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.\n\nThe pictures show the largest patch, before and after. ${LICENCE_SENTENCE[place.licence]}`,
-      `No town we track has more cleared land around it than ${town.name}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
+      `${leadRank === 0 ? `No town we track has more cleared land around it than ${town.name}` : `${town.name} is one of the ${count(ranked.length)} towns we track with the most cleared land around it`}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
       `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.\n\nWithin 1 km of the town, ${hectares(town.ha)} of land was cleared in the last 12 months, about ${num(pitches(town.ha))} football pitches. ${LICENCE_SENTENCE[place.licence]}`,
     ]),
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
@@ -173,27 +176,29 @@ That is ${num(summary.no_licence_to_mine.ha)} hectares, seen by satellite.`,
 }
 
 // 6. One place, before and after: the template for news days (the skill picks the place from the news).
-// Here the second town in the list, so the library always shows a sample.
-const second = doorstep(2)[1];
-if (second && summary) {
-  const { town, place } = second;
-  const district = town.district ? tidyDistrict(town.district) : null;
-  posts.push({
-    slug: 'place',
-    kind: 'One place (news days)',
-    title: `One place: ${town.name}`,
-    alt: `Two satellite pictures of the same land near ${town.name}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: bare ground.`,
-    text: `Near ${town.name}${district ? `, ${district}` : ''}: ${hectares(place.ha)} of land cleared, first seen by satellite on ${longDate(place.first_seen)}.
+// Here the next town after the town of the week, so the library always shows a sample and the two never match.
+const second = ranked.length > 1 ? ranked[(leadRank + 1) % ranked.length] : undefined;
+
+// One place, before and after, near a named town. Also used by the studio's news section for places in the news.
+export function placePost(name: string, districtName: string | null, place: Place & { chips: { before: Chip; after: Chip } }, slug = 'place', kind = 'One place (news days)'): Post {
+  const district = districtName ? tidyDistrict(districtName) : null;
+  return {
+    slug,
+    kind,
+    title: `One place: ${name}`,
+    alt: `Two satellite pictures of the same land near ${name}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: bare ground.`,
+    text: `Near ${name}${district ? `, ${district}` : ''}: ${hectares(place.ha)} of land cleared, first seen by satellite on ${longDate(place.first_seen)}.
 
 ${LICENCE_SENTENCE[place.licence]}`,
     reply: `Before and after up close: ${SITE}/places/${place.id}/`,
     render: () => townPost({
-      headline: `${hectares(place.ha)} of land cleared near ${town.name}`,
+      headline: `${hectares(place.ha)} of land cleared near ${name}`,
       sub: `First seen by satellite on ${longDate(place.first_seen)}${district ? `, in ${district}` : ''}. ${LICENCE_SENTENCE[place.licence]}`,
       before: place.chips.before, after: place.chips.after,
     }),
-  });
+  };
 }
+if (second && summary) posts.push(placePost(second.town.name, second.town.district, second.place));
 
 // 7. New clearing: the largest pictured patch satellites first saw in the last two (or four) months. New land every week.
 if (summary) {
@@ -222,3 +227,5 @@ It is the largest patch satellites first saw in the last ${months} months. ${LIC
 }
 
 export const sharePosts = posts;
+// The town the town post shows this week, for the studio's templates
+export const townOfWeek = lead ? { ...lead, rank: leadRank } : null;
