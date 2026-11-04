@@ -5,10 +5,14 @@ import { sharePosts } from '../../src/lib/share';
 import { summary, lastSuccessDate } from '../../src/lib/data';
 import { longDate } from '../../src/lib/format';
 import { plan } from '../lib/plan';
+import { PITCHES, draft } from '../lib/pitch';
 
 const today = new Date();
 const slots = plan(new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())), 14);
 const kinds = [...new Set(sharePosts.map((p) => p.kind))];
+const mail = draft();
+const thisMonth = today.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const due = PITCHES.find((p) => p.month === thisMonth) ?? PITCHES[0];
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -19,12 +23,19 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
   <title>Studio | Galamsey Tracker</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="color-scheme" content="light dark">
+  <script is:inline>
+    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+  </script>
 </head>
 <body>
   <header class="top">
     <div class="wrap">
       <p class="brand">Galamsey Tracker studio</p>
-      <nav aria-label="Studio"><a href="#next">Next posts</a><a href="#posts">All posts</a><a href="#how">How we post</a></nav>
+      <button class="icon theme" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <svg class="moon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav aria-label="Studio"><a href="#next">Next posts</a><a href="#posts">All posts</a><a href="#pitch">Pitch emails</a><a href="#how">How we post</a></nav>
     </div>
   </header>
   <main class="wrap">
@@ -38,7 +49,7 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
           <li>
             <span class="day">{s.day}</span>
             <a href={`#${s.slug}`}>{s.title}</a>
-            {s.pitch && <span class="pitch">Also: this month's pitch email</span>}
+            {s.pitch && <a class="pitch" href="#pitch">Also today: send this month's pitch email (how, below)</a>}
           </li>
         ))}
       </ol>
@@ -65,6 +76,45 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
       </div>
     </section>
 
+    <section id="pitch" class="how">
+      <h2>Pitch emails</h2>
+      <h3>What this is</h3>
+      <p>Once a month you send one short email to one journalist or organisation, offering them the data for a story. A single news story or report that uses the data reaches far more people than our own posts, and the people who read it are the ones who act. You send it from hello@galamseytracker.org, so it comes from the project, not your personal address.</p>
+      <h3>This month: {due.month}</h3>
+      <dl class="due">
+        <dt>To</dt><dd>{due.who}</dd>
+        <dt>Address</dt><dd>{due.verified ? <><a href={`mailto:${due.contact}`}>{due.contact}</a> (from their own contact page)</> : due.contact}</dd>
+        <dt>Angle</dt><dd>{due.angle}</dd>
+      </dl>
+      {mail && due === PITCHES[0] && (
+        <>
+          <div class="copy"><div class="head"><h4>Subject</h4><button type="button" class="btn" data-copy>Copy</button></div><p data-text>{mail.subject}</p></div>
+          <div class="copy"><div class="head"><h4>Email</h4><button type="button" class="btn" data-copy>Copy</button></div><p data-text>{mail.body}</p></div>
+        </>
+      )}
+      {due !== PITCHES[0] && <p>Ask Claude in the project: "draft this month's pitch email". It finds the right reporter's address, writes the email from this week's numbers and saves it for you.</p>}
+      <h3>How to send it (Gmail on your phone or computer)</h3>
+      <ol>
+        <li>Open Gmail and start a new email.</li>
+        <li>Tap the From line and choose hello@galamseytracker.org. You set this up as "Send mail as" in October.</li>
+        <li>Put the address above in To. Send to one person or newsroom at a time, never a list.</li>
+        <li>Copy the subject and the email from this page and paste them in. Read it once, change anything that does not sound like you.</li>
+        <li>Send it on a weekday morning, Tuesday to Thursday, when newsrooms plan their stories.</li>
+        <li>If there is no reply after a week, send one short follow-up in the same thread ("Just checking this reached you. Happy to pull numbers for any district or river."). Then leave it.</li>
+        <li>If they reply, answer within a day, and ask Claude to pull whatever they ask for.</li>
+      </ol>
+      <h3>Who comes next</h3>
+      <ol class="queue">
+        {PITCHES.map((p) => <li><strong>{p.month}:</strong> {p.who}. {p.angle}</li>)}
+      </ol>
+      <h3>What not to do</h3>
+      <ul>
+        <li>No attachments. Links only, so it does not land in spam.</li>
+        <li>No claims the site does not make: never call a place illegal or name anyone.</li>
+        <li>No mass emails or newsletters. One person, one angle, one month.</li>
+      </ul>
+    </section>
+
     <section id="how" class="how">
       <h2>How we post</h2>
       <h3>The goal</h3>
@@ -88,6 +138,17 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
     </section>
   </main>
 
+  <script is:inline>
+    const root = document.documentElement;
+    const dark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const label = () => document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.setAttribute('aria-label', dark() ? 'Switch to light mode' : 'Switch to dark mode'));
+    label();
+    document.querySelectorAll('[data-theme-toggle]').forEach((b) => b.addEventListener('click', () => {
+      root.dataset.theme = dark() ? 'light' : 'dark';
+      try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+      label();
+    }));
+  </script>
   <script>
     for (const b of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
       b.addEventListener('click', async () => {
@@ -102,7 +163,22 @@ const kinds = [...new Set(sharePosts.map((p) => p.kind))];
     body { background: var(--paper); color: var(--ink); }
     .top { border-bottom: 1px solid var(--line); }
     .top .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
-    .brand { margin: 0; font-weight: 800; }
+    .brand { margin: 0; font-weight: 800; flex: 1; }
+    .icon { font: inherit; color: var(--ink); background: transparent; cursor: pointer; display: inline-flex; align-items: center;
+            justify-content: center; min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; padding: 0; }
+    .icon:hover { border-color: var(--ink); }
+    .theme .sun { display: none; }
+    :root[data-theme='dark'] .theme .sun { display: block; }
+    :root[data-theme='dark'] .theme .moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme='light']) .theme .sun { display: block; }
+      :root:not([data-theme='light']) .theme .moon { display: none; }
+    }
+    nav { width: 100%; }
+    .due { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 0 8px; }
+    .due dt { font-weight: 700; }
+    .due dd { margin: 0; }
+    .queue li, .how ol li { margin-bottom: 8px; }
     nav { display: flex; gap: 20px; flex-wrap: wrap; }
     nav a { color: var(--ink); }
     .lede { color: var(--muted); margin: 24px 0; }
