@@ -1,6 +1,6 @@
-import { sharePosts } from '../../lib/share';
+import { sharePosts } from '../../src/lib/share';
 
-// One portrait image per post, for the hidden /share page
+// One portrait image per post
 export function getStaticPaths() {
   return sharePosts.map((p) => ({ params: { slug: p.slug } }));
 }

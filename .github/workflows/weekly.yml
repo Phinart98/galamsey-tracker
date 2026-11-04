@@ -177,3 +177,20 @@ jobs:
         run: |
           npm ci
           npm run deploy:site -- "$SITE_PROJECT"
+
+      # Last, and allowed to fail: the studio is for the person posting, so a problem here never marks the weekly
+      # update as failed or holds back the site
+      - name: Build and publish the posting studio
+        if: success()
+        continue-on-error: true
+        working-directory: apps/site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CHIPS_BASE_URL: https://${{ env.PICTURES_PROJECT }}.pages.dev
+          # The studio's project name is a secret: this repository is public and the studio is not
+          STUDIO_PROJECT: ${{ secrets.STUDIO_PROJECT }}
+        run: |
+          if [ -z "$STUDIO_PROJECT" ]; then echo "No STUDIO_PROJECT secret, studio skipped"; exit 0; fi
+          npm run build:studio
+          npx --yes wrangler@4 pages deploy dist-studio --project-name "$STUDIO_PROJECT" --branch main --commit-dirty=true

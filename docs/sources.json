@@ -922,7 +922,7 @@
   {
    "id": "pitches-per-hour",
    "text": "On average about N football pitches of land cleared every day: the 12-month total divided by 365 days, in 0.714 ha pitches. An average, not a claim that clearing is rising",
-   "where": "/share images and posts",
+   "where": "private posting studio images and posts (not on the site)",
    "evidence": [
     "football-pitch"
    ],
@@ -932,7 +932,7 @@
   {
    "id": "share-posts",
    "text": "Weekly share images restate site figures: hectares within 1 km of the lead town, hectares on land draining to each city's plant (claims upstream-hectares, water-plant-towns), the largest Likely galamsey patch in each catchment",
-   "where": "/share",
+   "where": "private posting studio images and posts (not on the site)",
    "evidence": [],
    "status": "measured",
    "checked": "2026-11-03"

@@ -116,14 +116,18 @@ export async function townPost(o: { headline: string; sub: string; before: Chip;
 // A city's water: a cleared patch upstream, then the river, the plant and the reader's tap
 export async function waterPost(o: { title: string; big: string; line: string; river: string; plant: string; tap: string; picture?: Chip }) {
   const PIC = 470, LINE = PAD + PIC / 2, TOP = 136;
-  const stop = (title: string, sub: string, y: number, filled: boolean) => [
-    h('div', { position: 'absolute', left: LINE - 22, top: y - 22, width: 44, height: 44, borderRadius: '50%', background: filled ? RIVER : PAPER, border: `8px solid ${RIVER}` }),
+  // The river and its three stops drawn as one SVG, so the line runs exactly through every circle's centre
+  const STOPS = [130, 300, 470];
+  const track = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="60" height="500"><rect x="25" y="0" width="10" height="${STOPS[2]}" fill="${RIVER}"/>${
+    STOPS.map((y, i) => `<circle cx="30" cy="${y}" r="20" fill="${i === 2 ? RIVER : PAPER}" stroke="${RIVER}" stroke-width="8"/>`).join('')}</svg>`);
+  const stop = (title: string, sub: string, y: number) =>
     h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: LINE + 50, top: y - 30, width: 640 },
-      h('div', { fontSize: 40, fontWeight: 700, lineHeight: 1.1 }, title), h('div', { fontSize: 28, lineHeight: 1.3, color: '#333', marginTop: 6 }, sub))];
+      h('div', { fontSize: 40, fontWeight: 700, lineHeight: 1.1 }, title), h('div', { fontSize: 28, lineHeight: 1.3, color: '#333', marginTop: 6 }, sub));
+  // The caption sits inside the picture's bottom-left corner and never runs past its edge
   const pic = o.picture ? [
     img(await jpeg(o.picture), { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC }),
     img(ring(56), { position: 'absolute', left: PAD + PIC / 2 - 28, top: TOP + PIC / 2 - 28, width: 56, height: 56 }),
-    h('div', { position: 'absolute', left: PAD, top: TOP + PIC - 44, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, `One cleared patch upstream, ${shortDate(o.picture.date)}`),
+    h('div', { position: 'absolute', left: PAD, top: TOP + PIC - 44, maxWidth: PIC, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, `Upstream, ${shortDate(o.picture.date)}`),
   ] : [h('div', { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC, background: '#DDD' })];
   return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
     h('div', { position: 'absolute', left: PAD, top: 56, width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
@@ -132,10 +136,10 @@ export async function waterPost(o: { title: string; big: string; line: string; r
       h('div', { fontSize: 128, fontWeight: 700, lineHeight: 0.95, letterSpacing: -4, color: SIGNAL }, o.big),
       h('div', { fontSize: 40, fontWeight: 700, color: SIGNAL }, 'hectares'),
       h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 18 }, o.line)),
-    h('div', { position: 'absolute', left: LINE - 5, top: TOP + PIC, width: 10, height: 470, background: RIVER }),
-    ...stop(o.river, 'Rain washes mud from the cleared land into it', TOP + PIC + 130, false),
-    ...stop(o.plant, 'More mud makes the water harder and dearer to treat', TOP + PIC + 300, false),
-    ...stop('Your tap', o.tap, TOP + PIC + 470, true),
+    img(track, { position: 'absolute', left: LINE - 30, top: TOP + PIC, width: 60, height: 500 }),
+    stop(o.river, 'Rain washes mud from the cleared land into it', TOP + PIC + STOPS[0]),
+    stop(o.plant, 'More mud makes the water harder and dearer to treat', TOP + PIC + STOPS[1]),
+    stop('Your tap', o.tap, TOP + PIC + STOPS[2]),
     h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
       brandRow('#fff', '#fff'))),
     PW, PH, 85);
@@ -156,5 +160,56 @@ export async function ratePost(o: { top: string; perDay: number; line: string; s
     h('div', { display: 'flex', flexDirection: 'column', gap: 14, marginTop: 64 }, ...rows),
     h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, color: '#CCC', marginTop: 40 }, o.sub),
     h('div', { display: 'flex', position: 'absolute', left: PAD, bottom: 40 }, brandRow('#fff', '#AAA'))),
+    PW, PH, 85);
+}
+
+// One district: its total, then its three largest pictured patches side by side
+export async function districtPost(o: { title: string; big: string; line: string; stat: string; places: { label: string; after: Chip }[] }) {
+  const S = 296;
+  const tiles = await Promise.all(o.places.slice(0, 3).map(async (p) =>
+    h('div', { display: 'flex', flexDirection: 'column', width: S },
+      h('div', { display: 'flex', position: 'relative', width: S, height: S },
+        img(await jpeg(p.after), { width: S, height: S, objectFit: 'cover' }),
+        img(ring(44), { position: 'absolute', left: S / 2 - 22, top: S / 2 - 22, width: 44, height: 44 })),
+      h('div', { fontSize: 26, lineHeight: 1.25, marginTop: 12 }, p.label))));
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+    h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+    h('div', { width: INNER, fontSize: 200, fontWeight: 700, lineHeight: 0.95, letterSpacing: -6, color: SIGNAL, marginTop: 40 }, o.big),
+    h('div', { width: INNER, fontSize: 40, lineHeight: 1.25, marginTop: 16 }, o.line),
+    h('div', { width: INNER, fontSize: 40, fontWeight: 700, color: SIGNAL, marginTop: 8 }, o.stat),
+    h('div', { display: 'flex', gap: (INNER - S * 3) / 2, marginTop: 64 }, ...tiles)),
+    h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
+      brandRow('#fff', '#fff'))),
+    PW, PH, 85);
+}
+
+// What licence is on the cleared land: one bar split by licence, the no-licence share as the headline
+export async function licencePost(o: { big: string; line: string; parts: { label: string; ha: string; share: number; tiny: boolean; alarm: boolean }[]; sub: string }) {
+  const BAR = INNER, H = 120;
+  let x = 0;
+  const shades = [SIGNAL, PINK, '#888', '#555', '#222'];
+  const segs = o.parts.map((p, i) => {
+    const w = Math.max(p.share * BAR, p.share > 0 ? 6 : 0);
+    const seg = `<rect x="${x}" y="0" width="${w}" height="${H}" fill="${shades[i]}"/>`;
+    x += w;
+    return seg;
+  }).join('');
+  const bar = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${BAR}" height="${H}">${segs}</svg>`);
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+    h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, 'What licence is on the cleared land'),
+    h('div', { width: INNER, fontSize: 240, fontWeight: 700, lineHeight: 0.95, letterSpacing: -8, color: SIGNAL, marginTop: 40 }, o.big),
+    h('div', { width: INNER, fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginTop: 12 }, o.line),
+    img(bar, { width: BAR, height: H, marginTop: 56 }),
+    h('div', { display: 'flex', flexDirection: 'column', gap: 14, marginTop: 32 },
+      ...o.parts.map((p, i) => h('div', { display: 'flex', alignItems: 'center', gap: 16, fontSize: 30 },
+        h('div', { width: 28, height: 28, background: shades[i] }),
+        h('div', { width: 560, fontWeight: p.alarm ? 700 : 400 }, p.label),
+        h('div', { width: 200, textAlign: 'right' }, p.ha),
+        h('div', { width: 120, textAlign: 'right', color: '#444' }, p.tiny ? 'under 1%' : `${Math.round(p.share * 100)}%`)))),
+    h('div', { width: INNER, fontSize: 26, lineHeight: 1.35, color: '#333', marginTop: 32 }, o.sub)),
+    h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
+      brandRow('#fff', '#fff'))),
     PW, PH, 85);
 }

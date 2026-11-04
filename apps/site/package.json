@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/prepare-data.mjs && astro dev",
     "build": "node scripts/prepare-data.mjs && astro build",
+    "build:studio": "node scripts/prepare-data.mjs && astro build --config astro.studio.config.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "deploy:site": "node scripts/deploy-site.mjs",

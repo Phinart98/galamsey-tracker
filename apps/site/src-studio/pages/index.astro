@@ -1,0 +1,127 @@
+---
+// The private posting studio. Not linked from the site, noindex, robots disallow, locked behind Cloudflare Access.
+import '../../src/styles/global.css';
+import { sharePosts } from '../../src/lib/share';
+import { summary, lastSuccessDate } from '../../src/lib/data';
+import { longDate } from '../../src/lib/format';
+import { plan } from '../lib/plan';
+
+const today = new Date();
+const slots = plan(new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate())), 14);
+const kinds = [...new Set(sharePosts.map((p) => p.kind))];
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Studio | Galamsey Tracker</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="color-scheme" content="light dark">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <p class="brand">Galamsey Tracker studio</p>
+      <nav aria-label="Studio"><a href="#next">Next posts</a><a href="#posts">All posts</a><a href="#how">How we post</a></nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <p class="lede">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}. </>}{lastSuccessDate && <>Last weekly update: {longDate(lastSuccessDate)}. </>}Only you can see this page.</p>
+
+    <section id="next">
+      <h1>Next posts</h1>
+      <p>Post from @GalamseyTracker at about 19:00 GMT. On the best post of the week, quote it from your own account with one line in your own words. If galamsey news breaks about a place we cover, ask Claude for a "One place" post instead.</p>
+      <ol class="slots">
+        {slots.map((s) => (
+          <li>
+            <span class="day">{s.day}</span>
+            <a href={`#${s.slug}`}>{s.title}</a>
+            {s.pitch && <span class="pitch">Also: this month's pitch email</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section id="posts">
+      <h2>All posts this week</h2>
+      <p>Every kind of post, made fresh from this week's data. Kinds: {kinds.join(', ')}.</p>
+      <div class="posts">
+        {sharePosts.map((p) => (
+          <article id={p.slug} class="post">
+            <p class="kind">{p.kind}</p>
+            <h3>{p.title}</h3>
+            <a href={`/${p.slug}.jpg`}><img src={`/${p.slug}.jpg`} alt={p.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
+            <p><a class="btn" href={`/${p.slug}.jpg`} download={`galamsey-${p.slug}.jpg`}>Save the image</a></p>
+            {[['Post', p.text], ['Image description (alt text)', p.alt], ['First reply, with the link', p.reply]].map(([label, value]) => (
+              <div class="copy">
+                <div class="head"><h4>{label}</h4><button type="button" class="btn" data-copy>Copy</button></div>
+                <p data-text>{value}</p>
+              </div>
+            ))}
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="how" class="how">
+      <h2>How we post</h2>
+      <h3>The goal</h3>
+      <p>Not retweets. The goal is that the satellite evidence keeps reaching the people who can act on it: city readers who drink the water, the diaspora, journalists, NGOs and cocoa buyers. We watch visits from X, WhatsApp and Facebook in Cloudflare Web Analytics, emails to hello@, and journalists or NGOs using the data.</p>
+      <h3>Two accounts</h3>
+      <p>@GalamseyTracker posts the evidence three times a week, by hand from your phone. Never scripted: X bans that. Your own account quote-posts the best one each week with one line in your own words, so your followers see it and your feed stays yours.</p>
+      <h3>Every post</h3>
+      <ul>
+        <li>One picture that stands alone, one true fact, a plain last line.</li>
+        <li>No questions to readers. People quote with their own take.</li>
+        <li>The link goes in the account's own first reply, to the page about that place or city.</li>
+        <li>Add the image description when you post. It helps people using screen readers, and X shows it to everyone who taps "ALT".</li>
+        <li>No accusations, no names. "Likely galamsey" is our guess.</li>
+      </ul>
+      <h3>Beyond X</h3>
+      <p>Send the same image to your WhatsApp Status and family groups, and to Facebook hometown and diaspora groups. Once each: Reddit r/ghana and r/dataisbeautiful, Hacker News "Show HN", LinkedIn.</p>
+      <h3>Once a month</h3>
+      <p>A short email from hello@ to one journalist or NGO, with one ready angle. Before 30 December lead with cocoa and the EU deforestation law, which starts that day. Ask Claude for the draft.</p>
+      <h3>New kinds of post</h3>
+      <p>On a posting day, Claude can design a new kind of post when one is due, through the same plan, critique and redo as these. Ideas waiting: forest reserves, cocoa districts, a month in review, a place's picture every few months.</p>
+    </section>
+  </main>
+
+  <script>
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+      b.addEventListener('click', async () => {
+        const text = b.closest('.copy')!.querySelector<HTMLElement>('[data-text]')!.innerText;
+        try { await navigator.clipboard.writeText(text); b.textContent = 'Copied'; } catch { b.textContent = 'Select and copy'; }
+        setTimeout(() => (b.textContent = 'Copy'), 2000);
+      });
+    }
+  </script>
+
+  <style>
+    body { background: var(--paper); color: var(--ink); }
+    .top { border-bottom: 1px solid var(--line); }
+    .top .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 24px; padding-top: 14px; padding-bottom: 14px; }
+    .brand { margin: 0; font-weight: 800; }
+    nav { display: flex; gap: 20px; flex-wrap: wrap; }
+    nav a { color: var(--ink); }
+    .lede { color: var(--muted); margin: 24px 0; }
+    h1 { margin: 0 0 8px; }
+    section { margin-bottom: 56px; max-width: 70ch; }
+    #posts { max-width: none; }
+    .slots { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
+    .slots li { display: flex; flex-wrap: wrap; gap: 4px 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .day { font-weight: 700; min-width: 15ch; }
+    .pitch { color: var(--signal); font-weight: 700; }
+    .posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 48px 32px; margin-top: 24px; }
+    .kind { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+    .post h3 { margin: 2px 0 12px; }
+    .post img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
+    .copy { margin-top: 14px; }
+    .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    h4 { margin: 0; font-size: 1rem; }
+    [data-text] { white-space: pre-line; margin: 6px 0 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
+    .how li { margin-bottom: 6px; }
+  </style>
+</body>
+</html>

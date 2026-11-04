@@ -8,6 +8,7 @@
 node_modules/
 .astro/
 dist/
+dist-studio/
 .cache/
 
 # Python
@@ -19,6 +20,7 @@ venv/
 .uv/
 *.egg-info/
 dist/
+dist-studio/
 build/
 .mypy_cache/
 .ruff_cache/
