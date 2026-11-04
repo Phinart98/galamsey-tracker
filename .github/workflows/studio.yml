@@ -45,7 +45,7 @@ jobs:
           tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json'
           ls -la pipeline/out/places
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: steps.check.outputs.go == 'true'
         with:
           node-version: 22
