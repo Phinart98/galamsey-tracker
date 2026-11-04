@@ -67,17 +67,6 @@ const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'num
                   {s.email && <span class="extra">Plus this month's email</span>}
                 </summary>
                 <div class="body">
-                  {s.status === 'today' && s.post && (
-                    <div class="steps">
-                      <p class="steps-title">How to post it</p>
-                      <ol>
-                        <li>Save the picture.</li>
-                        <li>{s.story ? <>Find the story's post on X (search its headline) and tap Quote.</> : <>In X, start a new post.</>} Paste the post and add the picture.</li>
-                        <li>Tap "Add description" on the picture and paste the image description.</li>
-                        <li>Post it. Then reply to your own post with the first reply: the link goes there, never in the post.</li>
-                      </ol>
-                    </div>
-                  )}
                   {s.note && <p class="note">{s.note}</p>}
                   {s.email && <p class="note">Also send this month's email to one journalist or group: <a href="#email">the email template</a>.</p>}
                   {s.post && <div class="card-wrap"><PostCard post={s.post} story={s.story} level="h4" idPrefix={`${s.date}-`} /></div>}
@@ -176,16 +165,7 @@ const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'num
     .day.done .what { color: var(--muted); }
     .extra { color: var(--signal); font-weight: 700; }
     .body { padding: 0 12px 24px 40px; display: grid; gap: 16px; }
-    @media (min-width: 900px) {
-      .day.today .body { grid-template-columns: minmax(0, 420px) minmax(0, 1fr); align-items: start; gap: 16px 40px; }
-      .day.today .card-wrap { grid-row: 1 / span 3; grid-column: 1; }
-      .day.today .steps, .day.today .body > .note { grid-column: 2; }
-    }
     .card-wrap { max-width: 420px; }
-    .steps { background: var(--ink); color: var(--paper); padding: 14px 18px; }
-    .steps-title { margin: 0 0 6px; font-weight: 700; }
-    .steps ol { margin: 0; padding-left: 1.25em; }
-    .steps li { margin-bottom: 6px; }
     .note { margin: 0; color: var(--muted); max-width: 60ch; }
 
     #extras details { border-top: 1px solid var(--line); max-width: 960px; }
