@@ -56,7 +56,8 @@ async function load(): Promise<NewsItem[]> {
   const since = Date.now() - DAYS * 864e5;
   const seen = new Set<string>();
   const items = (await Promise.all(FEEDS.map(read))).flat()
-    .filter((i) => i.title && Date.parse(i.date) >= since)
+    // Feeds are outside data: keep only web links, so a bad feed cannot put a script link on the page
+    .filter((i) => i.title && /^https?:\/\//i.test(i.link) && Date.parse(i.date) >= since)
     .sort((a, b) => b.date.localeCompare(a.date))
     .filter((i) => {
       const key = i.title.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 60);
