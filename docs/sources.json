@@ -931,11 +931,11 @@
   },
   {
    "id": "share-posts",
-   "text": "Weekly share images restate site figures: hectares within 1 km of the lead town, hectares on land draining to each city's plant (claims upstream-hectares, water-plant-towns), the largest Likely galamsey patch in each catchment",
+   "text": "Studio posts count only land with no licence to mine (none or prospecting only): hectares within 1 km of a town, hectares on the land draining to each plant (each patch counted by its point inside the plant's catchment, so these differ from the site's all-clearing water figures), the daily average in football pitches, district totals. The licence split card groups all licensed land as one unnamed remainder.",
    "where": "private posting studio images and posts (not on the site)",
    "evidence": [],
    "status": "measured",
-   "checked": "2026-11-03"
+   "checked": "2026-11-05"
   },
   {
    "id": "more-share-posts",

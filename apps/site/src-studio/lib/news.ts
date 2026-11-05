@@ -11,6 +11,8 @@ const FEEDS = [
   'https://www.myjoyonline.com/tag/galamsey/feed/',
 ];
 const DAYS = 7;
+// Feeds that do not name themselves per item
+const OUTLET: Record<string, string> = { 'www.myjoyonline.com': 'MyJoyOnline' };
 const MAX_POSTS = 4;
 const SHOW = 25; // stories listed, plus any older one that names a place
 // Town names that are also everyday words or regions in news copy
@@ -33,7 +35,7 @@ async function read(url: string) {
     return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, item]) => {
       // Google News titles end with " - Outlet"
       const raw = text(item, 'title');
-      const source = text(item, 'source') || new URL(url).hostname.replace(/^www\./, '');
+      const source = text(item, 'source') || OUTLET[new URL(url).hostname] || new URL(url).hostname.replace(/^www\./, '');
       const title = raw.endsWith(` - ${source}`) ? raw.slice(0, -(source.length + 3)) : raw;
       // An item without a readable date is left out on its own, so it cannot drop the rest of the feed
       const when = Date.parse(text(item, 'pubDate'));
@@ -80,7 +82,7 @@ async function load(): Promise<NewsItem[]> {
     if (!hit || !hit.place || !hasPair(hit.place)) return i;
     used.add(hit.place.id);
     made++;
-    return { ...i, match: { name: hit.name, post: newsPlacePost(i, hit.label, hit.district, hit.place as never, `news-${made}`) } };
+    return { ...i, match: { name: hit.name, post: newsPlacePost(i, hit.name, hit.label, hit.district, hit.place as never, `news-${made}`) } };
   }).filter((n: NewsItem, i) => i < SHOW || n.match);
 }
 

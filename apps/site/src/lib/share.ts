@@ -2,7 +2,7 @@
 // Each post is made to be quoted: one picture that stands alone, one true fact, no question to the reader.
 // The link goes in the first reply. Wording follows the site: no em dashes or semicolons, no verdicts on a place.
 import { active, coverage, hasPair, placeById, summary, towns, water, type Chip, type Place } from './data';
-import { LICENCES, LICENCE_SENTENCE, LICENCE_SHORT, count, hectares, longDate, num, pct, placeName, shortDate, tidyDistrict } from './format';
+import { LICENCE_SENTENCE, LICENCE_SHORT, count, hectares, longDate, num, pct, placeName, shortDate, tidyDistrict } from './format';
 import { catchments, inside } from './plants';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,7 @@ import waterMap from '../data/water-map.json';
 const SITE = (import.meta.env.SITE ?? 'https://galamseytracker.org').replace(/\/$/, '');
 export const PITCH_HA = 0.714; // a 105 x 68 m football pitch, as on the site (docs/sources.json football-pitch)
 const pitches = (ha: number) => Math.round(ha / PITCH_HA);
-const RIVER_BLUE = '#1D5C8C', SIGNAL_RED = '#B8155A', SIGNAL_PINK = '#FF6FA6'; // the post palette (og.ts)
+const RIVER_BLUE = '#1D5C8C', SIGNAL_RED = '#B8155A', SIGNAL_PINK = '#FF6FA6', INK_BLACK = '#000'; // the post palette (og.ts)
 
 export interface Post {
   slug: string;
@@ -69,9 +69,15 @@ if (lead && summary) {
     title: `Town of the week: ${town.name}`,
     alt: `Two satellite pictures of the same land near ${town.name}${district ? `, ${district}` : ''}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: wide patches of bare orange ground.`,
     text: pick([
-      `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared with no licence to mine in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.\n\nThe pictures show the largest patch, before and after. ${LICENCE_SENTENCE[place.licence]}`,
-      `${leadRank === 0 ? `No town we track has more land cleared with no licence to mine around it than ${town.name}${district ? ` in ${district}` : ''}` : `${town.name}${district ? `, in ${district},` : ''} is one of the ${count(ranked.length)} towns we track with the most land cleared with no licence to mine around it`}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
-      `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.\n\nWithin 1 km of the town, ${hectares(town.ha)} of land with no licence to mine was cleared in the last 12 months, about ${num(pitches(town.ha))} football pitches. ${LICENCE_SENTENCE[place.licence]}`,
+      `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared with no licence to mine in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.
+
+The pictures show the largest patch, before and after.`,
+      `${leadRank === 0 ? `No town we track has more land cleared with no licence to mine around it than ${town.name}` : `Few towns we track have more land cleared with no licence to mine around them than ${town.name}`}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.
+
+Here is its largest patch, before and after, seen by satellite.`,
+      `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.
+
+Within 1 km of the town, ${hectares(town.ha)} of land was cleared with no licence to mine in the last 12 months, about ${num(pitches(town.ha))} football pitches.`,
     ]),
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
     render: () => townPost({
@@ -100,10 +106,12 @@ const CITIES = [
     lead: 'Winneba, Swedru and Kasoa get their water from the Kwanyako treatment plant on the Ayensu.' },
 ];
 const pictured = (p: Place): p is Place & { chips: { before: Chip; after: Chip } } => hasPair(p);
+// Land cleared with no licence to mine on the land that drains to a plant (each patch counted by its point)
+const upstream = (polys: (typeof catchments)[number]['polys']) => active.filter(galamsey).filter((p) => inside([p.lon, p.lat], polys)).reduce((t, p) => t + p.ha, 0);
 CITIES.forEach((c, ci) => {
-  const ha = water.filter((w) => c.plants.includes(w.plant)).reduce((t, w) => t + w.ha, 0);
-  if (ha < 1) return;
   const polys = catchments.filter((k) => c.plants.includes(k.name)).flatMap((k) => k.polys);
+  const ha = upstream(polys);
+  if (ha < 1) return;
   // One of the three largest patches there with the Likely galamsey label, a different one each week, so the
   // picture shows what the post is about and the same city's card does not repeat its picture
   const candidates = active.filter(pictured).filter((p) => p.likely_galamsey && inside([p.lon, p.lat], polys)).slice(0, 3);
@@ -113,38 +121,39 @@ CITIES.forEach((c, ci) => {
     slug: c.slug,
     kind: 'City water',
     title: `From this to your tap in ${c.city}`,
-    alt: `${haText} hectares of land cleared in 12 months on the land that drains to ${c.name}.${largest ? ` A satellite picture of one cleared patch upstream, ${placeName(largest)}, with a line following the water from it` : ' A line follows the water'} down ${c.river.replace('The ', 'the ')} to ${c.plant} and to taps in ${c.city}.`,
+    alt: `${haText} hectares of land cleared with no licence to mine in 12 months, on the land that drains to ${c.name}.${largest ? ` A satellite picture of one cleared patch upstream, ${placeName(largest)}, with a line following the water from it` : ' A line follows the water'} down ${c.river.replace('The ', 'the ')} to ${c.plant} and to taps in ${c.city}.`,
     text: pick([
-      `${c.lead} In the last 12 months, satellites saw ${haText} hectares of land cleared on the land that drains to it.\n\nWhen it rains, mud from cleared land and mining pits washes into the river, and the water gets harder and dearer to treat.`,
-      `${haText} hectares of land cleared in 12 months, all on land that drains to ${c.name}. ${c.tap}.\n\nWhen it rains, mud from that land washes into the river the plant draws from.`,
-      `Water for taps in ${c.city} is treated at ${c.name}. On the land that drains to it, satellites saw ${haText} hectares of land cleared in the last 12 months.\n\nMore mud in the river makes the water harder and dearer to treat.`,
+      `${c.lead} In the last 12 months, satellites saw ${haText} hectares of land cleared with no licence to mine on the land that drains to it.\n\nWhen it rains, mud from cleared land and mining pits washes into the river, and the water gets harder and dearer to treat.`,
+      `${haText} hectares of land cleared with no licence to mine in 12 months, all on land that drains to ${c.name}. ${c.tap}.\n\nWhen it rains, mud from that land washes into the river the plant draws from.`,
+      `Water for taps in ${c.city} is treated at ${c.name}. On the land that drains to it, satellites saw ${haText} hectares of land cleared with no licence to mine in the last 12 months.\n\nMore mud in the river makes the water harder and dearer to treat.`,
     ], ci),
     reply: `Every water plant downstream of the clearing, with the map: ${SITE}/#mud`,
     render: () => waterPost({
       title: `From this to your tap in ${c.city}`, big: haText,
-      line: `cleared in 12 months on the land that drains to ${c.name}`,
+      line: `cleared with no licence to mine in 12 months, on the land that drains to ${c.name}`,
       river: c.river, plant: c.plant, tap: c.tap, picture: largest?.chips.after,
     }),
   });
 });
 
 // 3. The average rate, as football pitches a day (an average of our own 12-month total, not a claim that it is rising)
-if (summary && summary.total_ha > 0) {
-  const perDay = Math.round(summary.total_ha / PITCH_HA / 365);
+const unlicensedHa = active.filter(galamsey).reduce((t, p) => t + p.ha, 0);
+if (summary && unlicensedHa > 0) {
+  const perDay = Math.round(unlicensedHa / PITCH_HA / 365);
   posts.push({
     slug: 'rate',
     kind: 'Football pitches a day',
     title: 'Football pitches a day',
-    alt: `${perDay} football pitches drawn in rows: on average, the land cleared every day in Ghana's southern gold belt. ${num(summary.total_ha)} hectares in the 12 months leading up to ${dataDate}.`,
-    text: `On average, about ${perDay} football pitches of land are cleared every day in the parts of Ghana's southern gold belt we track.
+    alt: `${perDay} football pitches drawn in rows: on average, the land cleared with no licence to mine every day in Ghana's southern gold belt. ${num(unlicensedHa)} hectares in the 12 months leading up to ${dataDate}.`,
+    text: `Every day, on average, about ${perDay} football pitches of land are cleared with no licence to mine in the parts of Ghana's southern gold belt we track.
 
-That is ${num(summary.total_ha)} hectares in the 12 months leading up to ${dataDate}, seen by satellite.`,
+That is ${num(unlicensedHa)} hectares in the 12 months leading up to ${dataDate}, seen by satellite.`,
     reply: `Where it is, with before and after pictures of every patch: ${SITE}/`,
     render: () => ratePost({
       top: "Every day in Ghana's southern gold belt",
       perDay,
       line: 'football pitches of land cleared',
-      sub: `On average: ${num(summary.total_ha)} hectares in the 12 months leading up to ${dataDate}, seen by satellite in the ${count(coverage.length)} areas we cover.`,
+      sub: `With no licence to mine on the register. On average: ${num(unlicensedHa)} hectares in the 12 months leading up to ${dataDate}, seen by satellite in the ${count(coverage.length)} areas we cover.`,
     }),
   });
 }
@@ -159,13 +168,13 @@ const districtsReady = districtHa.slice(0, 5)
 if (districtsReady.length) {
   const d = pick(districtsReady);
   const name = tidyDistrict(d.district);
-  const standing = d.rank === 0 ? 'the district with the most land cleared with no licence to mine' : `one of the ${count(Math.min(5, districtsReady.length))} districts with the most land cleared with no licence to mine`;
+  const standing = d.rank === 0 ? 'the district with the most land cleared with no licence to mine' : `one of the ${count(Math.min(5, districtHa.length))} districts with the most land cleared with no licence to mine`;
   posts.push({
     slug: 'district',
     kind: 'District spotlight',
     title: `District spotlight: ${name}`,
     alt: `${num(d.ha)} hectares of land cleared with no licence to mine in 12 months in ${name}. Satellite pictures of its three largest cleared patches: ${d.inDistrict.map((p) => placeName(p)).join(', ')}.`,
-    text: `${name} is ${standing} we track: ${num(d.ha)} hectares in 12 months, about ${num(pitches(d.ha))} football pitches.
+    text: `${name}: ${num(d.ha)} hectares of land cleared with no licence to mine in 12 months, about ${num(pitches(d.ha))} football pitches. It is ${standing} in the areas we track.
 
 These are its three largest cleared patches, seen by satellite.`,
     reply: `Every patch in ${name}, on the map: ${SITE}/map?district=${encodeURIComponent(d.district)}`,
@@ -181,11 +190,11 @@ These are its three largest cleared patches, seen by satellite.`,
 
 // 5. The licence on the cleared land, as one split bar
 if (summary) {
-  const parts = LICENCES.filter((l) => summary.by_licence[l]).map((l) => ({
-    label: LICENCE_SHORT[l], ha: `${num(summary.by_licence[l].ha)} ha`, share: summary.by_licence[l].share,
-    tiny: summary.by_licence[l].ha > 0 && summary.by_licence[l].share < 0.005,
-    alarm: l === 'no licence' || l === 'prospecting only',
-  }));
+  // Galamsey only: the two no-licence-to-mine labels are shown, all licensed land is one grey remainder, unnamed
+  const part = (label: string, ha: number, share: number, alarm: boolean) => ({ label, ha: `${num(ha)} ha`, share, tiny: ha > 0 && share < 0.005, alarm });
+  const nl = summary.by_licence['no licence'] ?? { ha: 0, share: 0 }, pr = summary.by_licence['prospecting only'] ?? { ha: 0, share: 0 };
+  const rest = { ha: summary.total_ha - nl.ha - pr.ha, share: Math.max(0, 1 - nl.share - pr.share) };
+  const parts = [part(LICENCE_SHORT['no licence'], nl.ha, nl.share, true), part(LICENCE_SHORT['prospecting only'], pr.ha, pr.share, true), part('Land with a licence (we leave it out)', rest.ha, rest.share, false)];
   const share = pct(summary.no_licence_to_mine.share);
   posts.push({
     slug: 'licence',
@@ -231,15 +240,22 @@ ${LICENCE_SENTENCE[place.licence]}`,
 if (second && summary) posts.push(placePost(second.town.name, second.town.district, second.place));
 
 // A place in the news: the headline as the story told it, then what the satellite saw there (studio news days)
-export function newsPlacePost(story: { title: string; source: string; date: string }, name: string, districtName: string | null, place: Pictured, slug: string): Post {
-  const base = placePost(name, districtName, place, slug, 'In the news');
+// `subject` is the town or district the story names, `name` the town the picture is near (the same for a town)
+export function newsPlacePost(story: { title: string; source: string; date: string; link: string }, subject: string, name: string, districtName: string | null, place: Pictured, slug: string): Post {
   const district = districtName ? tidyDistrict(districtName) : null;
+  // When the story names the district, it is said once already
+  const where = subject === name && district ? `${name}, ${district}` : name;
   return {
-    ...base,
+    slug,
+    kind: 'In the news',
+    title: `In the news: ${name}`,
     alt: `The headline "${story.title}" (${story.source}), then satellite pictures near ${name}: before, ${longDate(place.chips.before.date)}, and after, ${longDate(place.chips.after.date)}, bare ground.`,
-    text: `What the satellite saw near ${name}${district ? `, ${district}` : ''}: ${hectares(place.ha)} of land cleared, first seen on ${longDate(place.first_seen)}.
+    // Reads right as a quote of the newsroom's post and on its own, because it names the story's subject itself
+    text: `${story.source} reports on ${subject}. ${subject === name ? 'This is what satellites saw there' : `In ${subject}, satellites saw this`}: ${hectares(place.ha)} of land cleared near ${where}, first seen on ${longDate(place.first_seen)}.
 
 ${LICENCE_SENTENCE[place.licence]}`,
+    reply: `The story: ${story.link}
+Before and after up close: ${SITE}/places/${place.id}/`,
     render: () => newsPost({ headline: story.title, outlet: story.source, date: shortDate(story.date.slice(0, 10)), place: `near ${name}`, before: place.chips.before, after: place.chips.after, line: `${hectares(place.ha)} cleared, first seen ${shortDate(place.first_seen)}. ${LICENCE_SENTENCE[place.licence]}` }),
   };
 }
@@ -421,14 +437,15 @@ if (unlicensed.length) {
   });
 }
 
-// All five water plants on one card (mud reaches the river whatever the licence, so this counts all clearing)
-if (water.length >= 3) {
+// All five water plants on one card, unlicensed land only like every post
+const plantRows = water.map((w) => ({ ...w, ha: upstream(catchments.filter((k) => k.name === w.plant).flatMap((k) => k.polys)) })).sort((a, b) => b.ha - a.ha);
+if (plantRows.length >= 3) {
   posts.push({
     slug: 'plants', kind: 'All five water plants', title: 'Cleared land upstream of each water plant',
-    alt: `Bars for the land cleared upstream of each water treatment plant: ${water.map((w) => `${w.plant} on the ${w.river}, ${num(w.ha)} hectares`).join(', ')}.`,
-    text: `Land cleared in 12 months on the land that drains to each water treatment plant:\n\n${water.map((w) => `${w.plant} (${w.river}): ${num(w.ha)} ha`).join('\n')}\n\nWhen it rains, mud from cleared land washes into the rivers the plants draw from.`,
+    alt: `Bars for the land cleared with no licence to mine upstream of each water treatment plant: ${plantRows.map((w) => `${w.plant} on the ${w.river}, ${num(w.ha)} hectares`).join(', ')}.`,
+    text: `Land cleared with no licence to mine in 12 months, on the land that drains to each water treatment plant:\n\n${plantRows.map((w) => `${w.plant} (${w.river}): ${num(w.ha)} ha`).join('\n')}\n\nWhen it rains, mud from cleared land washes into the rivers the plants draw from.`,
     reply: `The map of what drains where: ${SITE}/#mud`,
-    render: () => barsPost({ title: 'Upstream of the water plants', line: 'Land cleared in 12 months on the land that drains to each plant', rows: water.map((w) => ({ label: `${w.plant}, on the ${w.river}`, value: w.ha, text: `${num(w.ha)} ha` })), sub: 'When it rains, mud from cleared land washes into the river each plant draws from.', color: RIVER_BLUE }),
+    render: () => barsPost({ title: 'Upstream of the water plants', line: 'Land cleared with no licence to mine in 12 months, on the land that drains to each plant', rows: plantRows.map((w) => ({ label: `${w.plant}, on the ${w.river}`, value: w.ha, text: `${num(w.ha)} ha` })), sub: 'When it rains, mud from cleared land washes into the river each plant draws from.', color: RIVER_BLUE }),
   });
 }
 
@@ -485,15 +502,18 @@ posts.push({
 });
 posts.push({
   slug: 'explain-licence', kind: 'How we check the licence', title: 'How we check the licence',
-  alt: 'Five labels for the licence on cleared land, from no licence to a large-scale mining lease, each with what it allows.',
-  text: 'For every patch, we check the Minerals Commission\'s public licence register:\n\nNo licence: nothing on the register.\nProspecting only: a licence to explore, not to mine.\nStone or sand lease: quarrying, not gold.\nSmall-scale licence and large-scale lease: mining is allowed there.\n\nMining without a licence is what galamsey is.',
+  alt: 'How each patch is checked against the licence register: no licence, or only a licence to explore, means no licence to mine, which is what galamsey is.',
+  text: `For every patch of cleared land, we check the Minerals Commission's public licence register.
+
+No licence at all, or only a licence to explore: there is no licence to mine on that land. Mining without one is what galamsey is.
+
+Those are the only places we post about.`,
   reply: `What each label means: ${SITE}/method#licences`,
   render: () => explainerPost({ title: 'How we check the licence', points: [
-    { mark: '', markColor: SIGNAL_RED, head: 'No licence', body: 'Nothing on the Minerals Commission\'s register for this land.' },
-    { mark: '', markColor: SIGNAL_PINK, head: 'Prospecting only', body: 'A licence to explore. It does not allow mining.' },
-    { mark: '', markColor: '#888', head: 'Stone or sand lease', body: 'For quarrying stone or digging sand. Not for gold.' },
-    { mark: '', markColor: '#333', head: 'Small-scale licence or large-scale lease', body: 'Mining is allowed. A licence does not show who did the digging.' },
-    { mark: '', markColor: '#000', head: 'Galamsey', body: 'Mining without a licence to mine. Our labels show where the register has none.' },
+    { mark: '', markColor: SIGNAL_RED, head: 'No licence', body: "Nothing on the Minerals Commission's register for this land." },
+    { mark: '', markColor: SIGNAL_PINK, head: 'Prospecting only', body: 'A licence to search for minerals. It does not allow mining.' },
+    { mark: '', markColor: INK_BLACK, head: 'Galamsey', body: 'Mining without a licence to mine. Both labels above mean there is none.' },
+    { mark: '', markColor: '#888', head: 'What we post', body: 'Only land with no licence to mine. We check the register again every week.' },
   ] }),
 });
 posts.push({

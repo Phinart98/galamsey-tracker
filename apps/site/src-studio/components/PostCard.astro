@@ -14,7 +14,12 @@ const fields: [string, string][] = [
 ---
 <article id={`${idPrefix}${post.slug}`} class="card">
   {heading && <H class="card-title">{heading}</H>}
-  {story && <p class="story">Quote this story on X: <a href={story.link} rel="noreferrer">{story.title}</a> ({story.source}). Check it is about this place first.</p>}
+  {story && (
+    <div class="story">
+      <p>The story: <a href={story.link} rel="noreferrer">{story.title}</a> ({story.source}). Check it is about this place first.</p>
+      <p>Best: find the newsroom's own post of it on X (search the headline or their account), tap Repost, then Quote, and post this picture and text there. Their readers see it under their post. If you cannot find it, post it on its own: the text names the story and the first reply carries its link.</p>
+    </div>
+  )}
   <a href={`/${post.slug}.jpg`} class="pic"><img src={`/${post.slug}.jpg`} alt={post.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
   <p class="save"><a class="btn" href={`/${post.slug}.jpg`} download={`galamsey-${post.slug}.jpg`}>Save the picture</a></p>
   {fields.map(([label, value]) => (
@@ -30,7 +35,8 @@ const fields: [string, string][] = [
   .card-title { margin: 0; }
   .pic img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
   .save { margin: 0; }
-  .story { margin: 0; padding: 12px; border: 2px solid var(--ink); }
+  .story { margin: 0; padding: 12px; border: 2px solid var(--ink); display: grid; gap: 8px; }
+  .story p { margin: 0; }
   .copy { display: grid; gap: 6px; }
   .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .label { font-weight: 700; }
