@@ -936,6 +936,33 @@
    "evidence": [],
    "status": "measured",
    "checked": "2026-11-03"
+  },
+  {
+   "id": "more-share-posts",
+   "text": "Studio post kinds added 2026-11-05 restate the place index and summary: the largest pictured patches, Likely galamsey patches, patches on prospecting-only and licensed land, distance from a patch's seed point to the nearest OpenStreetMap town point, towns ranked by cleared land within 1 km, the six newest pictured patches, the eight districts with most clearing, patch counts and hectares by size (1-2, 2-5, 5-10, 10+ ha), every active patch as a dot, hectares upstream of each plant, the 12-month average per hour, and land first seen in the last full month",
+   "where": "private posting studio images and posts (not on the site)",
+   "evidence": [
+    "openstreetmap",
+    "minerals-commission-cadastre",
+    "opera-dist-alert"
+   ],
+   "status": "measured",
+   "checked": "2026-11-05"
+  },
+  {
+   "id": "explainer-posts",
+   "text": "Explainer posts restate /method: green is vegetation, orange and cream bare ground, dark ponds water; each picture is about 1.6 km across; Landsat and Sentinel-2 pass every few days; NASA OPERA flags lost vegetation cover; patches of 1 ha or more in the forest zone; weekly licence check against the register",
+   "where": "private posting studio images and posts (not on the site)",
+   "evidence": [
+    "opera-dist-alert",
+    "hls",
+    "sentinel2",
+    "landsat",
+    "minerals-commission-cadastre",
+    "own-spike-log"
+   ],
+   "status": "measured",
+   "checked": "2026-11-05"
   }
  ]
 }

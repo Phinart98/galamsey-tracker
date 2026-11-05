@@ -151,17 +151,19 @@ export async function waterPost(o: { title: string; big: string; line: string; r
 export async function ratePost(o: { top: string; perDay: number; line: string; sub: string }) {
   const rows: Node[] = [];
   const shown = Math.min(o.perDay, 100);
-  for (let r = 0; r * 10 < shown; r++) {
-    rows.push(h('div', { display: 'flex', gap: 12 }, ...Array.from({ length: Math.min(10, shown - r * 10) }, () => img(PITCH, { width: 84, height: 56 }))));
+  // Few pitches are drawn large, so a small number still fills the picture
+  const per = shown <= 6 ? 2 : 10, iw = shown <= 6 ? 440 : 84, ih = shown <= 6 ? 293 : 56, gap = shown <= 6 ? 24 : 12;
+  for (let r = 0; r * per < shown; r++) {
+    rows.push(h('div', { display: 'flex', gap }, ...Array.from({ length: Math.min(per, shown - r * per) }, () => img(PITCH, { width: iw, height: ih }))));
   }
   return card(h('div', { display: 'flex', flexDirection: 'column', position: 'relative', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff', padding: `${PAD}px ${PAD}px 0` },
     h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.top),
     h('div', { display: 'flex', alignItems: 'flex-end', gap: 28, marginTop: 30 },
       h('div', { fontSize: 230, fontWeight: 700, lineHeight: 0.85, letterSpacing: -8, color: PINK }, String(o.perDay)),
       h('div', { fontSize: 54, fontWeight: 700, lineHeight: 1.05, width: 560, paddingBottom: 6 }, o.line)),
-    h('div', { display: 'flex', flexDirection: 'column', gap: 14, marginTop: 64 }, ...rows),
+    h('div', { display: 'flex', flexDirection: 'column', gap: shown <= 6 ? 24 : 14, marginTop: 64 }, ...rows),
     h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, color: '#CCC', marginTop: 40 }, o.sub),
-    h('div', { display: 'flex', position: 'absolute', left: PAD, bottom: 40 }, brandRow('#fff', '#AAA'))),
+    h('div', { display: 'flex', position: 'absolute', left: PAD, top: PH - 76 }, brandRow('#fff', '#AAA'))),
     PW, PH, 85);
 }
 
@@ -213,5 +215,134 @@ export async function licencePost(o: { big: string; line: string; parts: { label
     h('div', { width: INNER, fontSize: 26, lineHeight: 1.35, color: '#333', marginTop: 32 }, o.sub)),
     h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
       brandRow('#fff', '#fff'))),
+    PW, PH, 85);
+}
+
+// ---- More kinds of post (2026-11-05). Same palette, type and footer as above, so the feed reads as one voice ----
+
+const footer = () => h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
+  brandRow('#fff', '#fff'));
+
+// One place as a single picture split down the middle: before on the left half, after on the right half of the
+// same view, so the change reads across one line. A different look from the side-by-side and inset posts.
+export async function splitPost(o: { headline: string; sub: string; before: Chip; after: Chip }) {
+  const IMG = 1000, HALF = PW / 2;
+  const [b, a] = await Promise.all([jpeg(o.before), jpeg(o.after)]);
+  const half = (src: string, left: boolean) => h('div', { display: 'flex', position: 'absolute', left: left ? 0 : HALF, top: 0, width: HALF, height: IMG, overflow: 'hidden' },
+    img(src, { position: 'absolute', left: left ? 0 : -HALF, top: 0, width: PW, height: IMG, objectFit: 'cover' }));
+  const label = (text: string, left: boolean) => h('div', { position: 'absolute', top: 32, ...(left ? { left: 32 } : { right: 32 }), background: INK, fontSize: 26, fontWeight: 700, padding: '6px 14px' }, text);
+  return card(h('div', { display: 'flex', flexDirection: 'column', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff' },
+    h('div', { display: 'flex', position: 'relative', width: PW, height: IMG, overflow: 'hidden' },
+      half(b, true), half(a, false),
+      h('div', { position: 'absolute', left: HALF - 3, top: 0, width: 6, height: IMG, background: '#fff' }),
+      img(ring(64), { position: 'absolute', left: HALF - 32, top: IMG / 2 - 32, width: 64, height: 64 }),
+      label(`Before, ${shortDate(o.before.date)}`, true), label(`After, ${shortDate(o.after.date)}`, false)),
+    h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: PW - 80, marginLeft: 40, height: PH - IMG, padding: '34px 0 30px' },
+      h('div', { display: 'flex', flexDirection: 'column' },
+        h('div', { fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.headline),
+        h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 16, color: '#DDD' }, o.sub)),
+      brandRow('#fff', '#AAA'))),
+    PW, PH, 85);
+}
+
+// A contact sheet: six places in a 3 x 2 grid, each with its ring and a short label
+export async function sheetPost(o: { title: string; line: string; places: { label: string; after: Chip }[] }) {
+  const S = 296, GAP = (INNER - S * 3) / 2;
+  const tiles = await Promise.all(o.places.slice(0, 6).map(async (p) =>
+    h('div', { display: 'flex', flexDirection: 'column', width: S, height: S + 84 },
+      h('div', { display: 'flex', position: 'relative', width: S, height: S },
+        img(await jpeg(p.after), { width: S, height: S, objectFit: 'cover' }),
+        img(ring(40), { position: 'absolute', left: S / 2 - 20, top: S / 2 - 20, width: 40, height: 40 })),
+      h('div', { fontSize: 24, lineHeight: 1.25, marginTop: 10 }, p.label))));
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.title),
+      h('div', { width: INNER, fontSize: 30, lineHeight: 1.3, marginTop: 14, color: '#333' }, o.line),
+      h('div', { display: 'flex', flexWrap: 'wrap', gap: `24px ${GAP}px`, width: INNER, marginTop: 40 }, ...tiles)),
+    footer()),
+    PW, PH, 85);
+}
+
+// Horizontal bars, longest first, value at the end of each bar. One colour: it is one measure
+export async function barsPost(o: { title: string; big?: string; line: string; rows: { label: string; value: number; text: string }[]; sub: string; color?: string }) {
+  const color = o.color ?? SIGNAL;
+  const max = Math.max(...o.rows.map((r) => r.value), 1);
+  const BAR = 620;
+  const rowH = o.rows.length > 6 ? 76 : 96;
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+      ...(o.big ? [h('div', { width: INNER, fontSize: 160, fontWeight: 700, lineHeight: 0.95, letterSpacing: -5, color, marginTop: 28 }, o.big)] : []),
+      h('div', { width: INNER, fontSize: 38, fontWeight: 700, lineHeight: 1.15, marginTop: o.big ? 10 : 24 }, o.line),
+      h('div', { display: 'flex', flexDirection: 'column', marginTop: 36, width: INNER },
+        ...o.rows.map((r) => h('div', { display: 'flex', flexDirection: 'column', height: rowH, justifyContent: 'center' },
+          h('div', { fontSize: 26, lineHeight: 1.2 }, r.label),
+          h('div', { display: 'flex', alignItems: 'center', gap: 14, marginTop: 6 },
+            h('div', { width: Math.max(6, Math.round((r.value / max) * BAR)), height: 26, background: color }),
+            h('div', { fontSize: 26, fontWeight: 700 }, r.text))))),
+      h('div', { width: INNER, fontSize: 24, lineHeight: 1.35, color: '#333', marginTop: 20 }, o.sub)),
+    footer()),
+    PW, PH, 85);
+}
+
+// The belt as a map: land outline, then every cleared patch as a dot sized by its area
+export async function mapPost(o: { title: string; big: string; line: string; sub: string; frame: number[]; land: number[][][][]; dots: { lon: number; lat: number; ha: number }[] }) {
+  const [W0, S0, E0, N0] = o.frame;
+  const MW = INNER, MH = Math.round(MW * ((N0 - S0) / (E0 - W0)));
+  const x = (lon: number) => ((lon - W0) / (E0 - W0)) * MW;
+  const y = (lat: number) => ((N0 - lat) / (N0 - S0)) * MH;
+  const land = o.land.map((poly) => poly.map((r) => `M${r.map(([lo, la]) => `${x(lo).toFixed(1)} ${y(la).toFixed(1)}`).join('L')}Z`).join('')).join('');
+  const dots = o.dots.map((d) => `<circle cx="${x(d.lon).toFixed(1)}" cy="${y(d.lat).toFixed(1)}" r="${Math.min(9, 1.6 + Math.sqrt(d.ha) * 0.9).toFixed(1)}"/>`).join('');
+  const map = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${MW}" height="${MH}"><rect width="${MW}" height="${MH}" fill="#DCE6EE"/><path d="${land}" fill="#fff" stroke="#888" stroke-width="1.5"/><g fill="${SIGNAL}" fill-opacity="0.75">${dots}</g></svg>`);
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+      h('div', { display: 'flex', alignItems: 'flex-end', gap: 20, marginTop: 20 },
+        h('div', { fontSize: 120, fontWeight: 700, lineHeight: 0.9, letterSpacing: -4, color: SIGNAL }, o.big),
+        h('div', { fontSize: 36, fontWeight: 700, lineHeight: 1.1, width: 520, paddingBottom: 6 }, o.line)),
+      img(map, { width: MW, height: MH, marginTop: 32, border: '2px solid #000' }),
+      h('div', { width: INNER, fontSize: 24, lineHeight: 1.35, color: '#333', marginTop: 18 }, o.sub)),
+    footer()),
+    PW, PH, 85);
+}
+
+// One big number with what it means, and one real picture that shows it
+export async function statPost(o: { title: string; big: string; line: string; body: string; picture?: Chip; caption?: string }) {
+  const PIC = { w: INNER, h: 560 };
+  const pic = o.picture ? [h('div', { display: 'flex', position: 'relative', width: PIC.w, height: PIC.h, marginTop: 36, overflow: 'hidden' },
+    img(await jpeg(o.picture), { position: 'absolute', left: 0, top: -(PIC.w - PIC.h) / 2, width: PIC.w, height: PIC.w }),
+    img(ring(56), { position: 'absolute', left: PIC.w / 2 - 28, top: PIC.h / 2 - 28, width: 56, height: 56 }),
+    ...(o.caption ? [h('div', { position: 'absolute', left: 0, bottom: 0, maxWidth: PIC.w, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, o.caption)] : []))] : [];
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+      h('div', { width: INNER, fontSize: 200, fontWeight: 700, lineHeight: 0.95, letterSpacing: -6, color: SIGNAL, marginTop: 28 }, o.big),
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700, lineHeight: 1.15, marginTop: 10 }, o.line),
+      h('div', { width: INNER, fontSize: 30, lineHeight: 1.35, marginTop: 20, color: '#222' }, o.body),
+      ...pic),
+    footer()),
+    PW, PH, 85);
+}
+
+// An explainer: a short list of points, each with a marker (a number for steps in order, a colour swatch for
+// labels), and optionally a real before and after pair at the top
+export async function explainerPost(o: { title: string; points: { mark: string; markColor?: string; head: string; body: string }[]; pair?: { before: Chip; after: Chip } }) {
+  const S = (INNER - 24) / 2, PH2 = Math.round(S * 0.72);
+  const shotOf = async (c: Chip, word: string) => h('div', { display: 'flex', position: 'relative', width: S, height: PH2, overflow: 'hidden' },
+    img(await jpeg(c), { position: 'absolute', left: 0, top: -(S - PH2) / 2, width: S, height: S }),
+    img(ring(44), { position: 'absolute', left: S / 2 - 22, top: PH2 / 2 - 22, width: 44, height: 44 }),
+    h('div', { position: 'absolute', left: 0, bottom: 0, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '5px 12px' }, `${word}, ${shortDate(c.date)}`));
+  const pair = o.pair ? [h('div', { display: 'flex', gap: 24, marginTop: 32 }, await shotOf(o.pair.before, 'Before'), await shotOf(o.pair.after, 'After'))] : [];
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.title),
+      ...pair,
+      h('div', { display: 'flex', flexDirection: 'column', gap: o.pair ? 26 : 48, marginTop: o.pair ? 36 : 64, width: INNER },
+        ...o.points.map((p) => h('div', { display: 'flex', gap: 22, alignItems: 'flex-start' },
+          h('div', { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, flexShrink: 0, background: p.markColor ?? INK, color: '#fff', fontSize: 30, fontWeight: 700 }, p.mark),
+          h('div', { display: 'flex', flexDirection: 'column', width: INNER - 74 },
+            h('div', { fontSize: o.pair ? 32 : 40, fontWeight: 700, lineHeight: 1.15 }, p.head),
+            h('div', { fontSize: o.pair ? 27 : 32, lineHeight: 1.35, marginTop: 6, color: '#222' }, p.body)))))),
+    footer()),
     PW, PH, 85);
 }
