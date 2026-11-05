@@ -939,12 +939,13 @@
   },
   {
    "id": "more-share-posts",
-   "text": "Studio post kinds added 2026-11-05 restate the place index and summary: the largest pictured patches, Likely galamsey patches, patches on prospecting-only and licensed land, distance from a patch's seed point to the nearest OpenStreetMap town point, towns ranked by cleared land within 1 km, the six newest pictured patches, the eight districts with most clearing, patch counts and hectares by size (1-2, 2-5, 5-10, 10+ ha), every active patch as a dot, hectares upstream of each plant, the 12-month average per hour, and land first seen in the last full month",
+   "text": "Studio posts show only land with no licence to mine (none or prospecting only, from the register). Kinds added 2026-11-05 restate the place index and summary: real patch outlines from NASA OPERA land-change data drawn at true scale beside a 105 x 68 m football pitch, the twelve largest such outlines at one scale, a Likely galamsey patch's coordinates, prospecting-only patches, towns ranked by unlicensed cleared land within 1 km, the six newest pictured patches, districts by unlicensed cleared land, patch counts by size, every unlicensed patch as a dot, hectares upstream of each plant, and unlicensed land first seen in the last full month. News-day posts quote the news headline with its outlet and date.",
    "where": "private posting studio images and posts (not on the site)",
    "evidence": [
-    "openstreetmap",
+    "opera-dist-alert",
     "minerals-commission-cadastre",
-    "opera-dist-alert"
+    "openstreetmap",
+    "ifab-law-1"
    ],
    "status": "measured",
    "checked": "2026-11-05"

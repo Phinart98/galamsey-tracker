@@ -2,15 +2,15 @@
 // Monday the town of the week (after the weekly run). Tuesday and Thursday a place in the news, or else the next
 // kind from the PLACE list. Wednesday a city's water in turn. Friday the next kind from the NUMBERS list, and on the
 // first Friday of a month the month in review. Weekends off. Each list moves on a step a week, so a kind returns
-// only after the whole list has gone round (PLACE about every 4 weeks, NUMBERS about every 12).
+// only after the whole list has gone round (PLACE every 3 weeks, NUMBERS every 11).
 import { sharePosts, type Post } from '../../src/lib/share';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba', 'plants'];
-const PLACE = ['new', 'biggest', 'pits', 'explore', 'licensed', 'close', 'village', 'sheet'];
-const NUMBERS = ['rate', 'licence', 'districts', 'explain-pictures', 'sizes', 'map', 'district', 'water-test', 'rate-hour', 'explain-licence', 'explain-satellites'];
+const PLACE = ['new', 'shape', 'find', 'explore', 'sheet', 'towns'];
+const NUMBERS = ['rate', 'licence', 'districts', 'explain-pictures', 'sizes', 'map', 'district', 'water-test', 'plate', 'explain-licence', 'explain-satellites'];
 const NEWS_DAYS = new Set([2, 4]);
 // Kinds whose picture or numbers name a place: made from Monday's data, so not shown before it arrives
-const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', 'water-test', ...WATER.filter((k) => k !== 'plants'), ...PLACE]);
+const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', 'water-test', 'plate', ...WATER.filter((k) => k !== 'plants'), ...PLACE]);
 const EPOCH = Date.UTC(2026, 0, 5); // a Monday: weeks are counted from here, so the lists never restart in January
 const FRESH_HOURS = 48; // a story older than this is not worth quoting
 const DAY = 864e5;

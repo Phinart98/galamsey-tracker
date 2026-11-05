@@ -42,7 +42,7 @@ jobs:
         run: |
           gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP"
           mkdir -p pipeline/out
-          tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json'
+          tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json' '*places/latest.geojson'
           ls -la pipeline/out/places
 
       - uses: actions/setup-node@v5

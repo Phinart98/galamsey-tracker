@@ -223,28 +223,6 @@ export async function licencePost(o: { big: string; line: string; parts: { label
 const footer = () => h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
   brandRow('#fff', '#fff'));
 
-// One place as a single picture split down the middle: before on the left half, after on the right half of the
-// same view, so the change reads across one line. A different look from the side-by-side and inset posts.
-export async function splitPost(o: { headline: string; sub: string; before: Chip; after: Chip }) {
-  const IMG = 1000, HALF = PW / 2;
-  const [b, a] = await Promise.all([jpeg(o.before), jpeg(o.after)]);
-  const half = (src: string, left: boolean) => h('div', { display: 'flex', position: 'absolute', left: left ? 0 : HALF, top: 0, width: HALF, height: IMG, overflow: 'hidden' },
-    img(src, { position: 'absolute', left: left ? 0 : -HALF, top: 0, width: PW, height: IMG, objectFit: 'cover' }));
-  const label = (text: string, left: boolean) => h('div', { position: 'absolute', top: 32, ...(left ? { left: 32 } : { right: 32 }), background: INK, fontSize: 26, fontWeight: 700, padding: '6px 14px' }, text);
-  return card(h('div', { display: 'flex', flexDirection: 'column', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff' },
-    h('div', { display: 'flex', position: 'relative', width: PW, height: IMG, overflow: 'hidden' },
-      half(b, true), half(a, false),
-      h('div', { position: 'absolute', left: HALF - 3, top: 0, width: 6, height: IMG, background: '#fff' }),
-      img(ring(64), { position: 'absolute', left: HALF - 32, top: IMG / 2 - 32, width: 64, height: 64 }),
-      label(`Before, ${shortDate(o.before.date)}`, true), label(`After, ${shortDate(o.after.date)}`, false)),
-    h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: PW - 80, marginLeft: 40, height: PH - IMG, padding: '34px 0 30px' },
-      h('div', { display: 'flex', flexDirection: 'column' },
-        h('div', { fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.headline),
-        h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 16, color: '#DDD' }, o.sub)),
-      brandRow('#fff', '#AAA'))),
-    PW, PH, 85);
-}
-
 // A contact sheet: six places in a 3 x 2 grid, each with its ring and a short label
 export async function sheetPost(o: { title: string; line: string; places: { label: string; after: Chip }[] }) {
   const S = 296, GAP = (INNER - S * 3) / 2;
@@ -343,6 +321,171 @@ export async function explainerPost(o: { title: string; points: { mark: string; 
           h('div', { display: 'flex', flexDirection: 'column', width: INNER - 74 },
             h('div', { fontSize: o.pair ? 32 : 40, fontWeight: 700, lineHeight: 1.15 }, p.head),
             h('div', { fontSize: o.pair ? 27 : 32, lineHeight: 1.35, marginTop: 6, color: '#222' }, p.body)))))),
+    footer()),
+    PW, PH, 85);
+}
+
+// ---- Third pass (2026-11-05, design skill): every kind is one idea that drives its own layout ----
+
+// Patch outlines arrive as lon/lat rings. Metres make shapes and the football pitch share one true scale
+type Rings = number[][][];
+const toMetres = (rings: Rings) => {
+  const lat0 = rings[0][0][1];
+  const kx = 111320 * Math.cos((lat0 * Math.PI) / 180), ky = 110540;
+  return rings.map((r) => r.map(([lo, la]) => [lo * kx, -la * ky]));
+};
+const extent = (rings: number[][][]) => {
+  const xs = rings.flatMap((r) => r.map((p) => p[0])), ys = rings.flatMap((r) => r.map((p) => p[1]));
+  return { x0: Math.min(...xs), y0: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+};
+const pathOf = (rings: number[][][], s: number, ox: number, oy: number) =>
+  rings.map((r) => `M${r.map(([x, y]) => `${((x - ox) * s).toFixed(1)} ${((y - oy) * s).toFixed(1)}`).join('L')}Z`).join('');
+
+// The shape of it: one patch's real outline, solid, with a football pitch drawn to the same scale
+export async function shapePost(o: { title: string; big: string; line: string; sub: string; rings: Rings }) {
+  const m = toMetres(o.rings), e = extent(m);
+  const BOX = { w: INNER, h: 640 };
+  const PITCH_M = { w: 105, h: 68 };
+  // Leave room under the shape for the pitch, then fit both into the box
+  const s = Math.min(BOX.w / Math.max(e.w, PITCH_M.w), (BOX.h - 40) / (e.h + PITCH_M.h * 1.6));
+  const sw = e.w * s, sh = e.h * s, pw = PITCH_M.w * s, ph = PITCH_M.h * s;
+  const pitch = `<g transform="translate(0 ${(BOX.h - ph).toFixed(1)})"><rect width="${pw.toFixed(1)}" height="${ph.toFixed(1)}" fill="none" stroke="${INK}" stroke-width="3"/><line x1="${(pw / 2).toFixed(1)}" y1="0" x2="${(pw / 2).toFixed(1)}" y2="${ph.toFixed(1)}" stroke="${INK}" stroke-width="2"/><circle cx="${(pw / 2).toFixed(1)}" cy="${(ph / 2).toFixed(1)}" r="${(9.15 * s).toFixed(1)}" fill="none" stroke="${INK}" stroke-width="2"/></g>`;
+  const shape = `<g transform="translate(${((BOX.w - sw) / 2).toFixed(1)} 0)"><path d="${pathOf(m, s, e.x0, e.y0)}" fill="${SIGNAL}" fill-rule="evenodd"/></g>`;
+  const art = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${BOX.w}" height="${BOX.h}">${shape}${pitch}</svg>`);
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
+      h('div', { display: 'flex', alignItems: 'flex-end', gap: 24, marginTop: 18 },
+        h('div', { fontSize: 140, fontWeight: 700, lineHeight: 0.9, letterSpacing: -5, color: SIGNAL }, o.big),
+        h('div', { fontSize: 34, fontWeight: 700, lineHeight: 1.15, width: 520, paddingBottom: 8 }, o.line)),
+      h('div', { display: 'flex', position: 'relative', width: BOX.w, height: BOX.h, marginTop: 40 },
+        img(art, { width: BOX.w, height: BOX.h }),
+        h('div', { position: 'absolute', left: pw + 18, top: BOX.h - ph / 2 - 18, fontSize: 26, color: '#333' }, 'A football pitch, to the same scale')),
+      h('div', { width: INNER, fontSize: 26, lineHeight: 1.35, color: '#333', marginTop: 24 }, o.sub)),
+    footer()),
+    PW, PH, 85);
+}
+
+// A specimen plate: twelve real outlines at one shared scale, like a page of a field guide
+export async function platePost(o: { title: string; line: string; items: { rings: Rings; label: string }[] }) {
+  const CELL = 214, COLS = 4, GAPX = (INNER - CELL * COLS) / (COLS - 1);
+  const shapes = o.items.slice(0, 12).map((it) => toMetres(it.rings));
+  const span = Math.max(...shapes.map((m) => { const e = extent(m); return Math.max(e.w, e.h); }));
+  const s = (CELL - 8) / span;
+  const BAR_M = span > 3000 ? 1000 : 500;
+  const cells = shapes.map((m, i) => {
+    const e = extent(m);
+    const svg = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${CELL}" height="${CELL}"><g transform="translate(${((CELL - e.w * s) / 2).toFixed(1)} ${((CELL - e.h * s) / 2).toFixed(1)})"><path d="${pathOf(m, s, e.x0, e.y0)}" fill="${INK}" fill-rule="evenodd"/></g></svg>`);
+    return h('div', { display: 'flex', flexDirection: 'column', width: CELL },
+      img(svg, { width: CELL, height: CELL }),
+      h('div', { fontSize: 22, lineHeight: 1.25, marginTop: 8, color: '#333' }, o.items[i].label));
+  });
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.title),
+      h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, marginTop: 12, color: '#333' }, o.line),
+      h('div', { display: 'flex', flexWrap: 'wrap', gap: `22px ${GAPX}px`, width: INNER, marginTop: 34 }, ...cells),
+      h('div', { display: 'flex', alignItems: 'center', gap: 14, marginTop: 26 },
+        h('div', { width: Math.round(BAR_M * s), height: 8, background: INK }),
+        h('div', { fontSize: 24 }, `${BAR_M === 1000 ? '1 km' : '500 m'}, the same for every shape`))),
+    footer()),
+    PW, PH, 85);
+}
+
+// Find it yourself: the coordinates as the headline, a pin on the map, and the picture
+export async function findPost(o: { lat: number; lon: number; line: string; sub: string; frame: number[]; land: number[][][][]; after: Chip }) {
+  const fmt = (v: number, pos: string, neg: string) => `${Math.abs(v).toFixed(4)}° ${v >= 0 ? pos : neg}`;
+  const [W0, S0, E0, N0] = o.frame;
+  const MW = 440, MH = Math.round(MW * ((N0 - S0) / (E0 - W0)));
+  const x = (lon: number) => ((lon - W0) / (E0 - W0)) * MW, y = (lat: number) => ((N0 - lat) / (N0 - S0)) * MH;
+  const land = o.land.map((poly) => poly.map((r) => `M${r.map(([lo, la]) => `${x(lo).toFixed(1)} ${y(la).toFixed(1)}`).join('L')}Z`).join('')).join('');
+  const px = x(o.lon), py = y(o.lat);
+  const map = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${MW}" height="${MH}"><path d="${land}" fill="#2A2A2A" stroke="#666" stroke-width="1.5"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="22" fill="none" stroke="${PINK}" stroke-width="5"/><circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="7" fill="${PINK}"/></svg>`);
+  const PIC = INNER - MW - 32;
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: INK, fontFamily: 'Atkinson', color: '#fff' },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700 }, 'Check it yourself'),
+      h('div', { width: INNER, fontSize: 118, fontWeight: 700, lineHeight: 1.0, letterSpacing: -3, color: PINK, marginTop: 28 }, fmt(o.lat, 'N', 'S')),
+      h('div', { width: INNER, fontSize: 118, fontWeight: 700, lineHeight: 1.0, letterSpacing: -3, color: PINK }, fmt(o.lon, 'E', 'W')),
+      h('div', { width: INNER, fontSize: 32, lineHeight: 1.3, marginTop: 24 }, o.line),
+      h('div', { display: 'flex', gap: 32, marginTop: 40, alignItems: 'flex-start' },
+        h('div', { display: 'flex', flexDirection: 'column', width: MW },
+          img(map, { width: MW, height: MH }),
+          h('div', { fontSize: 24, color: '#AAA', marginTop: 10 }, 'Southern Ghana')),
+        h('div', { display: 'flex', position: 'relative', width: PIC, height: PIC },
+          img(await jpeg(o.after), { width: PIC, height: PIC }),
+          img(ring(48), { position: 'absolute', left: PIC / 2 - 24, top: PIC / 2 - 24, width: 48, height: 48 }),
+          h('div', { position: 'absolute', left: 0, bottom: 0, background: INK, fontSize: 22, fontWeight: 700, padding: '5px 10px' }, `Seen ${shortDate(o.after.date)}`))),
+      h('div', { width: INNER, fontSize: 26, lineHeight: 1.35, color: '#CCC', marginTop: 28 }, o.sub)),
+    h('div', { display: 'flex', position: 'absolute', left: PAD, top: PH - 76 }, brandRow('#fff', '#AAA'))),
+    PW, PH, 85);
+}
+
+// Licensed to explore, not to mine: what the register allows on the left, what the satellite saw on the right
+export async function explorePost(o: { place: string; ha: string; after: Chip; before: Chip }) {
+  const COL = (INNER - 32) / 2;
+  const row = (head: string, body: string, strong = false) => h('div', { display: 'flex', flexDirection: 'column', paddingTop: 18, paddingBottom: 18, borderTop: `3px solid ${INK}` },
+    h('div', { fontSize: 26, color: '#444' }, head),
+    h('div', { fontSize: strong ? 44 : 38, fontWeight: 700, lineHeight: 1.1, marginTop: 6, color: strong ? SIGNAL : INK }, body));
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 64, fontWeight: 700, lineHeight: 1.0, letterSpacing: -2 }, 'A licence to explore, not to mine'),
+      h('div', { display: 'flex', gap: 32, marginTop: 48 },
+        h('div', { display: 'flex', flexDirection: 'column', width: COL },
+          h('div', { fontSize: 30, fontWeight: 700, marginBottom: 14 }, 'The register'),
+          row('Licence on this land', 'Prospecting only'),
+          row('It allows', 'Searching for minerals'),
+          row('It does not allow', 'Mining', true),
+          h('div', { borderTop: `3px solid ${INK}` })),
+        h('div', { display: 'flex', flexDirection: 'column', width: COL },
+          h('div', { fontSize: 30, fontWeight: 700, marginBottom: 14 }, 'The satellite'),
+          h('div', { display: 'flex', position: 'relative', width: COL, height: COL },
+            img(await jpeg(o.after), { width: COL, height: COL }),
+            img(ring(48), { position: 'absolute', left: COL / 2 - 24, top: COL / 2 - 24, width: 48, height: 48 }),
+            h('div', { position: 'absolute', left: 0, bottom: 0, background: INK, color: '#fff', fontSize: 22, fontWeight: 700, padding: '5px 10px' }, `After, ${shortDate(o.after.date)}`)),
+          h('div', { display: 'flex', position: 'relative', width: COL, height: 150, marginTop: 16, overflow: 'hidden' },
+            img(await jpeg(o.before), { position: 'absolute', left: 0, top: -(COL - 150) / 2, width: COL, height: COL }),
+            h('div', { position: 'absolute', left: 0, bottom: 0, background: INK, color: '#fff', fontSize: 22, fontWeight: 700, padding: '5px 10px' }, `Before, ${shortDate(o.before.date)}`)))),
+      h('div', { width: INNER, fontSize: 40, fontWeight: 700, lineHeight: 1.2, marginTop: 44 }, `${o.ha} of land cleared ${o.place}.`)),
+    footer()),
+    PW, PH, 85);
+}
+
+// News days: the headline as the story told it, then what the satellite saw at that place
+export async function newsPost(o: { headline: string; outlet: string; date: string; place: string; before: Chip; after: Chip; line: string }) {
+  const TOP = 450, IMG = PH - TOP - 96, INSET = 230;
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: 52, width: INNER, height: TOP - 52 },
+      h('div', { fontSize: 140, fontWeight: 700, lineHeight: 0.8, color: SIGNAL, height: 76 }, '“'),
+      h('div', { width: INNER, fontSize: o.headline.length > 90 ? 46 : 54, fontWeight: 700, lineHeight: 1.12, letterSpacing: -1 }, o.headline),
+      h('div', { width: INNER, fontSize: 28, color: '#444', marginTop: 18 }, `${o.outlet}, ${o.date}`)),
+    h('div', { display: 'flex', position: 'absolute', left: 0, top: TOP, width: PW, height: IMG, overflow: 'hidden' },
+      img(await jpeg(o.after), { position: 'absolute', left: 0, top: -(PW - IMG) / 2, width: PW, height: PW }),
+      img(ring(60), { position: 'absolute', left: PW / 2 - 30, top: IMG / 2 - 30, width: 60, height: 60 }),
+      h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', right: 40, top: 32, border: '5px solid #fff', background: '#fff' },
+        img(await jpeg(o.before), { width: INSET, height: INSET }),
+        h('div', { fontSize: 22, fontWeight: 700, color: INK, padding: '6px 8px 2px' }, `Before, ${shortDate(o.before.date)}`)),
+      h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: 40, bottom: 28, maxWidth: PW - 80, background: INK, color: '#fff', padding: '10px 16px' },
+        h('div', { fontSize: 30, fontWeight: 700 }, `What the satellite saw ${o.place}`),
+        h('div', { fontSize: 24, color: '#DDD', marginTop: 4 }, o.line))),
+    footer()),
+    PW, PH, 85);
+}
+
+// Ten towns: a ranked table, the ranking itself is the picture
+export async function townsPost(o: { title: string; line: string; rows: { name: string; district: string; ha: string }[]; sub: string }) {
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: PAD, top: PAD, width: INNER },
+      h('div', { width: INNER, fontSize: 56, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, o.title),
+      h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, marginTop: 12, color: '#333' }, o.line),
+      h('div', { display: 'flex', flexDirection: 'column', marginTop: 30, width: INNER },
+        ...o.rows.slice(0, 10).map((r, i) => h('div', { display: 'flex', alignItems: 'center', height: i === 0 ? 108 : 78, borderTop: `${i === 0 ? 4 : 2}px solid ${INK}` },
+          h('div', { width: 84, fontSize: i === 0 ? 64 : 40, fontWeight: 700, color: SIGNAL }, String(i + 1)),
+          h('div', { display: 'flex', flexDirection: 'column', width: 640 },
+            h('div', { fontSize: i === 0 ? 46 : 34, fontWeight: 700, lineHeight: 1.05 }, r.name),
+            h('div', { fontSize: 22, color: '#555' }, r.district)),
+          h('div', { width: INNER - 84 - 640, textAlign: 'right', fontSize: i === 0 ? 46 : 32, fontWeight: 700 }, r.ha)))),
+      h('div', { width: INNER, fontSize: 24, lineHeight: 1.35, color: '#333', marginTop: 18 }, o.sub)),
     footer()),
     PW, PH, 85);
 }
