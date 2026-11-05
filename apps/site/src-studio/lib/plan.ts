@@ -10,7 +10,7 @@ const PLACE = ['new', 'biggest', 'pits', 'explore', 'licensed', 'close', 'villag
 const NUMBERS = ['rate', 'licence', 'districts', 'explain-pictures', 'sizes', 'map', 'district', 'water-test', 'rate-hour', 'explain-licence', 'explain-satellites'];
 const NEWS_DAYS = new Set([2, 4]);
 // Kinds whose picture or numbers name a place: made from Monday's data, so not shown before it arrives
-const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', ...PLACE]);
+const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', 'water-test', ...WATER.filter((k) => k !== 'plants'), ...PLACE]);
 const EPOCH = Date.UTC(2026, 0, 5); // a Monday: weeks are counted from here, so the lists never restart in January
 const FRESH_HOURS = 48; // a story older than this is not worth quoting
 const DAY = 864e5;
@@ -71,7 +71,7 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
     const known = bySlug.get(slug);
     const backupName = known ? lower(known.kind) : 'another post';
     let post = newData && NAMES_A_PLACE.has(slug) ? null : known ?? null;
-    let title = post?.title ?? `${known?.kind ?? 'Post'}, made from Monday's new data`;
+    let title = post?.title ?? (known ? `${known.kind}, made from Monday's new data` : 'Nothing ready for this day');
     let story: Story | null = null;
     let note = '';
     if (NEWS_DAYS.has(wd)) {
@@ -85,6 +85,8 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       } else if (status === 'ahead') {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
+    } else if (!known) {
+      note = "This week's data could not make this kind of post. Use any post from another day, or skip the day.";
     } else if (!post) {
       note = 'It is made from the data that arrives on Monday morning, so it shows here from then.';
     } else if (newData) {

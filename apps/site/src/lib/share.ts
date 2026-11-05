@@ -8,7 +8,7 @@ import { barsPost, districtPost, explainerPost, licencePost, mapPost, ratePost, 
 import waterMap from '../data/water-map.json';
 
 const SITE = (import.meta.env.SITE ?? 'https://galamseytracker.org').replace(/\/$/, '');
-const PITCH_HA = 0.714; // a 105 x 68 m football pitch, as on the site (docs/sources.json football-pitch)
+export const PITCH_HA = 0.714; // a 105 x 68 m football pitch, as on the site (docs/sources.json football-pitch)
 const pitches = (ha: number) => Math.round(ha / PITCH_HA);
 const RIVER_BLUE = '#1D5C8C', SIGNAL_RED = '#B8155A', SIGNAL_PINK = '#FF6FA6'; // the post palette (og.ts)
 
@@ -46,7 +46,7 @@ if (lead && summary) {
     alt: `Two satellite pictures of the same land near ${town.name}${district ? `, ${district}` : ''}. Before, ${longDate(place.chips.before.date)}: green cover. After, ${longDate(place.chips.after.date)}: wide patches of bare orange ground.`,
     text: pick([
       `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.\n\nThe pictures show the largest patch, before and after. ${LICENCE_SENTENCE[place.licence]}`,
-      `${leadRank === 0 ? `No town we track has more cleared land around it than ${town.name}` : `${town.name} is one of the ${count(ranked.length)} towns we track with the most cleared land around it`}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
+      `${leadRank === 0 ? `No town we track has more cleared land around it than ${town.name}${district ? ` in ${district}` : ''}` : `${town.name}${district ? `, in ${district},` : ''} is one of the ${count(ranked.length)} towns we track with the most cleared land around it`}: ${hectares(town.ha)} within 1 km, in 12 months.\n\nHere is its largest patch, before and after, seen by satellite. ${LICENCE_SENTENCE[place.licence]}`,
       `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.\n\nWithin 1 km of the town, ${hectares(town.ha)} of land was cleared in the last 12 months, about ${num(pitches(town.ha))} football pitches. ${LICENCE_SENTENCE[place.licence]}`,
     ]),
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
@@ -438,10 +438,11 @@ if (likely.length && noLicence.length) {
 
 // 21. Month in review: land first seen in the last calendar month (posted on the first Friday of a month)
 if (summary) {
-  // The last month the data covers to its end: data up to 31 October reviews October, up to 5 December November
-  const end = new Date(Date.parse(summary.data_date) - 10 * 864e5);
-  const monthStart = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), 1));
-  const monthEnd = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth() + 1, 1));
+  // The last month the data covers to its end: data up to 31 October reviews October, up to 26 December November
+  const dd = new Date(summary.data_date);
+  const lastDay = new Date(dd.getTime() + 864e5).getUTCDate() === 1;
+  const monthStart = new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth() - (lastDay ? 0 : 1), 1));
+  const monthEnd = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 1));
   const inMonth = active.filter((p) => { const t = Date.parse(p.first_seen); return t >= monthStart.getTime() && t < monthEnd.getTime(); });
   // New patches often wait weeks for a cloud-free picture, so fall back to the newest pictured one
   const top = inMonth.filter(pictured)[0];
@@ -500,5 +501,4 @@ posts.push({
 });
 
 export const sharePosts = posts;
-// The town the town post shows this week, for the studio's templates
-export const townOfWeek = lead ? { ...lead, rank: leadRank } : null;
+

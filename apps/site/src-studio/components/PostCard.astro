@@ -14,7 +14,7 @@ const fields: [string, string][] = [
 ---
 <article id={`${idPrefix}${post.slug}`} class="card">
   {heading && <H class="card-title">{heading}</H>}
-  {story && <p class="story">Quote this story on X: <a href={story.link} rel="noreferrer">{story.title}</a> ({story.source})</p>}
+  {story && <p class="story">Quote this story on X: <a href={story.link} rel="noreferrer">{story.title}</a> ({story.source}). Check it is about this place first.</p>}
   <a href={`/${post.slug}.jpg`} class="pic"><img src={`/${post.slug}.jpg`} alt={post.alt} width="1080" height="1350" loading="lazy" decoding="async" /></a>
   <p class="save"><a class="btn" href={`/${post.slug}.jpg`} download={`galamsey-${post.slug}.jpg`}>Save the picture</a></p>
   {fields.map(([label, value]) => (

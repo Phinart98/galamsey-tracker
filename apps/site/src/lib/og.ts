@@ -152,7 +152,7 @@ export async function ratePost(o: { top: string; perDay: number; line: string; s
   const rows: Node[] = [];
   const shown = Math.min(o.perDay, 100);
   // Few pitches are drawn large, so a small number still fills the picture
-  const per = shown <= 6 ? 2 : 10, iw = shown <= 6 ? 440 : 84, ih = shown <= 6 ? 293 : 56, gap = shown <= 6 ? 24 : 12;
+  const few = shown <= 6, per = few ? (shown <= 4 ? 2 : 3) : 10, iw = few ? (shown <= 4 ? 440 : 288) : 84, ih = Math.round(iw * (56 / 84)), gap = few ? 24 : 12;
   for (let r = 0; r * per < shown; r++) {
     rows.push(h('div', { display: 'flex', gap }, ...Array.from({ length: Math.min(per, shown - r * per) }, () => img(PITCH, { width: iw, height: ih }))));
   }
@@ -161,7 +161,7 @@ export async function ratePost(o: { top: string; perDay: number; line: string; s
     h('div', { display: 'flex', alignItems: 'flex-end', gap: 28, marginTop: 30 },
       h('div', { fontSize: 230, fontWeight: 700, lineHeight: 0.85, letterSpacing: -8, color: PINK }, String(o.perDay)),
       h('div', { fontSize: 54, fontWeight: 700, lineHeight: 1.05, width: 560, paddingBottom: 6 }, o.line)),
-    h('div', { display: 'flex', flexDirection: 'column', gap: shown <= 6 ? 24 : 14, marginTop: 64 }, ...rows),
+    h('div', { display: 'flex', flexDirection: 'column', gap: few ? 24 : 14, marginTop: 64 }, ...rows),
     h('div', { width: INNER, fontSize: 28, lineHeight: 1.35, color: '#CCC', marginTop: 40 }, o.sub),
     h('div', { display: 'flex', position: 'absolute', left: PAD, top: PH - 76 }, brandRow('#fff', '#AAA'))),
     PW, PH, 85);

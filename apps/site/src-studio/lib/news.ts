@@ -14,7 +14,9 @@ const DAYS = 7;
 const MAX_POSTS = 4;
 const SHOW = 25; // stories listed, plus any older one that names a place
 // Town names that are also everyday words or regions in news copy
-const SKIP = new Set(['Ghana', 'Gold', 'Central', 'Western', 'Eastern', 'Ashanti', 'Mining', 'River', 'Forest', 'Police', 'Army', 'Station', 'Junction', 'Camp', 'Asafo']);
+const SKIP = new Set(['Ghana', 'Gold', 'Central', 'Western', 'Eastern', 'Ashanti', 'Mining', 'River', 'Forest', 'Police', 'Army', 'Station', 'Junction', 'Camp', 'Asafo',
+  // also people's names, foreign places or words common in news copy
+  'James', 'Baku', 'Tete', 'Pano', 'Kwahu', 'Bank', 'Market', 'Church', 'School', 'Town', 'Village', 'Lake', 'Hill', 'Mile', 'Zongo', 'Ahenkro', 'Krom', 'Fante', 'Akim', 'Wassa', 'Denkyira', 'Adansi', 'Amansie', 'Atwima', 'Sefwi']);
 
 export interface NewsItem { title: string; link: string; source: string; date: string; match?: { name: string; post: Post } }
 
@@ -33,8 +35,10 @@ async function read(url: string) {
       const raw = text(item, 'title');
       const source = text(item, 'source') || new URL(url).hostname.replace(/^www\./, '');
       const title = raw.endsWith(` - ${source}`) ? raw.slice(0, -(source.length + 3)) : raw;
-      return { title, link: text(item, 'link'), source, date: new Date(text(item, 'pubDate')).toISOString(), about: `${title} ${text(item, 'description')}` };
-    });
+      // An item without a readable date is left out on its own, so it cannot drop the rest of the feed
+      const when = Date.parse(text(item, 'pubDate'));
+      return Number.isNaN(when) ? null : { title, link: text(item, 'link'), source, date: new Date(when).toISOString(), about: `${title} ${text(item, 'description')}` };
+    }).filter((i) => i !== null);
   } catch {
     return [];
   }
@@ -42,8 +46,10 @@ async function read(url: string) {
 
 // Towns first (largest cleared land first), then districts
 const pictured = (ids: string[]) => ids.map((id) => placeById.get(id)).find((p) => p && hasPair(p));
-const named = [
-  ...towns.filter((t) => t.name.length >= 4 && !SKIP.has(t.name)).map((t) => ({ name: t.name, label: t.name, district: t.district, place: pictured(t.ids) })),
+const nameCount = towns.reduce((m, t) => m.set(t.name, (m.get(t.name) ?? 0) + 1), new Map<string, number>());
+const named: { name: string; label: string; district: string | null; place: ReturnType<typeof pictured>; shared?: boolean }[] = [
+  // A name shared by several towns only counts when the story also names the town's district
+  ...towns.filter((t) => t.name.length >= 4 && !SKIP.has(t.name)).map((t) => ({ name: t.name, label: t.name, district: t.district, place: pictured(t.ids), shared: (nameCount.get(t.name) ?? 0) > 1 })),
   // A district in the news: its largest pictured patch, named by the town nearest to it
   ...[...new Set(active.map((p) => p.district).filter(Boolean) as string[])].map((d) => {
     const place = active.find((p) => p.district === d && hasPair(p));
@@ -68,7 +74,7 @@ async function load(): Promise<NewsItem[]> {
   let made = 0;
   const used = new Set<string>();
   return items.map(({ about, ...i }) => {
-    const hit = made < MAX_POSTS ? named.find((n) => !used.has(n.place!.id) && pattern(n.name).test(about)) : undefined;
+    const hit = made < MAX_POSTS ? named.find((n) => !used.has(n.place!.id) && pattern(n.name).test(about) && (!n.shared || (!!n.district && pattern(tidyDistrict(n.district)).test(about)))) : undefined;
     if (!hit || !hit.place || !hasPair(hit.place)) return i;
     used.add(hit.place.id);
     made++;

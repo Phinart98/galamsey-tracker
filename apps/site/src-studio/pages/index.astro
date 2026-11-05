@@ -62,7 +62,7 @@ const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'num
               ) : (
               <details open={s.status === 'today'}>
                 <summary>
-                  <span class="when">{s.day}{s.status === 'today' && <span class="tag">Today</span>}{s.status === 'done' && <span class="past">Past</span>}</span>
+                  <span class="when">{s.day}{s.status === 'today' && <span class="tag">Today</span>}</span>
                   <span class="what">{s.title}</span>
                   {s.email && <span class="extra">Plus this month's email</span>}
                 </summary>
@@ -113,7 +113,7 @@ const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'num
       label();
     }));
     // A link to something inside a folded section opens it
-    const open = () => { const t = location.hash && document.querySelector(location.hash); const d = t && (t.tagName === 'DETAILS' ? t : t.closest('details')); if (d) d.open = true; };
+    const open = () => { const t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))); const d = t && (t.tagName === 'DETAILS' ? t : t.closest('details')); if (d) d.open = true; };
     addEventListener('hashchange', open); open();
   </script>
   <script>
