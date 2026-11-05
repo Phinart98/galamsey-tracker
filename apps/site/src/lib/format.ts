@@ -10,14 +10,15 @@ export const pct = (share: number | null | undefined) => (share == null ? 'n/a' 
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+// Month first ("October 31, 2026"), as Ghanaian newsrooms write it. No ordinals ("31st"): one less rule to get wrong
 export function longDate(iso: string) {
   const [y, m, d] = iso.split('-').map(Number);
-  return `${d} ${MONTHS[m - 1]} ${y}`;
+  return `${MONTHS[m - 1]} ${d}, ${y}`;
 }
 
 export function shortDate(iso: string) {
   const [y, m, d] = iso.split('-').map(Number);
-  return `${d} ${MONTHS[m - 1].slice(0, 3)} ${y}`;
+  return `${MONTHS[m - 1].slice(0, 3)} ${d}, ${y}`;
 }
 
 export function monthName(ym: string) {

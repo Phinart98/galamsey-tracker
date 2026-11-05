@@ -21,7 +21,7 @@ const weeks = [
   { id: 'next-week', name: weekend ? 'The week after' : 'Next week', days: week(new Date(thisMonday.getTime() + 7 * DAY), today, stories) },
 ];
 const email = templates().find((t) => t.slug === 'email');
-const todayName = today.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
 ---
 <!doctype html>
 <html lang="en-GB">

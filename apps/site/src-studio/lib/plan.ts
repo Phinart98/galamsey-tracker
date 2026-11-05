@@ -96,7 +96,7 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
     if (status === 'done') { title = NEWS_DAYS.has(wd) ? `A place in the news, or ${backupName}` : known?.kind ?? title; post = null; note = ''; story = null; }
     return {
       date: d.toISOString().slice(0, 10),
-      day: d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }),
+      day: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }),
       status, title, post, story, note,
       email: firstWeekday(d),
     };
