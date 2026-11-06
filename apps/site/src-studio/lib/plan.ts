@@ -11,6 +11,17 @@ const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba',
 const PLACE = ['new', 'shape', 'find', 'explore', 'sheet', 'towns'];
 const NUMBERS = ['rate', 'licence', 'districts', 'explain-pictures', 'sizes', 'map', 'district', 'water-test', 'plate', 'explain-licence', 'explain-satellites'];
 const NEWS_DAYS = new Set([2, 4]);
+// What each kind is called, so a day says what it is for even when this week's data could not make its post
+const KIND: Record<string, string> = {
+  town: 'Town of the week', month: 'Month in review',
+  'water-accra': 'City water: Accra', 'water-kumasi': 'City water: Kumasi', 'water-takoradi': 'City water: Takoradi',
+  'water-winneba': 'City water: Winneba', plants: 'All five water plants',
+  new: 'New clearing', shape: 'The shape of it', find: 'Check it yourself', explore: 'Licensed to explore, not to mine',
+  sheet: 'Newest patches', towns: 'Ten towns', rate: 'Football pitches a day', licence: 'Licence split',
+  districts: 'Districts compared', 'explain-pictures': 'How to read the pictures', sizes: 'Patch sizes', map: 'Where it is',
+  district: 'District spotlight', 'water-test': 'The water test', plate: 'Twelve shapes',
+  'explain-licence': 'How we check the licence', 'explain-satellites': 'How satellites see it',
+};
 // Kinds whose picture or numbers name a place: made from Monday's data, so not shown before it arrives
 const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', 'water-test', 'plate', ...WATER.filter((k) => k !== 'plants'), ...PLACE]);
 const EPOCH = Date.UTC(2026, 0, 5); // a Monday: weeks are counted from here, so the lists never restart in January
@@ -74,9 +85,10 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       : firstFriday && have.has('month') ? 'month' : fromList(NUMBERS, w, have);
     const newData = d.getTime() >= nextRun;
     const known = bySlug.get(slug);
-    const backupName = known ? lower(known.kind) : 'another post';
+    const kind = known?.kind ?? KIND[slug] ?? 'Another post';
+    const backupName = lower(kind);
     let post = newData && NAMES_A_PLACE.has(slug) ? null : known ?? null;
-    let title = post?.title ?? (known ? `${known.kind}, made from Monday's new data` : 'Nothing ready for this day');
+    let title = post?.title ?? (known || newData ? `${kind}, made from Monday's new data` : `${kind}: not ready this week`);
     let story: Story | null = null;
     let note = '';
     if (NEWS_DAYS.has(wd)) {
@@ -91,7 +103,9 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
     } else if (!known) {
-      note = "This week's data could not make this kind of post. Use any post from another day, or skip the day.";
+      // After the next weekly run the post is made from its new data, so it may well exist by then
+      note = newData ? 'It is made from the data that arrives on Monday morning, so it shows here from then.'
+        : "This week's data could not make this kind of post. Use any post from another day, or skip the day.";
     } else if (wd === 1 && status === 'today' && !ranToday(d)) {
       note = "The weekly update has not finished yet, so this is last week's town. Check again after it runs, or post another day's kind.";
     } else if (!post) {
@@ -100,7 +114,7 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       note = "Shown with this week's numbers. Monday's update may change them a little.";
     }
     // A past day only says what kind of post it was: the rotation has moved on, so its name could be wrong
-    if (status === 'done') { title = NEWS_DAYS.has(wd) ? `A place in the news, or ${backupName}` : known?.kind ?? title; post = null; note = ''; story = null; }
+    if (status === 'done') { title = NEWS_DAYS.has(wd) ? `A place in the news, or ${backupName}` : kind; post = null; note = ''; story = null; }
     return {
       date: d.toISOString().slice(0, 10),
       day: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' }),
