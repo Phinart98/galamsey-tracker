@@ -15,7 +15,7 @@ import { placePosts } from './places';
 import { townPosts } from './town';
 import { waterPosts } from './water';
 
-export type { Post } from './rules';
+export type { Pictured, Post } from './rules';
 export { showable } from './rules';
 export { newsPlacePost } from './town';
 

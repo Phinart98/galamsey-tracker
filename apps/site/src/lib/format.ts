@@ -36,8 +36,10 @@ export const LICENCES = Object.keys({
 export const NO_LICENCE_TO_MINE: readonly Licence[] = ['no licence', 'prospecting only'];
 export const noLicenceToMine = (licence: Licence) => NO_LICENCE_TO_MINE.includes(licence);
 
-// A 105 x 68 m football pitch (docs/sources.json football-pitch), the unit the site and posts use for area
+// A 105 x 68 m football pitch (docs/sources.json football-pitch), the unit the site and posts use for area.
+// The pipeline uses the same figure (pipeline/tracker/summary.py PITCH_HA).
 export const PITCH_HA = 0.714;
+export const DAY_MS = 864e5;
 
 // The wording rule: describe the licence on the land, never a verdict on the people or the site
 export const LICENCE_SHORT: Record<Licence, string> = {

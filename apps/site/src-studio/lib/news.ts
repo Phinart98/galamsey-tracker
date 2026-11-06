@@ -3,9 +3,9 @@
 // working feed of their own) and MyJoyOnline's galamsey tag. Headlines that name a town or district we cover get
 // a ready "In the news" post of that place's largest pictured patch with signs of mining. If a feed fails, the
 // studio still builds.
-import { active, hasPair, placeById, towns } from '../../src/lib/data';
-import { closeTo, tidyDistrict } from '../../src/lib/format';
-import { newsPlacePost, showable, type Post } from './posts';
+import { active, placeById, towns } from '../../src/lib/data';
+import { DAY_MS, closeTo, tidyDistrict } from '../../src/lib/format';
+import { newsPlacePost, showable, type Pictured, type Post } from './posts';
 
 const FEEDS = [
   'https://news.google.com/rss/search?q=galamsey+when:7d&hl=en-GH&gl=GH&ceid=GH:en',
@@ -49,7 +49,7 @@ async function read(url: string) {
 
 // Towns first (largest cleared land first), then districts
 // The picture is the town's largest Likely galamsey patch, by the same rule as every post (posts/rules.ts showable)
-const pictured = (ids: string[]) => ids.map((id) => placeById.get(id)).filter((p) => p && p.active && showable(p)).sort((a, b) => b!.ha - a!.ha)[0];
+const pictured = (ids: string[]) => ids.map((id) => placeById.get(id)).find((p): p is Pictured => !!p && p.active && showable(p));
 const nameCount = towns.reduce((m, t) => m.set(t.name, (m.get(t.name) ?? 0) + 1), new Map<string, number>());
 const named: { name: string; label: string; district: string | null; place: ReturnType<typeof pictured>; shared?: boolean }[] = [
   // A name shared by several towns only counts when the story also names the town's district
@@ -57,14 +57,14 @@ const named: { name: string; label: string; district: string | null; place: Retu
   // A district in the news: its largest pictured patch, named by the town nearest to it
   ...[...new Set(active.map((p) => p.district).filter(Boolean) as string[])].map((d) => {
     // Close to a town, so the post can say "near" it
-    const place = active.find((p) => p.district === d && showable(p) && closeTo(p) != null);
+    const place = active.find((p): p is Pictured => p.district === d && showable(p) && closeTo(p) != null);
     return { name: tidyDistrict(d), label: (place && closeTo(place)) ?? tidyDistrict(d), district: d, place };
   }),
 ].filter((n) => n.place);
 const pattern = (name: string) => new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
 
 async function load(): Promise<NewsItem[]> {
-  const since = Date.now() - DAYS * 864e5;
+  const since = Date.now() - DAYS * DAY_MS;
   const seen = new Set<string>();
   const items = (await Promise.all(FEEDS.map(read))).flat()
     // Feeds are outside data: keep only web links, so a bad feed cannot put a script link on the page
@@ -80,10 +80,10 @@ async function load(): Promise<NewsItem[]> {
   const used = new Set<string>();
   return items.map(({ about, ...i }) => {
     const hit = made < MAX_POSTS ? named.find((n) => !used.has(n.place!.id) && pattern(n.name).test(about) && (!n.shared || (!!n.district && pattern(tidyDistrict(n.district)).test(about)))) : undefined;
-    if (!hit || !hit.place || !hasPair(hit.place)) return i;
+    if (!hit?.place) return i;
     used.add(hit.place.id);
     made++;
-    return { ...i, match: { name: hit.name, post: newsPlacePost(i, hit.name, hit.label, hit.district, hit.place as never, `news-${made}`) } };
+    return { ...i, match: { name: hit.name, post: newsPlacePost(i, hit.name, hit.label, hit.district, hit.place, `news-${made}`) } };
   }).filter((n: NewsItem, i) => i < SHOW || n.match);
 }
 

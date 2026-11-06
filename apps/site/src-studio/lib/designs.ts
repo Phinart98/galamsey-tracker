@@ -4,10 +4,20 @@
 // a big number in signal red, and the same brand footer on every post so the feed reads as one voice.
 import type { Chip } from '../../src/lib/data';
 import { shortDate } from '../../src/lib/format';
-import { card, h, img, jpeg, type Node } from '../../src/lib/og';
+import { card, h, img, jpeg as encode, type Node } from '../../src/lib/og';
+
+// Several posts show the same picture (the town of the week also heads the picture explainer), so each is
+// downloaded and re-encoded once per build
+const encoded = new Map<string, Promise<string>>();
+const jpeg = (chip: Chip) => {
+  const key = chip.files['720.webp'];
+  if (!encoded.has(key)) encoded.set(key, encode(chip));
+  return encoded.get(key)!;
+};
 
 const PW = 1080, PH = 1350, PAD = 64, INNER = PW - PAD * 2;
-const INK = '#000', PAPER = '#F5F6F3', SIGNAL = '#B8155A', PINK = '#FF6FA6', RIVER = '#1D5C8C';
+// The post palette: the site's colours, plus river blue for water
+export const INK = '#000', PAPER = '#F5F6F3', SIGNAL = '#B8155A', PINK = '#FF6FA6', RIVER = '#1D5C8C';
 const svgUri = (svg: string) => `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 
 // White ring with a thin black edge, hollow so the patch shows through (same as the site). SVG, because satori

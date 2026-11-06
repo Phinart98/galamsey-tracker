@@ -1,14 +1,14 @@
 // Posts built around a number: football pitches a day, the licence split, a district in the spotlight, districts
 // compared, patch sizes, the map of every patch, the water test, and the month in review
-import { active, coverage, summary } from '../../../src/lib/data';
-import { LICENCE_SHORT, PITCH_HA, count, hectares, nearText, num, pct, placeName, shortDate, tidyDistrict } from '../../../src/lib/format';
+import { coverage, summary, type Licence } from '../../../src/lib/data';
+import { LICENCE_SHORT, NO_LICENCE_TO_MINE, PITCH_HA, count, hectares, nearText, num, pct, placeName, shortDate, tidyDistrict } from '../../../src/lib/format';
 import { barsPost, districtPost, licencePost, mapPost, ratePost, statPost } from '../designs';
-import { SITE, dataDate, districtTotals, likelyLand, near, newest, photo, pick, pitches, reviewMonth, unlicensed, type Post } from './rules';
+import { SITE, dataDate, districtTotals, likely, near, newest, photo, pick, pitches, reviewMonth, unlicensed, type Post } from './rules';
 import waterMap from '../../../src/data/water-map.json';
 
 export const numberPosts: Post[] = [];
 const AREAS = `the ${count(coverage.length)} areas of the southern gold belt we cover`;
-const unlicensedHa = unlicensed.reduce((t, p) => t + p.ha, 0);
+const unlicensedHa = summary?.no_licence_to_mine.ha ?? 0;
 
 // Football pitches a day: an average of our own 12-month total, not a claim that it is rising
 if (summary && unlicensedHa > 0) {
@@ -34,11 +34,12 @@ That is ${num(unlicensedHa)} hectares in the 12 months leading up to ${dataDate}
 // What licence is on the cleared land, as one split bar. The two no-licence-to-mine labels are shown, and all
 // licensed land is one grey remainder, unnamed
 if (summary) {
-  const totalHa = summary.total_ha;
-  const part = (label: string, ha: number, share: number, alarm: boolean) => ({ label, ha: `${num(ha)} ha`, share, tiny: ha > 0 && share < 0.005, alarm });
-  const nl = summary.by_licence['no licence'] ?? { ha: 0, share: 0 }, pr = summary.by_licence['prospecting only'] ?? { ha: 0, share: 0 };
-  const rest = { ha: summary.total_ha - nl.ha - pr.ha, share: Math.max(0, 1 - nl.share - pr.share) };
-  const parts = [part(LICENCE_SHORT['no licence'], nl.ha, nl.share, true), part(LICENCE_SHORT['prospecting only'], pr.ha, pr.share, true), part('Land with a licence (we leave it out)', rest.ha, rest.share, false)];
+  const { total_ha: totalHa, by_licence: byLicence } = summary;
+  const bar = (label: string, ha: number, share: number, alarm: boolean) => ({ label, ha: `${num(ha)} ha`, share, tiny: ha > 0 && share < 0.005, alarm });
+  const of = (l: Licence) => byLicence[l] ?? { ha: 0, share: 0 };
+  const noLicence = NO_LICENCE_TO_MINE.map((l) => bar(LICENCE_SHORT[l], of(l).ha, of(l).share, true));
+  const licensed = { ha: totalHa - NO_LICENCE_TO_MINE.reduce((t, l) => t + of(l).ha, 0), share: Math.max(0, 1 - NO_LICENCE_TO_MINE.reduce((t, l) => t + of(l).share, 0)) };
+  const parts = [...noLicence, bar('Land with a licence (we leave it out)', licensed.ha, licensed.share, false)];
   const share = pct(summary.no_licence_to_mine.share);
   numberPosts.push({
     slug: 'licence',
@@ -87,7 +88,7 @@ These are its three largest patches with signs of mining (open water, as in mini
 }
 
 // Districts compared. A district is named only if some of its land shows signs of mining
-const withSigns = new Set(active.filter(likelyLand).map((p) => p.district));
+const withSigns = new Set(likely.map((p) => p.district));
 const byDistrict = districtTotals.filter((d) => withSigns.has(d.district)).slice(0, 8);
 if (byDistrict.length >= 5) {
   numberPosts.push({
@@ -133,7 +134,6 @@ if (unlicensed.length) {
 
 // The water test: how many patches carry the Likely galamsey label, and what it means. The one post that uses the
 // label's name, because it is the post that explains it
-const likely = active.filter(likelyLand);
 if (likely.length) {
   const ex = pick(photo.slice(0, 10), 3);
   numberPosts.push({
@@ -156,9 +156,11 @@ if (reviewMonth?.inMonth.length) {
   // The total is many patches spread over the areas, so say how small most are (only when it is true)
   const smallShare = inMonth.filter((p) => p.ha < 2).length / inMonth.length;
   const spread = `across the ${count(coverage.length)} areas we cover${smallShare > 0.5 ? ', most under 2 hectares' : ''}`;
+  // What the picture is: one of the month's patches, or (when none has a clear picture yet) a recent one
+  const which = top ? 'one of them, the largest with signs of mining' : 'a recent patch with signs of mining';
   numberPosts.push({
     slug: 'month', kind: 'Month in review', title: `${month} in review`,
-    alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches ${spread}.${shown ? (top ? ` A satellite picture of one of them, the largest with signs of mining: ${hectares(shown.ha)} ${near(shown)}.` : ` A satellite picture of a recent patch with signs of mining: ${hectares(shown.ha)} ${near(shown)}.`) : ''}`,
+    alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches ${spread}.${shown ? ` A satellite picture of ${which}: ${hectares(shown.ha)} ${near(shown)}.` : ''}`,
     text: `In ${month}, satellites first saw ${num(ha)} hectares of newly cleared land with no licence to mine on the register, in ${num(inMonth.length)} patches ${spread}.${top ? `\n\nPictured: the largest of them with signs of mining (open water, as in mining pits), ${hectares(top.ha)} ${placeName(top)}.` : ''}\n\nNASA confirms clearing over several weeks, so this number can still go up.`,
     reply: `All patches, newest first: ${SITE}/map?sort=new`,
     render: () => statPost({ title: `${month} in review`, big: `${num(ha)} ha`, line: `newly cleared with no licence to mine, in ${num(inMonth.length)} patches ${spread}`, body: 'First seen by satellite that month. NASA confirms clearing over several weeks, so the number can still go up.', picture: shown?.chips.after, caption: shown ? `${top ? 'One of them, with signs of mining' : 'A recent patch with signs of mining'}: ${hectares(shown.ha)}, ${near(shown)}` : undefined }),

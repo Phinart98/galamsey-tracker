@@ -3,8 +3,8 @@
 // name anyone. (Templates for other platforms were dropped on 2026-11-05: X only for now.)
 import { summary, townsNear, water } from '../../src/lib/data';
 import { PITCH_HA, hectares, longDate, num, pct } from '../../src/lib/format';
+import { SITE } from '../../src/lib/site';
 
-const SITE = 'https://galamseytracker.org';
 
 export interface Template { slug: string; name: string; use: string; fields: [string, string][] }
 

@@ -26,19 +26,14 @@ async function download(url: string) {
   return Buffer.from(await res.arrayBuffer());
 }
 
-// Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG. Kept per build, because several posts
-// use the same picture and the studio would otherwise download and re-encode it each time.
-const encoded = new Map<string, Promise<string>>();
-export function jpeg(chip: Chip): Promise<string> {
+// Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG
+export async function jpeg(chip: Chip) {
   const rel = chip.files['720.webp'];
-  if (!encoded.has(rel)) encoded.set(rel, (async () => {
-    // The weekly run has the pictures on disk even when the site links to them on the pictures site
-    const here = [path.join(process.cwd(), 'public', rel), path.join(process.cwd(), '../../pipeline/out', rel)].find((f) => fs.existsSync(f));
-    const buf = here ? fs.readFileSync(here) : await download(chipUrl(rel));
-    const out = await sharp(buf).jpeg({ quality: 82 }).toBuffer();
-    return `data:image/jpeg;base64,${out.toString('base64')}`;
-  })());
-  return encoded.get(rel)!;
+  // The weekly run has the pictures on disk even when the site links to them on the pictures site
+  const here = [path.join(process.cwd(), 'public', rel), path.join(process.cwd(), '../../pipeline/out', rel)].find((f) => fs.existsSync(f));
+  const buf = here ? fs.readFileSync(here) : await download(chipUrl(rel));
+  const out = await sharp(buf).jpeg({ quality: 82 }).toBuffer();
+  return `data:image/jpeg;base64,${out.toString('base64')}`;
 }
 
 // JPEG, not PNG: a card is mostly satellite photo, and as PNG it came to about 700 KB, past what WhatsApp

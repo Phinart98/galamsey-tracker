@@ -1,8 +1,9 @@
 // Explainers: the same words every time, posted rarely, so readers learn how to read the evidence
-import { explainerPost } from '../designs';
-import { SITE, lead, type Post } from './rules';
+import { INK, PINK, SIGNAL, explainerPost } from '../designs';
+import { SITE, lead, photo, type Post } from './rules';
 
-const SIGNAL_RED = '#B8155A', SIGNAL_PINK = '#FF6FA6', INK_BLACK = '#000'; // designs.ts SIGNAL, PINK, INK
+// A real pair to explain: the town of the week's, or else the largest pictured patch
+const example = lead?.place ?? photo[0];
 
 export const explainerPosts: Post[] = [
   {
@@ -10,8 +11,7 @@ export const explainerPosts: Post[] = [
     alt: 'A before and after satellite pair with four notes on how to read it: green, orange, dark ponds and the ring.',
     text: 'How to read our satellite pictures:\n\nGreen is forest or farmland. Orange and cream is bare ground, where the soil is dug up. Dark ponds on bare ground are water, often in mining pits. The white ring marks the patch we are talking about.\n\nEach picture is about 1.6 km across.',
     reply: `How the pictures are chosen: ${SITE}/method`,
-    // The town of the week's pair, so the explainer shows a real place
-    render: () => explainerPost({ title: 'How to read the pictures', pair: lead ? { before: lead.place.chips.before, after: lead.place.chips.after } : undefined, points: [
+    render: () => explainerPost({ title: 'How to read the pictures', pair: example ? { before: example.chips.before, after: example.chips.after } : undefined, points: [
       { mark: '', markColor: '#2E6B34', head: 'Green', body: 'Forest, farms and bush.' },
       { mark: '', markColor: '#C46A2B', head: 'Orange and cream', body: 'Bare ground, where the soil has been dug up.' },
       { mark: '', markColor: '#1D3A4F', head: 'Dark ponds', body: 'Water, often in mining pits.' },
@@ -28,9 +28,9 @@ No licence at all, or only a licence to explore: there is no licence to mine on 
 Those are the only places we post about.`,
     reply: `What each label means: ${SITE}/method#licences`,
     render: () => explainerPost({ title: 'How we check the licence', points: [
-      { mark: '', markColor: SIGNAL_RED, head: 'No licence', body: "Nothing on the Minerals Commission's register for this land." },
-      { mark: '', markColor: SIGNAL_PINK, head: 'Prospecting only', body: 'A licence to search for minerals. It does not allow mining.' },
-      { mark: '', markColor: INK_BLACK, head: 'Galamsey', body: 'Mining without a licence to mine. Both labels above mean there is none.' },
+      { mark: '', markColor: SIGNAL, head: 'No licence', body: "Nothing on the Minerals Commission's register for this land." },
+      { mark: '', markColor: PINK, head: 'Prospecting only', body: 'A licence to search for minerals. It does not allow mining.' },
+      { mark: '', markColor: INK, head: 'Galamsey', body: 'Mining without a licence to mine. Both labels above mean there is none.' },
       { mark: '', markColor: '#888', head: 'What we post', body: 'Only land with no licence to mine. We check the register again every week.' },
     ] }),
   },

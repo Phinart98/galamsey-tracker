@@ -3,13 +3,13 @@
 // One rule keeps it clear: every post on the page belongs to a day. This week's five days, then next week's.
 import '../../src/styles/global.css';
 import { summary } from '../../src/lib/data';
-import { longDate } from '../../src/lib/format';
+import { DAY_MS, longDate } from '../../src/lib/format';
 import { mondayOf, week, type Story } from '../lib/plan';
 import { templates } from '../lib/templates';
 import { news } from '../lib/news';
 import PostCard from '../components/PostCard.astro';
 
-const DAY = 864e5;
+const DAY = DAY_MS;
 const now = new Date();
 const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 const stories: Story[] = news.flatMap((n) => (n.match ? [{ date: n.date, title: n.title, link: n.link, source: n.source, post: n.match.post }] : []));

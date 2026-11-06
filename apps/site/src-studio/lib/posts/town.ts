@@ -32,7 +32,6 @@ Within 1 km of the town, ${hectares(town.ha)} of land was cleared with no licenc
     ]),
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
     render: () => townPost({
-      // Non-breaking spaces keep "1 km" and "12 months" on one line
       headline: `${hectares(town.ha)} cleared within 1 km of ${town.name}`,
       sub: `Land with no licence to mine, in 12 months: about ${num(pitches(town.ha))} football pitches${district ? `, in ${district}` : ''}. The picture is ${which} with signs of mining, ${hectares(place.ha)}.`,
       before: place.chips.before, after: place.chips.after,

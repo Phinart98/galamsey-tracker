@@ -1,9 +1,9 @@
 // Posts that show real places: new clearing, the shape of one patch, twelve shapes, check it yourself, licensed to
 // explore, ten towns and the newest patches. Every place they picture or name is Likely galamsey (rules.ts).
 import { active, summary } from '../../../src/lib/data';
-import { LICENCE_SENTENCE, count, hectares, longDate, nearLabel, num, placeName, shortDate, tidyDistrict } from '../../../src/lib/format';
+import { DAY_MS, LICENCE_SENTENCE, count, hectares, longDate, nearLabel, num, placeName, shortDate, tidyDistrict } from '../../../src/lib/format';
 import { explorePost, findPost, platePost, shapePost, sheetPost, townPost, townsPost } from '../designs';
-import { SITE, WEEK, dataDate, likelyLand, near, newest, outlines, photo, pick, pitches, reviewMonth, showable, townTotals, type Post } from './rules';
+import { SITE, WEEK, dataDate, likely, likelyLand, near, newest, outlines, photo, pick, pitches, reviewMonth, townTotals, type Post } from './rules';
 import waterMap from '../../../src/data/water-map.json';
 
 export const placePosts: Post[] = [];
@@ -13,13 +13,14 @@ const SIGNS = 'signs of mining (open water, as in mining pits)';
 // review's picture so the two posts never show the same place
 if (summary) {
   const end = Date.parse(summary.data_date);
+  const since = (days: number) => photo.filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= end - days * DAY_MS);
   // New places often wait a while for a cloud-free picture, so look back four months when two find nothing
-  const all = (days: number) => active.filter(showable).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= end - days * 864e5);
-  const within = (days: number) => all(days).filter((p) => p.id !== reviewMonth?.top?.id)[0];
-  const months = within(60) ? 'two' : 'four';
-  const fresh = within(60) ?? within(120);
+  const notMonth = (list: typeof photo) => list.filter((p) => p.id !== reviewMonth?.top?.id);
+  const days = notMonth(since(60)).length ? 60 : 120;
+  const months = days === 60 ? 'two' : 'four';
+  const [fresh] = notMonth(since(days));
   // When the month in review took the largest, this is the next one, and the words say so
-  const rank = fresh && all(months === 'two' ? 60 : 120)[0]?.id !== fresh.id ? 'one of the largest patches' : 'the largest patch';
+  const rank = fresh && since(days)[0]?.id !== fresh.id ? 'one of the largest patches' : 'the largest patch';
   if (fresh) {
     const where = placeName(fresh);
     placePosts.push({
@@ -41,7 +42,7 @@ It is ${rank} with ${SIGNS} that satellites first saw in the last ${months} mont
 }
 
 // The largest Likely galamsey patches that have an outline, for the shape posts
-const shaped = active.filter((p) => likelyLand(p) && outlines.has(p.id));
+const shaped = likely.filter((p) => outlines.has(p.id));
 
 // The shape of it: one of the ten largest, its real outline beside a football pitch at the same scale
 if (shaped.length && summary) {
@@ -49,7 +50,7 @@ if (shaped.length && summary) {
   const rank = WEEK % top.length;
   const p = top[rank];
   // "The largest" only when no bigger Likely galamsey patch lacks an outline
-  const standing = rank === 0 && active.find(likelyLand)?.id === p.id ? 'the largest patch we track with signs of mining' : `one of the ${count(top.length)} largest patches we track with signs of mining`;
+  const standing = rank === 0 && likely[0]?.id === p.id ? 'the largest patch we track with signs of mining' : `one of the ${count(top.length)} largest patches we track with signs of mining`;
   placePosts.push({
     slug: 'shape', kind: 'The shape of it', title: `The shape of it: ${hectares(p.ha)} ${near(p)}`,
     alt: `The outline of one cleared patch ${near(p)}, ${hectares(p.ha)}, drawn in pink beside a football pitch at the same scale. The patch is about ${num(pitches(p.ha))} times bigger.`,

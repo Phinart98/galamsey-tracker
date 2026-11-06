@@ -78,15 +78,9 @@ export const tiles = Object.fromEntries(
 export const places = Object.values(read<Record<string, Place>>(path.join(SITE, '.data/places.json'), {}));
 export const placeById = new Map(places.map((p) => [p.id, p]));
 // A patch that merged into another keeps its old id in the index (ids are never reused), so its page would say it
-// is no longer cleared. Instead it redirects to the place it joined, following a chain of merges to the end.
-// An old id that is active again is a real place, so it keeps its own page.
-export const redirects = new Map<string, string>();
-for (const from of Object.keys(aliases)) {
-  if (placeById.get(from)?.active) continue;
-  let to = aliases[from];
-  for (const seen = new Set([from]); aliases[to] && !placeById.get(to)?.active && !seen.has(to); seen.add(to)) to = aliases[to];
-  if (placeById.get(to)?.active) redirects.set(from, to);
-}
+// is no longer cleared. Instead it redirects to the place it joined. The weekly run writes aliases.json already
+// resolved (pipeline identity.resolve_aliases); this only checks both ends against the place index.
+export const redirects = new Map(Object.entries(aliases).filter(([from, to]) => !placeById.get(from)?.active && placeById.get(to)?.active));
 
 export const bulletins = fs.existsSync(path.join(DATA, 'summary'))
   ? fs.readdirSync(path.join(DATA, 'summary'))
@@ -132,7 +126,8 @@ export const trendNow = trend.filter((p) => {
 });
 export const STALE_DAYS = 14;
 
-export interface Town { name: string; place: string; district: string | null; lat: number; lon: number; ha: number; patches: number; ids: string[] }
+// no_licence_ha: the part with no licence to mine (weekly runs from 9 November 2026 on), which the studio posts use
+export interface Town { name: string; place: string; district: string | null; lat: number; lon: number; ha: number; no_licence_ha?: number; patches: number; ids: string[] }
 // no_licence_ha: the part with no licence to mine (weekly runs from 9 November 2026 on), which the studio posts use
 export interface WaterPlant { plant: string; river: string; ha: number; no_licence_ha?: number }
 
@@ -154,17 +149,25 @@ export const water = (summary?.water ?? []).slice().sort((a, b) => b.ha - a.ha);
 
 // The villages the home page leads with: most cleared land within 1 km, each shown by its largest pictured
 // patch. Neighbouring villages often share one big patch, so each picture is used once.
-// `largest` says whether the picture is the town's own largest patch (it may have no clear picture yet, or a
-// bigger town nearby may already show it), so the words never claim it when it is not
-export function doorstep(n: number) {
+// One picture for each of the first n rows that has one: the first of its `candidates` (largest first) with a
+// before and after pair. Neighbouring towns often share a patch, so each picture is used once. `rank` is the row's
+// place in `rows`, and `largest` says whether the picture is the row's first candidate (it may have no clear
+// picture yet, or a bigger town nearby may already show it), so the words never claim it when it is not.
+export function onePictureEach<R>(rows: R[], candidates: (row: R) => Place[], n: number) {
   const used = new Set<string>();
-  const out: { town: Town; place: Place & { chips: { before: Chip; after: Chip } }; largest: boolean }[] = [];
-  for (const town of towns) {
-    const place = town.ids.map((id) => placeById.get(id)).find((p) => p && hasPair(p) && !used.has(p.id));
+  const out: { row: R; place: Place & { chips: { before: Chip; after: Chip } }; rank: number; largest: boolean }[] = [];
+  for (const [rank, row] of rows.entries()) {
+    const list = candidates(row);
+    const place = list.find((p) => hasPair(p) && !used.has(p.id));
     if (!place || !hasPair(place)) continue;
     used.add(place.id);
-    out.push({ town, place, largest: place.id === town.ids[0] });
+    out.push({ row, place, rank, largest: place === list[0] });
     if (out.length === n) break;
   }
   return out;
 }
+
+// The home page's towns: the most cleared land within 1 km first, each with its largest pictured patch
+export const doorstep = (n: number) =>
+  onePictureEach(towns, (t) => t.ids.map((id) => placeById.get(id)).filter((p): p is Place => !!p), n)
+    .map(({ row, place, largest }) => ({ town: row, place, largest }));

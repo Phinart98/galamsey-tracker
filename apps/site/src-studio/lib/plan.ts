@@ -4,6 +4,7 @@
 // first Friday of a month the month in review. Weekends off. Each list moves on a step a week, so a kind returns
 // only after the whole list has gone round (PLACE every 3 weeks, NUMBERS every 11).
 import { status as runs } from '../../src/lib/data';
+import { DAY_MS } from '../../src/lib/format';
 import { sharePosts, type Post } from './posts';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba', 'plants'];
@@ -14,7 +15,7 @@ const NEWS_DAYS = new Set([2, 4]);
 const NAMES_A_PLACE = new Set(['town', 'district', 'month', 'explain-pictures', 'water-test', 'plate', ...WATER.filter((k) => k !== 'plants'), ...PLACE]);
 const EPOCH = Date.UTC(2026, 0, 5); // a Monday: weeks are counted from here, so the lists never restart in January
 const FRESH_HOURS = 48; // a story older than this is not worth quoting
-const DAY = 864e5;
+const DAY = DAY_MS;
 
 const weekNo = (d: Date) => Math.floor((d.getTime() - EPOCH) / (7 * DAY));
 

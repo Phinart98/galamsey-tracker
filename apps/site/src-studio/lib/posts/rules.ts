@@ -8,8 +8,9 @@
 //    right beside the patch, as in mining pits. Posts call this "signs of mining", in plain words.
 import fs from 'node:fs';
 import path from 'node:path';
-import { active, hasPair, placeById, summary, towns, type Chip, type Place, type Town } from '../../../src/lib/data';
-import { PITCH_HA, longDate, nearText, noLicenceToMine, placeName } from '../../../src/lib/format';
+import { active, hasPair, onePictureEach, placeById, summary, towns, type Chip, type Place, type Town } from '../../../src/lib/data';
+import { DAY_MS, PITCH_HA, longDate, nearText, noLicenceToMine, placeName } from '../../../src/lib/format';
+import { SITE } from '../../../src/lib/site';
 
 // One post: the picture plus the three things Philip copies (post text, image description, first reply)
 export interface Post {
@@ -22,13 +23,13 @@ export interface Post {
   render: () => Promise<Buffer>;
 }
 
-export const SITE = (import.meta.env.SITE ?? 'https://galamseytracker.org').replace(/\/$/, '');
+export { SITE };
 export const pitches = (ha: number) => Math.round(ha / PITCH_HA);
 export const dataDate = summary ? longDate(summary.data_date) : '';
 
 // A number that moves on by one each week of data, so the posts rotate places and wording without anyone
 // choosing: same data, same pick; next week, the next pick
-export const WEEK = summary ? Math.floor(Date.parse(summary.data_date) / (7 * 864e5)) : 0;
+export const WEEK = summary ? Math.floor(Date.parse(summary.data_date) / (7 * DAY_MS)) : 0;
 export const pick = <T>(list: T[], salt = 0): T => list[(WEEK + salt) % list.length];
 
 export type Pictured = Place & { chips: { before: Chip; after: Chip } };
@@ -41,7 +42,8 @@ export const near = (p: Place) => nearText(p) ?? placeName(p);
 
 // ---- Shared lists, largest first (active places come sorted by size) ----
 export const unlicensed = active.filter(galamsey); // for totals
-export const photo = active.filter(showable); // for pictures
+export const likely = active.filter(likelyLand); // what may be named
+export const photo = active.filter(showable); // what may be pictured
 // The six newest pictured patches of 2 ha or more
 export const newest = photo.filter((p) => p.ha >= 2).sort((a, b) => b.first_seen.localeCompare(a.first_seen)).slice(0, 6);
 
@@ -62,33 +64,19 @@ export const outlines = (() => {
 export const districtTotals = [...unlicensed.reduce((m, p) => (p.district ? m.set(p.district, (m.get(p.district) ?? 0) + p.ha) : m), new Map<string, number>())]
   .map(([district, ha]) => ({ district, ha })).sort((a, b) => b.ha - a.ha);
 
-// Towns by land cleared with no licence to mine within 1 km, most first. `mine` lists their patches largest first.
-// (towns.json counts all clearing; posts count only land with no licence to mine, so each town is re-added up here.)
-export const townTotals = towns.map((t) => {
-  const mine = t.ids.map((id) => placeById.get(id)).filter((p): p is Place => !!p && p.active && galamsey(p)).sort((a, b) => b.ha - a.ha);
-  return { town: { ...t, ha: mine.reduce((s, p) => s + p.ha, 0) } as Town, mine };
-}).filter((r) => r.town.ha > 0).sort((a, b) => b.town.ha - a.town.ha);
+// Towns by land cleared with no licence to mine within 1 km (towns.json no_licence_ha, which counts only the part of
+// each patch inside the ring), most first. `mine` lists their patches with no licence to mine, largest first.
+// Summaries made before 9 November 2026 lack the figure, and the town posts then wait for the next weekly run.
+export const townTotals = towns.filter((t) => (t.no_licence_ha ?? 0) > 0).map((t) => ({
+  town: { ...t, ha: t.no_licence_ha! } as Town,
+  mine: t.ids.map((id) => placeById.get(id)).filter((p): p is Place => !!p && p.active && galamsey(p)),
+})).sort((a, b) => b.town.ha - a.town.ha);
 
-// The top towns that can be pictured, each by its largest Likely galamsey patch. Neighbouring towns often share a
-// patch, so each picture is used once. `rank` is the town's place in townTotals (0 = the most land of all), and
-// `largest` says whether the picture is the town's own largest such patch, so the words never claim it when not.
-export function picturedTowns(n: number) {
-  const used = new Set<string>();
-  const out: { town: Town; place: Pictured; rank: number; largest: boolean }[] = [];
-  for (const [rank, r] of townTotals.entries()) {
-    const own = r.mine.filter(showable);
-    const place = own.find((p) => !used.has(p.id));
-    if (!place) continue;
-    used.add(place.id);
-    out.push({ town: r.town, place, rank, largest: place === own[0] });
-    if (out.length === n) break;
-  }
-  return out;
-}
-
-// The town of the week: one of the eight such towns, a different one each week of data (the top town stays first
-// for months, so always posting it would repeat the same place). The news template sample uses the next one.
-export const ranked = picturedTowns(8);
+// The town of the week: one of the eight top towns with a picture of land showing signs of mining, a different one
+// each week of data (the top town stays first for months, so always posting it would repeat the same place). `rank`
+// is the town's place in townTotals (0 = the most land of all). The news template sample uses the next one.
+export const ranked = onePictureEach(townTotals, (r) => r.mine.filter(likelyLand), 8)
+  .map(({ row, place, rank, largest }) => ({ town: row.town, place: place as Pictured, rank, largest }));
 export const lead = ranked.length ? ranked[WEEK % ranked.length] : undefined;
 export const second = ranked.length > 1 ? ranked[(WEEK + 1) % ranked.length] : undefined;
 
@@ -97,7 +85,7 @@ export const second = ranked.length > 1 ? ranked[(WEEK + 1) % ranked.length] : u
 export const reviewMonth = (() => {
   if (!summary) return null;
   const dd = new Date(summary.data_date);
-  const lastDay = new Date(dd.getTime() + 864e5).getUTCDate() === 1;
+  const lastDay = new Date(dd.getTime() + DAY_MS).getUTCDate() === 1;
   const start = new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth() - (lastDay ? 0 : 1), 1));
   const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
   const inMonth = unlicensed.filter((p) => { const t = Date.parse(p.first_seen); return t >= start.getTime() && t < end.getTime(); });

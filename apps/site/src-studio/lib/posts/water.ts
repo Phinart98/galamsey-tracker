@@ -1,14 +1,13 @@
 // The cities' water: land cleared with no licence to mine on the land that drains to the treatment plants that
 // supply them (who each plant supplies: docs/sources.json claim water-plant-towns). The hectares come from the
 // weekly run (summary water[].no_licence_ha), so they match the site's map of what drains where.
-import { active, water } from '../../../src/lib/data';
+import { water } from '../../../src/lib/data';
 import { num, placeName, shortDate } from '../../../src/lib/format';
 import { catchments, inside } from '../../../src/lib/plants';
-import { barsPost, waterPost } from '../designs';
-import { SITE, pick, showable, type Post } from './rules';
+import { RIVER, barsPost, waterPost } from '../designs';
+import { SITE, photo, pick, type Post } from './rules';
 
 export const waterPosts: Post[] = [];
-const RIVER_BLUE = '#1D5C8C'; // designs.ts RIVER
 
 const CITIES = [
   { slug: 'water-accra', city: 'Accra', plants: ['Weija'], name: 'the Weija plant', river: 'The Densu river', plant: 'Weija treatment plant',
@@ -36,7 +35,7 @@ CITIES.forEach((c, ci) => {
   // One of the three largest pictured patches upstream, a different one each week, so the same city's post does
   // not repeat its picture
   const polys = catchments.filter((k) => c.plants.includes(k.name)).flatMap((k) => k.polys);
-  const candidates = active.filter(showable).filter((p) => inside([p.lon, p.lat], polys)).slice(0, 3);
+  const candidates = photo.filter((p) => inside([p.lon, p.lat], polys)).slice(0, 3);
   const shown = candidates.length ? pick(candidates, ci) : undefined;
   const haText = num(Math.round(ha));
   const it = c.plants.length > 1 ? 'them' : 'it';
@@ -68,6 +67,6 @@ if (plantRows.length >= 3) {
     alt: `Bars for the land cleared with no licence to mine upstream of each water treatment plant: ${plantRows.map((w) => `${w.plant} on the ${w.river}, ${num(w.ha)} hectares`).join(', ')}.`,
     text: `Land cleared with no licence to mine in 12 months, on the land that drains to each water treatment plant:\n\n${plantRows.map((w) => `${w.plant} (${w.river}): ${num(w.ha)} ha`).join('\n')}\n\nWhen it rains, mud from cleared land washes into the rivers the plants draw from.`,
     reply: `The map of what drains where: ${SITE}/#mud`,
-    render: () => barsPost({ title: 'Upstream of the water plants', line: 'Land cleared with no licence to mine in 12 months, on the land that drains to each plant', rows: plantRows.map((w) => ({ label: `${w.plant}, on the ${w.river}`, value: w.ha, text: `${num(w.ha)} ha` })), sub: 'When it rains, mud from cleared land washes into the river each plant draws from.', color: RIVER_BLUE }),
+    render: () => barsPost({ title: 'Upstream of the water plants', line: 'Land cleared with no licence to mine in 12 months, on the land that drains to each plant', rows: plantRows.map((w) => ({ label: `${w.plant}, on the ${w.river}`, value: w.ha, text: `${num(w.ha)} ha` })), sub: 'When it rains, mud from cleared land washes into the river each plant draws from.', color: RIVER }),
   });
 }
