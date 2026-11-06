@@ -89,8 +89,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         # A missing archive must stop the run: starting from nothing would hand every place a new reference
+        # The spare copy is there for a save that failed halfway (see the save step)
         run: |
-          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP"
+          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP" \
+            || { gh release download "$STATE_TAG" --pattern "spare-$STATE_FILE" --dir "$RUNNER_TEMP" \
+                 && mv "$RUNNER_TEMP/spare-$STATE_FILE" "$RUNNER_TEMP/$STATE_FILE"; }
           mkdir -p out && tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C out
 
       - name: Weekly patches, licences, names and summary
@@ -125,6 +128,10 @@ jobs:
         run: |
           # The town and district cache saves downloading all of Ghana's map data every week
           tar -czf "$RUNNER_TEMP/$STATE_FILE" -C out places chips cache/places
+          # --clobber deletes the old file before uploading the new one, so an upload that fails halfway would
+          # leave nothing. The spare copy goes up first: at any moment one complete archive is on the release.
+          cp "$RUNNER_TEMP/$STATE_FILE" "$RUNNER_TEMP/spare-$STATE_FILE"
+          gh release upload "$STATE_TAG" "$RUNNER_TEMP/spare-$STATE_FILE" --clobber
           gh release upload "$STATE_TAG" "$RUNNER_TEMP/$STATE_FILE" --clobber
 
       # Always commit status.json, even after a failure: it keeps the repo active so GitHub

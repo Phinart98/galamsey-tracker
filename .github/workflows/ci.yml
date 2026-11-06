@@ -34,5 +34,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/site/package-lock.json
       - run: npm ci
-      # Without the place index from R2 this builds the empty-data pages, which must not break either
+      - run: npm run typecheck
+      # Without the place index (it lives on the pipeline-state release) this builds the empty-data pages, which must not break either
       - run: npm run build
+      # The private studio shares src/lib with the site, so a change there must not break it either
+      - run: npm run build:studio

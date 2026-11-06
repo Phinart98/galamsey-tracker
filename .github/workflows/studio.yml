@@ -42,7 +42,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP"
+          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP" \
+            || { gh release download "$STATE_TAG" --pattern "spare-$STATE_FILE" --dir "$RUNNER_TEMP" \
+                 && mv "$RUNNER_TEMP/spare-$STATE_FILE" "$RUNNER_TEMP/$STATE_FILE"; }
           mkdir -p pipeline/out
           tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json' '*places/latest.geojson'
           ls -la pipeline/out/places
