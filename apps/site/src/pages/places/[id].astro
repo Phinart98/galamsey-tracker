@@ -6,21 +6,19 @@ import LikelyTag from '../../components/LikelyTag.astro';
 import LabelKey from '../../components/LabelKey.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
-import { aliases, hasCard, hasPair, placeById, places, type Place } from '../../lib/data';
-import { GOOGLE_NOTE, LICENCE_SENTENCE, NO_PICTURE, noPicture, coords, district, googleEarth, googleMaps, hectares, longDate, placeName } from '../../lib/format';
+import { hasCard, hasPair, places, redirects, type Place } from '../../lib/data';
+import { GOOGLE_NOTE, LICENCE_SENTENCE, NO_PICTURE, noLicenceToMine, noPicture, coords, district, googleEarth, googleMaps, hectares, longDate, placeName } from '../../lib/format';
 
 export function getStaticPaths() {
-  const real = places.map((place) => ({ params: { id: place.id }, props: { place, to: null } }));
-  const merged = Object.entries(aliases)
-    .filter(([from]) => !placeById.has(from))
-    .map(([from, to]) => ({ params: { id: from }, props: { place: null, to } }));
+  const real = places.filter((p) => !redirects.has(p.id)).map((place) => ({ params: { id: place.id }, props: { place, to: null } }));
+  const merged = [...redirects].map(([from, to]) => ({ params: { id: from }, props: { place: null, to } }));
   return [...real, ...merged];
 }
 
 const { place, to } = Astro.props as { place: Place | null; to: string | null };
 const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'This place has moved';
 // Why a place has no Likely galamsey label: licensed land never gets it, otherwise it depends on the water reading
-const licensed = place?.licence === 'small-scale licence' || place?.licence === 'large-scale lease' || place?.licence === 'restricted lease';
+const licensed = place ? !noLicenceToMine(place.licence) : false;
 const reading = place?.signs && !('missing' in place.signs) ? place.signs : null;
 ---
 {to ? (

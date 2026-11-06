@@ -31,6 +31,14 @@ export const LICENCES = Object.keys({
   'no licence': 0, 'prospecting only': 0, 'restricted lease': 0, 'small-scale licence': 0, 'large-scale lease': 0,
 } satisfies Record<Licence, number>) as Licence[];
 
+// No licence at all, or only one to explore: there is no licence to mine, so mining here is galamsey.
+// The pipeline uses the same pair (pipeline/tracker/licences.py NO_LICENCE_TO_MINE).
+export const NO_LICENCE_TO_MINE: readonly Licence[] = ['no licence', 'prospecting only'];
+export const noLicenceToMine = (licence: Licence) => NO_LICENCE_TO_MINE.includes(licence);
+
+// A 105 x 68 m football pitch (docs/sources.json football-pitch), the unit the site and posts use for area
+export const PITCH_HA = 0.714;
+
 // The wording rule: describe the licence on the land, never a verdict on the people or the site
 export const LICENCE_SHORT: Record<Licence, string> = {
   'no licence': 'No licence to mine',

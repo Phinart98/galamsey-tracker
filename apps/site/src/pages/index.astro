@@ -38,7 +38,7 @@ const total = summary?.total_ha ?? 0;
             </h2>
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show the largest patch ({hectares(lead.place.ha)}), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
+                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show {lead.largest ? 'the largest patch' : 'one of its patches'} ({hectares(lead.place.ha)}), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
                 <span class="hint">The ring sits on the cleared patch. Tap a picture to enlarge and zoom in.</span>
               </figcaption>
             </Pair>

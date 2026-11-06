@@ -6,7 +6,10 @@ const DATA_UP_TO = summary?.data_date ?? '';
 // Blank until the weekly job has measured the place (it only measures land with no licence to mine)
 const water = (p: Place) => (p.signs && 'water' in p.signs ? p.signs.water : null);
 const likely = (p: Place) => (water(p) == null ? null : p.likely_galamsey ? 'yes' : 'no');
-const cell = (v: unknown) => (v == null ? '' : /[",\n]/.test(String(v)) ? `"${String(v).replaceAll('"', '""')}"` : String(v));
+// Town names come from OpenStreetMap, which anyone can edit. A text cell starting with = + - or @ would run as a
+// formula in Excel or Google Sheets, so it gets a leading apostrophe (numbers such as -1.9 are left alone)
+const safe = (v: unknown) => (typeof v === 'string' && /^[=+\-@\t\r]/.test(v) ? `'${v}` : String(v));
+const cell = (v: unknown) => (v == null ? '' : /[",\n]/.test(safe(v)) ? `"${safe(v).replaceAll('"', '""')}"` : safe(v));
 
 export function GET() {
   const rows = active.map((p) => [...FIELDS.map((f) => cell(p[f])), cell(likely(p)), cell(water(p)), DATA_UP_TO].join(','));

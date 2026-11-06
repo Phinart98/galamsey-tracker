@@ -130,7 +130,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
 <script>
   import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
-  import { LICENCE_SHORT, NO_PICTURE, googleMaps, hectares, longDate, num, shortDate, type NoPicture } from '../lib/format';
+  import { LICENCE_SHORT, NO_LICENCE_TO_MINE, NO_PICTURE, googleMaps, hectares, longDate, num, shortDate, type NoPicture } from '../lib/format';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
@@ -149,7 +149,11 @@ const withoutPic = active.find((p) => !hasPair(p));
   };
   const style = () => `https://tiles.openfreemap.org/styles/${isDark() ? 'dark' : 'positron'}`;
   const local = (u: string) => (u.startsWith(site) ? u.slice(site.length) : u);
-  const ALARM = ['no licence', 'prospecting only'];
+
+  // One download of the places file, shared by the map and the list: it is large for phones on prepaid data
+  let placesFile: Promise<any> | null = null;
+  const placesData = () => (placesFile ??= fetch('/places.geojson').then((r) => r.json()));
+  let placesReady = false;
 
   function addData(m: MLMap) {
     // A theme switch before the first load would otherwise add everything twice
@@ -157,17 +161,18 @@ const withoutPic = active.find((p) => !hasPair(p));
     const [w, s, e, n] = box;
     m.addSource('area', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } } });
     m.addLayer({ id: 'area', type: 'line', source: 'area', paint: { 'line-color': css('--ink'), 'line-width': 1.5, 'line-dasharray': [3, 2] } });
-    m.addSource('places', { type: 'geojson', data: '/places.geojson', promoteId: 'id' });
+    m.addSource('places', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'id' });
+    placesData().then((fc) => { placesReady = true; (m.getSource('places') as GeoJSONSource | undefined)?.setData(fc); });
     const likely = ['has', 'likely_galamsey'];
     m.addLayer({
       id: 'places', type: 'circle', source: 'places',
       layout: { 'circle-sort-key': ['case', likely, 1, 0] },
       paint: {
         'circle-radius': ['interpolate', ['linear'], ['sqrt', ['get', 'ha']], 1, 3, 11, 20],
-        'circle-color': ['case', likely, css('--ink'), ['in', ['get', 'licence'], ['literal', ALARM]], css('--signal'), 'rgba(0,0,0,0)'],
+        'circle-color': ['case', likely, css('--ink'), ['in', ['get', 'licence'], ['literal', NO_LICENCE_TO_MINE]], css('--signal'), 'rgba(0,0,0,0)'],
         'circle-stroke-color': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], ['case', likely, css('--signal'), css('--ink')],
-          ['in', ['get', 'licence'], ['literal', ALARM]], css('--paper'), css('--ink')],
-        'circle-stroke-width': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], 3, ['in', ['get', 'licence'], ['literal', ALARM]], 0.75, 2],
+          ['in', ['get', 'licence'], ['literal', NO_LICENCE_TO_MINE]], css('--paper'), css('--ink')],
+        'circle-stroke-width': ['case', ['any', ['boolean', ['feature-state', 'picked'], false], ['boolean', ['feature-state', 'hover'], false]], 3, ['in', ['get', 'licence'], ['literal', NO_LICENCE_TO_MINE]], 0.75, 2],
         'circle-opacity': 0.9,
       },
     });
@@ -300,18 +305,16 @@ const withoutPic = active.find((p) => !hasPair(p));
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
     m.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
     m.on('sourcedata', (e) => {
-      if (e.sourceId === 'places' && m.isSourceLoaded('places')) loading.hidden = true;
+      if (e.sourceId === 'places' && placesReady && m.isSourceLoaded('places')) loading.hidden = true;
     });
     m.on('load', () => {
       addData(m);
       const want = decodeURIComponent(location.hash.slice(1));
+      // A link to one place: once its data is in the map (addData's setData runs first), open it
       if (want) {
-        m.once('idle', () => {
-          const src = m.getSource('places') as GeoJSONSource;
-          src.getData().then((fc: any) => {
-            const f = fc.features.find((x: any) => x.properties.id === want);
-            if (f) pick(m, f, 13);
-          });
+        placesData().then((fc) => {
+          const f = fc.features.find((x: any) => x.properties.id === want);
+          if (f) m.once('idle', () => pick(m, f, 13));
         });
       }
     });
@@ -375,7 +378,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   const mapCount = document.querySelector<HTMLElement>('[data-map-count]')!;
   const PAGE = 60;
   const LICENCES: Record<string, string[]> = {
-    alarm: ALARM, none: ['no licence'], prospecting: ['prospecting only'], restricted: ['restricted lease'],
+    alarm: NO_LICENCE_TO_MINE, none: ['no licence'], prospecting: ['prospecting only'], restricted: ['restricted lease'],
     small: ['small-scale licence'], large: ['large-scale lease'],
   };
   let mapFilter: any = null;
@@ -402,7 +405,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     options.replaceChildren(...[...(await loadTowns()).keys()].map((k) => Object.assign(document.createElement('option'), { value: k })));
   }, { once: true });
 
-  const load = () => (places ??= fetch('/places.geojson').then((r) => r.json()).then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
+  const load = () => (places ??= placesData().then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
 
   function wanted() {
     const f = new FormData(form);
@@ -441,8 +444,8 @@ const withoutPic = active.find((p) => !hasPair(p));
     a.href = `/places/${p.id}`; a.textContent = title;
     li.querySelector('.text p')!.textContent = `First seen ${longDate(p.first_seen)}.`;
     const tag = li.querySelector<HTMLElement>('.tag')!;
-    tag.classList.toggle('alarm', ALARM.includes(p.licence));
-    tag.classList.toggle('plain', !ALARM.includes(p.licence));
+    tag.classList.toggle('alarm', NO_LICENCE_TO_MINE.includes(p.licence));
+    tag.classList.toggle('plain', !NO_LICENCE_TO_MINE.includes(p.licence));
     tag.textContent = LICENCE_SHORT[p.licence as keyof typeof LICENCE_SHORT];
     li.querySelector<HTMLElement>('.tag.likely')!.hidden = !p.likely_galamsey;
     const none = li.querySelector('.nopair');

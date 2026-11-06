@@ -841,7 +841,7 @@
   },
   {
    "id": "towns-near-clearing",
-   "text": "At least N towns and villages have land cleared within 1 km of them (N from each weekly run)",
+   "text": "At least N towns and villages have land cleared within 1 km of them (N from each weekly run). A town's hectares count only the part of each patch inside its 1 km ring (from 9 November 2026; before, whole patches that touched the ring)",
    "where": "home headline and share card",
    "evidence": [
     "openstreetmap",
@@ -931,7 +931,7 @@
   },
   {
    "id": "share-posts",
-   "text": "Studio posts count only land with no licence to mine (none or prospecting only): hectares within 1 km of a town, hectares on the land draining to each plant (each patch counted by its point inside the plant's catchment, so these differ from the site's all-clearing water figures), the daily average in football pitches, district totals. The licence split card groups all licensed land as one unnamed remainder. Every picture, outline and named place in a post is a Likely galamsey patch (no licence to mine and open water in or beside it), On the site and in posts, a patch is called near a town only when that town is within 2 km of it, or the town or village is within 1 km of the patch (towns.json), otherwise the distance to the nearest town is given.",
+   "text": "Studio posts count only land with no licence to mine (none or prospecting only): hectares within 1 km of a town, hectares on the land draining to each plant (worked out by the weekly run with the same catchments and patch points as the site's water figures, counting only land with no licence to mine), the daily average in football pitches, district totals. The licence split card groups all licensed land as one unnamed remainder. Every picture, outline and named place in a post is a Likely galamsey patch (no licence to mine and open water in or beside it). On the site and in posts, a patch is called near a town only when that town is within 2 km of it, or the town or village is within 1 km of the patch (towns.json), otherwise the distance to the nearest town is given.",
    "where": "private posting studio images and posts (not on the site)",
    "evidence": [],
    "status": "measured",
