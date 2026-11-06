@@ -6,7 +6,7 @@ import Src from '../components/Src.astro';
 import TrendChart from '../components/TrendChart.astro';
 import { coverage, lastSuccessDate, summary, trendNow } from '../lib/data';
 import { WEEKLY } from '../lib/site';
-import { longDate } from '../lib/format';
+import { count, longDate } from '../lib/format';
 import { CONTACT_EMAIL } from '../lib/site';
 ---
 <Base title="How it works" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
@@ -40,6 +40,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       <dt><LicenceTag licence="small-scale licence" /></dt><dd>The land is inside a licence for small-scale mining, so some clearing here may be licensed mining.</dd>
       <dt><LicenceTag licence="large-scale lease" /></dt><dd>The land is inside a lease for a large mine, so some clearing here may be the licensed mine itself.</dd>
     </dl>
+    <p>Where the site says "no licence to mine", it means the first two labels together: no licence at all, or a prospecting licence only.</p>
     <h3 id="matching">How a patch is matched to the register</h3>
     <p>The register does not list licences as single points. It gives each one as an outline on the map. Each cleared patch is an outline too, made of the 30 metre squares where the satellites saw plants lost. We lay one over the other and measure how much of the patch falls inside each kind of licence. The kind that covers the most of the patch gives the label, as long as it covers at least a quarter of it. If none does, the label is no licence.</p>
     <p>Neither outline is exact. The satellite squares can put the edge of a patch about 30 metres out, and the licence outlines are only as good as the register's own map. So a patch right on the edge of a licence can get the wrong label, while one well inside or well outside will not. A licence on the land also does not tell you who did the digging.</p>
@@ -72,7 +73,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       : <p class="muted">We are counting every month again to include the newest areas we cover. The chart comes back when that is done.</p>}
 
     <h2 id="covers">What it covers</h2>
-    <p>The tracker does not cover all of Ghana yet. So far it covers {coverage.length === 1 ? 'one area' : `${coverage.length} areas`} of the southern gold belt:</p>
+    <p>The tracker does not cover all of Ghana yet. So far it covers {coverage.length === 1 ? 'one area' : `${count(coverage.length)} areas`} of the southern gold belt:</p>
     <ul>
       {coverage.map((a) => <li>{a.charAt(0).toUpperCase() + a.slice(1)}</li>)}
     </ul>

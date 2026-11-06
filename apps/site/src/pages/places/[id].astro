@@ -50,7 +50,7 @@ const reading = place?.signs && !('missing' in place.signs) ? place.signs : null
           {place.likely_galamsey && (
             <div class="likely">
               <p><LikelyTag /></p>
-              <p>There is open water in or right beside this patch, and no licence to mine on the land. Mining pits fill with water and farms rarely have ponds, so this is likely galamsey. It is our educated guess from satellite data, not part of the register and not a finding. <a href="/method#likely">How we guess</a></p>
+              <p>There is open water in or right beside this patch, and no licence to mine on the land. Mining pits fill with water and farms rarely have ponds, so this is likely galamsey. It is our educated guess from satellite data, not part of the register and not a finding. <a href="/method#likely">How the guess works</a></p>
             </div>
           )}
           <h2 class="lic-h">Licence on this land</h2>
@@ -71,6 +71,7 @@ const reading = place?.signs && !('missing' in place.signs) ? place.signs : null
             <dt>Size</dt><dd>{hectares(place.ha)}</dd>
             <dt>First seen</dt><dd>{longDate(place.first_seen)}</dd>
             <dt>Last change</dt><dd>{longDate(place.last_seen)}</dd>
+            {place.close && place.close !== place.near && <><dt>Within 1 km of</dt><dd>{place.close}</dd></>}
             {place.near && <><dt>Nearest town</dt><dd>{place.near}{place.near_km != null && `, ${place.near_km} km away`}</dd></>}
             {district(place) && <><dt>District</dt><dd>{district(place)}</dd></>}
             <dt>Location</dt><dd>{coords(place)}</dd>

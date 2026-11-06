@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import LabelKey from '../components/LabelKey.astro';
 import PlaceRow from '../components/PlaceRow.astro';
 import { active, coverage, hasPair, summary, tiles } from '../lib/data';
-import { district, longDate, num } from '../lib/format';
+import { count, district, longDate, num } from '../lib/format';
 import maplibre from '../../.data/maplibre.json';
 
 const LIST = 60;
@@ -23,7 +23,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   <div class="sheet wrap">
     <aside class="margin">
       <h1>Every patch cleared in the last 12 months</h1>
-      <p class="muted small">Covers <a href="/method#covers">{coverage.length === 1 ? coverage[0] : `${coverage.length} areas of the southern gold belt`}</a>.</p>
+      <p class="muted small">Covers <a href="/method#covers">{coverage.length === 1 ? coverage[0] : `${count(coverage.length)} areas of the southern gold belt`}</a>.</p>
       {summary && (
         <dl class="facts small">
           <dt>Patches</dt><dd>{num(active.length)} of at least 1 hectare</dd>
@@ -39,7 +39,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <span class="fbadge" data-fbadge hidden></span>
         <svg class="chev" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <h2 class="fh">Filter the places</h2>
+      <h2 class="fh">Filter the patches</h2>
       <form class="filters" id="filters" data-filters hidden>
         <label>Town or village
           <input name="town" list="town-options" autocomplete="off" spellcheck="false" placeholder="Type a name" data-town />
@@ -65,7 +65,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         <label>First seen
           <select name="since">
             <option value="">Any time in the last 12 months</option>
-            <option value="90">In the last 3 months</option>
+            <option value="90">In the last three months</option>
             <option value="30">In the last month</option>
           </select>
         </label>
@@ -85,30 +85,30 @@ const withoutPic = active.find((p) => !hasPair(p));
             <option value="new">Newest first</option>
           </select>
         </label>
-        <p class="count" data-count aria-live="polite"></p>
+        <p class="count" data-count></p>
         <button class="btn" type="reset" data-clear hidden>Clear filters</button>
       </form>
       </div>
     </aside>
 
     <div class="mapcol">
-      <button class="btn primary open" type="button" data-open-map>Show on map</button>
+      <button class="btn primary open" type="button" data-open-map>Show on the map</button>
       <div class="frame" data-frame hidden>
         <div class="maphead">
-          <span class="small"><strong data-map-count></strong> <span class="muted">© OpenStreetMap, OpenFreeMap</span></span>
+          <span class="small"><strong data-map-count></strong> <span class="muted">© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="https://openfreemap.org/">OpenFreeMap</a></span></span>
           <button class="btn close" type="button" data-close-map>Back to list</button>
         </div>
         <div class="mapbox">
           <div id="map" data-map data-lib={maplibre.base} data-bounds={JSON.stringify(box)} data-site={import.meta.env.SITE} role="region" aria-label="Map of cleared land"></div>
           <p class="tip" data-tip hidden></p>
-          <p class="loading" data-loading role="status">Loading {num(active.length)} places</p>
+          <p class="loading" data-loading role="status">Loading {num(active.length)} patches</p>
           <div class="detail" data-detail hidden></div>
         </div>
         <div class="mapfoot small">
           <ul class="key" aria-label="Map key">
             <li><span class="sw likely"></span>Likely galamsey</li>
             <li><span class="sw alarm"></span>No licence to mine</li>
-            <li><span class="sw ring"></span>Inside a mining licence</li>
+            <li><span class="sw ring"></span>Inside a licence or lease</li>
             <li><span class="sw area"></span>Area we have covered</li>
           </ul>
           <p class="muted">Bigger circles, bigger patches. Tap one to see it.</p>
@@ -118,7 +118,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 
     <section class="listcol" aria-labelledby="list-h">
       <h2 id="list-h" data-list-h>Largest first</h2>
-      <p class="muted small"><span data-list-note>Showing {num(Math.min(LIST, active.length))} of {num(active.length)} patches, largest first.</span> <a href="/places.csv">Download all of them</a>.</p>
+      <p class="muted small"><span data-list-note aria-live="polite">Showing {num(Math.min(LIST, active.length))} of {num(active.length)} patches, largest first.</span> <a href="/places.csv">Download all of them</a>.</p>
       <LabelKey />
       <ul class="list" data-list data-date={summary?.data_date}>{active.slice(0, LIST).map((p) => <PlaceRow place={p} />)}</ul>
       <button class="btn" type="button" data-more hidden={active.length <= LIST}>Show {LIST} more</button>
@@ -130,7 +130,8 @@ const withoutPic = active.find((p) => !hasPair(p));
 
 <script>
   import type { Map as MLMap, GeoJSONSource, ExpressionSpecification } from 'maplibre-gl';
-  import { LICENCE_SHORT, NO_LICENCE_TO_MINE, NO_PICTURE, googleMaps, hectares, longDate, num, shortDate, type NoPicture } from '../lib/format';
+  import { LICENCE_SHORT, NO_LICENCE_TO_MINE, NO_PICTURE, googleMaps, hectares, longDate, num, pictureAlt, shortDate, type NoPicture } from '../lib/format';
+  import { findTown, townKeys, type TownRow } from '../lib/towns';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
   const frame = document.querySelector<HTMLElement>('[data-frame]')!;
@@ -230,25 +231,24 @@ const withoutPic = active.find((p) => !hasPair(p));
     h.textContent = title;
     const hide = document.createElement('button');
     hide.type = 'button'; hide.className = 'hide'; hide.textContent = 'Close';
-    hide.setAttribute('aria-label', 'Close this place');
     hide.addEventListener('click', unpick);
     head.append(h, hide);
     detail.append(head);
-    if (p.before_image) {
+    if (p.image) {
       // A pair the picture viewer understands, so tapping a picture opens it large
       const pair = document.createElement('figure');
       pair.className = 'mini';
       const [plon, plat] = f.geometry.coordinates;
       Object.assign(pair.dataset, { pair: '', title, href: `/places/${p.id}`, lat: String(plat), lon: String(plon) });
-      for (const side of ['before', 'after']) {
-        const large = local(p[`${side}_image`]);
+      for (const side of ['before', 'after'] as const) {
+        const large = local(p.image);
         pair.dataset[side] = large;
         pair.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         const a = document.createElement('a');
         a.href = large; a.dataset.open = side;
         const img = document.createElement('img');
-        img.src = large; img.width = 720; img.height = 720;
-        img.alt = `Satellite image, ${side}, ${longDate(p[`${side}_date`])}`;
+        img.src = large; img.width = 720; img.height = 720; img.dataset.half = side;
+        img.alt = pictureAlt(side, longDate(p[`${side}_date`]));
         const frame = document.createElement('div');
         frame.className = 'chip-frame';
         const spot = document.createElement('i');
@@ -348,7 +348,7 @@ const withoutPic = active.find((p) => !hasPair(p));
         unhover();
         hovered = p.id;
         m.setFeatureState({ source: 'places', id: p.id }, { hover: true });
-        tip.textContent = `${hectares(p.ha)} cleared ${p.name}. ${p.before_image ? 'Click to see the pictures.' : 'Click for details.'}`;
+        tip.textContent = `${hectares(p.ha)} cleared ${p.name}. ${p.image ? 'Click to see the pictures.' : 'Click for details.'}`;
       }
       tip.hidden = false;
       tip.style.translate = `${Math.min(e.point.x + 14, el.clientWidth - tip.offsetWidth - 8)}px ${Math.max(e.point.y - tip.offsetHeight - 10, 8)}px`;
@@ -396,19 +396,29 @@ const withoutPic = active.find((p) => !hasPair(p));
   let ready = false;
 
   type Town = { key: string; ids: Set<string>; lat: number; lon: number };
-  let towns: Promise<Map<string, Town>> | null = null;
+  let towns: Promise<{ rows: TownRow[]; keys: string[] }> | null = null;
   let town: Town | null = null;
-  const loadTowns = () => (towns ??= fetch('/towns.json').then((r) => r.json()).then((rows: [string, string | null, number, number, string[], number, number][]) =>
-    new Map(rows.map(([name, dist, , , ids, lat, lon]) => {
-      const key = dist ? `${name} (${dist})` : name;
-      return [key, { key, ids: new Set(ids), lat, lon }];
-    }))));
+  // A failed download is forgotten, so the next try loads it again
+  const loadTowns = () => (towns ??= fetch('/towns.json')
+    .then((r) => { if (!r.ok) throw new Error(`towns.json ${r.status}`); return r.json() as Promise<TownRow[]>; })
+    .then((rows) => ({ rows, keys: townKeys(rows) }))
+    .catch((e) => { towns = null; throw e; }));
+  // The town a typed or linked name means (lib/towns.ts findTown), or null
+  async function townFor(typed: string): Promise<Town | null> {
+    const { rows, keys } = await loadTowns();
+    const i = findTown(rows, keys, typed);
+    if (i < 0) return null;
+    const [, , , , ids, lat, lon] = rows[i];
+    return { key: keys[i], ids: new Set(ids), lat, lon };
+  }
   const townInput = document.querySelector<HTMLInputElement>('[data-town]')!;
+  // The names under the box, filled on the first focus that manages to load them
   townInput.addEventListener('focus', async () => {
     const options = document.querySelector('[data-town-options]')!;
     if (options.childElementCount) return;
-    options.replaceChildren(...[...(await loadTowns()).keys()].map((k) => Object.assign(document.createElement('option'), { value: k })));
-  }, { once: true });
+    const loaded = await loadTowns().catch(() => null);
+    if (loaded) options.replaceChildren(...loaded.keys.map((k) => Object.assign(document.createElement('option'), { value: k })));
+  });
 
   const load = () => (places ??= placesData().then((fc) => fc.features.map((f: any) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }))));
 
@@ -426,7 +436,7 @@ const withoutPic = active.find((p) => !hasPair(p));
     && (!w.district || p.district === w.district)
     && (!w.cutoff || p.first_seen >= w.cutoff)
     && p.ha >= w.min
-    && (!w.pics || !!p.before_image)
+    && (!w.pics || !!p.image)
     && (!w.likely || !!p.likely_galamsey);
 
   function expression(w: Wanted) {
@@ -436,13 +446,13 @@ const withoutPic = active.find((p) => !hasPair(p));
     if (w.district) all.push(['==', ['get', 'district'], w.district]);
     if (w.cutoff) all.push(['>=', ['get', 'first_seen'], w.cutoff]);
     if (w.min) all.push(['>=', ['get', 'ha'], w.min]);
-    if (w.pics) all.push(['has', 'before_image']);
+    if (w.pics) all.push(['has', 'image']);
     if (w.likely) all.push(['has', 'likely_galamsey']);
     return all.length > 1 ? all : null;
   }
 
   function row(p: Props) {
-    const tpl = document.querySelector<HTMLTemplateElement>(`[data-row=${p.before_image ? 'pic' : 'nopic'}]`)!;
+    const tpl = document.querySelector<HTMLTemplateElement>(`[data-row=${p.image ? 'pic' : 'nopic'}]`)!;
     const li = tpl.content.firstElementChild!.cloneNode(true) as HTMLElement;
     const title = `${hectares(p.ha)} cleared ${p.name}`;
     const a = li.querySelector<HTMLAnchorElement>('h3 a')!;
@@ -459,17 +469,15 @@ const withoutPic = active.find((p) => !hasPair(p));
     if (fig) {
       Object.assign(fig.dataset, { title, href: `/places/${p.id}`, lat: String(p.lat), lon: String(p.lon) });
       li.querySelectorAll<HTMLAnchorElement>('[data-open]').forEach((shot) => {
-        const side = shot.dataset.open!;
-        const src = local(p[`${side}_image`]);
+        const side = shot.dataset.open as 'before' | 'after';
+        const src = local(p.image);
         fig.dataset[side] = src;
         fig.dataset[`${side}Date`] = longDate(p[`${side}_date`]);
         shot.href = src;
         const img = shot.querySelector('img')!;
         img.src = src;
         img.loading = 'lazy'; img.removeAttribute('fetchpriority');
-        img.alt = side === 'before'
-          ? `Satellite image of the place on ${longDate(p.before_date)}, before the clearing was first seen`
-          : `Satellite image of the same place on ${longDate(p.after_date)}`;
+        img.alt = pictureAlt(side, longDate(p[`${side}_date`]));
         shot.querySelector('.when span')!.textContent = `Taken ${shortDate(p[`${side}_date`])}`;
       });
     }
@@ -487,7 +495,10 @@ const withoutPic = active.find((p) => !hasPair(p));
 
   async function apply() {
     const w = wanted();
-    town = w.town ? (await loadTowns()).get(w.town) ?? null : null;
+    let townsFailed = false;
+    town = w.town ? await townFor(w.town).catch(() => { townsFailed = true; return null; }) : null;
+    // Show the town that was found under its full name, so the box, the link and the list agree
+    if (town && townInput.value !== town.key) townInput.value = town.key;
     if (map) showTown(map);
     const q = new URLSearchParams();
     for (const [k, v] of new FormData(form)) if (v) q.set(k, String(v));
@@ -503,11 +514,12 @@ const withoutPic = active.find((p) => !hasPair(p));
     const ha = shown.reduce((t, p) => t + p.ha, 0);
     const everything = shown.length === all.length;
     count.textContent = town && shown.length
-      ? `${num(shown.length)} ${shown.length === 1 ? 'patch reaches' : 'patches reach'} within 1 km of ${town.key}, ${num(ha)} hectares. A big patch can reach the ring even when its dot sits outside it.`
+      ? `${num(shown.length)} ${shown.length === 1 ? 'patch reaches' : 'patches reach'} within 1 km of ${town.key}, ${hectares(ha)}. A big patch can reach the ring even when its dot sits outside it.`
       : everything
       ? `Showing all ${num(all.length)} patches.`
       : shown.length
-        ? `${num(shown.length)} of ${num(all.length)} patches match, ${num(ha)} hectares in all.`
+        ? `${num(shown.length)} of ${num(all.length)} patches match, ${hectares(ha)} in all.`
+        : townsFailed ? 'The list of towns could not be loaded. Check your connection and try again.'
         : w.town && !town ? 'No cleared land within 1 km of a place with that name. Pick a name from the list.' : 'No patches match. Try fewer filters.';
     mapCount.textContent = everything ? '' : `${num(shown.length)} shown.`;
     listHead.textContent = w.sort === 'new' ? 'Newest first' : 'Largest first';

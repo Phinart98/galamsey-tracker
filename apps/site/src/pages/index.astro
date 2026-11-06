@@ -8,7 +8,7 @@ import WaterMap from '../components/WaterMap.astro';
 import Src from '../components/Src.astro';
 import { PLANTS } from '../lib/plants';
 import { active, doorstep, summary, townsNear, water, where } from '../lib/data';
-import { Count, LICENCES, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
+import { Count, LICENCES, count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(10);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
@@ -33,12 +33,12 @@ const total = summary?.total_ha ?? 0;
         {lead && (
           <div class="lead">
             <h2 class="who">
-              <span>The town with the most cleared land around it:</span>
+              <span>{lead.rank === 0 ? 'The town with the most cleared land around it:' : 'One of the towns with the most cleared land around it:'}</span>
               <a href={`/places/${lead.place.id}`}>{lead.town.name}</a>{lead.town.district && `, ${tidy(lead.town.district)}`}
             </h2>
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show {lead.largest ? 'the largest patch' : 'one of the patches'} that reaches within 1 km ({hectares(lead.place.ha)} in all), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
+                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${count(lead.town.patches)} patches`}. These pictures show {lead.largest ? 'the largest patch' : 'one of the patches'} that reaches within 1 km ({hectares(lead.place.ha)} in all), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it that has clear pictures, so the town here can change.</span>
                 <span class="hint">The ring sits on the cleared patch. Tap a picture to enlarge and zoom in.</span>
               </figcaption>
             </Pair>
@@ -70,7 +70,7 @@ const total = summary?.total_ha ?? 0;
         </ul>
         <LabelKey galamsey />
         <p class="note">Town and village points come from OpenStreetMap, which misses many villages, so the true count may be higher.</p>
-        {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(active.length)} places on the map</a></div>}
+        {summary && <div class="actions"><a class="btn primary" href="/map">See all {num(active.length)} patches on the map</a></div>}
       </section>
     )}
 
@@ -157,40 +157,51 @@ const total = summary?.total_ha ?? 0;
 </Base>
 
 <script>
+  import { count } from '../lib/format';
+  import { matchRank, townKeys, type TownRow } from '../lib/towns';
   const box = document.querySelector<HTMLElement>('[data-find]');
   if (box) {
-    type Row = [string, string | null, number, number, string[], number, number];
     const q = box.querySelector<HTMLInputElement>('[data-find-q]')!;
     const status = box.querySelector<HTMLElement>('[data-find-status]')!;
     const results = box.querySelector<HTMLUListElement>('[data-find-results]')!;
     const fmt = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 });
-    const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    let rows: Promise<Row[]> | null = null;
-    const load = () => (rows ??= fetch('/towns.json').then((r) => r.json() as Promise<Row[]>));
+    let towns: Promise<{ rows: TownRow[]; keys: string[] }> | null = null;
+    // A failed download is forgotten, so the next letter typed tries again
+    const load = () => (towns ??= fetch('/towns.json')
+      .then((r) => { if (!r.ok) throw new Error(`towns.json ${r.status}`); return r.json() as Promise<TownRow[]>; })
+      .then((rows) => ({ rows, keys: townKeys(rows) }))
+      .catch((e) => { towns = null; throw e; }));
     box.hidden = false;
-    q.addEventListener('focus', load, { once: true });
+    // Start loading the names early. A failure is forgotten (see load), and the search says so if it happens again
+    q.addEventListener('focus', () => { load().catch(() => {}); });
 
     async function search() {
-      const term = fold(q.value);
-      if (term.length < 2) { results.replaceChildren(); status.textContent = ''; return; }
-      const all = await load();
-      if (fold(q.value) !== term) return;
+      const term = q.value;
+      if (term.replace(/[^\p{L}\p{N}]/gu, '').length < 2) { results.replaceChildren(); status.textContent = ''; return; }
+      let all: { rows: TownRow[]; keys: string[] };
+      try {
+        all = await load();
+      } catch {
+        status.textContent = 'The list of towns could not be loaded. Check your connection and try again.';
+        return;
+      }
+      if (q.value !== term) return;
       // The exact name first, then names that start with what was typed, then names that contain it, each by land cleared
-      const rank = (name: string) => { const f = fold(name); return f === term ? 0 : f.startsWith(term) ? 1 : f.includes(term) ? 2 : 3; };
-      const found = all.map((r) => ({ r, rank: rank(r[0]) })).filter((m) => m.rank < 3)
+      const found = all.rows.map((r, i) => ({ r, key: all.keys[i], rank: matchRank(r[0], term) })).filter((m) => m.rank < 3)
         .sort((a, b) => a.rank - b.rank || b.r[2] - a.r[2]).slice(0, 8);
       status.textContent = found.length
         ? ''
         : 'No cleared land found within 1 km of a place with that name. It may be outside the areas we cover so far, or missing from OpenStreetMap.';
-      results.replaceChildren(...found.map(({ r: [name, dist, ha, n] }) => {
+      results.replaceChildren(...found.map(({ r: [, dist, ha, n], key }) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `/map?town=${encodeURIComponent(dist ? `${name} (${dist})` : name)}`;
+        a.href = `/map?town=${encodeURIComponent(key)}`;
         const b = document.createElement('strong');
-        b.textContent = name;
+        // The key's name part, which tells apart two towns of the same name in one district (lib/towns.ts)
+        b.textContent = key.replace(/ \([^)]*\)$/, '');
         a.append(b, dist ? `, ${dist}` : '');
         const s = document.createElement('span');
-        s.textContent = `${fmt.format(ha)} ha cleared within 1 km, in ${n} ${n === 1 ? 'patch' : 'patches'}. Opens them on the map.`;
+        s.textContent = `${fmt.format(ha)} ha cleared within 1 km, in ${count(n)} ${n === 1 ? 'patch' : 'patches'}. Opens them on the map.`;
         li.append(a, s);
         return li;
       }));
