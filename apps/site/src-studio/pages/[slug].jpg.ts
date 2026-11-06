@@ -1,4 +1,4 @@
-import { sharePosts } from '../../src/lib/share';
+import { sharePosts } from '../lib/posts';
 import { newsPosts } from '../lib/news';
 
 const all = [...sharePosts, ...newsPosts];

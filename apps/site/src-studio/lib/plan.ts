@@ -3,7 +3,8 @@
 // kind from the PLACE list. Wednesday a city's water in turn. Friday the next kind from the NUMBERS list, and on the
 // first Friday of a month the month in review. Weekends off. Each list moves on a step a week, so a kind returns
 // only after the whole list has gone round (PLACE every 3 weeks, NUMBERS every 11).
-import { sharePosts, type Post } from '../../src/lib/share';
+import { status as runs } from '../../src/lib/data';
+import { sharePosts, type Post } from './posts';
 
 const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba', 'plants'];
 const PLACE = ['new', 'shape', 'find', 'explore', 'sheet', 'towns'];
@@ -46,6 +47,9 @@ export interface Slot {
   email: boolean;
 }
 
+// GitHub sometimes starts the Monday run hours late (9 hours on 2 November 2026)
+const ranToday = (d: Date) => String(runs.weekly?.last_success ?? '').slice(0, 10) === d.toISOString().slice(0, 10);
+
 export const mondayOf = (d: Date) => new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * DAY);
 
 // The five weekdays from `monday`, seen from `today` (both at 00:00 UTC). `stories` are news posts, newest first
@@ -79,12 +83,14 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       if (status === 'today' && fresh.length) {
         story = fresh[0];
         post = story.post;
-        title = `In the news: ${post.title.replace(/^One place: /, '')}`;
+        title = post.title; // 'In the news: <place>'
       } else if (status === 'today') {
         note = `No story from the last two days names a place we cover, so post ${backupName}.`;
       } else if (status === 'ahead') {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
+    } else if (wd === 1 && status === 'today' && !ranToday(d)) {
+      note = "The weekly update has not finished yet, so this is last week's town. Check again after it runs, or post another day's kind.";
     } else if (!known) {
       note = "This week's data could not make this kind of post. Use any post from another day, or skip the day.";
     } else if (!post) {

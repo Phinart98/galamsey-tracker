@@ -2,8 +2,7 @@
 // current with no editing. Same rules as the posts: no em dashes or semicolons, never call a place illegal, never
 // name anyone. (Templates for other platforms were dropped on 2026-11-05: X only for now.)
 import { summary, townsNear, water } from '../../src/lib/data';
-import { PITCH_HA } from '../../src/lib/share';
-import { hectares, longDate, num, pct } from '../../src/lib/format';
+import { PITCH_HA, hectares, longDate, num, pct } from '../../src/lib/format';
 
 const SITE = 'https://galamseytracker.org';
 
