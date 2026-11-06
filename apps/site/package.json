@@ -7,7 +7,7 @@
     "build": "node scripts/prepare-data.mjs && astro build",
     "build:studio": "node scripts/prepare-data.mjs && astro build --config astro.studio.config.mjs",
     "preview": "astro preview",
-    "check": "astro check",
+    "check": "node scripts/prepare-data.mjs && astro check",
     "deploy:site": "node scripts/deploy-site.mjs",
     "deploy:pictures": "node scripts/deploy-pictures.mjs"
   },
