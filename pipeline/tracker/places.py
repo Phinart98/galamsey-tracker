@@ -11,6 +11,7 @@ import pandas as pd
 import requests
 
 from tracker.config import HEADERS
+from tracker.licences import NO_LICENCE_TO_MINE
 
 ADM2 = ("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GHA/ADM2/"
         "geoBoundaries-GHA-ADM2_simplified.geojson")
@@ -22,11 +23,21 @@ NEAR_M = 1000     # "on the doorstep": cleared land this close to a town or vill
 NAMES_MAX_AGE_DAYS = 90  # OpenStreetMap names improve over time, so the saved list is refreshed every three months
 
 
-def _cached(path: str, fetch) -> str:
-    if not os.path.exists(path):
+def _cached(path: str, fetch, max_age_days: int | None = None) -> str:
+    """Download once and keep the copy. With max_age_days, download again once it is older, keeping the old
+    copy if that fails (the run goes on with slightly older names rather than stopping)."""
+    stale = max_age_days is not None and os.path.exists(path) and time.time() - os.path.getmtime(path) > max_age_days * 86400
+    if not os.path.exists(path) or stale:
+        try:
+            data = fetch()
+        except (OSError, ValueError) as e:
+            if not stale:
+                raise
+            print(f"places: could not refresh {os.path.basename(path)} ({type(e).__name__}), keeping the saved copy")
+            return path
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "wb") as f:
-            f.write(fetch())
+            f.write(data)
     return path
 
 
@@ -65,15 +76,7 @@ def settlements(cache_dir: str) -> gpd.GeoDataFrame:
             return _read_osm_places(pbf).to_json().encode()
         finally:
             os.remove(pbf)
-    path = os.path.join(cache_dir, "settlements_ghana.geojson")
-    if os.path.exists(path) and time.time() - os.path.getmtime(path) > NAMES_MAX_AGE_DAYS * 86400:
-        try:
-            data = fetch()
-            with open(path, "wb") as f:
-                f.write(data)
-        except (OSError, ValueError) as e:  # keep the old names rather than stop the run
-            print(f"places: could not refresh town names ({type(e).__name__}), keeping the saved list")
-    return gpd.read_file(_cached(path, fetch))
+    return gpd.read_file(_cached(os.path.join(cache_dir, "settlements_ghana.geojson"), fetch, NAMES_MAX_AGE_DAYS))
 
 
 def name(clusters: gpd.GeoDataFrame, towns_and_villages: gpd.GeoDataFrame, district_polys: gpd.GeoDataFrame):
@@ -111,15 +114,18 @@ def towns_near(clusters: gpd.GeoDataFrame, towns_and_villages: gpd.GeoDataFrame,
     """
     t = _one_per_place(towns_and_villages.to_crs(clusters.crs).reset_index(drop=True))
     ring = gpd.GeoDataFrame(geometry=t.buffer(radius_m), crs=clusters.crs)
-    hits = gpd.sjoin(clusters[["id", "ha", "geometry"]], ring, predicate="intersects").sort_values("ha", ascending=False)
+    cols = ["id", "ha", "licence", "geometry"] if "licence" in clusters else ["id", "ha", "geometry"]
+    hits = gpd.sjoin(clusters[cols], ring, predicate="intersects").sort_values("ha", ascending=False)
     rings = gpd.GeoSeries(ring.geometry.loc[hits.index_right].values, index=hits.index, crs=clusters.crs)
     inside = hits.geometry.intersection(rings).area
     share = (inside / hits.geometry.area).clip(upper=1).where(~hits.geometry.within(rings), 1.0)  # wholly inside: all of it
     hits["inside_ha"] = hits.ha * share
-    per = hits.groupby("index_right").agg(ha=("inside_ha", "sum"), patches=("id", "size"), ids=("id", list))
+    hits["no_licence_ha"] = hits.inside_ha.where(hits.licence.isin(NO_LICENCE_TO_MINE), 0.0) if "licence" in hits else 0.0
+    per = hits.groupby("index_right").agg(ha=("inside_ha", "sum"), no_licence_ha=("no_licence_ha", "sum"),
+                                          patches=("id", "size"), ids=("id", list))
     dist = gpd.sjoin_nearest(t[["geometry"]], district_polys.to_crs(clusters.crs)[["district", "geometry"]], how="left")
     ll = t.geometry.to_crs(4326)
     out = per.join(pd.DataFrame({"name": t.name, "place": t.place, "district": dist[~dist.index.duplicated()].district,
                                  "lat": ll.y, "lon": ll.x}))
     return out.sort_values("ha", ascending=False, kind="stable").reset_index(drop=True)[
-        ["name", "place", "district", "lat", "lon", "ha", "patches", "ids"]]
+        ["name", "place", "district", "lat", "lon", "ha", "no_licence_ha", "patches", "ids"]]

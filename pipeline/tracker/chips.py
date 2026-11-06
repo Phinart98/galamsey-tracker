@@ -1,6 +1,7 @@
 """Before/after Sentinel-2 true-colour images of a place, small enough for phones on prepaid data."""
 import datetime as dt
 import io
+import threading
 import time
 
 import numpy as np
@@ -65,9 +66,19 @@ def unique_scenes(per_collection) -> list:
     return sorted(out, key=lambda i: i.properties.get("eo:cloud_cover", 100))
 
 
+_local = threading.local()
+
+
+def _catalogue() -> Client:
+    """One connection to Earth Search per thread, opened on first use (its landing page is one request per open)."""
+    if not hasattr(_local, "cat"):
+        _local.cat = Client.open(EARTH_SEARCH, timeout=60)
+    return _local.cat
+
+
 def search(bbox: list[float], start, end, max_items: int) -> list:
     """Sentinel-2 scenes under 30% cloud over bbox between start and end, least cloudy first, no repeats."""
-    cat = Client.open(EARTH_SEARCH, timeout=60)
+    cat = _catalogue()
     return unique_scenes([cat.search(collections=[c], bbox=bbox, datetime=f"{start}/{end}",
                                      query={"eo:cloud_cover": {"lt": 30}}, max_items=max_items).items()
                           for c in COLLECTIONS])

@@ -86,3 +86,10 @@ def test_a_new_id_never_reuses_an_old_place_id():
     new = _gdf([{"ha": 3.0, "first_seen": "2026-10-01", "geometry": box(0, 0, 100, 100)}])
     out, _ = match_ids(new, prev, to_lonlat=lambda x, y: (-2.0, 5.8))
     assert out.iloc[0].id == "2026-10-5800n2000w-2"
+
+
+def test_aliases_point_at_the_end_of_a_chain_and_drop_old_ids_that_came_back():
+    from tracker.identity import resolve_aliases
+    aliases = {"a": "b", "b": "c", "d": "e", "x": "y", "y": "x"}
+    # a merged into b, which later merged into c. d came back as a place of its own. x and y point at each other.
+    assert resolve_aliases(aliases, active={"c", "d", "e"}) == {"a": "c", "b": "c"}

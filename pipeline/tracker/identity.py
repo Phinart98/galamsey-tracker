@@ -40,6 +40,22 @@ def dedupe_tiles(per_tile: list[gpd.GeoDataFrame]) -> gpd.GeoDataFrame:
     return allc.loc[sorted(kept)].reset_index(drop=True)
 
 
+def resolve_aliases(aliases: dict[str, str], active: set[str]) -> dict[str, str]:
+    """Aliases the site can redirect: each points at the end of its chain of merges, and an old id that is a
+    place of its own again (active) is dropped. A chain that loops or ends at an inactive place is dropped too."""
+    out = {}
+    for old, to in aliases.items():
+        if old in active:
+            continue
+        seen = {old}
+        while to in aliases and to not in active and to not in seen:
+            seen.add(to)
+            to = aliases[to]
+        if to in active:
+            out[old] = to
+    return out
+
+
 def match_ids(new: gpd.GeoDataFrame, previous: gpd.GeoDataFrame | None,
               to_lonlat: Callable[[float, float], tuple[float, float]]) -> tuple[gpd.GeoDataFrame, dict[str, str]]:
     """Assign ids and seed points to new patches; return them plus {old_id: surviving_id} aliases."""

@@ -28,7 +28,8 @@ def test_towns_near_count_clearing_within_a_kilometre_and_keep_same_named_villag
                              geometry=[Point(600000, 600000), Point(650000, 650000), Point(700000, 700000)], crs=crs)
     districts = gpd.GeoDataFrame({"district": ["West", "East"]}, crs=crs, geometry=[
         Point(600000, 600000).buffer(20000), Point(650000, 650000).buffer(20000)])
-    clusters = gpd.GeoDataFrame({"id": ["a", "b", "c", "d"], "ha": [4.0, 9.0, 2.0, 3.0]}, crs=crs, geometry=[
+    clusters = gpd.GeoDataFrame({"id": ["a", "b", "c", "d"], "ha": [4.0, 9.0, 2.0, 3.0],
+                                 "licence": ["no licence", "large-scale lease", "prospecting only", "no licence"]}, crs=crs, geometry=[
         Point(600500, 600000).buffer(100),  # 500 m from the first Nkwanta
         Point(601500, 600000).buffer(600),  # centre 1.5 km away but its edge is within 1 km
         Point(650000, 650900).buffer(50),   # second Nkwanta
@@ -38,6 +39,8 @@ def test_towns_near_count_clearing_within_a_kilometre_and_keep_same_named_villag
     assert t[["name", "district", "patches"]].values.tolist() == [["Nkwanta", "West", 2], ["Nkwanta", "East", 1]]
     # Only the part of a patch inside the 1 km ring counts: all of a, a sliver of b
     assert 4.0 < t.ha.iloc[0] < 6.0 and t.ha.iloc[1] == 2.0
+    # The part with no licence to mine, for the studio's posts: a only (b is in a lease), and c (prospecting)
+    assert t.no_licence_ha.tolist() == [4.0, 2.0]
     assert t.ids.iloc[0] == ["b", "a"]  # largest first, for the picture
     assert round(t.lat.iloc[0], 3) and round(t.lon.iloc[0], 3)
 

@@ -16,7 +16,6 @@ from rasterio.windows import from_bounds
 from shapely.geometry import mapping
 
 from tracker import chips, refresh
-from tracker.chips import HTTP
 from tracker.config import WORK_CRS
 from tracker.licences import NO_LICENCE_TO_MINE
 
@@ -53,7 +52,7 @@ def likely_galamsey(licence: str, water: float | None) -> bool:
 
 
 def _read(href: str, bounds_ll, shape=None):
-    with rasterio.Env(**HTTP), rasterio.open(href) as src:
+    with rasterio.Env(**chips.HTTP), rasterio.open(href) as src:
         win = from_bounds(*transform_bounds(4326, src.crs, *bounds_ll), src.transform)
         data = src.read(1, window=win, boundless=True, fill_value=0, out_shape=shape)
         return data, src.window_transform(win), src.crs

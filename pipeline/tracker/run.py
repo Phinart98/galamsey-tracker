@@ -26,7 +26,7 @@ from pystac_client.exceptions import APIError
 from tracker import chips, licences, nasa, places, refresh, signs, summary, water, zone
 from tracker.config import BELT_BBOX, CACHE, CHIP_HALF_KM, DATA, OUT, PIPELINE_DIR, WORK_CRS
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
-from tracker.identity import dedupe_tiles, match_ids
+from tracker.identity import dedupe_tiles, match_ids, resolve_aliases
 
 METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts (spike log s20)
 CHIP_RETRY_DAYS = 3  # under a week, so every weekly run retries every cloudy place
@@ -82,25 +82,21 @@ def licence_layer(today: dt.date) -> gpd.GeoDataFrame:
     return lic
 
 
-# NASA usually has a granule for every tile within days. A tile it is late for uses its newest older granule,
-# and one with none at all stops the run: otherwise its places would all drop out for the week.
-OLDER_LOOKBACK_DAYS = 45
+# NASA usually has a granule for every tile within days. The search looks back far enough that a tile it is late
+# for still gets its newest one, and a tile with none at all stops the run: otherwise its places would all drop out.
+LOOKBACK_DAYS = 45
 
 
-def granules_for(tiles, search) -> dict:
-    """The newest granule per tile. `search(lookback_days)` returns {tile: granule entry}."""
-    got = {t: g for t, g in search(12).items() if t in tiles}
-    if missing := [t for t in tiles if t not in got]:
-        older = search(OLDER_LOOKBACK_DAYS)
-        got.update({t: older[t] for t in missing if t in older})
-    if missing := [t for t in tiles if t not in got]:
-        raise RuntimeError(f"no granule in the last {OLDER_LOOKBACK_DAYS} days for {', '.join(missing)}")
-    return got
+def check_granules(tiles, granules: dict) -> dict:
+    """The newest granule of each switched-on tile, from {tile: granule entry}; stops if a tile has none."""
+    if missing := [t for t in tiles if t not in granules]:
+        raise RuntimeError(f"no granule in the last {LOOKBACK_DAYS} days for {', '.join(missing)}")
+    return {t: granules[t] for t in tiles}
 
 
 def weekly(today: dt.date):
     tiles = enabled_tiles()
-    granules = granules_for(list(tiles), lambda days: nasa.latest_per_tile(BELT_BBOX, today, days))
+    granules = check_granules(list(tiles), nasa.latest_per_tile(BELT_BBOX, today, LOOKBACK_DAYS))
     per_tile, tile_status = [], {}
     for tile in tiles:
         entry = granules[tile]
@@ -155,8 +151,8 @@ def write_places(clusters, previous, new_aliases, to_ll):
     _write_json(index_path, index)
 
     aliases_path = os.path.join(DATA, "places", "aliases.json")
-    aliases = {**_read_json(aliases_path, {}), **new_aliases}
-    _write_json(aliases_path, aliases)
+    active = {k for k, rec in index.items() if rec["active"]}
+    _write_json(aliases_path, resolve_aliases({**_read_json(aliases_path, {}), **new_aliases}, active))
 
     seeds = gpd.GeoDataFrame({"id": clusters.id, "first_seen": clusters.first_seen},
                              geometry=clusters.seed, crs=clusters.crs)

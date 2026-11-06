@@ -19,13 +19,13 @@ def load() -> gpd.GeoDataFrame:
 def upstream(clusters: gpd.GeoDataFrame, plants: gpd.GeoDataFrame) -> list[dict]:
     """Hectares of patches whose representative point lies in each plant's catchment, in plant order: all of
     them (the site), and those with no licence to mine (the studio's posts, which show only that land)."""
-    cols = ["ha", "licence"] if "licence" in clusters else ["ha"]
-    pts = gpd.GeoDataFrame(clusters[cols], geometry=clusters.geometry.representative_point(), crs=clusters.crs)
+    licensed = "licence" in clusters  # missing only in tests that need the totals alone
+    pts = gpd.GeoDataFrame(clusters[["ha", "licence"] if licensed else ["ha"]], geometry=clusters.geometry.representative_point(), crs=clusters.crs)
     p = plants.to_crs(clusters.crs).reset_index(drop=True)
     hit = gpd.sjoin(pts, p[["geometry"]], predicate="within")
     ha = hit.groupby("index_right").ha.sum()
     out = [{"plant": r.plant, "river": r.river, "ha": round(float(ha.get(i, 0.0)), 1)} for i, r in p.iterrows()]
-    if "licence" in clusters:
+    if licensed:
         nl = hit[hit.licence.isin(NO_LICENCE_TO_MINE)].groupby("index_right").ha.sum()
         for i, row in enumerate(out):
             row["no_licence_ha"] = round(float(nl.get(i, 0.0)), 1)
