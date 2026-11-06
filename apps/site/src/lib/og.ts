@@ -139,7 +139,7 @@ export async function waterPost(o: { title: string; big: string; line: string; r
       h('div', { fontSize: 40, fontWeight: 700, color: SIGNAL }, 'hectares'),
       h('div', { fontSize: 30, lineHeight: 1.3, marginTop: 18 }, o.line)),
     img(track, { position: 'absolute', left: LINE - 30, top: TOP + PIC, width: 60, height: 500 }),
-    stop(o.river, 'Rain washes mud from the cleared land into it', TOP + PIC + STOPS[0]),
+    stop(o.river, `Rain washes mud from the cleared land into ${/ rivers$/.test(o.river) ? 'them' : 'it'}`, TOP + PIC + STOPS[0]),
     stop(o.plant, 'More mud makes the water harder and dearer to treat', TOP + PIC + STOPS[1]),
     stop('Your tap', o.tap, TOP + PIC + STOPS[2]),
     h('div', { display: 'flex', position: 'absolute', left: 0, bottom: 0, width: PW, height: 96, background: INK, alignItems: 'center', paddingLeft: PAD },
