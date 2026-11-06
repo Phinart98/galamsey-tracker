@@ -33,7 +33,7 @@ Within 1 km of the town, ${hectares(town.ha)} of land was cleared with no licenc
     reply: `The pictures up close, and every patch around ${town.name}: ${SITE}/places/${place.id}/`,
     render: () => townPost({
       headline: `${hectares(town.ha)} cleared within 1 km of ${town.name}`,
-      sub: `Land with no licence to mine, in 12 months: about ${num(pitches(town.ha))} football pitches${district ? `, in ${district}` : ''}. The picture is ${which} with signs of mining, ${hectares(place.ha)}.`,
+      sub: `Land with no licence to mine, in 12 months: about ${num(pitches(town.ha))} football pitches${district ? `, in ${district}` : ''}. The picture is ${which} with signs of mining that reaches within 1 km, ${hectares(place.ha)} in all.`,
       before: place.chips.before, after: place.chips.after,
     }),
   });

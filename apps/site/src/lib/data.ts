@@ -105,7 +105,8 @@ export const pictureYears = pictureYearList.length
 // A card per small place would push the site past Cloudflare Pages' 20,000-file limit; they share the home card.
 export const CARD_MIN_HA = 3;
 export const hasCard = (p: Place): p is Place & { chips: { before: Chip; after: Chip } } => hasPair(p) && p.ha >= CARD_MIN_HA;
-export const carded = places.filter(hasCard);
+// (not for merged places: their page only redirects)
+export const carded = places.filter(hasCard).filter((p) => !redirects.has(p.id));
 
 
 
@@ -126,9 +127,9 @@ export const trendNow = trend.filter((p) => {
 });
 export const STALE_DAYS = 14;
 
-// no_licence_ha: the part with no licence to mine (weekly runs from 9 November 2026 on), which the studio posts use
+// no_licence_ha (Town and WaterPlant): the part with no licence to mine, from the weekly runs of 9 November 2026
+// on, which the studio posts use
 export interface Town { name: string; place: string; district: string | null; lat: number; lon: number; ha: number; no_licence_ha?: number; patches: number; ids: string[] }
-// no_licence_ha: the part with no licence to mine (weekly runs from 9 November 2026 on), which the studio posts use
 export interface WaterPlant { plant: string; river: string; ha: number; no_licence_ha?: number }
 
 const townFile = read<{ radius_m: number; towns: Town[] }>(path.join(DATA, 'towns.json'), { radius_m: 1000, towns: [] });
@@ -147,8 +148,6 @@ export const towns = townFile.towns;
 export const townsNear = summary?.towns_near ?? null;
 export const water = (summary?.water ?? []).slice().sort((a, b) => b.ha - a.ha);
 
-// The villages the home page leads with: most cleared land within 1 km, each shown by its largest pictured
-// patch. Neighbouring villages often share one big patch, so each picture is used once.
 // One picture for each of the first n rows that has one: the first of its `candidates` (largest first) with a
 // before and after pair. Neighbouring towns often share a patch, so each picture is used once. `rank` is the row's
 // place in `rows`, and `largest` says whether the picture is the row's first candidate (it may have no clear

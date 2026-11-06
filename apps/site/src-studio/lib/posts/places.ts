@@ -1,6 +1,6 @@
 // Posts that show real places: new clearing, the shape of one patch, twelve shapes, check it yourself, licensed to
 // explore, ten towns and the newest patches. Every place they picture or name is Likely galamsey (rules.ts).
-import { active, summary } from '../../../src/lib/data';
+import { summary } from '../../../src/lib/data';
 import { DAY_MS, LICENCE_SENTENCE, count, hectares, longDate, nearLabel, num, placeName, shortDate, tidyDistrict } from '../../../src/lib/format';
 import { explorePost, findPost, platePost, shapePost, sheetPost, townPost, townsPost } from '../designs';
 import { SITE, WEEK, dataDate, likely, likelyLand, near, newest, outlines, photo, pick, pitches, reviewMonth, townTotals, type Post } from './rules';

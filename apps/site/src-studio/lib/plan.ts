@@ -90,10 +90,10 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       } else if (status === 'ahead') {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
-    } else if (wd === 1 && status === 'today' && !ranToday(d)) {
-      note = "The weekly update has not finished yet, so this is last week's town. Check again after it runs, or post another day's kind.";
     } else if (!known) {
       note = "This week's data could not make this kind of post. Use any post from another day, or skip the day.";
+    } else if (wd === 1 && status === 'today' && !ranToday(d)) {
+      note = "The weekly update has not finished yet, so this is last week's town. Check again after it runs, or post another day's kind.";
     } else if (!post) {
       note = 'It is made from the data that arrives on Monday morning, so it shows here from then.';
     } else if (newData) {

@@ -11,7 +11,8 @@ import { card, h, img, jpeg as encode, type Node } from '../../src/lib/og';
 const encoded = new Map<string, Promise<string>>();
 const jpeg = (chip: Chip) => {
   const key = chip.files['720.webp'];
-  if (!encoded.has(key)) encoded.set(key, encode(chip));
+  // A failed download is not kept, so the next post that needs the picture tries again
+  if (!encoded.has(key)) encoded.set(key, encode(chip).catch((e) => { encoded.delete(key); throw e; }));
   return encoded.get(key)!;
 };
 
@@ -281,7 +282,7 @@ export async function shapePost(o: { title: string; big: string; line: string; s
   const PITCH_M = { w: 105, h: 68 };
   // Leave room under the shape for the pitch, then fit both into the box
   const s = Math.min(BOX.w / Math.max(e.w, PITCH_M.w), (BOX.h - 40) / (e.h + PITCH_M.h * 1.6));
-  const sw = e.w * s, sh = e.h * s, pw = PITCH_M.w * s, ph = PITCH_M.h * s;
+  const sw = e.w * s, pw = PITCH_M.w * s, ph = PITCH_M.h * s;
   const pitch = `<g transform="translate(0 ${(BOX.h - ph).toFixed(1)})"><rect width="${pw.toFixed(1)}" height="${ph.toFixed(1)}" fill="none" stroke="${INK}" stroke-width="3"/><line x1="${(pw / 2).toFixed(1)}" y1="0" x2="${(pw / 2).toFixed(1)}" y2="${ph.toFixed(1)}" stroke="${INK}" stroke-width="2"/><circle cx="${(pw / 2).toFixed(1)}" cy="${(ph / 2).toFixed(1)}" r="${(9.15 * s).toFixed(1)}" fill="none" stroke="${INK}" stroke-width="2"/></g>`;
   const shape = `<g transform="translate(${((BOX.w - sw) / 2).toFixed(1)} 0)"><path d="${pathOf(m, s, e.x0, e.y0)}" fill="${SIGNAL}" fill-rule="evenodd"/></g>`;
   const art = svgUri(`<svg xmlns="http://www.w3.org/2000/svg" width="${BOX.w}" height="${BOX.h}">${shape}${pitch}</svg>`);

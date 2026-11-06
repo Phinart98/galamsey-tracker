@@ -34,7 +34,7 @@ jobs:
           cache: npm
           cache-dependency-path: apps/site/package-lock.json
       - run: npm ci
-      - run: npm run typecheck
+      - run: npm run check  # astro check: types in .ts and .astro files
       # Without the place index (it lives on the pipeline-state release) this builds the empty-data pages, which must not break either
       - run: npm run build
       # The private studio shares src/lib with the site, so a change there must not break it either

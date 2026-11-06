@@ -38,7 +38,7 @@ const total = summary?.total_ha ?? 0;
             </h2>
             <Pair place={lead.place} variant="lead" eager>
               <figcaption class="caption">
-                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show {lead.largest ? 'the largest patch' : 'one of its patches'} ({hectares(lead.place.ha)}), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
+                <span>Within 1 km of {lead.town.name}, satellites saw {hectares(lead.town.ha)} cleared, in {lead.town.patches === 1 ? 'one patch' : `${lead.town.patches} patches`}. These pictures show {lead.largest ? 'the largest patch' : 'one of the patches'} that reaches within 1 km ({hectares(lead.place.ha)} in all), first seen on {longDate(lead.place.first_seen)}. {LICENCE_SENTENCE[lead.place.licence]} Each week we show the town with the most cleared land around it, so the town here can change.</span>
                 <span class="hint">The ring sits on the cleared patch. Tap a picture to enlarge and zoom in.</span>
               </figcaption>
             </Pair>
@@ -146,8 +146,8 @@ const total = summary?.total_ha ?? 0;
         <h2 id="licences">What licence is on the land</h2>
         <p class="intro">We check every patch against the Minerals Commission's register of active licences. The register also says who holds each licence. We leave the names out, because a licence on the land does not show who cleared it.</p>
         <ul class="licences">
-          {LICENCES.filter((l) => summary.by_licence[l]).map((l) => (
-            <li><LicenceTag licence={l} /><span class="v">{num(summary.by_licence[l].ha)} ha</span><span class="muted">{pct(summary.by_licence[l].share)}</span></li>
+          {LICENCES.filter((l) => summary!.by_licence[l]).map((l) => (
+            <li><LicenceTag licence={l} /><span class="v">{num(summary!.by_licence[l].ha)} ha</span><span class="muted">{pct(summary!.by_licence[l].share)}</span></li>
           ))}
         </ul>
         <p class="muted small measure">A prospecting licence lets a company explore for gold. It does not allow mining. A stone or sand lease allows quarrying, not gold mining. Clearing inside a small-scale licence or a large-scale lease may be licensed mining.</p>
@@ -166,7 +166,7 @@ const total = summary?.total_ha ?? 0;
     const fmt = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 1 });
     const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
     let rows: Promise<Row[]> | null = null;
-    const load = () => (rows ??= fetch('/towns.json').then((r) => r.json()));
+    const load = () => (rows ??= fetch('/towns.json').then((r) => r.json() as Promise<Row[]>));
     box.hidden = false;
     q.addEventListener('focus', load, { once: true });
 

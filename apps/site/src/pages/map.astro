@@ -129,7 +129,7 @@ const withoutPic = active.find((p) => !hasPair(p));
 </Base>
 
 <script>
-  import type { Map as MLMap, GeoJSONSource } from 'maplibre-gl';
+  import type { Map as MLMap, GeoJSONSource, ExpressionSpecification } from 'maplibre-gl';
   import { LICENCE_SHORT, NO_LICENCE_TO_MINE, NO_PICTURE, googleMaps, hectares, longDate, num, shortDate, type NoPicture } from '../lib/format';
 
   const el = document.querySelector<HTMLElement>('[data-map]')!;
@@ -152,7 +152,10 @@ const withoutPic = active.find((p) => !hasPair(p));
 
   // One download of the places file, shared by the map and the list: it is large for phones on prepaid data
   let placesFile: Promise<any> | null = null;
-  const placesData = () => (placesFile ??= fetch('/places.geojson').then((r) => r.json()));
+  // A failed download is forgotten, so the list or a theme switch can try again
+  const placesData = () => (placesFile ??= fetch('/places.geojson')
+    .then((r) => { if (!r.ok) throw new Error(`places.geojson ${r.status}`); return r.json(); })
+    .catch((e) => { placesFile = null; throw e; }));
   let placesReady = false;
 
   function addData(m: MLMap) {
@@ -162,8 +165,10 @@ const withoutPic = active.find((p) => !hasPair(p));
     m.addSource('area', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } } });
     m.addLayer({ id: 'area', type: 'line', source: 'area', paint: { 'line-color': css('--ink'), 'line-width': 1.5, 'line-dasharray': [3, 2] } });
     m.addSource('places', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'id' });
-    placesData().then((fc) => { placesReady = true; (m.getSource('places') as GeoJSONSource | undefined)?.setData(fc); });
-    const likely = ['has', 'likely_galamsey'];
+    placesData()
+      .then((fc) => { placesReady = true; (m.getSource('places') as GeoJSONSource | undefined)?.setData(fc); })
+      .catch(() => { loading.textContent = 'The places could not be loaded. Check your connection and reload the page.'; });
+    const likely: ExpressionSpecification = ['has', 'likely_galamsey'];
     m.addLayer({
       id: 'places', type: 'circle', source: 'places',
       layout: { 'circle-sort-key': ['case', likely, 1, 0] },
@@ -377,7 +382,7 @@ const withoutPic = active.find((p) => !hasPair(p));
   const count = document.querySelector<HTMLElement>('[data-count]')!;
   const mapCount = document.querySelector<HTMLElement>('[data-map-count]')!;
   const PAGE = 60;
-  const LICENCES: Record<string, string[]> = {
+  const LICENCES: Record<string, readonly string[]> = {
     alarm: NO_LICENCE_TO_MINE, none: ['no licence'], prospecting: ['prospecting only'], restricted: ['restricted lease'],
     small: ['small-scale licence'], large: ['large-scale lease'],
   };
