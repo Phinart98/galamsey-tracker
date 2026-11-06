@@ -48,7 +48,8 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
   </header>
 
   <main class="wrap">
-    <h1>{todayName}</h1>
+    <h1 data-built={today.toISOString().slice(0, 10)}>{todayName}</h1>
+    <p class="note stale" hidden>This page was made on {todayName}. The days below have moved on to today, but the news check for today runs later this morning, so a news day may change. Refresh after it runs.</p>
     <p class="rule">One post every weekday at 13:00 from <strong>@GalamseyTracker</strong>. Tap a day to see its post.{weekend && <> No post today: weekends are off.</>}</p>
 
     {weeks.map((w) => (
@@ -56,7 +57,7 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
         <h2>{w.name}</h2>
         <ol class="days">
           {w.days.map((s) => (
-            <li class:list={['day', s.status]}>
+            <li class:list={['day', s.status]} data-date={s.date}>
               {s.status === 'done' ? (
                 <div class="row"><span class="when">{s.day}<span class="past">Past</span></span><span class="what">{s.title}</span>{s.email && <a class="extra" href="#email">This month's email, if not sent yet</a>}</div>
               ) : (
@@ -115,6 +116,26 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
     // A link to something inside a folded section opens it
     const open = () => { const t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))); const d = t && (t.tagName === 'DETAILS' ? t : t.closest('details')); if (d) d.open = true; };
     addEventListener('hashchange', open); open();
+    // The page is built a few times a day, but GitHub can start a build hours late. If it was built on an earlier
+    // day, move "Today" here: earlier days fold away as past, today opens. Ghana is on UTC all year.
+    const h1 = document.querySelector('h1[data-built]');
+    const now = new Date().toISOString().slice(0, 10);
+    if (h1 && now > h1.dataset.built) {
+      for (const li of document.querySelectorAll('li.day[data-date]')) {
+        const d = li.dataset.date, det = li.querySelector('details');
+        if (!det) continue;
+        if (d < now) {
+          li.classList.remove('today', 'ahead'); li.classList.add('done'); det.open = false;
+          li.querySelector('.tag')?.remove();
+          if (!li.querySelector('.past')) li.querySelector('.when')?.insertAdjacentHTML('beforeend', '<span class="past">Past</span>');
+        } else if (d === now) {
+          li.classList.remove('ahead'); li.classList.add('today'); det.open = true;
+          if (!li.querySelector('.tag')) li.querySelector('.when')?.insertAdjacentHTML('beforeend', '<span class="tag">Today</span>');
+        }
+      }
+      h1.textContent = new Date(now + 'T00:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
+      const note = document.querySelector('.stale'); if (note) note.hidden = false;
+    }
   </script>
   <script>
     for (const b of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
