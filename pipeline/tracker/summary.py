@@ -1,9 +1,9 @@
 """The numbers the site prints, computed in one place so every page agrees."""
 import pandas as pd
 
-from tracker.licences import LARGE_SCALE, NONE, PROSPECTING, RESTRICTED, SMALL_SCALE
+from tracker.licences import LARGE_SCALE, NO_LICENCE_TO_MINE, NONE, PROSPECTING, RESTRICTED, SMALL_SCALE
 
-PITCH_HA = 0.714  # a 105 x 68 m football pitch
+PITCH_HA = 0.714  # a 105 x 68 m football pitch (the site's apps/site/src/lib/format.ts PITCH_HA)
 CLASSES = (NONE, PROSPECTING, RESTRICTED, SMALL_SCALE, LARGE_SCALE)
 
 
@@ -20,7 +20,7 @@ def summarise(clusters: pd.DataFrame, top: int = 10) -> dict:
     by = clusters.groupby("licence").ha.sum() if len(clusters) else pd.Series(dtype=float)
     by_licence = {c: {"ha": round(float(by.get(c, 0.0))), "share": _share(float(by.get(c, 0.0)), total) or 0.0}
                   for c in CLASSES}
-    unlicensed = float(by.get(NONE, 0.0) + by.get(PROSPECTING, 0.0))
+    unlicensed = float(sum(by.get(c, 0.0) for c in NO_LICENCE_TO_MINE))
     places = clusters.sort_values("ha", ascending=False).head(top)
     districts = (clusters.groupby("district").ha.sum().sort_values(ascending=False).head(top)
                  if len(clusters) and "district" in clusters else pd.Series(dtype=float))

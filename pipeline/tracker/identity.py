@@ -41,8 +41,9 @@ def dedupe_tiles(per_tile: list[gpd.GeoDataFrame]) -> gpd.GeoDataFrame:
 
 
 def resolve_aliases(aliases: dict[str, str], active: set[str]) -> dict[str, str]:
-    """Aliases the site can redirect: each points at the end of its chain of merges, and an old id that is a
-    place of its own again (active) is dropped. A chain that loops or ends at an inactive place is dropped too."""
+    """Each alias pointing at the end of its chain of merges. An old id that is a place of its own again (active)
+    is dropped, and so is a chain that loops. One that ends at a place inactive this week is kept, so its redirect
+    comes back if that place does (the site only redirects to active places)."""
     out = {}
     for old, to in aliases.items():
         if old in active:
@@ -51,7 +52,7 @@ def resolve_aliases(aliases: dict[str, str], active: set[str]) -> dict[str, str]
         while to in aliases and to not in active and to not in seen:
             seen.add(to)
             to = aliases[to]
-        if to in active:
+        if to not in seen:
             out[old] = to
     return out
 

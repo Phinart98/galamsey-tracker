@@ -59,7 +59,8 @@ def unique_scenes(per_collection) -> list:
     (c1 reprocessed), and a repeat would use up one of a place's few tries on a scene already read."""
     seen, out = set(), []
     for item in (i for items in per_collection for i in items):  # c1 first, so its copy is the one kept
-        key = (item.datetime.isoformat()[:16], item.properties.get("grid:code") or item.properties.get("s2:mgrs_tile"))
+        # A tile is passed over at most once a day, so the day and the tile name one scene
+        key = (item.datetime.date(), item.properties.get("grid:code") or item.properties.get("s2:mgrs_tile"))
         if key not in seen:
             seen.add(key)
             out.append(item)

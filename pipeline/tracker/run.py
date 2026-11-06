@@ -107,8 +107,6 @@ def weekly(today: dt.date):
         per_tile.append(gdf)
         tile_status[tile] = {"granule": entry["title"], "data_date": str(data_date), "patches": len(gdf)}
         print(f"{tile}: {len(gdf)} patches, data up to {data_date}")
-    if not per_tile:
-        raise RuntimeError("no enabled tile had a recent granule")
 
     clusters = zone.inside(dedupe_tiles(per_tile), zone.load()).reset_index(drop=True)
     clusters["licence"] = licences.classify(clusters, licence_layer(today))
@@ -123,14 +121,14 @@ def weekly(today: dt.date):
     clusters, new_aliases = match_ids(clusters, previous, to_ll.transform)
 
     write_places(clusters, previous, new_aliases, to_ll.transform)
-    data_date = max(v["data_date"] for v in tile_status.values() if v.get("data_date"))
+    data_date = max(v["data_date"] for v in tile_status.values())
     s = summary.summarise(clusters.drop(columns=["geometry", "seed"]), top=12)
     towns = places.towns_near(clusters, settlements, district_polys)
     s.update({"data_date": data_date, "window_days": 365, "tiles": sorted(tile_status), "method_version": METHOD_VERSION,
               "towns_near": {"radius_m": places.NEAR_M, "count": len(towns), "with_5ha": int((towns.ha >= 5).sum())},
               "water": water.upstream(clusters, water.load())})
     _write_json(os.path.join(DATA, "towns.json"), {"data_date": data_date, "radius_m": places.NEAR_M,
-                                                   "towns": towns.round({"lat": 4, "lon": 4, "ha": 1}).to_dict("records")})
+                                                   "towns": towns.round({"lat": 4, "lon": 4, "ha": 1, "no_licence_ha": 1}).to_dict("records")})
     _write_json(os.path.join(DATA, "summary", "latest.json"), s)
     _write_json(os.path.join(DATA, "summary", f"{data_date[:7]}.json"), s)
     return tile_status, data_date
@@ -302,7 +300,6 @@ def trend(today: dt.date, start: str = "2024-01"):
     per_month: dict[dt.date, list] = {m: [] for m in months}
     used: dict[dt.date, list] = {m: [] for m in months}
     covered: dict[dt.date, list] = {m: [] for m in months}
-    readings_got: dict[dt.date, int] = {}
     settled: dict[dt.date, bool] = {}
     searches: dict[dt.date, dict] = {}
 
@@ -331,7 +328,6 @@ def trend(today: dt.date, start: str = "2024-01"):
             per_month[m].append(g)
             used[m] += [e["title"] for e in entries]
             covered[m].append(tile)
-            readings_got[m] = min(readings_got.get(m, len(entries)), len(entries))
         print(f"trend: {tile} done for {len(months)} months", flush=True)
 
     lic = licence_layer(today)
@@ -344,10 +340,9 @@ def trend(today: dt.date, start: str = "2024-01"):
         s = summary.summarise(c.drop(columns="geometry"), top=0)
         series["points"][m.strftime("%Y-%m")] = {
             "date": str(m), "total_ha": s["total_ha"], "no_licence_to_mine": s["no_licence_to_mine"],
-            # A tile or reading day with no granule leaves the point incomplete: drop_stale removes it and a later
-            # run, when NASA has caught up, redoes it, rather than a lasting false dip in the chart
-            "covered": sorted(covered[m]), "settled": settled[m] and readings_got[m] == len(readings_as_of(m, today)[0]),
-            "readings": readings_got[m],
+            # A tile with no granule for the month leaves the point incomplete: drop_stale removes it and a later
+            # run redoes it, rather than a lasting false dip in the chart
+            "covered": sorted(covered[m]), "settled": settled[m], "readings": len(readings_as_of(m, today)[0]),
             "granules": used[m]}
         print(f"trend {m:%Y-%m}: {s['total_ha']} ha{'' if settled[m] else ' (provisional)'}")
     series["points"] = drop_stale(series["points"], tiles)

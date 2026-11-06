@@ -66,3 +66,13 @@ def test_the_same_scene_from_both_collections_is_tried_once_least_cloudy_first()
     old = [item(5, "MGRS-30NXM", 21), item(7, "MGRS-30NXM", 9)]
     got = chips.unique_scenes([c1, old])
     assert [(i.datetime.day, i.properties["eo:cloud_cover"]) for i in got] == [(9, 2), (7, 9), (5, 20)]
+
+
+def test_copies_of_one_scene_a_moment_apart_across_a_minute_still_count_once():
+    import datetime as dt
+    from types import SimpleNamespace
+
+    from tracker import chips
+    c1 = SimpleNamespace(datetime=dt.datetime(2026, 1, 5, 10, 39, 59), properties={"grid:code": "MGRS-30NXM", "eo:cloud_cover": 5})
+    old = SimpleNamespace(datetime=dt.datetime(2026, 1, 5, 10, 40, 1), properties={"grid:code": "MGRS-30NXM", "eo:cloud_cover": 5})
+    assert chips.unique_scenes([[c1], [old]]) == [c1]
