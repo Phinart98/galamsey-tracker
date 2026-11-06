@@ -26,7 +26,7 @@ import { CONTACT_EMAIL } from '../lib/site';
     <p>For each patch we do three more things.</p>
     <ul>
       <li>We check it against the <Src id="minerals-commission">Minerals Commission</Src>'s <Src id="minerals-commission-cadastre">public register of licences</Src>, to see what kind of licence, if any, covers that land.</li>
-      <li>We name it after the nearest town or village and its district.</li>
+      <li>We name it after a town or village: one within 1 km of the patch if there is one, otherwise the nearest town, with how far away it is. Then its district.</li>
       <li>For every patch, we look for a clear Sentinel-2 satellite picture from before the clearing and a recent one, so you can see the change yourself. Each picture is 1.6 km across, and a ring in the middle sits on the patch. If the patch keeps growing, we take a new recent picture.</li>
     </ul>
     <p>Satellites see that plants are gone. They cannot see who removed them or why, and farms, roads and building sites clear land too. So we show you the pictures and the licence on the land, and you can judge each place for yourself.</p>
@@ -102,7 +102,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       <dt>Patches</dt><dd>Pixels joined with their eight neighbours. At least 1 hectare. A patch seen from two overlapping tiles is kept once.</dd>
       <dt>Forest zone</dt><dd>A patch counts only if it lies in the Eastern Guinean forests area of <Src id="resolve-ecoregions-2017">RESOLVE Ecoregions 2017</Src>. Outside it, farm clearing and burning in the dry season far outweigh the mining.</dd>
       <dt>Licences</dt><dd>Active licences from the <Src id="minerals-commission-cadastre">Minerals Commission's public register</Src>. A patch takes the licence that covers the largest share of it, if that share is at least 25%. Leases for stone, sand, gravel or clay (the register calls them restricted leases) get their own label, because they allow quarrying but not gold mining.</dd>
-      <dt>Names</dt><dd>Nearest <Src id="openstreetmap">OpenStreetMap</Src> town within 15 km or village within 8 km. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
+      <dt>Names</dt><dd>An <Src id="openstreetmap">OpenStreetMap</Src> town or village within 1 km of the patch, closest first. Otherwise the nearest town within 15 km or village within 8 km, called near it only within 2 km, else with the distance. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from <Src id="sentinel2-earth-search">Earth Search</Src>. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
       <dt>Rivers</dt><dd>Water plant catchments and rivers from HydroSHEDS: <Src id="hydrobasins">HydroBASINS</Src> and <Src id="hydrorivers">HydroRIVERS</Src>.</dd>
       <dt>Place references</dt><dd>Each patch keeps a permanent reference made from the month it was first seen and its location. When two patches grow into one, the older reference is kept and the other redirects to it.</dd>
