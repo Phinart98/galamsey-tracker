@@ -67,7 +67,9 @@ const lead = ranked[leadRank];
 const townOfWeekPair = () => (lead ? { before: lead.place.chips.before, after: lead.place.chips.after } : null);
 if (lead && summary) {
   const { town, place } = lead;
-  const district = town.district ? tidyDistrict(town.district) : null;
+  // "Ayensuano district" when the district has the town's name, so no line reads "Ayensuano in Ayensuano"
+  const district = town.district ? ((d) => (d === town.name ? `${d} district` : d))(tidyDistrict(town.district)) : null;
+  const inDistrict = district ? `, in ${district}` : '';
   posts.push({
     slug: 'town',
     kind: 'Town of the week',
@@ -88,7 +90,7 @@ Within 1 km of the town, ${hectares(town.ha)} of land was cleared with no licenc
     render: () => townPost({
       // Non-breaking spaces keep "1 km" and "12 months" on one line
       headline: `${hectares(town.ha)} cleared within 1 km of ${town.name}`,
-      sub: `Land with no licence to mine, in 12 months: about ${num(pitches(town.ha))} football pitches${district ? `, in ${district}` : ''}.`,
+      sub: `Land with no licence to mine, in 12 months: about ${num(pitches(town.ha))} football pitches${inDistrict}. The picture shows its largest Likely galamsey patch, ${hectares(place.ha)}.`,
       before: place.chips.before, after: place.chips.after,
     }),
   });
@@ -136,6 +138,7 @@ CITIES.forEach((c, ci) => {
       title: `From this to your tap in ${c.city}`, big: haText,
       line: `cleared with no licence to mine in 12 months, on the land that drains to ${c.name}`,
       river: c.river, plant: c.plant, tap: c.tap, picture: largest?.chips.after,
+      caption: largest ? `One patch, ${num(Math.round(largest.ha))} ha, ${shortDate(largest.chips.after.date)}` : undefined,
     }),
   });
 });
@@ -264,12 +267,27 @@ Before and after up close: ${SITE}/places/${place.id}/`,
   };
 }
 
+// The month in review covers the last month the data covers to its end (see Month in review below)
+const reviewMonth = (() => {
+  if (!summary) return null;
+  const dd = new Date(summary.data_date);
+  const lastDay = new Date(dd.getTime() + 864e5).getUTCDate() === 1;
+  const start = new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth() - (lastDay ? 0 : 1), 1));
+  const end = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1));
+  const inMonth = active.filter(galamsey).filter((p) => { const t = Date.parse(p.first_seen); return t >= start.getTime() && t < end.getTime(); });
+  return { start, inMonth, top: inMonth.filter(showable)[0] };
+})();
+
 // 7. New clearing: the largest pictured patch satellites first saw in the last two (or four) months. New land every week.
+// It skips the month in review's picture, so the two posts never show the same patch
 if (summary) {
   // New places often wait a while for a cloud-free picture, so look back four months when two find nothing
-  const within = (days: number) => active.filter(showable).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= Date.parse(summary.data_date) - days * 864e5)[0];
+  const all = (days: number) => active.filter(showable).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= Date.parse(summary.data_date) - days * 864e5);
+  const within = (days: number) => all(days).filter((p) => p.id !== reviewMonth?.top?.id)[0];
   const months = within(60) ? 'two' : 'four';
   const fresh = within(60) ?? within(120);
+  // When the month in review took the largest, this is the next one, and the words say so
+  const rank = fresh && all(months === 'two' ? 60 : 120)[0]?.id !== fresh.id ? 'one of the largest patches' : 'the largest patch';
   if (fresh) {
     const where = placeName(fresh);
     posts.push({
@@ -279,11 +297,11 @@ if (summary) {
       alt: `Two satellite pictures of the same land ${where}. Before, ${longDate(fresh.chips.before.date)}. After, ${longDate(fresh.chips.after.date)}: newly bare ground.`,
       text: `${hectares(fresh.ha)} of land cleared ${where}, first seen by satellite on ${longDate(fresh.first_seen)}.
 
-It is the largest patch labelled Likely galamsey that satellites first saw in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+It is ${rank} labelled Likely galamsey that satellites first saw in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
       reply: `Before and after up close: ${SITE}/places/${fresh.id}/`,
       render: () => townPost({
         headline: `${hectares(fresh.ha)} of land newly cleared ${where}`,
-        sub: `First seen by satellite on ${longDate(fresh.first_seen)}, the largest new Likely galamsey patch in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+        sub: `First seen by satellite on ${longDate(fresh.first_seen)}, ${rank === 'the largest patch' ? 'the largest new Likely galamsey patch' : 'one of the largest new Likely galamsey patches'} in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
         before: fresh.chips.before, after: fresh.chips.after,
       }),
     });
@@ -462,30 +480,29 @@ if (likely.length) {
     alt: `${num(likely.length)} cleared patches labelled Likely galamsey.${ex ? ` A satellite picture of one, ${near(ex)}, with dark ponds on bare ground.` : ''}`,
     text: `${num(likely.length)} cleared patches with no licence to mine also show open water in or right beside them. Mining pits fill with water, so we label these Likely galamsey.\n\nIt is our guess from the satellite, not a finding. A patch without the label can still be galamsey.`,
     reply: `How the test works: ${SITE}/method#likely`,
-    render: () => statPost({ title: 'The water test', big: num(likely.length), line: 'patches labelled Likely galamsey', body: 'No licence to mine on the register, and open water in or right beside the cleared land. Mining pits fill with water. It is our guess, not a finding.', picture: ex?.chips.after, caption: ex ? `${hectares(ex.ha)} ${near(ex)}, ${shortDate(ex.chips.after.date)}` : undefined }),
+    render: () => statPost({ title: 'The water test', big: num(likely.length), line: 'patches labelled Likely galamsey', body: 'No licence to mine on the register, and open water in or right beside the cleared land. Mining pits fill with water. It is our guess, not a finding.', picture: ex?.chips.after, caption: ex ? `One of them: ${hectares(ex.ha)} ${near(ex)}, ${shortDate(ex.chips.after.date)}` : undefined }),
   });
 }
 
 // Month in review: unlicensed land first seen in the last month the data covers to its end
-if (summary) {
-  const dd = new Date(summary.data_date);
-  const lastDay = new Date(dd.getTime() + 864e5).getUTCDate() === 1;
-  const monthStart = new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth() - (lastDay ? 0 : 1), 1));
-  const monthEnd = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 1));
-  const inMonth = unlicensed.filter((p) => { const t = Date.parse(p.first_seen); return t >= monthStart.getTime() && t < monthEnd.getTime(); });
+if (reviewMonth) {
+  const { start, inMonth, top } = reviewMonth;
   // The picture is the month's largest Likely galamsey patch. New patches often wait weeks for a cloud-free
   // picture, so fall back to the newest pictured one
-  const top = inMonth.filter(showable)[0];
   const shown = top ?? newest[0];
-  const month = monthStart.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const month = start.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const monthName = start.toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' });
   if (inMonth.length) {
     const ha = inMonth.reduce((t, p) => t + p.ha, 0);
+    // The total is many patches spread over the areas, so say how small most are (only when it is true)
+    const small = inMonth.filter((p) => p.ha < 2).length / inMonth.length;
+    const spread = `across the ${count(coverage.length)} areas we cover${small > 0.5 ? ', most under 2 hectares' : ''}`;
     posts.push({
       slug: 'month', kind: 'Month in review', title: `${month} in review`,
-      alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches.${shown ? (top ? ` A satellite picture of the largest labelled Likely galamsey, ${near(shown)}.` : ` A satellite picture of the newest Likely galamsey patch with a clear picture, ${near(shown)}.`) : ''}`,
-      text: `In ${month}, satellites first saw ${num(ha)} hectares of newly cleared land with no licence to mine on the register, in ${num(inMonth.length)} patches.${top ? `\n\nThe largest labelled Likely galamsey: ${hectares(top.ha)} ${placeName(top)}.` : ''}\n\nNASA confirms clearing over several weeks, so this number can still go up.`,
+      alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches ${spread}.${shown ? (top ? ` A satellite picture of one of them, the largest new patch labelled Likely galamsey: ${hectares(shown.ha)} ${near(shown)}.` : ` A satellite picture of the newest Likely galamsey patch with a clear picture: ${hectares(shown.ha)} ${near(shown)}.`) : ''}`,
+      text: `In ${month}, satellites first saw ${num(ha)} hectares of newly cleared land with no licence to mine on the register, in ${num(inMonth.length)} patches ${spread}.${top ? `\n\nPictured: the largest new patch with our Likely galamsey label (open water in it), ${hectares(top.ha)} ${placeName(top)}.` : ''}\n\nNASA confirms clearing over several weeks, so this number can still go up.`,
       reply: `All patches, newest first: ${SITE}/map?sort=newest`,
-      render: () => statPost({ title: `${month} in review`, big: `${num(ha)} ha`, line: `newly cleared with no licence to mine, in ${num(inMonth.length)} patches`, body: 'First seen by satellite that month. NASA confirms clearing over several weeks, so the number can still go up.', picture: shown?.chips.after, caption: shown ? `${top ? 'Largest Likely galamsey' : 'Newest Likely galamsey'}: ${hectares(shown.ha)} ${near(shown)}` : undefined }),
+      render: () => statPost({ title: `${month} in review`, big: `${num(ha)} ha`, line: `newly cleared with no licence to mine, in ${num(inMonth.length)} patches ${spread}`, body: 'First seen by satellite that month. NASA confirms clearing over several weeks, so the number can still go up.', picture: shown?.chips.after, caption: shown ? `${top ? `Largest new in ${monthName}, Likely galamsey` : 'Newest Likely galamsey'}: ${hectares(shown.ha)}, ${nearText(shown) ?? placeName(shown)}` : undefined }),
     });
   }
 }

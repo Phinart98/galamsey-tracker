@@ -114,7 +114,7 @@ export async function townPost(o: { headline: string; sub: string; before: Chip;
 }
 
 // A city's water: a cleared patch upstream, then the river, the plant and the reader's tap
-export async function waterPost(o: { title: string; big: string; line: string; river: string; plant: string; tap: string; picture?: Chip }) {
+export async function waterPost(o: { title: string; big: string; line: string; river: string; plant: string; tap: string; picture?: Chip; caption?: string }) {
   const PIC = 470, LINE = PAD + PIC / 2, TOP = 136;
   // The river and its three stops drawn as one SVG, so the line runs exactly through every circle's centre
   const STOPS = [130, 300, 470];
@@ -129,7 +129,7 @@ export async function waterPost(o: { title: string; big: string; line: string; r
   const pic = o.picture ? [
     img(await jpeg(o.picture), { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC }),
     img(ring(56), { position: 'absolute', left: PAD + PIC / 2 - 28, top: TOP + PIC / 2 - 28, width: 56, height: 56 }),
-    h('div', { position: 'absolute', left: PAD, top: TOP + PIC - 44, maxWidth: PIC, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, `Upstream, ${shortDate(o.picture.date)}`),
+    h('div', { position: 'absolute', left: PAD, top: TOP + PIC - 44, maxWidth: PIC, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, o.caption ?? `Upstream, ${shortDate(o.picture.date)}`),
   ] : [h('div', { position: 'absolute', left: PAD, top: TOP, width: PIC, height: PIC, background: '#DDD' })];
   return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
     h('div', { position: 'absolute', left: PAD, top: 56, width: INNER, fontSize: 40, fontWeight: 700 }, o.title),
