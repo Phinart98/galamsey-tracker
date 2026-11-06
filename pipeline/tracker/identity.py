@@ -48,8 +48,14 @@ def match_ids(new: gpd.GeoDataFrame, previous: gpd.GeoDataFrame | None,
     seeds_prev = previous.to_crs(new.crs) if previous is not None and len(previous) else None
     # Old ids stay reserved, so a new patch never takes over an old place's page and pictures
     taken = set(seeds_prev.id) if seeds_prev is not None else set()
-    for _, row in new.iterrows():
-        inside = seeds_prev[seeds_prev.within(row.geometry)] if seeds_prev is not None else None
+    # Which old seeds lie in which new patch, found once with a spatial index (a pair-by-pair test grew to
+    # tens of millions of checks a week as seeds pile up)
+    holds: dict[int, list[int]] = {}
+    if seeds_prev is not None:
+        for patch, seed in zip(*seeds_prev.sindex.query(new.geometry, predicate="contains")):
+            holds.setdefault(int(patch), []).append(int(seed))
+    for pos, (_, row) in enumerate(new.iterrows()):
+        inside = seeds_prev.iloc[sorted(holds.get(pos, []))] if seeds_prev is not None else None
         # One old seed can sit inside two patches (tile copies that overlap by less than half).
         # The first, larger patch keeps the id and the other becomes a new place.
         if inside is not None:

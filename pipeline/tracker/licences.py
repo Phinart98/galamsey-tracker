@@ -11,9 +11,10 @@ import requests
 from shapely.geometry import shape
 from shapely.validation import make_valid
 
+from tracker.config import HEADERS
+
 URL = ("https://repo-prod.revenuedev.org/api/map/geojson/GH/ws/-1"
        "?status=Active%20Licenses&type=&owner.id=&minerals.id=")
-HEADERS = {"User-Agent": "galamsey-tracker/0.1 (+https://github.com/Phinart98/galamsey-tracker)"}
 
 NONE = "no licence"
 PROSPECTING = "prospecting only"
@@ -25,6 +26,10 @@ RESTRICTED = "restricted lease"
 # Equal shares go to the more permissive licence: the fairest reading for whoever holds it.
 RANK = {PROSPECTING: 1, RESTRICTED: 2, SMALL_SCALE: 3, LARGE_SCALE: 4}
 MIN_SHARE = 0.25
+NO_LICENCE_TO_MINE = (NONE, PROSPECTING)  # no licence at all, or only one to explore: mining here is galamsey
+# The register held 1,058 usable licences in November 2026. Far fewer means the download came back incomplete,
+# and classifying with it would label licensed mines "no licence", so the run stops instead.
+MIN_USABLE = 800
 
 
 def licence_class(licence_type: str) -> str | None:
@@ -52,7 +57,7 @@ def parse(geojson: dict) -> tuple[gpd.GeoDataFrame, int]:
     for f in geojson["features"]:
         try:
             geom = make_valid(shape(f["geometry"]))
-        except (ValueError, TypeError, KeyError):
+        except (ValueError, TypeError, KeyError, AttributeError):  # AttributeError: a null geometry
             bad += 1
             continue
         props = f.get("properties") or {}
@@ -60,6 +65,11 @@ def parse(geojson: dict) -> tuple[gpd.GeoDataFrame, int]:
         if cls:
             rows.append({"cls": cls, "geometry": geom})
     return gpd.GeoDataFrame(rows, geometry="geometry", crs=4326), bad
+
+
+def check(licences: gpd.GeoDataFrame):
+    if len(licences) < MIN_USABLE:
+        raise RuntimeError(f"the licence register gave only {len(licences)} usable licences (expected {MIN_USABLE}+)")
 
 
 def classify(clusters: gpd.GeoDataFrame, licences: gpd.GeoDataFrame, min_share=MIN_SHARE):

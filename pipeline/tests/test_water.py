@@ -13,3 +13,10 @@ def test_clearing_upstream_of_each_plant_counts_patches_whose_centre_is_in_its_c
         Point(1000, 1000).buffer(100), Point(9990, 5000).buffer(100), Point(50000, 0).buffer(100)])
     assert water.upstream(clusters, plants) == [
         {"plant": "Daboase", "river": "Pra", "ha": 12.0}, {"plant": "Weija", "river": "Densu", "ha": 0.0}]
+
+
+def test_each_plant_also_gets_the_land_with_no_licence_to_mine():
+    plants = gpd.GeoDataFrame({"plant": ["Daboase"], "river": ["Pra"]}, crs=CRS, geometry=[box(0, 0, 10000, 10000)]).to_crs(4326)
+    clusters = gpd.GeoDataFrame({"ha": [5.0, 7.0], "licence": ["no licence", "large-scale lease"]}, crs=CRS,
+                                geometry=[Point(1000, 1000).buffer(100), Point(2000, 2000).buffer(100)])
+    assert water.upstream(clusters, plants) == [{"plant": "Daboase", "river": "Pra", "ha": 12.0, "no_licence_ha": 5.0}]

@@ -42,10 +42,11 @@ def test_only_active_places_with_no_licence_to_mine_are_measured():
     assert not signs.needs_reading({**rec, "signs": {"water": 0.1, "scene": "2026-10-01"}}, TODAY)
 
 
-def test_a_place_with_no_clear_scene_is_tried_again_after_a_week():
+def test_a_place_with_no_clear_scene_is_tried_again_at_every_weekly_run():
+    # Under a week, so a run that starts a few hours late still retries it (as with pictures)
     rec = {"active": True, "licence": "no licence", "signs": {"missing": True, "checked": "2026-10-25"}}
-    assert not signs.needs_reading(rec, TODAY)
-    assert signs.needs_reading(rec, TODAY + dt.timedelta(days=4))
+    assert not signs.needs_reading(rec, dt.date(2026, 10, 27))
+    assert signs.needs_reading(rec, dt.date(2026, 10, 31))
 
 
 def test_likely_galamsey_needs_open_water_and_no_licence_to_mine():

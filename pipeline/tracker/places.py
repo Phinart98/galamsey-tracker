@@ -4,19 +4,22 @@ Districts: geoBoundaries GHA ADM2 (260 districts, 2019, Ghana Statistical Servic
 Settlements: OpenStreetMap place=city|town|village with a name (ODbL), via Geofabrik's Ghana extract.
 """
 import os
+import time
 
 import geopandas as gpd
 import pandas as pd
 import requests
 
+from tracker.config import HEADERS
+
 ADM2 = ("https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/GHA/ADM2/"
         "geoBoundaries-GHA-ADM2_simplified.geojson")
 GHANA_OSM = "https://download.geofabrik.de/africa/ghana-latest.osm.pbf"
-HEADERS = {"User-Agent": "galamsey-tracker/0.1 (+https://github.com/Phinart98/galamsey-tracker)"}
 TOWN_M = 15000    # readers recognise towns from further away than villages
 VILLAGE_M = 8000  # beyond this, "near X" stops helping and the district alone is clearer
 SAME_PLACE_M = 2000  # two OSM points with one name this close are one village mapped twice
 NEAR_M = 1000     # "on the doorstep": cleared land this close to a town or village (spike log s19)
+NAMES_MAX_AGE_DAYS = 90  # OpenStreetMap names improve over time, so the saved list is refreshed every three months
 
 
 def _cached(path: str, fetch) -> str:
@@ -62,7 +65,15 @@ def settlements(cache_dir: str) -> gpd.GeoDataFrame:
             return _read_osm_places(pbf).to_json().encode()
         finally:
             os.remove(pbf)
-    return gpd.read_file(_cached(os.path.join(cache_dir, "settlements_ghana.geojson"), fetch))
+    path = os.path.join(cache_dir, "settlements_ghana.geojson")
+    if os.path.exists(path) and time.time() - os.path.getmtime(path) > NAMES_MAX_AGE_DAYS * 86400:
+        try:
+            data = fetch()
+            with open(path, "wb") as f:
+                f.write(data)
+        except (OSError, ValueError) as e:  # keep the old names rather than stop the run
+            print(f"places: could not refresh town names ({type(e).__name__}), keeping the saved list")
+    return gpd.read_file(_cached(path, fetch))
 
 
 def name(clusters: gpd.GeoDataFrame, towns_and_villages: gpd.GeoDataFrame, district_polys: gpd.GeoDataFrame):
@@ -95,12 +106,17 @@ def towns_near(clusters: gpd.GeoDataFrame, towns_and_villages: gpd.GeoDataFrame,
     """Every town and village with cleared land within radius_m, most cleared land first.
 
     Rows keep their own district, so two villages with the same name stay apart. ids lists the patches
-    largest first. OpenStreetMap misses many villages in rural Ghana, so the count is a floor.
+    largest first. ha counts only the part of each patch inside the ring, so "within 1 km" stays true.
+    OpenStreetMap misses many villages in rural Ghana, so the count is a floor.
     """
     t = _one_per_place(towns_and_villages.to_crs(clusters.crs).reset_index(drop=True))
     ring = gpd.GeoDataFrame(geometry=t.buffer(radius_m), crs=clusters.crs)
     hits = gpd.sjoin(clusters[["id", "ha", "geometry"]], ring, predicate="intersects").sort_values("ha", ascending=False)
-    per = hits.groupby("index_right").agg(ha=("ha", "sum"), patches=("id", "size"), ids=("id", list))
+    rings = gpd.GeoSeries(ring.geometry.loc[hits.index_right].values, index=hits.index, crs=clusters.crs)
+    inside = hits.geometry.intersection(rings).area
+    share = (inside / hits.geometry.area).clip(upper=1).where(~hits.geometry.within(rings), 1.0)  # wholly inside: all of it
+    hits["inside_ha"] = hits.ha * share
+    per = hits.groupby("index_right").agg(ha=("inside_ha", "sum"), patches=("id", "size"), ids=("id", list))
     dist = gpd.sjoin_nearest(t[["geometry"]], district_polys.to_crs(clusters.crs)[["district", "geometry"]], how="left")
     ll = t.geometry.to_crs(4326)
     out = per.join(pd.DataFrame({"name": t.name, "place": t.place, "district": dist[~dist.index.duplicated()].district,

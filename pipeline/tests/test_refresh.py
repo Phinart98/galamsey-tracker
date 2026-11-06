@@ -77,3 +77,11 @@ def test_a_retake_keeps_the_before_picture_and_replaces_the_after(monkeypatch, t
     assert got["before"] == old["before"]
     assert got["after"]["date"] == "2026-10-22"
     assert got["ha"] == 20.0
+
+
+def test_a_growth_retake_with_no_clear_picture_also_waits_three_months():
+    # Grew by half, but last week's retake found no clear picture: wait, do not try every week
+    rec = {"active": True, "ha": 16.0, "last_seen": "2026-10-20",
+           "chips": _pictured(10.0, after="2026-06-01", checked="2026-10-22")}
+    assert not needs_chips(rec, TODAY)
+    assert needs_chips({**rec, "chips": _pictured(10.0, after="2026-06-01", checked="2026-07-01")}, TODAY)

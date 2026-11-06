@@ -7,6 +7,8 @@ import os
 
 import geopandas as gpd
 
+from tracker.licences import NO_LICENCE_TO_MINE
+
 PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "water_plants.geojson")
 
 
@@ -15,8 +17,16 @@ def load() -> gpd.GeoDataFrame:
 
 
 def upstream(clusters: gpd.GeoDataFrame, plants: gpd.GeoDataFrame) -> list[dict]:
-    """Hectares of patches whose representative point lies in each plant's catchment, in plant order."""
-    pts = gpd.GeoDataFrame(clusters[["ha"]], geometry=clusters.geometry.representative_point(), crs=clusters.crs)
+    """Hectares of patches whose representative point lies in each plant's catchment, in plant order: all of
+    them (the site), and those with no licence to mine (the studio's posts, which show only that land)."""
+    cols = ["ha", "licence"] if "licence" in clusters else ["ha"]
+    pts = gpd.GeoDataFrame(clusters[cols], geometry=clusters.geometry.representative_point(), crs=clusters.crs)
     p = plants.to_crs(clusters.crs).reset_index(drop=True)
-    ha = gpd.sjoin(pts, p[["geometry"]], predicate="within").groupby("index_right").ha.sum()
-    return [{"plant": r.plant, "river": r.river, "ha": round(float(ha.get(i, 0.0)), 1)} for i, r in p.iterrows()]
+    hit = gpd.sjoin(pts, p[["geometry"]], predicate="within")
+    ha = hit.groupby("index_right").ha.sum()
+    out = [{"plant": r.plant, "river": r.river, "ha": round(float(ha.get(i, 0.0)), 1)} for i, r in p.iterrows()]
+    if "licence" in clusters:
+        nl = hit[hit.licence.isin(NO_LICENCE_TO_MINE)].groupby("index_right").ha.sum()
+        for i, row in enumerate(out):
+            row["no_licence_ha"] = round(float(nl.get(i, 0.0)), 1)
+    return out

@@ -9,22 +9,21 @@ import datetime as dt
 import geopandas as gpd
 import numpy as np
 import rasterio
-from pystac_client import Client
 from rasterio.errors import RasterioIOError
 from rasterio.features import geometry_mask
 from rasterio.warp import transform_bounds, transform_geom
 from rasterio.windows import from_bounds
 from shapely.geometry import mapping
 
-from tracker import refresh
-from tracker.chips import COLLECTIONS, EARTH_SEARCH, HTTP
+from tracker import chips, refresh
+from tracker.chips import HTTP
+from tracker.config import WORK_CRS
+from tracker.licences import NO_LICENCE_TO_MINE
 
-NO_LICENCE_TO_MINE = ("no licence", "prospecting only")
 RING_M = 60
 MAX_RING_CLOUD = 0.05
 CLOUDY = (0, 3, 8, 9, 10)  # no data, cloud shadow, cloud, cirrus: as in the blind test
-RETRY_DAYS = 7
-WORK_CRS = "EPSG:32630"
+RETRY_DAYS = 3  # under a week, so every weekly run retries a cloudy place even if it starts late
 
 
 def mndwi(green: np.ndarray, swir16: np.ndarray) -> np.ndarray:
@@ -62,27 +61,24 @@ def _read(href: str, bounds_ll, shape=None):
 
 def _scene_reading(item, poly_ll) -> dict | None:
     """Measured the same way as the blind test (spike/signs_features.py): every band on the 10 m green grid."""
-    ring = gpd.GeoSeries([poly_ll], crs=4326).to_crs(WORK_CRS).buffer(RING_M).to_crs(4326).iloc[0]
+    area_ll = gpd.GeoSeries([poly_ll], crs=4326).to_crs(WORK_CRS).buffer(RING_M).to_crs(4326).iloc[0]  # patch plus 60 m
     try:
-        green, transform, crs = _read(item.assets["green"].href, ring.bounds)
-        swir16 = _read(item.assets["swir16"].href, ring.bounds, green.shape)[0]
-        scl = _read(item.assets["scl"].href, ring.bounds, green.shape)[0]
+        green, transform, crs = _read(item.assets["green"].href, area_ll.bounds)
+        swir16 = _read(item.assets["swir16"].href, area_ll.bounds, green.shape)[0]
+        scl = _read(item.assets["scl"].href, area_ll.bounds, green.shape)[0]
     except (RasterioIOError, KeyError):
         return None
-    near = ~geometry_mask([transform_geom(4326, crs, mapping(ring))], green.shape, transform)
+    near = ~geometry_mask([transform_geom(4326, crs, mapping(area_ll))], green.shape, transform)
     if near.sum() < 5:
         return None
     water = water_share({"green": green.astype("float32"), "swir16": swir16.astype("float32")}, scl, near)
     return None if water is None else {"water": water, "scene": str(item.datetime.date())}
 
 
-def reading(poly_ll, first_seen: str, today: dt.date, tries: int = 12) -> dict | None:
-    """The water reading from the clearest scene since the patch was first seen, or None if none is clear."""
+def reading(poly_ll, since: str, today: dt.date, tries: int = 12) -> dict | None:
+    """The water reading from the clearest scene since `since` (first seen, or the start of a retake), or None."""
     bbox = list(poly_ll.buffer(0.002).bounds)
-    cat = Client.open(EARTH_SEARCH, timeout=60)
-    items = [i for c in COLLECTIONS for i in cat.search(collections=[c], bbox=bbox, datetime=f"{first_seen}/{today}",
-                                                         query={"eo:cloud_cover": {"lt": 30}}, max_items=30).items()]
-    for item in sorted(items, key=lambda i: i.properties.get("eo:cloud_cover", 100))[:tries]:
+    for item in chips.search(bbox, since, today, 30)[:tries]:
         r = _scene_reading(item, poly_ll)
         if r:
             return r

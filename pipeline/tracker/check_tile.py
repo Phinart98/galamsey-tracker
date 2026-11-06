@@ -15,10 +15,9 @@ from PIL import Image, ImageDraw, ImageFont
 from pyproj import Transformer
 
 from tracker import chips, nasa, zone
+from tracker.config import CHIP_HALF_KM, GHANA_BBOX, OUT
 from tracker.dist import cluster_polygons, loss_mask
-from tracker.run import CHIP_HALF_KM, OUT
 
-GHANA_BBOX = "-3.3,4.5,1.3,11.2"
 SIDE = 320
 PER_SHEET = 10
 BIG_HA = 3.0  # the sample is half from patches this size or more, half from smaller ones

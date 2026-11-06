@@ -3,7 +3,7 @@
 Pictures and readings are made once per place. A place that keeps growing would otherwise show an old "after"
 picture and keep a label read before most of the digging, so both are redone when the place has grown by half
 since, or has kept growing for three months. A retake that finds no clear picture keeps the old one and waits
-another three months.
+another three months, whichever rule asked for it.
 """
 import datetime as dt
 from collections.abc import Callable, Iterable
@@ -14,6 +14,8 @@ DAYS = 90
 
 def due(done: dict, rec: dict, taken: str, today: dt.date) -> bool:
     """True if `done` (a picture pair or reading, taken on day `taken`) should be redone for place `rec`."""
+    if done.get("checked") and (today - dt.date.fromisoformat(done["checked"])).days < DAYS:
+        return False  # a retake found no clear picture recently
     if done.get("ha") and rec.get("ha", 0) >= GROWTH * done["ha"]:
         return True
     last_try = max(taken, done.get("checked", taken))

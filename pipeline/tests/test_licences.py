@@ -64,3 +64,23 @@ def test_overlap_under_a_quarter_counts_as_no_licence():
 def test_overlapping_licences_of_the_same_class_are_not_double_counted():
     lic = _licences((PROSPECTING, box(0, 0, 10, 10)), (PROSPECTING, box(0, 0, 10, 10)))
     assert classify(_clusters(box(0, 0, 10, 10)), lic).tolist() == [PROSPECTING]
+
+
+def test_a_licence_with_no_geometry_is_counted_as_unusable_not_a_crash():
+    from tracker.licences import parse
+    geojson = {"features": [
+        {"geometry": None, "properties": {"type": "Mining Lease"}},
+        {"geometry": {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]]}, "properties": {"type": "Mining Lease"}},
+    ]}
+    lic, bad = parse(geojson)
+    assert (len(lic), bad) == (1, 1)
+
+
+def test_a_register_with_far_fewer_licences_than_usual_stops_the_run():
+    import pytest
+
+    from tracker.licences import MIN_USABLE, check
+    rows = gpd.GeoDataFrame({"cls": [LARGE_SCALE] * MIN_USABLE}, geometry=[box(0, 0, 1, 1)] * MIN_USABLE, crs=4326)
+    check(rows)  # a full register passes
+    with pytest.raises(RuntimeError):
+        check(rows.iloc[: MIN_USABLE // 2])

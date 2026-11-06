@@ -53,15 +53,31 @@ def _read(href: str, bbox: list[float]) -> np.ndarray:
         return src.read(window=from_bounds(*b, src.transform), boundless=True, fill_value=0)
 
 
+def unique_scenes(per_collection) -> list:
+    """Scenes from all collections, least cloudy first, each once: both collections hold the same scenes
+    (c1 reprocessed), and a repeat would use up one of a place's few tries on a scene already read."""
+    seen, out = set(), []
+    for item in (i for items in per_collection for i in items):  # c1 first, so its copy is the one kept
+        key = (item.datetime.isoformat()[:16], item.properties.get("grid:code") or item.properties.get("s2:mgrs_tile"))
+        if key not in seen:
+            seen.add(key)
+            out.append(item)
+    return sorted(out, key=lambda i: i.properties.get("eo:cloud_cover", 100))
+
+
+def search(bbox: list[float], start, end, max_items: int) -> list:
+    """Sentinel-2 scenes under 30% cloud over bbox between start and end, least cloudy first, no repeats."""
+    cat = Client.open(EARTH_SEARCH, timeout=60)
+    return unique_scenes([cat.search(collections=[c], bbox=bbox, datetime=f"{start}/{end}",
+                                     query={"eo:cloud_cover": {"lt": 30}}, max_items=max_items).items()
+                          for c in COLLECTIONS])
+
+
 def clearest(lon: float, lat: float, half_km: float, start: dt.date, end: dt.date, max_items: int = 40):
     """The least cloudy usable true-colour crop between start and end, as (date, HxWx3 uint8) or None."""
     deadline = time.monotonic() + PLACE_BUDGET_S
     bbox = _bbox(lon, lat, half_km)
-    cat = Client.open(EARTH_SEARCH, timeout=60)
-    items = [i for c in COLLECTIONS
-             for i in cat.search(collections=[c], bbox=bbox, datetime=f"{start}/{end}",
-                                 query={"eo:cloud_cover": {"lt": 30}}, max_items=max_items).items()]
-    for item in sorted(items, key=lambda i: i.properties.get("eo:cloud_cover", 100)):
+    for item in search(bbox, start, end, max_items):
         if time.monotonic() > deadline:
             return None
         rgb = scene(item, bbox)

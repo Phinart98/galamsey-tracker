@@ -6,7 +6,7 @@
     uv run python -m tracker.run trend      # same-date rolling 12-month totals, one point per month
 
 Small JSON the site needs at build time goes to <repo>/data (committed). Larger files go to
-pipeline/out (published to R2 by the workflow).
+pipeline/out, which the workflow saves as an archive on the `pipeline-state` GitHub release.
 """
 import argparse
 import datetime as dt
@@ -24,13 +24,11 @@ from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
 from tracker import chips, licences, nasa, places, refresh, signs, summary, water, zone
+from tracker.config import BELT_BBOX, CACHE, CHIP_HALF_KM, DATA, OUT, PIPELINE_DIR, WORK_CRS
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids
 
 METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts (spike log s20)
-BELT_BBOX = "-3.3,4.7,-0.3,7.5"   # southern mining belt covered by v1
-WORK_CRS = "EPSG:32630"
-CHIP_HALF_KM = 0.8
 CHIP_RETRY_DAYS = 3  # under a week, so every weekly run retries every cloudy place
 # NASA usually publishes a reading within days, but some take up to three weeks. A reading counts
 # from a week after its day, and a late one only shifts that reading to an image a few days older.
@@ -38,11 +36,6 @@ READING_LAG_DAYS = 7
 # Earth Search refused 3,725 of 4,866 readings in the first GitHub run (2026-10-28), so a refused place waits and tries again
 SIGNS_RETRY_WAITS = (20, 40, 80)
 
-PIPELINE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-REPO = os.path.dirname(PIPELINE_DIR)
-DATA = os.path.join(REPO, "data")
-OUT = os.path.join(PIPELINE_DIR, "out")
-CACHE = os.path.join(OUT, "cache")
 
 
 def _read_json(path, default):
@@ -81,18 +74,36 @@ def licence_layer(today: dt.date) -> gpd.GeoDataFrame:
         _write_json(path, licences.fetch())
     lic, bad = licences.parse(licences.load(path))
     print(f"licences: {len(lic)} usable, {bad} unrepairable")
+    try:
+        licences.check(lic)
+    except RuntimeError:
+        os.remove(path)  # so the next run downloads it again
+        raise
     return lic
+
+
+# NASA usually has a granule for every tile within days. A tile it is late for uses its newest older granule,
+# and one with none at all stops the run: otherwise its places would all drop out for the week.
+OLDER_LOOKBACK_DAYS = 45
+
+
+def granules_for(tiles, search) -> dict:
+    """The newest granule per tile. `search(lookback_days)` returns {tile: granule entry}."""
+    got = {t: g for t, g in search(12).items() if t in tiles}
+    if missing := [t for t in tiles if t not in got]:
+        older = search(OLDER_LOOKBACK_DAYS)
+        got.update({t: older[t] for t in missing if t in older})
+    if missing := [t for t in tiles if t not in got]:
+        raise RuntimeError(f"no granule in the last {OLDER_LOOKBACK_DAYS} days for {', '.join(missing)}")
+    return got
 
 
 def weekly(today: dt.date):
     tiles = enabled_tiles()
-    granules = nasa.latest_per_tile(BELT_BBOX, today)
+    granules = granules_for(list(tiles), lambda days: nasa.latest_per_tile(BELT_BBOX, today, days))
     per_tile, tile_status = [], {}
     for tile in tiles:
-        entry = granules.get(tile)
-        if entry is None:
-            tile_status[tile] = {"granule": None, "note": "no granule in the last 12 days"}
-            continue
+        entry = granules[tile]
         status, date, transform, crs = nasa.read_status_and_date(entry)
         data_date = nasa.acquired(entry["title"])
         gdf = cluster_polygons(loss_mask(status, date, data_date), date, transform, crs).to_crs(WORK_CRS)
@@ -177,7 +188,7 @@ def make_chips(today: dt.date, limit: int):
     index = _read_json(index_path, {})
     todo = refresh.queue(index.values(), lambda r: needs_chips(r, today), "chips")[:limit]
     print(f"chips: {len(todo)} places to image")
-    for rec in todo:
+    for n, rec in enumerate(todo, 1):
         old = rec.get("chips") if not (rec.get("chips") or {}).get("missing") else None
         first = dt.date.fromisoformat(rec["first_seen"])
         last = dt.date.fromisoformat(rec["last_seen"])
@@ -208,7 +219,8 @@ def make_chips(today: dt.date, limit: int):
             entry[label] = {"date": str(when), "files": files}
         rec["chips"] = {**entry, "ha": rec["ha"]}
         print(f"  {rec['id']}: {entry['before']['date']} -> {after[0]}{' (retake)' if old else ''}")
-        _write_json(index_path, index)  # save as we go: a long run that dies keeps its finished images
+        if n % 20 == 0:
+            _write_json(index_path, index)  # save as we go: a long run that dies keeps its finished images
     _write_json(index_path, index)
 
 
@@ -293,6 +305,8 @@ def trend(today: dt.date, start: str = "2024-01"):
     # months M, M+2 and M+4 share granules with their neighbours, and 6 is the smallest FIFO that reads each once
     per_month: dict[dt.date, list] = {m: [] for m in months}
     used: dict[dt.date, list] = {m: [] for m in months}
+    covered: dict[dt.date, list] = {m: [] for m in months}
+    readings_got: dict[dt.date, int] = {}
     settled: dict[dt.date, bool] = {}
     searches: dict[dt.date, dict] = {}
 
@@ -320,6 +334,8 @@ def trend(today: dt.date, start: str = "2024-01"):
             g["tile"] = tile
             per_month[m].append(g)
             used[m] += [e["title"] for e in entries]
+            covered[m].append(tile)
+            readings_got[m] = min(readings_got.get(m, len(entries)), len(entries))
         print(f"trend: {tile} done for {len(months)} months", flush=True)
 
     lic = licence_layer(today)
@@ -332,7 +348,10 @@ def trend(today: dt.date, start: str = "2024-01"):
         s = summary.summarise(c.drop(columns="geometry"), top=0)
         series["points"][m.strftime("%Y-%m")] = {
             "date": str(m), "total_ha": s["total_ha"], "no_licence_to_mine": s["no_licence_to_mine"],
-            "covered": tiles, "settled": settled[m], "readings": len(readings_as_of(m, today)[0]),
+            # A tile or reading day with no granule leaves the point incomplete: drop_stale removes it and a later
+            # run, when NASA has caught up, redoes it, rather than a lasting false dip in the chart
+            "covered": sorted(covered[m]), "settled": settled[m] and readings_got[m] == len(readings_as_of(m, today)[0]),
+            "readings": readings_got[m],
             "granules": used[m]}
         print(f"trend {m:%Y-%m}: {s['total_ha']} ha{'' if settled[m] else ' (provisional)'}")
     series["points"] = drop_stale(series["points"], tiles)
