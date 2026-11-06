@@ -35,6 +35,8 @@ export interface Place {
   chips: null | { missing: true; checked: string } | { before: Chip; after: Chip };
   // Set by the weekly signs step: open water in or beside the patch on land with no licence to mine
   likely_galamsey?: boolean;
+  // Set here: the closest town or village with this patch within 1 km of it (data/towns.json)
+  close?: string;
   signs?: { water: number; scene: string } | { missing: true; checked: string };
 }
 
@@ -125,6 +127,17 @@ export interface WaterPlant { plant: string; river: string; ha: number }
 
 const townFile = read<{ radius_m: number; towns: Town[] }>(path.join(DATA, 'towns.json'), { radius_m: 1000, towns: [] });
 export const towns = townFile.towns;
+// The pipeline names a patch after the nearest town up to 15 km away, before any village. A village the patch
+// touches (within 1 km, towns.json) says more, so each patch also gets the closest one of those
+{
+  const best = new Map<string, number>();
+  for (const t of towns) for (const id of t.ids) {
+    const p = placeById.get(id);
+    if (!p) continue;
+    const d = (t.lat - p.lat) ** 2 + ((t.lon - p.lon) * Math.cos((p.lat * Math.PI) / 180)) ** 2;
+    if (d < (best.get(id) ?? Infinity)) { best.set(id, d); p.close = t.name; }
+  }
+}
 export const townsNear = summary?.towns_near ?? null;
 export const water = (summary?.water ?? []).slice().sort((a, b) => b.ha - a.ha);
 

@@ -2,7 +2,7 @@
 // Each post is made to be quoted: one picture that stands alone, one true fact, no question to the reader.
 // The link goes in the first reply. Wording follows the site: no em dashes or semicolons, no verdicts on a place.
 import { active, coverage, hasPair, placeById, summary, towns, water, type Chip, type Place } from './data';
-import { LICENCE_SENTENCE, LICENCE_SHORT, count, hectares, longDate, num, pct, placeName, shortDate, tidyDistrict } from './format';
+import { LICENCE_SENTENCE, LICENCE_SHORT, count, hectares, longDate, nearLabel, nearText, num, pct, placeName, shortDate, tidyDistrict } from './format';
 import { catchments, inside } from './plants';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -33,21 +33,26 @@ const pick = <T>(list: T[], salt = 0): T => list[(WEEK + salt) % list.length];
 // Galamsey only: the posts show land the register gives no licence to mine (none at all, or prospecting only)
 const galamsey = (p: Place) => p.licence === 'no licence' || p.licence === 'prospecting only';
 type Pictured = Place & { chips: { before: Chip; after: Chip } };
+// Every picture, outline and named place in a post is Likely galamsey: no licence to mine on the register AND open
+// water in or right beside the patch. Totals still count all land with no licence to mine, the site's own figures
+const likelyLand = (p: Place) => galamsey(p) && !!p.likely_galamsey;
+export const showable = (p: Place): p is Pictured => hasPair(p) && likelyLand(p);
+const near = (p: Place) => nearText(p) ?? placeName(p);
 
 // Towns by land cleared with no licence to mine within 1 km, each shown by its largest such pictured patch
 // (neighbouring towns often share a patch, so each picture is used once)
 function galamseyTowns(n: number) {
   const used = new Set<string>();
-  const out: { town: (typeof towns)[number]; place: Pictured }[] = [];
+  const out: { town: (typeof towns)[number]; place: Pictured; rank: number }[] = [];
   const ranked = towns.map((t) => {
     const mine = t.ids.map((id) => placeById.get(id)).filter((p): p is Place => !!p && p.active && galamsey(p));
     return { t: { ...t, ha: mine.reduce((s, p) => s + p.ha, 0) }, mine: mine.sort((a, b) => b.ha - a.ha) };
   }).filter((r) => r.t.ha > 0).sort((a, b) => b.t.ha - a.t.ha);
-  for (const r of ranked) {
-    const place = r.mine.find((p) => hasPair(p) && !used.has(p.id)) as Pictured | undefined;
+  for (const [rank, r] of ranked.entries()) {
+    const place = r.mine.find((p) => showable(p) && !used.has(p.id)) as Pictured | undefined;
     if (!place) continue;
     used.add(place.id);
-    out.push({ town: r.t, place });
+    out.push({ town: r.t, place, rank });
     if (out.length === n) break;
   }
   return out;
@@ -71,10 +76,10 @@ if (lead && summary) {
     text: pick([
       `Within 1 km of ${town.name}${district ? `, ${district}` : ''}, satellites saw ${hectares(town.ha)} of land cleared with no licence to mine in the last 12 months. That is about ${num(pitches(town.ha))} football pitches.
 
-The pictures show the largest patch, before and after.`,
-      `${leadRank === 0 ? `No town we track has more land cleared with no licence to mine around it than ${town.name}` : `Few towns we track have more land cleared with no licence to mine around them than ${town.name}`}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.
+The pictures show its largest patch labelled Likely galamsey, before and after.`,
+      `${lead.rank === 0 ? `No town we track has more land cleared with no licence to mine around it than ${town.name}` : `Few towns we track have more land cleared with no licence to mine around them than ${town.name}`}${district ? ` in ${district}` : ''}: ${hectares(town.ha)} within 1 km, in 12 months.
 
-Here is its largest patch, before and after, seen by satellite.`,
+Here is its largest patch labelled Likely galamsey, before and after, seen by satellite.`,
       `${town.name}${district ? `, ${district}` : ''}, seen by satellite on ${longDate(place.chips.before.date)} and again on ${longDate(place.chips.after.date)}.
 
 Within 1 km of the town, ${hectares(town.ha)} of land was cleared with no licence to mine in the last 12 months, about ${num(pitches(town.ha))} football pitches.`,
@@ -105,7 +110,6 @@ const CITIES = [
     tap: 'Kwanyako supplies Winneba, Swedru and Kasoa',
     lead: 'Winneba, Swedru and Kasoa get their water from the Kwanyako treatment plant on the Ayensu.' },
 ];
-const pictured = (p: Place): p is Place & { chips: { before: Chip; after: Chip } } => hasPair(p);
 // Land cleared with no licence to mine on the land that drains to a plant (each patch counted by its point)
 const upstream = (polys: (typeof catchments)[number]['polys']) => active.filter(galamsey).filter((p) => inside([p.lon, p.lat], polys)).reduce((t, p) => t + p.ha, 0);
 CITIES.forEach((c, ci) => {
@@ -114,7 +118,7 @@ CITIES.forEach((c, ci) => {
   if (ha < 1) return;
   // One of the three largest patches there with the Likely galamsey label, a different one each week, so the
   // picture shows what the post is about and the same city's card does not repeat its picture
-  const candidates = active.filter(pictured).filter((p) => p.likely_galamsey && inside([p.lon, p.lat], polys)).slice(0, 3);
+  const candidates = active.filter(showable).filter((p) => inside([p.lon, p.lat], polys)).slice(0, 3);
   const largest = candidates.length ? pick(candidates, ci) : undefined;
   const haText = num(Math.round(ha));
   posts.push({
@@ -163,7 +167,7 @@ That is ${num(unlicensedHa)} hectares in the 12 months leading up to ${dataDate}
 const districtHa = [...active.filter(galamsey).reduce((m, p) => (p.district ? m.set(p.district, (m.get(p.district) ?? 0) + p.ha) : m), new Map<string, number>())]
   .map(([district, ha]) => ({ district, ha })).sort((a, b) => b.ha - a.ha);
 const districtsReady = districtHa.slice(0, 5)
-  .map((d, rank) => ({ ...d, rank, inDistrict: active.filter(pictured).filter(galamsey).filter((p) => p.district === d.district).slice(0, 3) }))
+  .map((d, rank) => ({ ...d, rank, inDistrict: active.filter(showable).filter((p) => p.district === d.district).slice(0, 3) }))
   .filter((d) => d.inDistrict.length === 3);
 if (districtsReady.length) {
   const d = pick(districtsReady);
@@ -173,17 +177,17 @@ if (districtsReady.length) {
     slug: 'district',
     kind: 'District spotlight',
     title: `District spotlight: ${name}`,
-    alt: `${num(d.ha)} hectares of land cleared with no licence to mine in 12 months in ${name}. Satellite pictures of its three largest cleared patches: ${d.inDistrict.map((p) => placeName(p)).join(', ')}.`,
+    alt: `${num(d.ha)} hectares of land cleared with no licence to mine in 12 months in ${name}. Satellite pictures of its three largest patches labelled Likely galamsey: ${d.inDistrict.map((p) => placeName(p)).join(', ')}.`,
     text: `${name}: ${num(d.ha)} hectares of land cleared with no licence to mine in 12 months, about ${num(pitches(d.ha))} football pitches. It is ${standing} in the areas we track.
 
-These are its three largest cleared patches, seen by satellite.`,
+These are its three largest patches labelled Likely galamsey, seen by satellite.`,
     reply: `Every patch in ${name}, on the map: ${SITE}/map?district=${encodeURIComponent(d.district)}`,
     render: () => districtPost({
       title: `${name}, ${standing}`,
       big: `${num(d.ha)} ha`,
       line: `cleared in the 12 months leading up to ${dataDate}`,
       stat: `About ${num(pitches(d.ha))} football pitches`,
-      places: d.inDistrict.map((p) => ({ label: `${hectares(p.ha)}, ${p.near ? `near ${p.near}` : 'unnamed place'}`, after: p.chips.after })),
+      places: d.inDistrict.map((p) => ({ label: `${hectares(p.ha)}, ${nearText(p) ?? 'unnamed place'}`, after: p.chips.after })),
     }),
   });
 }
@@ -263,7 +267,7 @@ Before and after up close: ${SITE}/places/${place.id}/`,
 // 7. New clearing: the largest pictured patch satellites first saw in the last two (or four) months. New land every week.
 if (summary) {
   // New places often wait a while for a cloud-free picture, so look back four months when two find nothing
-  const within = (days: number) => active.filter(pictured).filter(galamsey).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= Date.parse(summary.data_date) - days * 864e5)[0];
+  const within = (days: number) => active.filter(showable).filter((p) => p.ha >= 3 && Date.parse(p.first_seen) >= Date.parse(summary.data_date) - days * 864e5)[0];
   const months = within(60) ? 'two' : 'four';
   const fresh = within(60) ?? within(120);
   if (fresh) {
@@ -275,11 +279,11 @@ if (summary) {
       alt: `Two satellite pictures of the same land ${where}. Before, ${longDate(fresh.chips.before.date)}. After, ${longDate(fresh.chips.after.date)}: newly bare ground.`,
       text: `${hectares(fresh.ha)} of land cleared ${where}, first seen by satellite on ${longDate(fresh.first_seen)}.
 
-It is the largest patch satellites first saw in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+It is the largest patch labelled Likely galamsey that satellites first saw in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
       reply: `Before and after up close: ${SITE}/places/${fresh.id}/`,
       render: () => townPost({
         headline: `${hectares(fresh.ha)} of land newly cleared ${where}`,
-        sub: `First seen by satellite on ${longDate(fresh.first_seen)}, the largest new patch in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
+        sub: `First seen by satellite on ${longDate(fresh.first_seen)}, the largest new Likely galamsey patch in the last ${months} months. ${LICENCE_SENTENCE[fresh.licence]}`,
         before: fresh.chips.before, after: fresh.chips.after,
       }),
     });
@@ -287,11 +291,10 @@ It is the largest patch satellites first saw in the last ${months} months. ${LIC
 }
 
 
-// ---- More kinds (2026-11-05, third pass). Each is one idea with its own layout. Galamsey only: every place,
-// picture and total here is land the register shows with no licence to mine (none, or prospecting only) ----
-const photo = active.filter(pictured).filter(galamsey);
+// ---- More kinds (2026-11-05, third pass). Each is one idea with its own layout. Galamsey only: totals count land
+// the register shows with no licence to mine (none, or prospecting only), pictures and outlines are Likely galamsey ----
+const photo = active.filter(showable);
 const unlicensed = active.filter(galamsey);
-const near = (p: Place) => (p.near ? `near ${p.near}` : placeName(p));
 
 // Real outlines, from the weekly run's working files (present in the weekly and daily studio jobs)
 const outlines = (() => {
@@ -307,16 +310,17 @@ const outlines = (() => {
 })();
 
 // The shape of it: one of the ten largest unlicensed patches, its outline beside a football pitch at the same scale
-const shaped = unlicensed.filter((p) => outlines.has(p.id)).slice(0, 10);
+const shaped = active.filter((p) => likelyLand(p) && outlines.has(p.id)).slice(0, 10);
 if (shaped.length && summary) {
   const rank = WEEK % shaped.length;
   const p = shaped[rank];
-  const standing = rank === 0 ? 'the largest patch we track with no licence to mine' : `one of the ${count(shaped.length)} largest patches we track with no licence to mine`;
+  const largest = active.find(likelyLand);
+  const standing = rank === 0 && largest?.id === p.id ? 'the largest patch we track labelled Likely galamsey' : `one of the ${count(shaped.length)} largest patches we track labelled Likely galamsey`;
   posts.push({
     slug: 'shape', kind: 'The shape of it', title: `The shape of it: ${hectares(p.ha)} ${near(p)}`,
     alt: `The outline of one cleared patch ${near(p)}, ${hectares(p.ha)}, drawn in pink beside a football pitch at the same scale. The patch is about ${num(pitches(p.ha))} times bigger.`,
     text: pick([
-      `This is the real outline of one patch of cleared land ${placeName(p)}, traced from satellite data. The small rectangle is a football pitch at the same scale.\n\n${hectares(p.ha)}, ${standing}. No licence to mine on the register.`,
+      `This is the real outline of one patch of cleared land ${placeName(p)}, traced from satellite data. The small rectangle is a football pitch at the same scale.\n\n${hectares(p.ha)}, ${standing}: no licence to mine on the register, and open water in it.`,
       `One patch, ${hectares(p.ha)}, ${placeName(p)}. About ${num(pitches(p.ha))} football pitches of land, in one piece, with no licence to mine on the register.`,
     ]),
     reply: `See it before and after: ${SITE}/places/${p.id}/`,
@@ -325,19 +329,19 @@ if (shaped.length && summary) {
 }
 
 // A specimen plate: the twelve largest unlicensed patches, one shared scale
-const plate = unlicensed.filter((p) => outlines.has(p.id)).slice(0, 12);
+const plate = active.filter((p) => likelyLand(p) && outlines.has(p.id)).slice(0, 12);
 if (plate.length === 12) {
   posts.push({
     slug: 'plate', kind: 'Twelve shapes', title: 'Twelve shapes of galamsey',
     alt: `Twelve black outlines of cleared patches, all at the same scale: ${plate.map((p) => `${hectares(p.ha)} ${near(p)}`).join(', ')}.`,
-    text: `The twelve largest patches of cleared land we track with no licence to mine, traced from satellite data and drawn at the same scale.\n\n${plate.slice(0, 6).map((p) => `${hectares(p.ha)} ${near(p)}`).join('\n')}\n...and six more.`,
+    text: `The twelve largest patches of cleared land we track labelled Likely galamsey (no licence to mine, and open water in them), traced from satellite data and drawn at the same scale.\n\n${plate.slice(0, 6).map((p) => `${hectares(p.ha)} ${near(p)}`).join('\n')}\n...and six more.`,
     reply: `Every patch on the map: ${SITE}/map?sort=largest`,
-    render: () => platePost({ title: 'Twelve shapes of galamsey', line: 'The largest patches with no licence to mine, traced from satellite data, all at one scale.', items: plate.map((p) => ({ rings: outlines.get(p.id)!, label: `${hectares(p.ha)}, ${p.near ?? tidyDistrict(p.district ?? '')}` })) }),
+    render: () => platePost({ title: 'Twelve shapes of galamsey', line: 'The largest Likely galamsey patches, traced from satellite data, all at one scale.', items: plate.map((p) => ({ rings: outlines.get(p.id)!, label: `${hectares(p.ha)}, ${nearLabel(p) ?? tidyDistrict(p.district ?? '')}` })) }),
   });
 }
 
 // Find it yourself: a Likely galamsey patch by its coordinates, so anyone can check it in Google Maps
-const findable = photo.filter((p) => p.likely_galamsey && p.near).slice(0, 30);
+const findable = photo.filter((p) => p.near).slice(0, 30);
 if (findable.length) {
   const p = pick(findable, 4);
   posts.push({
@@ -386,10 +390,10 @@ const newest = photo.filter((p) => p.ha >= 2).sort((a, b) => b.first_seen.locale
 if (newest.length === 6) {
   posts.push({
     slug: 'sheet', kind: 'Newest patches', title: 'The six newest patches',
-    alt: `Six satellite pictures of newly cleared land with no licence to mine: ${newest.map((p) => `${hectares(p.ha)} ${near(p)}`).join(', ')}.`,
-    text: `The six newest patches of cleared land the satellites have pictured with no licence to mine on the register, each 2 hectares or more:\n\n${newest.map((p) => `${hectares(p.ha)} ${near(p)}`).join('\n')}`,
+    alt: `Six satellite pictures of newly cleared land labelled Likely galamsey: ${newest.map((p) => `${hectares(p.ha)} ${near(p)}`).join(', ')}.`,
+    text: `The six newest patches of cleared land the satellites have pictured with our Likely galamsey label (no licence to mine, and open water in them), each 2 hectares or more:\n\n${newest.map((p) => `${hectares(p.ha)} ${near(p)}`).join('\n')}`,
     reply: `All patches, newest first: ${SITE}/map?sort=newest`,
-    render: () => sheetPost({ title: 'The six newest patches', line: `No licence to mine, 2 hectares or more, first seen between ${shortDate(newest[5].first_seen)} and ${shortDate(newest[0].first_seen)}.`, places: newest.map((p) => ({ label: `${hectares(p.ha)}, ${p.near ?? 'unnamed place'}`, after: p.chips.after })) }),
+    render: () => sheetPost({ title: 'The six newest patches', line: `Labelled Likely galamsey, 2 hectares or more, first seen between ${shortDate(newest[5].first_seen)} and ${shortDate(newest[0].first_seen)}.`, places: newest.map((p) => ({ label: `${hectares(p.ha)}, ${nearLabel(p) ?? 'unnamed place'}`, after: p.chips.after })) }),
   });
 }
 
@@ -451,9 +455,8 @@ if (plantRows.length >= 3) {
 
 // The water test: how many unlicensed patches show open water
 const likely = active.filter((p) => p.likely_galamsey);
-const pits = photo.filter((p) => p.likely_galamsey);
 if (likely.length) {
-  const ex = pick(pits.slice(0, 10), 3);
+  const ex = pick(photo.slice(0, 10), 3);
   posts.push({
     slug: 'water-test', kind: 'The water test', title: 'The water test',
     alt: `${num(likely.length)} cleared patches labelled Likely galamsey.${ex ? ` A satellite picture of one, ${near(ex)}, with dark ponds on bare ground.` : ''}`,
@@ -470,18 +473,19 @@ if (summary) {
   const monthStart = new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth() - (lastDay ? 0 : 1), 1));
   const monthEnd = new Date(Date.UTC(monthStart.getUTCFullYear(), monthStart.getUTCMonth() + 1, 1));
   const inMonth = unlicensed.filter((p) => { const t = Date.parse(p.first_seen); return t >= monthStart.getTime() && t < monthEnd.getTime(); });
-  // New patches often wait weeks for a cloud-free picture, so fall back to the newest pictured one
-  const top = inMonth.filter(pictured)[0];
+  // The picture is the month's largest Likely galamsey patch. New patches often wait weeks for a cloud-free
+  // picture, so fall back to the newest pictured one
+  const top = inMonth.filter(showable)[0];
   const shown = top ?? newest[0];
   const month = monthStart.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   if (inMonth.length) {
     const ha = inMonth.reduce((t, p) => t + p.ha, 0);
     posts.push({
       slug: 'month', kind: 'Month in review', title: `${month} in review`,
-      alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches.${shown ? ` A satellite picture of one, ${near(shown)}.` : ''}`,
-      text: `In ${month}, satellites first saw ${num(ha)} hectares of newly cleared land with no licence to mine on the register, in ${num(inMonth.length)} patches.${top ? `\n\nThe largest: ${hectares(top.ha)} ${placeName(top)}.` : ''}\n\nNASA confirms clearing over several weeks, so this number can still go up.`,
+      alt: `${num(ha)} hectares of land with no licence to mine first seen cleared in ${month}, in ${num(inMonth.length)} patches.${shown ? (top ? ` A satellite picture of the largest labelled Likely galamsey, ${near(shown)}.` : ` A satellite picture of the newest Likely galamsey patch with a clear picture, ${near(shown)}.`) : ''}`,
+      text: `In ${month}, satellites first saw ${num(ha)} hectares of newly cleared land with no licence to mine on the register, in ${num(inMonth.length)} patches.${top ? `\n\nThe largest labelled Likely galamsey: ${hectares(top.ha)} ${placeName(top)}.` : ''}\n\nNASA confirms clearing over several weeks, so this number can still go up.`,
       reply: `All patches, newest first: ${SITE}/map?sort=newest`,
-      render: () => statPost({ title: `${month} in review`, big: `${num(ha)} ha`, line: `newly cleared with no licence to mine, in ${num(inMonth.length)} patches`, body: 'First seen by satellite that month. NASA confirms clearing over several weeks, so the number can still go up.', picture: shown?.chips.after, caption: shown ? `${top ? 'The largest' : 'One of the newest'}: ${hectares(shown.ha)} ${near(shown)}` : undefined }),
+      render: () => statPost({ title: `${month} in review`, big: `${num(ha)} ha`, line: `newly cleared with no licence to mine, in ${num(inMonth.length)} patches`, body: 'First seen by satellite that month. NASA confirms clearing over several weeks, so the number can still go up.', picture: shown?.chips.after, caption: shown ? `${top ? 'Largest Likely galamsey' : 'Newest Likely galamsey'}: ${hectares(shown.ha)} ${near(shown)}` : undefined }),
     });
   }
 }

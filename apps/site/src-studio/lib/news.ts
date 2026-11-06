@@ -3,8 +3,8 @@
 // working feed of their own) and MyJoyOnline's galamsey tag. Headlines that name a town or district we cover get
 // a ready "One place" post of that town's largest pictured patch. If a feed fails, the studio still builds.
 import { active, hasPair, placeById, towns } from '../../src/lib/data';
-import { tidyDistrict } from '../../src/lib/format';
-import { newsPlacePost, type Post } from '../../src/lib/share';
+import { closeTo, tidyDistrict } from '../../src/lib/format';
+import { newsPlacePost, showable, type Post } from '../../src/lib/share';
 
 const FEEDS = [
   'https://news.google.com/rss/search?q=galamsey+when:7d&hl=en-GH&gl=GH&ceid=GH:en',
@@ -47,17 +47,17 @@ async function read(url: string) {
 }
 
 // Towns first (largest cleared land first), then districts
-// Galamsey only: the picture is the largest patch near the town with no licence to mine on the register
-const galamsey = (p: { licence: string }) => p.licence === 'no licence' || p.licence === 'prospecting only';
-const pictured = (ids: string[]) => ids.map((id) => placeById.get(id)).filter((p) => p && p.active && galamsey(p) && hasPair(p)).sort((a, b) => b!.ha - a!.ha)[0];
+// The picture is the town's largest Likely galamsey patch, by the same rule as every post (share.ts showable)
+const pictured = (ids: string[]) => ids.map((id) => placeById.get(id)).filter((p) => p && p.active && showable(p)).sort((a, b) => b!.ha - a!.ha)[0];
 const nameCount = towns.reduce((m, t) => m.set(t.name, (m.get(t.name) ?? 0) + 1), new Map<string, number>());
 const named: { name: string; label: string; district: string | null; place: ReturnType<typeof pictured>; shared?: boolean }[] = [
   // A name shared by several towns only counts when the story also names the town's district
   ...towns.filter((t) => t.name.length >= 4 && !SKIP.has(t.name)).map((t) => ({ name: t.name, label: t.name, district: t.district, place: pictured(t.ids), shared: (nameCount.get(t.name) ?? 0) > 1 })),
   // A district in the news: its largest pictured patch, named by the town nearest to it
   ...[...new Set(active.map((p) => p.district).filter(Boolean) as string[])].map((d) => {
-    const place = active.find((p) => p.district === d && galamsey(p) && hasPair(p));
-    return { name: tidyDistrict(d), label: place?.near ?? tidyDistrict(d), district: d, place };
+    // Close to a town, so the post can say "near" it
+    const place = active.find((p) => p.district === d && showable(p) && closeTo(p) != null);
+    return { name: tidyDistrict(d), label: (place && closeTo(place)) ?? tidyDistrict(d), district: d, place };
   }),
 ].filter((n) => n.place);
 const pattern = (name: string) => new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);

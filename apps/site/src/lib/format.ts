@@ -51,9 +51,19 @@ export const LICENCE_SENTENCE: Record<Licence, string> = {
 // geoBoundaries writes some district names with a lower-case word after a slash
 export const tidyDistrict = (d: string) => d.replace(/\/(\w)/g, (_, c: string) => `/${c.toUpperCase()}`);
 
+// "near X" only when the patch is close to X: its nearest town within 2 km, or else a town or village within 1 km
+// of the patch. Otherwise the distance to the nearest town (up to 15 km), so nobody looks for the patch in the town
+export const NEAR_KM = 2;
+// Distances are shown rounded, so the cutoff applies to the rounded value: 2.4 km reads "near", 2.6 km "3 km from".
+// A town with no distance on record is taken as near
+export const closeTo = (p: Place) => (p.near && (p.near_km == null || Math.round(p.near_km) <= NEAR_KM) ? p.near : p.close ?? null);
+export const nearLabel = (p: Place) => closeTo(p) ?? (p.near ? `${Math.round(p.near_km!)} km from ${p.near}` : null);
+export const nearText = (p: Place) => { const c = closeTo(p); return c ? `near ${c}` : nearLabel(p); };
+
 export function placeName(p: Place) {
-  if (p.near && p.district) return `near ${p.near}, ${tidyDistrict(p.district)}`;
-  if (p.near) return `near ${p.near}`;
+  const n = nearText(p);
+  if (n && p.district) return `${n}, ${tidyDistrict(p.district)}`;
+  if (n) return n;
   if (p.district) return `in ${tidyDistrict(p.district)}`;
   return `at ${coords(p)}`;
 }
