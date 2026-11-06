@@ -1,8 +1,9 @@
 import { active, hasPair, summary } from '../lib/data';
-import { chipUrl, noPicture, placeName } from '../lib/format';
+import { chipSrc, noPicture, placeName } from '../lib/format';
 
-// Absolute image links, so the file still works after someone downloads it
-const abs = (rel: string) => new URL(chipUrl(rel), import.meta.env.SITE).href;
+// Absolute image links, so the file still works after someone downloads it. `image` holds both pictures, before on
+// the left half and after on the right (the data page says so).
+const abs = (src: string) => new URL(src, import.meta.env.SITE).href;
 
 export function GET() {
   return new Response(JSON.stringify({
@@ -17,8 +18,7 @@ export function GET() {
         ...(p.likely_galamsey && { likely_galamsey: true }),
         ...(!hasPair(p) && { no_picture: noPicture(p) }),
         ...(hasPair(p) && {
-          before_date: p.chips.before.date, before_image: abs(p.chips.before.files['720.webp']),
-          after_date: p.chips.after.date, after_image: abs(p.chips.after.files['720.webp']),
+          before_date: p.chips.before.date, after_date: p.chips.after.date, image: abs(chipSrc(p.chips.before)),
         }),
       },
     })),

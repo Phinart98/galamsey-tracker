@@ -68,6 +68,11 @@ a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1p
 a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 img { display: block; max-width: 100%; height: auto; }
+/* A place's before and after are one file, before on the left (lib/format.ts chipSrc). Every picture box is square
+   and crops with object-fit: cover, so this picks the half. */
+img[data-half] { aspect-ratio: 1; object-fit: cover; }
+img[data-half='before'] { object-position: left center; }
+img[data-half='after'] { object-position: right center; }
 h1, h2, h3 { text-wrap: balance; }
 p { text-wrap: pretty; }
 

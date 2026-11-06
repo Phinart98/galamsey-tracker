@@ -11,12 +11,12 @@
   </div>
   <div class="stages" data-v-stages>
     <figure class="stage" data-v-stage="before">
-      <div class="zoom"><img data-v-img="before" alt="" width="720" height="720" draggable="false"></div>
+      <div class="zoom"><img data-v-img="before" data-half="before" alt="" width="720" height="720" draggable="false"></div>
       <span class="ghost" aria-hidden="true" hidden></span>
       <figcaption class="stamp"><strong>Before</strong>, taken <span data-v-date="before"></span></figcaption>
     </figure>
     <figure class="stage" data-v-stage="after">
-      <div class="zoom"><img data-v-img="after" alt="" width="720" height="720" draggable="false"></div>
+      <div class="zoom"><img data-v-img="after" data-half="after" alt="" width="720" height="720" draggable="false"></div>
       <span class="ghost" aria-hidden="true" hidden></span>
       <figcaption class="stamp"><strong>After</strong>, taken <span data-v-date="after"></span></figcaption>
     </figure>
@@ -80,7 +80,10 @@
       for (const s of ['before', 'after']) {
         const img = q(`[data-v-img=${s}]`);
         img.src = fig.dataset[s];
-        img.alt = `Satellite image, ${s}, ${fig.dataset[s + 'Date']}`;
+        // Same words as pictureAlt() in lib/format.ts
+        img.alt = s === 'before'
+          ? `Satellite image of the place on ${fig.dataset.beforeDate}, before the clearing was first seen`
+          : `Satellite image of the same place on ${fig.dataset.afterDate}`;
         q(`[data-v-date=${s}]`).textContent = fig.dataset[s + 'Date'];
       }
       show(start);

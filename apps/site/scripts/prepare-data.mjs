@@ -1,8 +1,10 @@
 // Gets the place index (and, locally, the images) that are too big to commit.
 // Normally both come from pipeline/out (locally, and in the weekly workflow after it restores its working files),
-// and the images are copied into public/chips. PLACES_INDEX_URL and CHIPS_BASE_URL can point at a remote copy instead.
+// and each place's two images are joined into one pair file in public/chips (scripts/pairs.mjs). PLACES_INDEX_URL
+// and CHIPS_BASE_URL can point at a remote copy instead.
 import fs from 'node:fs';
 import path from 'node:path';
+import { writePairs } from './pairs.mjs';
 
 const site = path.resolve(import.meta.dirname, '..');
 const out = path.join(site, '.data');
@@ -19,8 +21,10 @@ if (process.env.PLACES_INDEX_URL) {
   // Clear old copies first, so pictures published on their own site (CHIPS_BASE_URL) are never also deployed here
   fs.rmSync(path.join(site, 'public/chips'), { recursive: true, force: true });
   if (!process.env.CHIPS_BASE_URL && fs.existsSync(path.join(local, 'chips'))) {
-    // Older runs also made AVIF and 360 px copies. The site uses the 720 px WebP only
-    fs.cpSync(path.join(local, 'chips'), path.join(site, 'public/chips'), { recursive: true, filter: (f) => !/(\.avif|-360\.webp)$/.test(f) });
+    const latest = path.resolve(site, '../../data/summary/latest.json');
+    const dataDate = fs.existsSync(latest) ? JSON.parse(fs.readFileSync(latest, 'utf8')).data_date : null;
+    const { written } = await writePairs(local, index, path.join(site, 'public'), dataDate);
+    console.log(`prepare-data: ${written} picture pairs in public/chips`);
   }
 } else {
   console.warn('prepare-data: no place index found, building without places');

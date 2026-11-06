@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { count } from './format';
+import { retiredBefore } from './pictures.mjs';
 
 const SITE = process.cwd();
 const REPO = path.resolve(SITE, '../..');
@@ -75,7 +76,11 @@ export const trend = Object.values(
 export const tiles = Object.fromEntries(
   Object.entries(read<Record<string, Tile>>(path.join(REPO, 'pipeline/tiles.json'), {})).filter(([, t]) => t.enabled),
 );
-export const places = Object.values(read<Record<string, Place>>(path.join(SITE, '.data/places.json'), {}));
+// A place leaves the site two years after its land last changed (lib/pictures.mjs, the same rule the pictures site
+// uses): no page, share card or pictures. Its old link gets the 404 page, which says why.
+const keepFrom = retiredBefore(summary?.data_date);
+export const places = Object.values(read<Record<string, Place>>(path.join(SITE, '.data/places.json'), {}))
+  .filter((p) => !keepFrom || p.last_seen >= keepFrom);
 export const placeById = new Map(places.map((p) => [p.id, p]));
 // A patch that merged into another keeps its old id in the index (ids are never reused), so its page would say it
 // is no longer cleared. Instead it redirects to the place it joined. The weekly run writes aliases.json already
@@ -169,4 +174,4 @@ export function onePictureEach<R>(rows: R[], candidates: (row: R) => Place[], n:
 // The home page's towns: the most cleared land within 1 km first, each with its largest pictured patch
 export const doorstep = (n: number) =>
   onePictureEach(towns, (t) => t.ids.map((id) => placeById.get(id)).filter((p): p is Place => !!p), n)
-    .map(({ row, place, largest }) => ({ town: row, place, largest }));
+    .map(({ row, place, rank, largest }) => ({ town: row, place, rank, largest }));

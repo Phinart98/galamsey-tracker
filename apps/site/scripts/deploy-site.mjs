@@ -31,5 +31,7 @@ if (preview) {
 const count = (dir) => fs.readdirSync(dir, { withFileTypes: true }).reduce((n, e) => n + (e.isDirectory() ? count(path.join(dir, e.name)) : 1), 0);
 const files = count(dist);
 console.log(`site: ${files} files${preview ? ' (hidden preview)' : ''}`);
+// A warning on the run page long before the hard stop
+if (files > 16000) console.log(`::warning::${files} site files, close to Cloudflare Pages' 20,000. Retire places sooner (src/lib/pictures.mjs RETIRE_YEARS).`);
 if (files > 19000) throw new Error(`${files} files is over 19,000: Cloudflare Pages takes at most 20,000 per site`);
 run(`${process.env.WRANGLER ?? 'npx --yes wrangler@4'} pages deploy dist --project-name ${project} --branch main --commit-dirty=true`);

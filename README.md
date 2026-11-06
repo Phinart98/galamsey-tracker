@@ -67,7 +67,7 @@ npm run dev                                   # reads ../../pipeline/out
 1. restores the previous run's working files (place list, readings, pictures) from the `pipeline-state` release,
 2. runs the four pipeline commands above,
 3. saves the working files back to the release and commits `data/`,
-4. publishes the pictures to their own Cloudflare Pages project, `galamsey-tracker-pictures`, so neither project passes Pages' limit of 20,000 files,
+4. publishes the pictures to their own Cloudflare Pages project, `galamsey-tracker-pictures`, one file per place with the before on the left and the after on the right, so neither project passes Pages' limit of 20,000 files. A place leaves the site two years after its land last changed, for the same reason,
 5. builds the site and publishes it to the `galamsey-tracker` Pages project, which serves galamseytracker.org.
 
 A failed run still records itself in `data/status.json`, and the site says when an update is late.

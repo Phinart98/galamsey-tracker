@@ -1,4 +1,5 @@
 import type { Chip, Licence, Place } from './data';
+import { pairRel } from './pictures.mjs';
 
 const nf = new Intl.NumberFormat('en-GB');
 export const num = (n: number) => nf.format(Math.round(n));
@@ -43,7 +44,8 @@ export const DAY_MS = 864e5;
 
 // The wording rule: describe the licence on the land, never a verdict on the people or the site
 export const LICENCE_SHORT: Record<Licence, string> = {
-  'no licence': 'No licence to mine',
+  // "No licence to mine" always means this and prospecting only together (NO_LICENCE_TO_MINE)
+  'no licence': 'No licence',
   'prospecting only': 'Prospecting licence only',
   'restricted lease': 'Stone or sand lease',
   'small-scale licence': 'Small-scale mining licence',
@@ -89,8 +91,16 @@ export const hectares = (ha: number) => (ha < 10 ? `${ha.toFixed(1)} hectares` :
 const CHIPS = (import.meta.env.CHIPS_BASE_URL ?? '').replace(/\/$/, '');
 export const chipUrl = (rel: string) => `${CHIPS}/${rel}`;
 
-// One size per picture: a picture holds 160 real pixels across, so a smaller copy would add no detail
-export const chipSrc = (chip: Chip) => chipUrl(chip.files['720.webp']);
+// A place's two pictures are published as one file, before on the left and after on the right (scripts/pairs.mjs,
+// the same path rule), so the pictures site holds half as many files. Each square picture box shows its half:
+// <img data-half="before|after">, styled in global.css. One size: a picture holds 160 real pixels across.
+export const pairOf = (chip: Chip) => pairRel(chip.files['720.webp']);
+export const halfOf = (chip: Chip): 'before' | 'after' => (/\/before-720\.webp$/.test(chip.files['720.webp']) ? 'before' : 'after');
+export const chipSrc = (chip: Chip) => chipUrl(pairOf(chip));
+// The same description for a picture wherever it is shown (lists, place pages, the map card, the large viewer)
+export const pictureAlt = (side: 'before' | 'after', date: string) => (side === 'before'
+  ? `Satellite image of the place on ${date}, before the clearing was first seen`
+  : `Satellite image of the same place on ${date}`);
 
 // Why a place has no pictures. Most have simply not been tried yet, so never blame cloud unless we looked.
 export type NoPicture = 'cloudy' | 'pending';

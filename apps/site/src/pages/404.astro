@@ -1,0 +1,20 @@
+---
+// Cloudflare Pages serves this for any address the site does not have. Place pages are retired two years after the
+// patch last changed (lib/data.ts RETIRE_YEARS), so an old link to one gets its own line.
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" description="This page is not on the Galamsey Tracker.">
+  <article class="wrap prose">
+    <h1>Page not found</h1>
+    <p data-place hidden>This place is not on the site. A place leaves the site two years after its land last changed, so an old link can end here. The link may also be mistyped.</p>
+    <p data-other>There is no page at this address. It may have moved, or the link may be mistyped.</p>
+    <p><a href="/map/">See every patch on the map</a>, or go to the <a href="/">home page</a>.</p>
+  </article>
+</Base>
+
+<script is:inline>
+  if (/^\/places\/[^/]+\/?$/.test(location.pathname)) {
+    document.querySelector('[data-place]').hidden = false;
+    document.querySelector('[data-other]').hidden = true;
+  }
+</script>

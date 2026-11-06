@@ -6,7 +6,7 @@ import { Resvg } from '@resvg/resvg-js';
 import satori from 'satori';
 import sharp from 'sharp';
 import type { Chip, Licence } from './data';
-import { LICENCE_SHORT, chipUrl, noLicenceToMine, shortDate } from './format';
+import { LICENCE_SHORT, chipUrl, halfOf, noLicenceToMine, pairOf, shortDate } from './format';
 
 const FONTS = path.join(process.cwd(), 'node_modules/@fontsource/atkinson-hyperlegible-next/files');
 const fonts = [400, 700].map((weight) => ({
@@ -26,13 +26,29 @@ async function download(url: string) {
   return Buffer.from(await res.arrayBuffer());
 }
 
+// One side of a place's pictures: the single file when it is on disk (the weekly run has them, as does a local
+// copy of pipeline/out), else that half of the published pair (lib/format.ts chipSrc)
+async function picture(chip: Chip) {
+  const rel = chip.files['720.webp'];
+  const single = path.join(process.cwd(), '../../pipeline/out', rel);
+  if (fs.existsSync(single)) return fs.readFileSync(single);
+  const pairRel = pairOf(chip);
+  const local = path.join(process.cwd(), 'public', pairRel);
+  let pair: Buffer;
+  try {
+    pair = fs.existsSync(local) ? fs.readFileSync(local) : await download(chipUrl(pairRel));
+  } catch (e) {
+    // Until the weekly run of 9 November 2026 publishes the first pairs, the pictures site has single files only.
+    // Remove this fallback with KEEP_SINGLES in weekly.yml after that run.
+    return download(chipUrl(rel)).catch(() => { throw e; });
+  }
+  const side = 720;
+  return sharp(pair).extract({ left: halfOf(chip) === 'before' ? 0 : side, top: 0, width: side, height: side }).toBuffer();
+}
+
 // Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG
 export async function jpeg(chip: Chip) {
-  const rel = chip.files['720.webp'];
-  // The weekly run has the pictures on disk even when the site links to them on the pictures site
-  const here = [path.join(process.cwd(), 'public', rel), path.join(process.cwd(), '../../pipeline/out', rel)].find((f) => fs.existsSync(f));
-  const buf = here ? fs.readFileSync(here) : await download(chipUrl(rel));
-  const out = await sharp(buf).jpeg({ quality: 82 }).toBuffer();
+  const out = await sharp(await picture(chip)).jpeg({ quality: 82 }).toBuffer();
   return `data:image/jpeg;base64,${out.toString('base64')}`;
 }
 

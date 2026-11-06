@@ -171,7 +171,13 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npm run deploy:pictures -- "$PICTURES_PROJECT"
+          # The 9 November 2026 run switches the site to one before|after file per place: publish the old single files
+          # too this once, so the site still live keeps its pictures. Remove after that run.
+          KEEP_SINGLES: '1'
+        # npm ci here, not in the site step: the pictures are joined into before|after pairs with sharp
+        run: |
+          npm ci
+          npm run deploy:pictures -- "$PICTURES_PROJECT"
 
       - name: Build and publish the site
         working-directory: apps/site
@@ -181,9 +187,7 @@ jobs:
           CHIPS_BASE_URL: https://${{ env.PICTURES_PROJECT }}.pages.dev
           # Cloudflare Email Routing forwards it to a private inbox. Setting it shows the contact lines and Help improve it
           CONTACT_EMAIL: hello@galamseytracker.org
-        run: |
-          npm ci
-          npm run deploy:site -- "$SITE_PROJECT"
+        run: npm run deploy:site -- "$SITE_PROJECT"
 
       # Last, and allowed to fail: the studio is for the person posting, so a problem here never marks the weekly
       # update as failed or holds back the site

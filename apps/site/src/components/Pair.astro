@@ -1,6 +1,6 @@
 ---
 import type { Chip, Place } from '../lib/data';
-import { chipSrc, hectares, longDate, placeName, shortDate } from '../lib/format';
+import { chipSrc, hectares, longDate, pictureAlt, placeName, shortDate } from '../lib/format';
 
 interface Props {
   place: Place & { chips: { before: Chip; after: Chip } };
@@ -11,10 +11,7 @@ const { place, variant = 'row', eager = false } = Astro.props;
 const shots = (['before', 'after'] as const).map((side) => {
   const chip = place.chips[side];
   const src = chipSrc(chip);
-  const alt = side === 'before'
-    ? `Satellite image of the place on ${longDate(chip.date)}, before the clearing was first seen`
-    : `Satellite image of the same place on ${longDate(chip.date)}`;
-  return { side, chip, src, alt };
+  return { side, chip, src, alt: pictureAlt(side, longDate(chip.date)) };
 });
 ---
 <figure
@@ -33,7 +30,7 @@ const shots = (['before', 'after'] as const).map((side) => {
     {shots.map(({ side, chip, src, alt }) => (
       <a class="shot" href={src} data-open={side}>
         <span class="chip-frame">
-          <img src={src} width="720" height="720" alt={alt}
+          <img src={src} data-half={side} width="720" height="720" alt={alt}
                loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager && side === 'after' ? 'high' : undefined} />
           <i class="spot" aria-hidden="true"></i>
         </span>
