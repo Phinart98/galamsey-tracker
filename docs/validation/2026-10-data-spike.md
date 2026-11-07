@@ -797,3 +797,49 @@ on the Madeira:
 - Cloud in the rains and harmattan haze in the dry season leave few usable pictures near any radar date.
 What would change this: pictures of 3 m or better for a one-time check (Planet NICFI is not reliable now,
 commercial is not free), or reports from people on the river. River dredging stays a stated gap on /method.
+
+## 34. A sharper "Likely galamsey": pond colour and pond count (2026-11-07)
+
+Galamsey ponds are many, small and yellow-brown. Two fixed rules, scored on the three blind batches already
+judged (s27 batch 1 and 2, s28 batch 3), re-reading the same scene each reading used, with no new fitting.
+
+**Written before measuring (pre-registered):**
+- Water pixels: MNDWI > 0 and not cloud, within the patch plus 60 m, as R0.
+- Rule A: R0 and the median red / green reflectance of those water pixels is at least 1.0 (yellow-brown water;
+  clear or dark natural water reflects more green than red).
+- Rule B: R0 and at least 3 separate ponds (8-connected groups of 2 or more water pixels).
+- Unclear verdicts count against. Adopt a rule only if its precision rises above R0's on these patches and it
+  keeps at least 9 in 10 of the mining patches R0 marks (same bar as s28). Patches that have since left the map
+  (no outline) are dropped and counted.
+
+**s33 outline check:** the six reserves with the most clearing, outlines drawn on the clearest picture of the last
+dry season (`pipeline/out/checks/reserves-sheet.png`). At the scale of kilometres they sit right: Subri River and
+Bonsa River patches lie well inside closed forest, Upper Wassaw's mining runs inside its edge. But the edges are
+straight survey lines that follow nothing visible, and at Goa Shelterbelt, Oda River and Asenanyo River mining
+ground runs across them. So "inside X Forest Reserve" is only safe for a patch lying mostly more than 200 m inside
+the outline, and totals should read "about". Good enough for a sentence and a total, not for a per-patch claim at
+the edge.
+
+**Result (s34): neither rule is adopted; R0 stays.** `spike/signs_s34.py`, 97 judged patches with a reading
+(3 since left the map, 6 could not be re-read on this link), 73 marked by R0:
+
+| Rule | Marked | Showed mining | Precision | Mining kept of R0's 66 |
+|---|---|---|---|---|
+| R0, any water within 60 m | 73 | 66 | 90% | 66 |
+| A, R0 and yellow-brown water (red/green at least 1.0) | 70 | 63 | 90% | 63 (95%) |
+| B, R0 and 3 or more ponds | 35 | 33 | 94% | 33 (50%) |
+
+A does not raise precision: nearly all water near these patches is yellow-brown (median red/green 1.12 on mining
+patches), the 7 non-mining marks included. B is more precise but drops half the mining. All 7 wrong marks were
+judged unclear or (once) not mining, and their water looks like the rest, so a picture-based rule cannot separate
+them. The label stays as it is, worded as a guess.
+
+## Summary of the 7 Nov research (s30 to s36)
+- Radar alerts (s30): fail, 4 of 20 radar-only patches were mining. Look again when the archive reaches the rains.
+- River dredges (s31): fail with free data, rivers too narrow for 10 m radar, dredges 1 to 2 pixels.
+- Forest reserves (s33): works as a sharper fact: about 1,080 ha in 76 reserves, 806 ha with no licence to mine;
+  edges uncertain, so only patches well inside, and "about" totals.
+- Sharper Likely galamsey (s34): no rule beats the current one.
+- River strip (s35): prototype built, stitched from 2.5 km pieces; shows bank mining appearing between 2017 and 2026.
+- Water plants in pictures (s36): little change at any one spot; Kwanyako point fixed on master.
+- Not tried: s32 (where brown water starts), dropped with s31.
