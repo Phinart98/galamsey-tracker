@@ -887,3 +887,6 @@ Verdict: works, and the thing the reader watches changes. Candidate for place pa
   picture before to the picture now on the day NASA saw it cleared (edges softened by about a third of a square),
   so the forest turns to bare orange ground the way it looks from above. Captions say the ground is "as it looks
   now" (a square cleared in 2024 shows its 2026 look). Pink stays as a toggle in the player and as clip-pink.mp4.
+- Philip (7 Nov) liked it but it did not move him: the clip ends on the same after picture the site already shows,
+  and squares turning brown read like a progress bar. NOT SHIPPED. Kept: the per-cell first dates suggest a plainer
+  fact, how much a place grew recently (spike s39).

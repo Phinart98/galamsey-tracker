@@ -32,7 +32,7 @@ MAGENTA = (184, 21, 90)
 STYLE = os.environ.get("SPREAD_STYLE", "reveal")   # "reveal": the real ground appears; "pink": marked squares
 SUFFIX = "" if STYLE == "reveal" else "-pink"
 SUB = {"reveal": "Ground NASA's satellites saw cleared, as it looks now", "pink": "Pink: land NASA's satellites saw cleared"}
-FONT = "C:/Windows/Fonts/segoeuib.ttf"
+FONT = os.environ.get("SPREAD_FONT", "DejaVuSans-Bold.ttf")   # any bold TTF; Pillow finds DejaVu on most systems
 OUT = "pipeline/out/checks/spread"
 
 
