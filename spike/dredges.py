@@ -28,7 +28,7 @@ sys.path.insert(0, "pipeline")
 
 STAC = "https://planetarycomputer.microsoft.com/api/stac/v1/search"
 TOKEN = "https://planetarycomputer.microsoft.com/api/sas/v1/token/{}"
-TODAY = dt.date(2026, 11, 7)
+TODAY = dt.date(2026, 2, 28)  # s31b: dry season, so Sentinel-2 can check the detections
 DAYS = 90
 STRETCHES = {  # lon_min, lat_min, lon_max, lat_max
     # Pilot: the Offin through Dunkwa, the stretch most named in dredging reports. The others wait for a faster link.
@@ -46,6 +46,7 @@ SHRINK_PX = 1         # 10 m off the banks at 10 m (rivers here are 5 to 8 pixel
 WINDOW_PX = 61        # about 300 m either way at 10 m
 BRIGHT_DB = 10.0
 MIN_PX, MAX_PX = 1, 30
+WINDOW_D = 10          # s31c: days either side for the Sentinel-2 check (s31b used 3)
 FIXED_SHARE = 0.5
 OUT = "pipeline/out/checks/dredges"
 os.makedirs(OUT, exist_ok=True)
@@ -64,9 +65,15 @@ def search(collection, bbox, start=None, end=None):
     body = {"collections": [collection], "bbox": list(bbox), "limit": 200}
     if start:
         body["datetime"] = f"{start}T00:00:00Z/{end}T23:59:59Z"
-    r = requests.post(STAC, json=body, timeout=120)
-    r.raise_for_status()
-    return r.json()["features"]
+    for a in range(6):
+        try:
+            r = requests.post(STAC, json=body, timeout=120)
+            r.raise_for_status()
+            return r.json()["features"]
+        except requests.RequestException:
+            if a == 5:
+                raise
+            time.sleep(30 * (a + 1))
 
 
 def read_window(href, bbox, dst=None):
@@ -117,7 +124,17 @@ def masked_mean(db, mask):
     return np.where(n > 0, s / np.maximum(n, 1e-9), np.nan)
 
 
-def read_vv(f, bbox, grid):
+def read_vv(f, bbox, grid, attempts=4):
+    for a in range(attempts):
+        try:
+            return _read_vv(f, bbox, grid)
+        except rasterio.errors.RasterioIOError:
+            if a == attempts - 1:
+                raise
+            time.sleep(30 * (a + 1))
+
+
+def _read_vv(f, bbox, grid):
     vv, transform, crs = read_window(sign(f["assets"]["vv"]["href"], "sentinel-1-rtc"), bbox)
     if grid is not None and (vv.shape, transform, crs) != grid:
         vv = read_window(sign(f["assets"]["vv"]["href"], "sentinel-1-rtc"), bbox, grid)
@@ -184,7 +201,7 @@ def run():
         alld += d
         summ[name] = s
         json.dump({"today": str(TODAY), "days": DAYS, "summary": summ, "detections": alld},
-                  open(f"{OUT}/detections.json", "w"), indent=1)
+                  open(f"{OUT}/detections-{TODAY}.json", "w"), indent=1)
 
 
 def sheets():
@@ -192,13 +209,13 @@ def sheets():
 
     from tracker import chips
 
-    data = json.load(open(f"{OUT}/detections.json"))
+    data = json.load(open(f"{OUT}/detections-{TODAY}.json"))
     dets = data["detections"]
     picks = random.Random(31).sample(dets, min(10, len(dets)))
     side, cells = 360, []
     for k, d in enumerate(picks, 1):
         day = dt.date.fromisoformat(d["day"])
-        shot = chips.clearest(d["lon"], d["lat"], 0.4, day - dt.timedelta(days=3), day + dt.timedelta(days=3))
+        shot = chips.clearest(d["lon"], d["lat"], 0.4, day - dt.timedelta(days=WINDOW_D), day + dt.timedelta(days=WINDOW_D))
         cells.append((f"{k}. radar {d['day']}  optical {shot[0] if shot else '-'}", shot))
         print(" ", k, d["stretch"], bool(shot), flush=True)
     font = ImageFont.load_default(size=16)
@@ -213,8 +230,8 @@ def sheets():
             img.paste(Image.fromarray(shot[1]).resize((side, side)), (x, y + 22))
             c = (x + side // 2, y + 22 + side // 2)
             dr.ellipse((c[0] - 16, c[1] - 16, c[0] + 16, c[1] + 16), outline="white", width=2)
-    img.save(f"{OUT}/sheet.png")
-    json.dump(picks, open(f"{OUT}/sample-sealed.json", "w"), indent=1)
+    img.save(f"{OUT}/sheet-{TODAY}.png")
+    json.dump(picks, open(f"{OUT}/sample-{TODAY}.json", "w"), indent=1)
 
 
 if __name__ == "__main__":

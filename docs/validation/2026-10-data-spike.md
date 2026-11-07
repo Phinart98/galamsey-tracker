@@ -775,3 +775,25 @@ work better as the last stop of a walk down the river (s35) than as a strip of t
   way. The Pra at Twifo Praso is darker (median -15 dB within 30 m, 52 ha below -16 dB) but only 6 to 8 pixels
   wide, and shrinking by 20 m removes most of it. CHANGED: shrink by 10 m (1 pixel), pilot moved to the Pra at
   Twifo Praso (-1.58, 5.55 to -1.52, 5.66).
+- Pra pilot, 9 Aug to 7 Nov 2026: river mask 4,552 pixels (46 ha). 18 of 38 passes failed to download (DNS
+  errors on this link). 39 detections on 11 passes, all in August and September, bunched at a few spots
+  (13 within 400 m of 5.559 N, 1.568 W; 4 at 5.616 N, 1.546 W, near the Twifo Praso bridge). No Sentinel-2
+  picture within 3 days of any of the 10 sampled detections: the rains. By the rule this is 0 of 10, but it
+  measures the clouds, not the detector. So, s31b, same detector, same stretch, dry season (1 Dec 2025 to
+  28 Feb 2026), reads retried; same pass bar.
+- s31b, 1 Dec 2025 to 28 Feb 2026: 29 passes, river mask 5,015 pixels, 51 detections on 21 passes. Again no
+  usable Sentinel-2 picture within 3 days of any of the 10 sampled (harmattan haze fails the picture check, and
+  Sentinel-2 passes every few days). s31c, weaker truth, written before looking: the clearest picture within
+  10 days (dredges usually stay at one working site for weeks), same sample, same pass bar.
+
+**Result (s31): FAILS, and cannot be confirmed with free pictures.** In s31c only 2 of the 10 sampled detections
+had a usable Sentinel-2 picture within 10 days, and both show only brown water at the spot (sheet
+`pipeline/out/checks/dredges/sheet-2026-02-28.png`). 0 of 10 confirmed. Reasons it does not work here, unlike
+on the Madeira:
+- The rivers are narrow. The Offin at Dunkwa (about 50 m) is not even dark to 10 m radar, and the Pra at Twifo
+  Praso (60 to 80 m) is 6 to 8 pixels wide, so most "bright points" sit at the banks (trees, bank edges).
+- A chanfang is about 6 by 15 m: one or two Sentinel-2 pixels. Even a clear picture cannot confirm one, so the
+  detector cannot be checked with free data.
+- Cloud in the rains and harmattan haze in the dry season leave few usable pictures near any radar date.
+What would change this: pictures of 3 m or better for a one-time check (Planet NICFI is not reliable now,
+commercial is not free), or reports from people on the river. River dredging stays a stated gap on /method.
