@@ -29,7 +29,9 @@ STEP_M = 10
 STRIP_HALF_M = 1000
 CHUNK_M = 2500             # one Sentinel-2 crop serves this much river
 CROP_HALF_KM = 1.9         # big enough to hold the strip around a chunk even where the river bends
-EPOCHS = {"then": (dt.date(2016, 11, 1), dt.date(2018, 3, 31)), "now": (dt.date(2025, 11, 1), dt.date(2026, 3, 15))}
+# Each row tries its windows in order; a piece of river with no clear picture in the first takes the next
+EPOCHS = {"then": [(dt.date(2016, 11, 1), dt.date(2018, 3, 31))],
+          "now": [(dt.date(2025, 11, 1), dt.date(2026, 3, 15)), (dt.date(2024, 11, 1), dt.date(2025, 3, 31))]}
 CRS = 32630
 OUT = "pipeline/out/checks/strip"
 os.makedirs(OUT, exist_ok=True)
@@ -71,7 +73,6 @@ def tried(fn, *args, attempts=4):
 
 
 def strip(line, epoch):
-    start, end = EPOCHS[epoch]
     n = int(line.length // STEP_M)
     rows = int(2 * STRIP_HALF_M // STEP_M)
     img = np.full((rows, n, 3), 235, np.uint8)
@@ -80,7 +81,11 @@ def strip(line, epoch):
     for c0 in range(0, n, CHUNK_M // STEP_M):
         mid = line.interpolate((c0 + CHUNK_M // STEP_M / 2) * STEP_M)
         lon, lat = gpd.GeoSeries([mid], crs=CRS).to_crs(4326).iloc[0].coords[0]
-        shot = tried(chips.clearest, lon, lat, CROP_HALF_KM, start, end)
+        shot = None
+        for start, end in EPOCHS[epoch]:
+            shot = tried(chips.clearest, lon, lat, CROP_HALF_KM, start, end)
+            if shot:
+                break
         print(epoch, f"km {c0 * STEP_M / 1000:.1f}", shot[0] if shot else "-", flush=True)
         if not shot:
             continue
@@ -121,9 +126,10 @@ if __name__ == "__main__":
     line = course()
     print(f"course {line.length / 1000:.1f} km", flush=True)
     towns, patches = markers(line)
+    old = json.load(open(f"{OUT}/pra.json", encoding="utf-8")) if os.path.exists(f"{OUT}/pra.json") else {}
     meta = {"length_km": round(line.length / 1000, 2), "step_m": STEP_M, "half_m": STRIP_HALF_M, "towns": towns,
-            "patches": patches, "dates": {}}
-    for epoch in EPOCHS:
+            "patches": patches, "dates": old.get("dates", {})}
+    for epoch in (sys.argv[1:] or list(EPOCHS)):
         img, dates = strip(line, epoch)
         Image.fromarray(img).save(f"{OUT}/pra-{epoch}.png")
         meta["dates"][epoch] = sorted(set(dates))
