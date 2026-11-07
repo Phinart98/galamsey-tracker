@@ -909,3 +909,19 @@ NASA confirms late (s13), so the window must stop well before the data date.
   today), 1.2 km crops. A place with no clear pair is skipped for the next one, until 10 are judged.
   Pass: at least 8 of 10 show new bare ground or ponds next to the old clearing.
 - Both must pass to build it. Either failing: logged, not built.
+
+**Result (s39): FAILS.** Hectares first seen in each window, counted on T and on T+120 days:
+
+| Read on T | Window | On T | On T+120 | Ratio |
+|---|---|---|---|---|
+| 1 Jul 2025 | Feb to May 2025 | 23,383 | 23,749 | 0.99 |
+| 1 Oct 2025 | May to Aug 2025 (rainy) | 1,322 | 3,702 | 0.36 |
+| 1 Jan 2026 | Aug to Nov 2025 | 4,753 | 3,919 | 1.21 |
+| 1 Apr 2026 | Nov 2025 to Jan 2026 | 9,171 | 12,122 | 0.76 |
+| 1 Jul 2026 | Feb to May 2026 | 24,109 | 25,388 | 0.95 |
+
+The mean is 0.85, but the rainy window reaches only 0.36: in the rainy months the line would say about a third of
+what NASA later confirms. One window went down (1.21): pixels also leave the product or change date, so the count
+is not even one-way. Today's window (June to August 2026) gives only 9 places with 2 ha or more. The eye sheet was
+made but not judged, since the lag test already fails. Not built. A season-aware wording ("may rise as NASA
+confirms more") would be honest but says little for half the year.
