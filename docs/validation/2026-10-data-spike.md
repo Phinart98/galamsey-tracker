@@ -669,3 +669,224 @@ it out would hide more mining than including it adds noise. Pooled over all eigh
 Not added: the savanna north (Upper East around Talensi and the Tilli forest, Upper West, Savannah, Bono). Galamsey
 is reported there, but the forest-zone mask leaves savanna out because, when checked (s21), most savanna clearing
 was farms and fire. Adding it needs its own test of whether DIST-ALERT can tell mining from farm and fire there.
+
+## 30. Radar alerts (OPERA DIST-ALERT-S1): do they add mining the optical alerts miss? (2026-11-07)
+
+NASA released DIST-ALERT-S1 to production on 27 Oct 2026 (ASF DAAC, collection `OPERA_L3_DIST-ALERT-S1_V1`,
+C4090131664-ASF). It is the Sentinel-1 radar twin of our source: same MGRS tiles, 30 m, same status codes
+(`dist_s1/constants.py`: 6 = confirmed high-confidence, 8 = confirmed high finished, 255 no data) and the same
+day count from 2020-12-31 in GEN-DIST-DATE. Radar sees through cloud. On 7 Nov the archive over the belt holds
+only January to February 2026 (274 granules, backfill under way), so the test uses the latest radar granule per
+tile up to 28 Feb 2026 and the optical granule nearest the same day. February is the dry season, so this tests
+whether radar patches are mining, not yet how much earlier radar is in the rains.
+
+**Written before looking (pre-registered):**
+- Same patch rule as the weekly run: confirmed heavy loss (6 or 8) first seen in the 365 days before the granule,
+  8-connected, at least 1 ha, inside the forest zone, tile duplicates removed. Eight enabled tiles.
+- Compare with the optical patches of the same day: radar-only (no overlap with any optical patch), shared,
+  optical-only. Report counts and hectares.
+- Blind eye check: 20 random radar-only patches (seed 30), before/after sheets with the existing chips code,
+  judged before reading their numbers. Unclear counts against.
+- Pass: at least 15 of 20 show mining (about the share of the current map, s26: about 4 in 5 by area). Then
+  radar becomes a second source in a build plan. Fail: radar stays out, and the result is logged.
+- If the radar product's first-seen dates all start on its production start (no history before Jan 2026), the
+  365-day window is cut short; say so and judge on what it holds.
+
+## 31. Dredges on rivers from Sentinel-1 bright points (2026-11-07)
+
+Galamsey dredges (chanfang) work on the rivers and clear no land, so the land-clearing method cannot see them.
+Published work finds river dredges in Sentinel-1 as bright points on dark water (Alessi, Chirico, Millones 2023,
+Madeira River, a local detector worked best; Pereira 2024, CFAR, F1 0.76 to 0.86). Data, free and without an
+account: Microsoft Planetary Computer `sentinel-1-rtc` (10 m, terrain corrected, VV and VH, Sentinel-1C and 1D,
+a pass every few days) and `jrc-gsw` (surface water occurrence 1984-2021, 30 m) for the river mask.
+
+**Written before looking (pre-registered):**
+- River mask: JRC occurrence of at least 50%, shrunk 20 m from the banks so bank trees and pits are left out.
+  CHANGED before any detection was seen: JRC hardly sees these rivers (the Offin at Dunkwa has no pixel at 50%;
+  brown water and 30 m pixels on a 50 m river). Instead: pixels whose median VV over 10 passes is below -16 dB
+  (water is dark to radar), within 150 m of an OpenStreetMap waterway=river line, shrunk 20 m.
+  Test stretches: the Offin around Dunkwa, the Pra from Twifo Praso to Daboase, the Ankobra near Prestea and
+  the Birim near Kibi (all named in news reports of dredging), plus one control stretch with no reported dredging
+  if one can be found in the belt.
+- Detector: on every pass in the last 90 days, a pixel inside the mask is bright if VV is at least 10 dB above
+  the mean (in dB) of the mask pixels within 300 m (a mean, because a masked median over every pixel is too slow). Objects of 1 to 30 pixels. A spot bright on more than half the
+  passes is fixed (a bridge, rocks, a sandbar) and dropped.
+- Truth: a Sentinel-2 picture within 3 days of the radar pass. A detection counts as a boat or platform if a
+  bright object or the head of a brown plume sits at the spot. Unclear (cloud, no picture) counts against.
+- Pass: at least 8 of a random 10 detections are boats or platforms, and detections are found on most of the
+  stretches named in the news. Fail on either: no river layer, logged.
+
+**Result (s30): FAILS.** `spike/radar_alerts.py`, latest radar granule per tile 25-26 Feb 2026, optical 26-27 Feb.
+Seven tiles had both (30NYM had no radar granule yet).
+
+| | Patches | Hectares | Not touching the other source |
+|---|---|---|---|
+| Radar (DIST-ALERT-S1) | 14,137 | 66,174 | 12,028 patches, 52,015 ha |
+| Optical (DIST-ALERT-HLS) | 4,058 | 10,744 | 1,781 patches, 3,404 ha |
+
+Area in both: 5,406 ha, half of the optical area. Radar's first-seen dates all start on 2 Jan 2026 (its
+production start), so its "12 months" hold only two months, yet it flags six times the optical area.
+
+Blind eye check of 20 random radar-only patches (sheets `pipeline/out/checks/radar/sheet-*.png`), judged before
+reading their numbers: **4 of 20 showed mining** (all four inside existing mining ground, two partly under cloud).
+The rest: 5 inside towns (roofs and streets, no clearing), 5 farm or burnt land in the dry season, 6 forest or
+farmland with no visible change, 1 at the edge of old mining under cloud (unclear, counted against). Far below 15.
+
+Reading: radar change in the dry season is mostly not land clearing (buildings, harvest and fire, soil drying).
+The radar alerts stay out. Not tested, because the archive does not reach the rains yet: whether radar flags the
+SAME patches as the optical alerts weeks earlier in the rainy season. Worth one look once the archive covers
+June to October 2026 (radar as a confirmation of optical patches, never as a source of its own).
+
+## 33. Cleared land inside forest reserves (2026-11-07)
+
+Outlines: WDPA (UNEP-WCMC and IUCN, Protected Planet), Ghana download of Nov 2026: 290 areas, 264 of them Forest
+Reserves. OpenStreetMap has only about 70 Ghana forest reserves, and data.gov.gh (2010 shapefile) did not answer.
+WDPA terms allow non-commercial use with credit and do not allow passing on the outlines themselves, so the site
+could state totals and "inside X Forest Reserve" with credit, not offer the outlines for download.
+
+Overlay of the current 6,650 patches (weekly run of 2 Nov) with forest reserves, national parks, resource
+reserves, wildlife sanctuaries and the strict nature reserve:
+- 429 patches touch a reserve; 1,076 ha of the 18,027 ha (6%) lies inside one, in 76 reserves.
+- By licence on the land: no licence 801 ha, prospecting only 5 ha (806 ha with no licence to mine), large-scale
+  lease 270 ha, small-scale 0.
+- Most: Subri River 110 ha, Bonsa River 70, Upper Wassaw 57, Goa Shelterbelt 52, Oda River 51, Asenanyo River 47,
+  Anhwiaso East 46, Tano Ofin Extension 44, South Fomangsu 41, Tano Suraw Extension 35.
+Not yet done: an eye check that the WDPA outlines (many from the 1930s to 1950s) sit where the reserves are on the
+ground. The figure is a sharper fact, not a new sign: it adds nothing the satellites did not already find.
+
+## 36. The water at the five plants, in pictures (2026-11-07)
+
+`spike/plants.py`: the clearest Sentinel-2 picture of each month for 24 months plus the 2016-17 and 2017-18 dry
+seasons, 3 km across each plant (`pipeline/out/checks/plants/*.png`).
+- Daboase (Pra): only 5 usable pictures (cloud). The Pra is yellow-brown in every one, 2017 included. Strong
+  as "this is the water the plant takes in", but shows no change to point at.
+- Weija (Densu reservoir): colour varies from dark to green (algae) to a pale plume (Jan 2018); no simple story.
+- Barekese and Owabi: reservoirs dark or weedy green, never brown in these pictures.
+- **Kwanyako: the plant point is wrong.** `PLANTS` in spike/water.py (and so pipeline/water_plants.geojson, the
+  site's water map marker and Kwanyako's upstream area) uses 5.3675 N, 0.6190 W, which is by Winneba near the
+  coast. Kwanyako (Agona East) is at 5.598 N, 0.634 W, where the picture shows the Ayensu held back as a brown
+  pool beside the town: the headworks. The upstream area is therefore drawn about 25 km too far downstream.
+  To fix on master (needs Philip's yes): move the point, rebuild the catchment, check the upstream hectares.
+Reading: a month-by-month strip at one spot shows little change and is cloud-limited in the rains. The pictures
+work better as the last stop of a walk down the river (s35) than as a strip of their own.
+- Mask check before any detection was judged (median of 3 passes): the Offin through Dunkwa is NOT dark to
+  radar (median -10 dB within 30 m of the centreline; water is about -20). At about 50 m wide, each 10 m pixel
+  mixes water, banks and trees. The mask kept 245 pixels, so the pilot there (3 detections) says nothing either
+  way. The Pra at Twifo Praso is darker (median -15 dB within 30 m, 52 ha below -16 dB) but only 6 to 8 pixels
+  wide, and shrinking by 20 m removes most of it. CHANGED: shrink by 10 m (1 pixel), pilot moved to the Pra at
+  Twifo Praso (-1.58, 5.55 to -1.52, 5.66).
+- Pra pilot, 9 Aug to 7 Nov 2026: river mask 4,552 pixels (46 ha). 18 of 38 passes failed to download (DNS
+  errors on this link). 39 detections on 11 passes, all in August and September, bunched at a few spots
+  (13 within 400 m of 5.559 N, 1.568 W; 4 at 5.616 N, 1.546 W, near the Twifo Praso bridge). No Sentinel-2
+  picture within 3 days of any of the 10 sampled detections: the rains. By the rule this is 0 of 10, but it
+  measures the clouds, not the detector. So, s31b, same detector, same stretch, dry season (1 Dec 2025 to
+  28 Feb 2026), reads retried; same pass bar.
+- s31b, 1 Dec 2025 to 28 Feb 2026: 29 passes, river mask 5,015 pixels, 51 detections on 21 passes. Again no
+  usable Sentinel-2 picture within 3 days of any of the 10 sampled (harmattan haze fails the picture check, and
+  Sentinel-2 passes every few days). s31c, weaker truth, written before looking: the clearest picture within
+  10 days (dredges usually stay at one working site for weeks), same sample, same pass bar.
+
+**Result (s31): FAILS, and cannot be confirmed with free pictures.** In s31c only 2 of the 10 sampled detections
+had a usable Sentinel-2 picture within 10 days, and both show only brown water at the spot (sheet
+`pipeline/out/checks/dredges/sheet-2026-02-28.png`). 0 of 10 confirmed. Reasons it does not work here, unlike
+on the Madeira:
+- The rivers are narrow. The Offin at Dunkwa (about 50 m) is not even dark to 10 m radar, and the Pra at Twifo
+  Praso (60 to 80 m) is 6 to 8 pixels wide, so most "bright points" sit at the banks (trees, bank edges).
+- A chanfang is about 6 by 15 m: one or two Sentinel-2 pixels. Even a clear picture cannot confirm one, so the
+  detector cannot be checked with free data.
+- Cloud in the rains and harmattan haze in the dry season leave few usable pictures near any radar date.
+What would change this: pictures of 3 m or better for a one-time check (Planet NICFI is not reliable now,
+commercial is not free), or reports from people on the river. River dredging stays a stated gap on /method.
+
+## 34. A sharper "Likely galamsey": pond colour and pond count (2026-11-07)
+
+Galamsey ponds are many, small and yellow-brown. Two fixed rules, scored on the three blind batches already
+judged (s27 batch 1 and 2, s28 batch 3), re-reading the same scene each reading used, with no new fitting.
+
+**Written before measuring (pre-registered):**
+- Water pixels: MNDWI > 0 and not cloud, within the patch plus 60 m, as R0.
+- Rule A: R0 and the median red / green reflectance of those water pixels is at least 1.0 (yellow-brown water;
+  clear or dark natural water reflects more green than red).
+- Rule B: R0 and at least 3 separate ponds (8-connected groups of 2 or more water pixels).
+- Unclear verdicts count against. Adopt a rule only if its precision rises above R0's on these patches and it
+  keeps at least 9 in 10 of the mining patches R0 marks (same bar as s28). Patches that have since left the map
+  (no outline) are dropped and counted.
+
+**s33 outline check:** the six reserves with the most clearing, outlines drawn on the clearest picture of the last
+dry season (`pipeline/out/checks/reserves-sheet.png`). At the scale of kilometres they sit right: Subri River and
+Bonsa River patches lie well inside closed forest, Upper Wassaw's mining runs inside its edge. But the edges are
+straight survey lines that follow nothing visible, and at Goa Shelterbelt, Oda River and Asenanyo River mining
+ground runs across them. So "inside X Forest Reserve" is only safe for a patch lying mostly more than 200 m inside
+the outline, and totals should read "about". Good enough for a sentence and a total, not for a per-patch claim at
+the edge.
+
+**Result (s34): neither rule is adopted; R0 stays.** `spike/signs_s34.py`, 97 judged patches with a reading
+(3 since left the map, 6 could not be re-read on this link), 73 marked by R0:
+
+| Rule | Marked | Showed mining | Precision | Mining kept of R0's 66 |
+|---|---|---|---|---|
+| R0, any water within 60 m | 73 | 66 | 90% | 66 |
+| A, R0 and yellow-brown water (red/green at least 1.0) | 70 | 63 | 90% | 63 (95%) |
+| B, R0 and 3 or more ponds | 35 | 33 | 94% | 33 (50%) |
+
+A does not raise precision: nearly all water near these patches is yellow-brown (median red/green 1.12 on mining
+patches), the 7 non-mining marks included. B is more precise but drops half the mining. All 7 wrong marks were
+judged unclear or (once) not mining, and their water looks like the rest, so a picture-based rule cannot separate
+them. The label stays as it is, worded as a guess.
+
+## Summary of the 7 Nov research (s30 to s36)
+- Radar alerts (s30): fail, 4 of 20 radar-only patches were mining. Look again when the archive reaches the rains.
+- River dredges (s31): fail with free data, rivers too narrow for 10 m radar, dredges 1 to 2 pixels.
+- Forest reserves (s33): works as a sharper fact: about 1,080 ha in 76 reserves, 806 ha with no licence to mine;
+  edges uncertain, so only patches well inside, and "about" totals.
+- Sharper Likely galamsey (s34): no rule beats the current one.
+- River strip (s35): prototype built, stitched from 2.5 km pieces; shows bank mining appearing between 2017 and 2026.
+- Water plants in pictures (s36): little change at any one spot; Kwanyako point fixed on master.
+- Not tried: s32 (where brown water starts), dropped with s31.
+
+## 37. Was the Pra a different colour before the boom? Landsat 1986-2003 (2026-11-07)
+
+Philip: in the river strip the river looks the same in 2016-18 and 2026, because it was already brown before
+Sentinel-2. Landsat 7 (to May 2003, before its scan fault) and Landsat 5 (from 1984) reach back before the boom,
+free on Planetary Computer (`landsat-c2-l2`). At 30 m the Pra (60 to 150 m) is 2 to 5 pixels wide: colour reads,
+detail does not.
+
+**Written before looking (pre-registered):** 5 points along the Pra from Twifo Praso to Daboase (km 0, 20, 35, 50,
+67 of the strip course). For each, the 2 clearest Landsat 7 dry-season scenes (Nov to Mar, 1999-2003) and the
+clearest Landsat 5 scene of 1986-1991 if one exists, true colour, 3 km across, beside the newest clear Sentinel-2
+picture. Pass: at 4 of 5 points the river is visibly dark or green-grey (not yellow-brown) in at least 2 old scenes
+and yellow-brown now. Fail: no third row for the strip.
+- First sheet (`pipeline/out/checks/preboom/sheet.png`) cannot be judged: the 1986 Landsat 5 crops are washed out
+  by haze under the fixed stretch, and the Landsat 7 scenes picked by scene cloud cover are cloudy over our crops.
+  CHANGED before judging: scenes chosen by the cloud share inside each crop (Landsat QA_PIXEL cloud and shadow
+  bits), the 2 clearest crops per point from Landsat 5 and 7 in 1984 to 2011 (Landsat 7 only before June 2003),
+  any month, each crop stretched on its own 2nd to 98th percentile (the judgement compares the river with the land
+  in the same picture, so a per-crop stretch is fair). Same pass bar.
+
+**Result (s37): FAILS.** Second sheet: the clearest crops are Landsat 5 on 29 Dec 1986 and 2 Sep 1984 (the 1984
+scene is unusable: cloud and stripes that Landsat 5's QA layer marks as clear). On 29 Dec 1986 the Pra is the
+brightest thing in every crop, brighter than the forest in all three colours, which clear water never is: it was
+already carrying sediment, and at km 67 it reads yellowish. So at 30 m the satellites do not show a clear river
+that later turned brown. The strip is dropped (Philip: the river is the main character and it does not change).
+
+## 38. Watch the clearing spread, from NASA's own dates (2026-11-07)
+
+`spike/spread.py <id>`: DIST-ALERT-HLS readings every 3 months from March 2023 (the archive starts in January
+2023) over a 2.4 km square; each 30 m cell keeps its earliest confirmed heavy-loss day (status 6 or 8). Cells are
+drawn as their day passes over the clearest Sentinel-2 picture from before the first day, then the clip crossfades to
+the newest clear picture. Tried on the home page's lead place (85 ha, 9 km from Kunso) and one near Kibi (48 ha).
+- Kunso: 2,197 cells, about 198 ha in the square, from small spots in 2023 to one large field by May 2026. Kibi:
+  about 132 ha, spreading south through 2025. In both, the last frame matches the bare ground in the newest picture.
+- Cells dated in January 2023 include land already cleared when the archive began, so captions say "since early
+  2023". The 2.4 km square shows neighbours' clearing too, so totals say "in this picture".
+- Outputs: 16 s silent MP4 (550 KB) and GIF (3.6 MB), and a web player (pick a place, Play/Pause, a date slider,
+  "Show the picture from now"). Pacing per the motion guide: caption hold, 6 s of spread at even steps in time,
+  1.2 s hold, 400 ms crossfade, closing hold.
+Verdict: works, and the thing the reader watches changes. Candidate for place pages and weekly clips.
+- Philip (7 Nov): why pink, not how clearings are usually noticed? Changed: each 30 m square switches from the
+  picture before to the picture now on the day NASA saw it cleared (edges softened by about a third of a square),
+  so the forest turns to bare orange ground the way it looks from above. Captions say the ground is "as it looks
+  now" (a square cleared in 2024 shows its 2026 look). Pink stays as a toggle in the player and as clip-pink.mp4.
+- Philip (7 Nov) liked it but it did not move him: the clip ends on the same after picture the site already shows,
+  and squares turning brown read like a progress bar. NOT SHIPPED. Kept: the per-cell first dates suggest a plainer
+  fact, how much a place grew recently (spike s39).
