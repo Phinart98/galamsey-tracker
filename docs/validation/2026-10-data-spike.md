@@ -843,3 +843,43 @@ them. The label stays as it is, worded as a guess.
 - River strip (s35): prototype built, stitched from 2.5 km pieces; shows bank mining appearing between 2017 and 2026.
 - Water plants in pictures (s36): little change at any one spot; Kwanyako point fixed on master.
 - Not tried: s32 (where brown water starts), dropped with s31.
+
+## 37. Was the Pra a different colour before the boom? Landsat 1986-2003 (2026-11-07)
+
+Philip: in the river strip the river looks the same in 2016-18 and 2026, because it was already brown before
+Sentinel-2. Landsat 7 (to May 2003, before its scan fault) and Landsat 5 (from 1984) reach back before the boom,
+free on Planetary Computer (`landsat-c2-l2`). At 30 m the Pra (60 to 150 m) is 2 to 5 pixels wide: colour reads,
+detail does not.
+
+**Written before looking (pre-registered):** 5 points along the Pra from Twifo Praso to Daboase (km 0, 20, 35, 50,
+67 of the strip course). For each, the 2 clearest Landsat 7 dry-season scenes (Nov to Mar, 1999-2003) and the
+clearest Landsat 5 scene of 1986-1991 if one exists, true colour, 3 km across, beside the newest clear Sentinel-2
+picture. Pass: at 4 of 5 points the river is visibly dark or green-grey (not yellow-brown) in at least 2 old scenes
+and yellow-brown now. Fail: no third row for the strip.
+- First sheet (`pipeline/out/checks/preboom/sheet.png`) cannot be judged: the 1986 Landsat 5 crops are washed out
+  by haze under the fixed stretch, and the Landsat 7 scenes picked by scene cloud cover are cloudy over our crops.
+  CHANGED before judging: scenes chosen by the cloud share inside each crop (Landsat QA_PIXEL cloud and shadow
+  bits), the 2 clearest crops per point from Landsat 5 and 7 in 1984 to 2011 (Landsat 7 only before June 2003),
+  any month, each crop stretched on its own 2nd to 98th percentile (the judgement compares the river with the land
+  in the same picture, so a per-crop stretch is fair). Same pass bar.
+
+**Result (s37): FAILS.** Second sheet: the clearest crops are Landsat 5 on 29 Dec 1986 and 2 Sep 1984 (the 1984
+scene is unusable: cloud and stripes that Landsat 5's QA layer marks as clear). On 29 Dec 1986 the Pra is the
+brightest thing in every crop, brighter than the forest in all three colours, which clear water never is: it was
+already carrying sediment, and at km 67 it reads yellowish. So at 30 m the satellites do not show a clear river
+that later turned brown. The strip is dropped (Philip: the river is the main character and it does not change).
+
+## 38. Watch the clearing spread, from NASA's own dates (2026-11-07)
+
+`spike/spread.py <id>`: DIST-ALERT-HLS readings every 3 months from March 2023 (the archive starts in January
+2023) over a 2.4 km square; each 30 m cell keeps its earliest confirmed heavy-loss day (status 6 or 8). Cells are
+drawn as their day passes over the clearest Sentinel-2 picture from before the first day, then the clip crossfades to
+the newest clear picture. Tried on the home page's lead place (85 ha, 9 km from Kunso) and one near Kibi (48 ha).
+- Kunso: 2,197 cells, about 198 ha in the square, from small spots in 2023 to one large field by May 2026. Kibi:
+  about 132 ha, spreading south through 2025. In both, the last frame matches the bare ground in the newest picture.
+- Cells dated in January 2023 include land already cleared when the archive began, so captions say "since early
+  2023". The 2.4 km square shows neighbours' clearing too, so totals say "in this picture".
+- Outputs: 16 s silent MP4 (550 KB) and GIF (3.6 MB), and a web player (pick a place, Play/Pause, a date slider,
+  "Show the picture from now"). Pacing per the motion guide: caption hold, 6 s of spread at even steps in time,
+  1.2 s hold, 400 ms crossfade, closing hold.
+Verdict: works, and the thing the reader watches changes. Candidate for place pages and weekly clips.
