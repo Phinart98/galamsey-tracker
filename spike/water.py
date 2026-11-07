@@ -27,7 +27,7 @@ TILES = ["T30NVM", "T30NVN", "T30NWL", "T30NWM", "T30NWN", "T30NWP", "T30NXL", "
          "T30NXP", "T30NYL", "T30NYM", "T30NYN", "T30NZM", "T30NZN"]
 PLANTS = {  # name, river, lat, lon (OSM, checked 2026-10-25)
     "Weija": ("Densu", 5.5813, -0.3370),
-    "Kwanyako": ("Ayensu", 5.3675, -0.6190),
+    "Kwanyako": ("Ayensu", 5.6040, -0.6290),  # the dam at Kwanyako (Sentinel-2, 7 Nov 2026); was the river mouth at Winneba
     "Daboase": ("Pra", 5.1412, -1.6561),
     "Barekese": ("Offin", 6.8300, -1.7214),
     "Owabi": ("Owabi", 6.7487, -1.7027),

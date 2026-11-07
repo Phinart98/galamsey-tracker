@@ -65,13 +65,14 @@ const othersSay = othersHa < praHa / 4 ? 'hold far less cleared land' : 'hold le
 // The other plants' catchments, outlined so readers can see why Daboase stands out
 const others = catchments.filter((c) => c.name !== 'Daboase').map((c) => ({ name: c.name, d: area(c.polys), x: x(c.lon), y: y(c.lat) }));
 // Hand-placed so nothing overlaps at phone width: Barekese and Owabi are 8 km apart and share one label,
-// and Weija's label names Accra because the two sit too close for separate labels
+// and Weija's label names Accra because the two sit too close for separate labels. Kwanyako sits just above Weija's
+// height, so its label goes below its marker and Weija's above
 const labels = [
   { text: 'Kumasi', lon: -1.62, lat: 6.69, pos: 'right' },
   { text: 'Sekondi-Takoradi', lon: -1.75, lat: 4.92, pos: 'left' },
   { text: 'Barekese and Owabi', lon: -1.72, lat: 6.83, pos: 'right up' },
   { text: 'Weija plant, Accra', lon: -0.337, lat: 5.581, pos: 'left up' },
-  { text: 'Kwanyako plant', lon: -0.619, lat: 5.3675, pos: 'left' },
+  { text: 'Kwanyako plant', lon: -0.629, lat: 5.604, pos: 'left down' },
 ];
 ---
 <figure class="watermap">
