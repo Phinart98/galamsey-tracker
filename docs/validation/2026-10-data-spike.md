@@ -890,3 +890,22 @@ Verdict: works, and the thing the reader watches changes. Candidate for place pa
 - Philip (7 Nov) liked it but it did not move him: the clip ends on the same after picture the site already shows,
   and squares turning brown read like a progress bar. NOT SHIPPED. Kept: the per-cell first dates suggest a plainer
   fact, how much a place grew recently (spike s39).
+
+## 39. "Still growing": land added to a place recently (2026-11-07)
+
+Idea from s38: every DIST-ALERT pixel carries its first-seen day, so the weekly granule alone can say how much of
+a place was added recently. A place page would say "About N hectares were added between <date> and <date>".
+NASA confirms late (s13), so the window must stop well before the data date.
+
+**Pre-registered before looking (spike/growing.py):**
+- Window for a reading taken on day T: pixels first seen from T-150 to T-60 days (confirmed heavy loss, status 6
+  or 8), inside the forest zone, in the eight enabled tiles.
+- Lag test: five reading days T = 1 Jul 2025, 1 Oct 2025, 1 Jan 2026, 1 Apr 2026, 1 Jul 2026. For each, hectares
+  in its window counted from the granules on T (what the site would say) and from the granules on T+120 days
+  (the settled count, still inside the product's year). Ratio = early / settled.
+  Pass: mean ratio at least 0.8, AND the 1 Oct 2025 window (June to August, rainy) at least 0.8 on its own.
+- Eye check: places in today's index with N >= 2 ha in today's window, in seeded random order (seed 39).
+  Picture before the window (clearest in the 120 days before it starts) and after it (clearest from its end to
+  today), 1.2 km crops. A place with no clear pair is skipped for the next one, until 10 are judged.
+  Pass: at least 8 of 10 show new bare ground or ponds next to the old clearing.
+- Both must pass to build it. Either failing: logged, not built.
