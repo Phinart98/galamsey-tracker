@@ -17,7 +17,7 @@ import time
 import geopandas as gpd
 import numpy as np
 import rasterio
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from rasterio.warp import transform_bounds
 from rasterio.windows import from_bounds
 
@@ -29,6 +29,9 @@ HALF_KM = 1.2
 SIZE = 1080
 FPS = 30
 MAGENTA = (184, 21, 90)
+STYLE = os.environ.get("SPREAD_STYLE", "reveal")   # "reveal": the real ground appears; "pink": marked squares
+SUFFIX = "" if STYLE == "reveal" else "-pink"
+SUB = {"reveal": "Ground NASA's satellites saw cleared, as it looks now", "pink": "Pink: land NASA's satellites saw cleared"}
 FONT = "C:/Windows/Fonts/segoeuib.ttf"
 OUT = "pipeline/out/checks/spread"
 
@@ -122,6 +125,12 @@ def frames(first, before, after, place, out, before_day):
         return img
 
     def overlay(upto):
+        if STYLE == "reveal":
+            # Each 30 m square switches from the picture before to the picture now on the day NASA saw it cleared,
+            # so the ground turns bare the way it looks from above
+            m = Image.fromarray(((first > 0) & (first <= upto)).astype("uint8") * 255).resize((SIZE, SIZE), Image.NEAREST)
+            m = m.filter(ImageFilter.GaussianBlur(SIZE / first.shape[1] * 0.35))   # soften the 30 m square edges a little
+            return Image.composite(end_img, base, m)
         img = base.copy()
         layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
         d = ImageDraw.Draw(layer)
@@ -144,8 +153,8 @@ def frames(first, before, after, place, out, before_day):
     steps = int(FPS * 6)  # 6 s of spreading at even steps of time
     for i in range(steps + 1):
         upto = d0 + (d1 - d0) * i / steps
-        save(plate(overlay(upto), date(upto), "Pink: land NASA's satellites saw cleared"), 1)
-    last = plate(overlay(d1), date(d1), "Pink: land NASA's satellites saw cleared")
+        save(plate(overlay(upto), date(upto), SUB[STYLE]), 1)
+    last = plate(overlay(d1), date(d1), SUB[STYLE])
     save(last, int(FPS * 1.2))
     for i in range(1, 13):  # 400 ms crossfade to the newest picture
         save(Image.blend(last, plate(end_img.copy(), "Now"), i / 12), 1)
@@ -184,9 +193,9 @@ def run(pid):
 def render(pid, first, before, after, idx, out, before_day):
     n, a, b, ha = frames(first, before, after, idx, out, before_day)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", str(FPS), "-i", f"{out}/f%05d.png", "-c:v", "libx264",
-                    "-pix_fmt", "yuv420p", "-crf", "23", f"{out}/clip.mp4"], check=True)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{out}/clip.mp4", "-vf",
-                    "fps=12,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse", f"{out}/clip.gif"], check=True)
+                    "-pix_fmt", "yuv420p", "-crf", "23", f"{out}/clip{SUFFIX}.mp4"], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", f"{out}/clip{SUFFIX}.mp4", "-vf",
+                    "fps=12,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse", f"{out}/clip{SUFFIX}.gif"], check=True)
     for f in os.listdir(out):
         if f.startswith("f") and f.endswith(".png"):
             os.remove(f"{out}/{f}")

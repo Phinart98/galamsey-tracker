@@ -883,3 +883,7 @@ the newest clear picture. Tried on the home page's lead place (85 ha, 9 km from 
   "Show the picture from now"). Pacing per the motion guide: caption hold, 6 s of spread at even steps in time,
   1.2 s hold, 400 ms crossfade, closing hold.
 Verdict: works, and the thing the reader watches changes. Candidate for place pages and weekly clips.
+- Philip (7 Nov): why pink, not how clearings are usually noticed? Changed: each 30 m square switches from the
+  picture before to the picture now on the day NASA saw it cleared (edges softened by about a third of a square),
+  so the forest turns to bare orange ground the way it looks from above. Captions say the ground is "as it looks
+  now" (a square cleared in 2024 shows its 2026 look). Pink stays as a toggle in the player and as clip-pink.mp4.
