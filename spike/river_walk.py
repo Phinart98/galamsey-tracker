@@ -89,21 +89,39 @@ def course(slug):
         if not on and r.loc[rid].UPLAND_SKM < 30:
             break
     parts = [r.loc[k].geometry for k in reversed(chain)]   # source first
+    rough = linemerge(parts)
+    # snap targets: the named line plus unnamed river ways along the course (OSM often leaves stretches unnamed)
+    ways = gpd.read_file(OSM, layer="lines", where="waterway = 'river' AND name IS NULL").to_crs(CRS)
+    ways = ways[ways.distance(rough) < 1000]
+    targets = [g for g in [osm] if g is not None and not g.is_empty] + list(ways.geometry)
+    snap_to = gpd.GeoSeries(targets, crs=CRS).union_all() if targets else None
     line = linemerge(parts)
     line = LineString([c for g in getattr(line, "geoms", [line]) for c in g.coords])
-    pts = [line.interpolate(d) for d in np.arange(0, line.length, 50)]
-    # pull onto the OSM line where it is within 600 m
-    snapped = []
+    pts = [line.interpolate(d) for d in np.arange(0, line.length, 25)]
+    # pull onto OSM where it is within 1 km; snapped stretches keep their meanders (100 m smoothing),
+    # HydroRIVERS-only stretches are smoothed over 500 m so the 500 m grid does not kink the picture
+    snapped, on = [], []
     for p in pts:
-        q = osm.interpolate(osm.project(p)) if osm is not None and not osm.is_empty else p
-        snapped.append(q if p.distance(q) < 600 else p)
+        q = nearest_on(snap_to, p) if snap_to is not None else p
+        ok = p.distance(q) < 1000
+        snapped.append(q if ok else p)
+        on.append(ok)
     xy = np.array([(p.x, p.y) for p in snapped])
-    k = 9   # 450 m running mean: keeps bends, removes snapping jitter
-    pad = np.pad(xy, ((k // 2, k // 2), (0, 0)), mode="edge")
-    xy = np.stack([np.convolve(pad[:, i], np.ones(k) / k, mode="valid") for i in (0, 1)], axis=1)
+
+    def smooth(a, k):
+        pad = np.pad(a, ((k // 2, k // 2), (0, 0)), mode="edge")
+        return np.stack([np.convolve(pad[:, i], np.ones(k) / k, mode="valid") for i in (0, 1)], axis=1)
+
+    w = np.convolve(np.array(on, float), np.ones(21) / 21, mode="same")[:, None]   # ease between the two
+    xy = w * smooth(xy, 5) + (1 - w) * smooth(xy, 21)
     out = LineString(xy)
     print(f"{slug}: {out.length / 1000:.1f} km, {len(chain)} reaches", flush=True)
     return out, (r, chain)
+
+
+def nearest_on(geom, p):
+    from shapely.ops import nearest_points
+    return nearest_points(geom, p)[0]
 
 
 def band_points(line, d):
@@ -131,6 +149,26 @@ def sample(shot, lon, lat, pts_ll):
     return out, ok
 
 
+def _cache_dir(slug):
+    d = f"{OUT}/{slug}/crops"
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def cached(slug, mid):
+    """A crop already downloaded whose centre is within 500 m of this one (the crop is 4.6 km across)."""
+    for f in os.listdir(_cache_dir(slug)):
+        lon, lat = map(float, f[:-4].split("_")[:2])
+        if abs(lon - mid.x) * 111000 < 500 and abs(lat - mid.y) * 111000 < 500:
+            z = np.load(f"{_cache_dir(slug)}/{f}")
+            return (str(z["day"]), z["rgb"], (lon, lat))
+    return None
+
+
+def keep(slug, mid, shot):
+    np.savez_compressed(f"{_cache_dir(slug)}/{mid.x:.5f}_{mid.y:.5f}.npz", rgb=shot[1], day=str(shot[0]))
+
+
 def picture(slug, line):
     n = int(line.length // STEP_M)
     cols = 2 * HALF_M // STEP_M
@@ -140,11 +178,16 @@ def picture(slug, line):
     shots, dates = [], []
     for c0 in range(0, n, per):
         mid = gpd.GeoSeries([line.interpolate(min(line.length, (c0 + per / 2) * STEP_M))], crs=CRS).to_crs(4326).iloc[0]
-        shot = None
-        for start, end in EPOCHS:
-            shot = tried(chips.clearest, mid.x, mid.y, CROP_HALF_KM, start, end)
+        shot = cached(slug, mid)
+        if shot is None:
+            for start, end in EPOCHS:
+                shot = tried(chips.clearest, mid.x, mid.y, CROP_HALF_KM, start, end)
+                if shot:
+                    break
             if shot:
-                break
+                keep(slug, mid, shot)
+        else:
+            mid = gpd.GeoSeries([Point(shot[2])], crs=4326).iloc[0]   # the crop's own centre
         print(slug, f"km {c0 * STEP_M / 1000:.1f}", shot[0] if shot else "-", flush=True)
         shots.append((shot, mid.x, mid.y))
         dates.append(str(shot[0]) if shot else None)
