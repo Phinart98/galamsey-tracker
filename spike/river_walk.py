@@ -269,6 +269,57 @@ def fill(slug, tries=5):
         print(slug, f, f"cloud {start_frac * 100:.1f}% -> {need.mean() * 100:.1f}%", used, flush=True)
 
 
+def swap(slug, over=1.5, tries=6):
+    """Filling only the bright cores of a cloud leaves the thin haze around them, so each filled core shows as a
+    crisp island in grey. For crops that were more than `over` % cloud (read from the fill log), the whole middle
+    is replaced by one day that is clear over nearly all of it, feathered at the edge of the middle (outside the
+    band the picture uses). The crop's day becomes that day, so the page's dates stay true."""
+    from scipy.ndimage import gaussian_filter
+    d = _cache_dir(slug)
+    with open(f"{OUT}/{slug}-fill.log", encoding="utf-8") as log:
+        bad = [ln.split()[1] for ln in log
+               if ln.startswith(slug + " ") and " cloud " in ln and float(ln.split()[3].rstrip("%")) > over]
+    for f in bad:
+        z = dict(np.load(f"{d}/{f}"))
+        if "swapped" in z:
+            continue
+        rgb = z["rgb"].copy()
+        h, w = rgb.shape[:2]
+        yy, xx = np.mgrid[:h, :w]
+        mid = np.hypot((yy - h / 2) / h, (xx - w / 2) / w) * 2 * CROP_HALF_KM * 1000 < 1700
+        lon, lat = map(float, f[:-4].split("_")[:2])
+        bbox = chips._bbox(lon, lat, CROP_HALF_KM)
+        items = [i for start, end in EPOCHS for i in tried(chips.search, bbox, start, end, 40)]
+        items = [i for i in items if str(i.datetime.date()) != str(z["day"])]
+        best = (0.0, None, None)
+        for item in items[:tries]:
+            try:
+                scl = np.array(Image.fromarray(chips._read(item.assets["scl"].href, bbox)[0]).resize((w, h), Image.NEAREST))
+                cand = np.moveaxis(chips._read(item.assets["visual"].href, bbox), 0, -1)
+            except Exception as e:  # noqa: BLE001  a broken or slow file: try the next day
+                print("   skip", type(e).__name__, flush=True)
+                continue
+            if cand.shape[:2] != (h, w):
+                cand = np.array(Image.fromarray(cand).resize((w, h), Image.BILINEAR))
+            ok = ~np.isin(scl, chips.CLOUDY_SCL) & (scl != 0) & ~cloud_mask(cand) & (cand.sum(axis=2) > 0)
+            cover = (ok & mid).sum() / mid.sum()
+            if cover > best[0]:
+                best = (cover, item, (cand, ok))
+            if cover >= 0.995:
+                break
+        cover, item, got = best
+        if item is None or cover < 0.97:
+            print(slug, f, f"no clear day (best {cover * 100:.1f}%)", flush=True)
+            continue
+        cand, ok = got
+        a = np.clip(gaussian_filter(mid.astype(float), 6), 0, 1) * ok   # feathered middle, clear pixels only
+        rgb = (cand * a[..., None] + rgb * (1 - a[..., None])).astype(np.uint8)
+        day = str(item.datetime.date())
+        used = [x for x in z.get("filled", np.array([])).tolist() if x != "none"]
+        np.savez_compressed(f"{d}/{f}", rgb=rgb, day=day, filled=np.array(used or ["none"]), swapped=np.array(day))
+        print(slug, f, f"swapped to {day}, clear over {cover * 100:.1f}% of the middle", flush=True)
+
+
 def pick(lon, lat, start, end, prev_day):
     """The clearest usable crop, but the previous piece's day first: one satellite pass covers a long way, so
     keeping its day keeps the light and colour the same and leaves no seam."""
@@ -443,5 +494,7 @@ def run(slug, only_course=False):
 if __name__ == "__main__":
     if sys.argv[2:] == ["fill"]:
         fill(sys.argv[1])
+    elif sys.argv[2:] == ["swap"]:
+        swap(sys.argv[1])
     else:
         run(sys.argv[1], only_course=sys.argv[2:] == ["course"])
