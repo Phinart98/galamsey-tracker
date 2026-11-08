@@ -32,7 +32,10 @@ STEP_M = 10
 HALF_M = 1000
 CHUNK_M = 2500
 CROP_HALF_KM = 2.3          # holds the band around a chunk even where the river bends
-BLEND_M = 200
+BLEND_M = 500
+VISIBLE_KM2 = 500        # start where the river drains this much: above it the river is narrower than a 10 m pixel
+ALIASES = {"Offin": ["Ofin"], "Pra": ["Prah"]}   # other spellings in OSM
+VISIBLE = {"densu": 200, "ayensu": 200}   # small coastal rivers: a lower bar, or most of them would be cut
 TILE_KM = 5
 EPOCHS = [(dt.date(2025, 11, 1), dt.date(2026, 3, 15)), (dt.date(2024, 11, 1), dt.date(2025, 3, 31)),
           (dt.date(2023, 11, 1), dt.date(2024, 3, 31))]
@@ -61,7 +64,8 @@ def tried(fn, *a, attempts=4):
 
 def osm_line(name):
     lines = gpd.read_file(OSM, layer="lines", where="waterway IN ('river', 'stream')").to_crs(CRS)
-    pat = re.compile(rf"^(river\s+)?{name}(\s+river)?$", re.I)
+    names = "|".join([name] + ALIASES.get(name, []))
+    pat = re.compile(rf"^(river\s+)?({names})(\s+river)?$", re.I)
     named = lines[lines["name"].fillna("").str.strip().str.match(pat)]
     print(f"OSM {name}: {len(named)} ways, {named.length.sum() / 1000:.0f} km", flush=True)
     return named.union_all()
@@ -106,7 +110,13 @@ def course(slug):
         ok = p.distance(q) < 1000
         snapped.append(q if ok else p)
         on.append(ok)
-    xy = np.array([(p.x, p.y) for p in snapped])
+    raw = np.array([(p.x, p.y) for p in pts])
+    shift = np.array([(q.x - p.x, q.y - p.y) for p, q in zip(pts, snapped)])
+    # a snap that hops onto a side channel or the other arm of a bend for a short way is a jump in the shift:
+    # a running median over 2 km drops it (sharp sideways turns on the Pra: 75 without, 6 with), so the course moves sideways only where the river really does
+    from scipy.ndimage import median_filter
+    shift = np.stack([median_filter(shift[:, i], size=81, mode="nearest") for i in (0, 1)], axis=1)
+    xy = raw + shift
 
     def smooth(a, k):
         pad = np.pad(a, ((k // 2, k // 2), (0, 0)), mode="edge")
@@ -115,8 +125,41 @@ def course(slug):
     w = np.convolve(np.array(on, float), np.ones(21) / 21, mode="same")[:, None]   # ease between the two
     xy = w * smooth(xy, 5) + (1 - w) * smooth(xy, 21)
     out = LineString(xy)
-    print(f"{slug}: {out.length / 1000:.1f} km, {len(chain)} reaches", flush=True)
-    return out, (r, chain)
+    # where the river becomes visible: the upstream end of the highest reach draining VISIBLE_KM2
+    big = [k for k in chain if r.loc[k].UPLAND_SKM >= VISIBLE.get(slug, VISIBLE_KM2)]
+    cut = out.project(Point(r.loc[big[-1]].geometry.coords[0])) if big else 0.0
+    streams_km = cut / 1000
+    out = substring(out, cut, out.length)
+    print(f"{slug}: {out.length / 1000:.1f} km shown, {streams_km:.1f} km of streams above, {len(chain)} reaches, "
+          f"{jumps(out)} sideways jumps", flush=True)
+    return out, (r, chain), streams_km
+
+
+GUIDE_K = 81   # 2 km box smoothing, twice: the band follows the valley, the river snakes inside it
+
+
+def guide(line):
+    """The line the picture is cut along: the course smoothed over about 2 km.
+
+    Cut square to the exact course, the cross-lines fold over each other inside every bend tighter than the
+    band (about 3 in 10 rows), which smears and repeats ground. Cut along this smoother line they almost never
+    fold, and the river winds inside the band (at most about 500 m off the middle) the way it looks from above.
+    Guide point i is the average of course points around i, so it sits at exactly 25 m x i of river."""
+    xy = np.array([line.interpolate(d).coords[0] for d in np.arange(0, line.length, 25)] + [line.coords[-1]])
+    box = lambda a: np.stack([np.convolve(np.pad(a[:, i], GUIDE_K // 2, mode="edge"), np.ones(GUIDE_K) / GUIDE_K, mode="valid") for i in (0, 1)], axis=1)
+    g = box(box(xy))
+    along = np.minimum(np.arange(len(xy)) * 25.0, line.length)
+    dev = np.linalg.norm(xy - g, axis=1)
+    print(f"guide: {LineString(g).length / 1000:.1f} km of picture, river at most {dev.max():.0f} m off the middle", flush=True)
+    return LineString(g), along
+
+
+def jumps(line):
+    """Places where the course turns more than 60 degrees within 50 m: what reads as a cut in the picture."""
+    xy = np.array([line.interpolate(d).coords[0] for d in np.arange(0, line.length, 25)])
+    h = np.arctan2(np.diff(xy[:, 1]), np.diff(xy[:, 0]))
+    turn = np.abs((h[2:] - h[:-2] + np.pi) % (2 * np.pi) - np.pi)
+    return int((np.diff((turn > np.radians(60)).astype(int)) == 1).sum())
 
 
 def nearest_on(geom, p):
@@ -150,23 +193,93 @@ def sample(shot, lon, lat, pts_ll):
 
 
 def _cache_dir(slug):
-    d = f"{OUT}/{slug}/crops"
+    d = f"{OUT}/{slug}/crops2"
     os.makedirs(d, exist_ok=True)
     return d
 
 
 def cached(slug, mid):
-    """A crop already downloaded whose centre is within 500 m of this one (the crop is 4.6 km across)."""
+    """The nearest crop already downloaded, if its centre is within 700 m of this one. The crop is 4.6 km across,
+    so it still covers a 2.5 km piece of the 2 km band with room to spare."""
+    best, bd = None, 700.0
     for f in os.listdir(_cache_dir(slug)):
         lon, lat = map(float, f[:-4].split("_")[:2])
-        if abs(lon - mid.x) * 111000 < 500 and abs(lat - mid.y) * 111000 < 500:
-            z = np.load(f"{_cache_dir(slug)}/{f}")
-            return (str(z["day"]), z["rgb"], (lon, lat))
-    return None
+        d = np.hypot((lon - mid.x) * 110600, (lat - mid.y) * 110600)
+        if d < bd:
+            best, bd = (f, lon, lat), d
+    if best is None:
+        return None
+    z = np.load(f"{_cache_dir(slug)}/{best[0]}")
+    return (str(z["day"]), z["rgb"], (best[1], best[2]))
 
 
 def keep(slug, mid, shot):
     np.savez_compressed(f"{_cache_dir(slug)}/{mid.x:.5f}_{mid.y:.5f}.npz", rgb=shot[1], day=str(shot[0]))
+
+
+def cloud_mask(rgb):
+    """Cloud by colour: bright and colourless, widened by 40 m for the soft edge. A pale sand pit can pass for
+    cloud too, which costs nothing: it is replaced by the same ground from another day."""
+    from scipy.ndimage import binary_dilation
+    mn, mx = rgb.min(axis=2).astype(int), rgb.max(axis=2).astype(int)
+    return binary_dilation((mn > 150) & ((mx - mn) < 45), iterations=4)
+
+
+def fill(slug, tries=5):
+    """Cloud in the middle of a cached crop (the part the picture uses) is filled from the next clearest days of
+    the same spot. Only that day's clear pixels are used, scaled to the main day's colour."""
+    d = _cache_dir(slug)
+    for f in sorted(os.listdir(d)):
+        z = dict(np.load(f"{d}/{f}"))
+        if "filled" in z:
+            continue
+        rgb = z["rgb"].copy()
+        h, w = rgb.shape[:2]
+        yy, xx = np.mgrid[:h, :w]
+        mid = np.hypot((yy - h / 2) / h, (xx - w / 2) / w) * 2 * CROP_HALF_KM * 1000 < 1700
+        need = cloud_mask(rgb) & mid
+        start_frac, used, read = need.mean(), [], 0
+        if need.sum() > 0.003 * h * w:
+            lon, lat = map(float, f[:-4].split("_")[:2])
+            bbox = chips._bbox(lon, lat, CROP_HALF_KM)
+            items = [i for start, end in EPOCHS for i in tried(chips.search, bbox, start, end, 40)]
+            items = [i for i in items if str(i.datetime.date()) != str(z["day"])]
+            for item in items:
+                if need.sum() < 0.0005 * h * w or read >= tries:
+                    break
+                read += 1
+                try:
+                    scl = np.array(Image.fromarray(chips._read(item.assets["scl"].href, bbox)[0]).resize((w, h), Image.NEAREST))
+                    cand = np.moveaxis(chips._read(item.assets["visual"].href, bbox), 0, -1)
+                except Exception as e:  # noqa: BLE001  a broken or slow file: try the next day
+                    print("   skip", type(e).__name__, flush=True)
+                    continue
+                if cand.shape[:2] != (h, w):
+                    cand = np.array(Image.fromarray(cand).resize((w, h), Image.BILINEAR))
+                ok = ~np.isin(scl, chips.CLOUDY_SCL) & (scl != 0) & ~cloud_mask(cand) & (cand.sum(axis=2) > 0)
+                both = ok & ~cloud_mask(rgb) & mid
+                if both.sum() < 2000:
+                    continue
+                gain = np.clip(np.median(rgb[both].astype(float), axis=0) / np.maximum(np.median(cand[both].astype(float), axis=0), 1), 0.6, 1.6)
+                put = need & ok
+                rgb[put] = np.clip(cand[put] * gain, 0, 255).astype(np.uint8)
+                need &= ~put
+                used.append(str(item.datetime.date()))
+        np.savez_compressed(f"{d}/{f}", rgb=rgb, day=str(z["day"]), filled=np.array(used or ["none"]))
+        print(slug, f, f"cloud {start_frac * 100:.1f}% -> {need.mean() * 100:.1f}%", used, flush=True)
+
+
+def pick(lon, lat, start, end, prev_day):
+    """The clearest usable crop, but the previous piece's day first: one satellite pass covers a long way, so
+    keeping its day keeps the light and colour the same and leaves no seam."""
+    bbox = chips._bbox(lon, lat, CROP_HALF_KM)
+    items = chips.search(bbox, start, end, 40)
+    items = [i for i in items if str(i.datetime.date()) == prev_day] + [i for i in items if str(i.datetime.date()) != prev_day]
+    for item in items[:12]:
+        rgb = chips.scene(item, bbox)
+        if rgb is not None:
+            return item.datetime.date(), rgb
+    return None
 
 
 def picture(slug, line):
@@ -180,8 +293,9 @@ def picture(slug, line):
         mid = gpd.GeoSeries([line.interpolate(min(line.length, (c0 + per / 2) * STEP_M))], crs=CRS).to_crs(4326).iloc[0]
         shot = cached(slug, mid)
         if shot is None:
+            prev = next((d for d in reversed(dates) if d), None)
             for start, end in EPOCHS:
-                shot = tried(chips.clearest, mid.x, mid.y, CROP_HALF_KM, start, end)
+                shot = tried(pick, mid.x, mid.y, start, end, prev)
                 if shot:
                     break
             if shot:
@@ -218,11 +332,12 @@ def picture(slug, line):
     return img, dates
 
 
-def markers(slug, line, reaches):
-    ll = lambda g: gpd.GeoSeries([g], crs=CRS)
+def markers(slug, line, reaches, river):
     out = {"towns": [], "joins": [], "plants": [], "places": []}
     s = gpd.read_file("pipeline/out/cache/places/settlements_ghana.geojson").to_crs(CRS)
-    s = s[s.place.isin(["city", "town", "village"]) & (s.distance(line) < 1500) & s["name"].notna()]
+    # villages in or near the band; towns up to 5 km away (shown at the picture's edge with their distance)
+    dist = s.distance(line)
+    s = s[s["name"].notna() & (((s.place == "village") & (dist < 1500)) | (s.place.isin(["city", "town"]) & (dist < 5000)))]
     for _, t in s.iterrows():
         d = line.project(t.geometry)
         out["towns"].append({"name": t["name"], "place": t.place, "km": round(d / 1000, 2), "off_m": round(offset(line, t.geometry))})
@@ -243,26 +358,37 @@ def markers(slug, line, reaches):
         geom = linemerge([r.loc[i].geometry for i in trunk])
         nm = next((n for n, p in seeds.items() if p.distance(geom) < 3000), None)
         if not nm:
-            near = named[(named.distance(r.loc[k].geometry) < 1500) & ~named["name"].str.contains(RIVER[slug][0], case=False)]
+            near = named[(named.distance(r.loc[k].geometry) < 1500) & ~named["name"].str.contains("|".join([RIVER[slug][0]] + ALIASES.get(RIVER[slug][0], [])), case=False)]
             nm = near["name"].mode().iloc[0] if len(near) else None
         end = Point(r.loc[k].geometry.coords[-1])
-        out["joins"].append({"name": nm, "km": round(line.project(end) / 1000, 2), "upland_km2": round(float(r.loc[k].UPLAND_SKM))})
+        up = geom.interpolate(max(geom.length * 0.5, geom.length - 1500)) if geom.geom_type == "LineString" else end   # 1.5 km up the branch
+        walked = next((sl for sl, v in RIVER.items() if v[0] == nm), None)
+        out["joins"].append({"name": nm, "slug": walked, "km": round(line.project(end) / 1000, 2),
+                             "side": "left" if offset(line, up) > 0 else "right", "upland_km2": round(float(r.loc[k].UPLAND_SKM))})
     plants = gpd.read_file("pipeline/water_plants.geojson").to_crs(CRS)
     pts = gpd.GeoSeries(gpd.points_from_xy(plants.plant_lon, plants.plant_lat), crs=4326).to_crs(CRS)
     for (_, p), pt in zip(plants.iterrows(), pts):
-        if pt.distance(line) < 1500:
+        if pt.distance(river) < 1500:
             out["plants"].append({"name": p["plant"], "km": round(line.project(pt) / 1000, 2)})
     pl = gpd.read_file("pipeline/out/places/latest.geojson").to_crs(CRS)
     idx = json.load(open("pipeline/out/places/index.json", encoding="utf-8"))
-    pl = pl[pl.distance(line) < HALF_M]
+    pl = pl[pl.distance(river) < HALF_M]   # within 1 km of the water itself
     for _, p in pl.iterrows():
         c = p.geometry.representative_point()
         i = idx.get(p["id"], {})
         out["places"].append({"id": p["id"], "km": round(line.project(c) / 1000, 3), "off_m": round(offset(line, c)),
+                              "river_m": round(p.geometry.distance(river)),
                               "ha": i.get("ha"), "licence": i.get("licence"), "likely": bool(i.get("likely_galamsey")),
                               "near": i.get("near"), "near_km": i.get("near_km")})
     for k in out:
         out[k].sort(key=lambda m: m["km"])
+    # where the course leaves the forest zone for good (clearing is not counted below it)
+    from tracker import zone
+    z = gpd.GeoSeries([zone.load()], crs=4326).to_crs(CRS).iloc[0]
+    inside = [z.contains(line.interpolate(d)) for d in np.arange(0, line.length, 500)]
+    if inside and not inside[-1] and any(inside):
+        last = max(i for i, v in enumerate(inside) if v)
+        out["zone_end_km"] = round((last + 1) * 0.5, 1)
     return out
 
 
@@ -280,19 +406,33 @@ def offset(line, pt):
 def run(slug, only_course=False):
     out = f"{OUT}/{slug}"
     os.makedirs(out, exist_ok=True)
-    line, reaches = course(slug)
-    gpd.GeoSeries([line], crs=CRS).to_crs(4326).to_file(f"{out}/course.geojson")
-    m = markers(slug, line, reaches)
-    simple = gpd.GeoSeries([line.simplify(200)], crs=CRS).to_crs(4326).iloc[0]
+    river, reaches, streams_km = course(slug)
+    gpd.GeoSeries([river], crs=CRS).to_crs(4326).to_file(f"{out}/course.geojson")
+    line, along = guide(river)
+    print(f"picture sideways jumps: {jumps(line)}", flush=True)
+    m = markers(slug, line, reaches, river)
+    simple = gpd.GeoSeries([river.simplify(200)], crs=CRS).to_crs(4326).iloc[0]
+    # river km still to go, at every 0.5 km down the picture (the picture is shorter: bends are not pulled out)
+    gxy = np.array(line.coords)
+    cum = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(gxy, axis=0), axis=1))])
+    left = river.length - np.interp(np.arange(0, line.length, 500), cum, along)
     meta = {"slug": slug, "name": RIVER[slug][0], "ends": RIVER[slug][2], "length_km": round(line.length / 1000, 1),
+            "river_km": round(river.length / 1000, 1), "km_left": [round(v / 1000, 2) for v in left] + [0.0], "streams_km": round(streams_km),
             "step_m": STEP_M, "half_m": HALF_M, "tile_km": TILE_KM, "course": [[round(x, 4), round(y, 4)] for x, y in simple.coords],
             **m}
     json.dump(meta, open(f"{out}/river.json", "w", encoding="utf-8"), indent=1)
-    print({k: len(v) for k, v in m.items()}, flush=True)
+    print({k: (len(v) if isinstance(v, list) else v) for k, v in m.items()}, flush=True)
     if only_course:
         return
     img, dates = picture(slug, line)
     meta["dates"] = sorted({d for d in dates if d})
+    # days used to fill cloudy spots (fill step), so the page can say where they come from
+    fills = set()
+    for f in os.listdir(_cache_dir(slug)):
+        z = np.load(f"{_cache_dir(slug)}/{f}")
+        if "filled" in z:
+            fills |= {str(v) for v in z["filled"] if str(v) != "none"}
+    meta["fill_dates"] = sorted(fills)
     json.dump(meta, open(f"{out}/river.json", "w", encoding="utf-8"), indent=1)
     Image.fromarray(img).save(f"{out}/strip.png")
     rows = TILE_KM * 1000 // STEP_M
@@ -301,4 +441,7 @@ def run(slug, only_course=False):
 
 
 if __name__ == "__main__":
-    run(sys.argv[1], only_course=sys.argv[2:] == ["course"])
+    if sys.argv[2:] == ["fill"]:
+        fill(sys.argv[1])
+    else:
+        run(sys.argv[1], only_course=sys.argv[2:] == ["course"])
