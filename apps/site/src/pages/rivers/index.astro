@@ -31,10 +31,10 @@ const family = rivers.filter((r) => r.slug === 'pra' || r.joins_to === 'pra').ma
 const alone = rivers.filter((r) => r.slug !== 'pra' && r.joins_to !== 'pra').map(item);
 const span = pictureSpan(rivers.flatMap((r) => r.dates).sort());
 ---
-<Base title="Rivers" description={`Follow ${count(rivers.length)} of Ghana's mining rivers from where they become rivers to the sea, as satellites saw them, with the land cleared along them.`}>
+<Base title="Rivers" description={`Follow ${count(rivers.length)} of Ghana's rivers down to the sea in satellite pictures, and see the land cleared along the water, the towns they pass and the plants that make drinking water from them.`}>
   <div class="wrap">
-    <h1>Follow Ghana's mining rivers</h1>
-    <p class="lead">Walk each river from where it becomes a river to the sea, as satellites saw it{span && ` from ${span}`}, with the land cleared along it. The Offin and the Birim flow into the Pra, so their walks carry on down the Pra.</p>
+    <h1>Follow {count(rivers.length)} of Ghana's rivers down to the sea</h1>
+    <p class="lead">Satellite pictures carry you down each river, from where it grows wide enough to see from space to where it meets the sea. On the way you see the land cleared along the water, the towns it passes, and the plants that make drinking water from it.{span && ` The pictures were taken from ${span}.`} The Offin and the Birim flow into the Pra, so their walks carry on down the Pra.</p>
     {rivers.length === 0 ? <p>The river pictures have not been made yet.</p> : (
       <div class="layout">
         <figure class="mapbox">
