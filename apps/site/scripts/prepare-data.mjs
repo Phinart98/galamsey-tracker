@@ -27,9 +27,9 @@ if (process.env.PLACES_INDEX_URL) {
     const dataDate = fs.existsSync(latest) ? JSON.parse(fs.readFileSync(latest, 'utf8')).data_date : null;
     const { written } = await writePairs(local, index, path.join(site, 'public'), dataDate);
     console.log(`prepare-data: ${written} picture pairs in public/chips`);
-    const tiles = copyRiverTiles(local, path.join(site, 'public'));
-    console.log(`prepare-data: ${tiles} river tiles in public/rivers`);
   }
+  // River tiles whenever there are any: the site lists every river whose tiles are in pipeline/out (lib/rivers.ts)
+  if (!process.env.CHIPS_BASE_URL) console.log(`prepare-data: ${copyRiverTiles(local, path.join(site, 'public'))} river tiles in public/rivers`);
 } else {
   console.warn('prepare-data: no place index found, building without places');
 }

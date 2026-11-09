@@ -12,6 +12,7 @@ export const RETIRE_YEARS = 2;
 export const retiredBefore = (dataDate) =>
   dataDate ? `${Number(dataDate.slice(0, 4)) - RETIRE_YEARS}${dataDate.slice(4)}` : null;
 
-// River walk tiles: rivers/<slug>/<version>/tile-NNN.webp. The version is the day the pictures were made
-// (pipeline/out/rivers/<slug>.json), so a browser never mixes tiles from two sets and the tiles can be cached for good.
+// River walk tiles: rivers/<slug>/<version>/tile-NNN.webp. The version is the UTC minute the pictures were made
+// (pipeline/out/rivers/<slug>.json), never reused even by two runs on one day, so a browser never mixes tiles from two
+// sets and the tiles can be cached for good.
 export const tileRel = (slug, version, i) => `rivers/${slug}/${version}/tile-${String(i).padStart(3, '0')}.webp`;

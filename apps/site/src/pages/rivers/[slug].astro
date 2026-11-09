@@ -152,7 +152,8 @@ const data = {
   };
   const L = D.length_km, RK = D.river_km;
   const left = (km: number) => leftOf(D, km);
-  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const still = () => reduceMotion.matches;
   const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
   const $$ = <T extends Element = HTMLElement>(s: string) => [...document.querySelectorAll<T>(s)];
   const river = $('[data-river]');
@@ -285,7 +286,8 @@ const data = {
   $$('[data-map-open]').forEach((b) => b.addEventListener('click', () => sheet.showModal?.()));
   $('[data-map-close]').addEventListener('click', () => sheet.close());
   const sheetSvg = sheet.querySelector<SVGSVGElement>('svg')!;
-  sheetSvg.addEventListener('click', (e) => { sheet.close(); scrollToKm(kmFromMap(sheetSvg, e), false); });
+  // The km is read while the sheet is still open: a closed sheet has no size, and every tap would mean the start
+  sheetSvg.addEventListener('click', (e) => { const km = kmFromMap(sheetSvg, e); sheet.close(); scrollToKm(km, false); });
   sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.close(); });
 
   // ------------------------------------------------------------------ where you are (a line a third down the screen)
@@ -342,8 +344,53 @@ const data = {
     });
     stretch(km);
   }
-  addEventListener('scroll', () => { raf ||= requestAnimationFrame(update); }, { passive: true });
+  addEventListener('scroll', () => { raf ||= requestAnimationFrame(() => { update(); morph(); }); }, { passive: true });
   update();
+
+  // ------------------------------------------------------------------ phones: the big map becomes the bar's small one
+  // One map at a time. As the reader scrolls, the start card's map pins under the bar and shrinks into the bar's
+  // small map, moving only as far as they scroll (so scrolling back up undoes it). Its bottom edge keeps pace with
+  // the text below it, so it never covers that text. Reduced motion: no shrinking, the small map just appears.
+  const big = $('.locbtn.wide'), small = $('.locbtn.small');
+  const wideScreen = matchMedia('(min-width: 960px)');
+  // Where the big map sits in the page before any shrinking, measured once (and again on resize), so a scroll frame
+  // only reads the bar's small map and never resets the transform to measure
+  let home = { top: 0, left: 0, width: 0, height: 0 };
+  function measure() {
+    const t = big.style.transform;
+    big.style.transform = '';
+    const r = big.getBoundingClientRect();
+    home = { top: r.top + scrollY, left: r.left, width: r.width, height: r.height };
+    big.style.transform = t;
+  }
+  function morph() {
+    if (wideScreen.matches) return;
+    const S = small.getBoundingClientRect();
+    const B = { top: home.top - scrollY, right: home.left + home.width, bottom: home.top - scrollY + home.height, width: home.width, height: home.height };
+    const range = Math.max(1, B.height - S.height);
+    const p = Math.min(1, Math.max(0, (S.top - B.top) / range));
+    const showSmall = still() ? B.bottom <= S.bottom : p > 0.85;
+    small.style.opacity = still() ? '' : String(Math.min(1, Math.max(0, (p - 0.85) / 0.15)));
+    small.style.visibility = showSmall ? '' : 'hidden';
+    small.toggleAttribute('inert', !showSmall);
+    if (still() || p <= 0) { big.style.transform = big.style.opacity = big.style.visibility = ''; big.classList.remove('morphing'); return; }
+    // Kept against the bar's right edge, and shrinking a little ahead of the scroll (ease-out), so the bar's words
+    // show again early and the map's bottom edge stays above the text below it
+    const scale = 1 + (S.width / B.width - 1) * (1 - (1 - p) ** 2);
+    big.style.transform = `translate(${(S.right - B.right).toFixed(1)}px, ${(S.top - B.top).toFixed(1)}px) scale(${scale.toFixed(4)})`;
+    big.style.opacity = String(Math.min(1, (1 - p) / 0.15));
+    big.style.visibility = p >= 1 ? 'hidden' : '';
+    big.classList.toggle('morphing', p < 1);
+  }
+  const remeasure = () => { measure(); morph(); };
+  addEventListener('resize', remeasure);
+  addEventListener('load', remeasure); // fonts and the intro can move it while the page loads
+  wideScreen.addEventListener('change', () => {
+    [big, small].forEach((e) => { e.style.transform = e.style.opacity = e.style.visibility = ''; e.removeAttribute('inert'); });
+    big.classList.remove('morphing');
+    remeasure();
+  });
+  remeasure();
 
   // Arriving from a river that flows into this one: a way back, for this visit only
   const from = new URLSearchParams(location.search).get('from');
@@ -467,7 +514,9 @@ const data = {
   .locbtn { padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; cursor: pointer; display: block; line-height: 0; }
   .locbtn:hover { border-color: var(--ink); }
   .locbtn.small { width: 64px; height: 64px; flex: none; }
-  .locbtn.wide { width: 100%; max-width: 420px; margin: 0 auto 16px; }
+  .locbtn.wide { width: 100%; max-width: 420px; margin: 0 auto 16px; position: relative; transform-origin: 100% 0; background: var(--paper); }
+  /* While it shrinks into the bar it is drawn above the bar */
+  .locbtn.wide.morphing { z-index: 6; will-change: transform, opacity; }
   .loc { width: 100%; height: auto; display: block; }
   :global(.loc .land) { fill: var(--paper-2); stroke: var(--line); stroke-width: 0.6; }
   :global(.loc .sea) { fill: var(--sea); }
