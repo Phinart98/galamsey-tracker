@@ -2,7 +2,13 @@ name: Weekly update
 
 on:
   schedule:
-    - cron: "17 5 * * 1"  # Mondays 05:17 UTC. Off the hour: GitHub delays runs set on the hour most (2 Nov 2026 started 9 h late)
+    # Mondays 05:17 UTC. Off the hour: GitHub delays runs set on the hour most. It can still start them many hours
+    # late or drop them (2 Nov 2026 started 9 h late, 9 Nov 2026 not at all by 13:45), so three more chances before
+    # the 13:00 post. The gate job below skips any of them once that Monday's run has succeeded
+    - cron: "17 5 * * 1"
+    - cron: "47 7 * * 1"
+    - cron: "47 9 * * 1"
+    - cron: "37 11 * * 1"
   workflow_dispatch:
     inputs:
       chips_limit:
@@ -41,7 +47,32 @@ env:
   PICTURES_PROJECT: galamsey-tracker-pictures
 
 jobs:
+  # A scheduled start is skipped when today's update already succeeded. Reads the newest status.json from the branch:
+  # a run that waited in the queue would check out the older commit. If the read fails, the update goes ahead
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          last=""
+          if [ "$EVENT" = "schedule" ]; then
+            last=$(gh api "repos/$GITHUB_REPOSITORY/contents/data/status.json?ref=$GITHUB_REF_NAME" -H "Accept: application/vnd.github.raw" | jq -r '.weekly.last_success // ""') || last=""
+          fi
+          if [ "${last:0:10}" = "$(date -u +%F)" ]; then
+            echo "Today's update already succeeded at $last, so this start is skipped"
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
   update:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
     runs-on: ubuntu-latest
     # GitHub's most for one job. The step limits add up to less, so saving and publishing always get their turn,
     # as long as a long trend run (trend_minutes 150) comes with a small chips_limit

@@ -81,12 +81,14 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
     const have = new Set(bySlug.keys());
     const tuesday = fromList(PLACE, 2 * w, have);
     const firstFriday = wd === 5 && d.getUTCDate() <= 7;
-    const slug = wd === 1 ? 'town'
+    const newData = d.getTime() >= nextRun;
+    // A Monday is never empty: if this week's data could not make the town post, the next PLACE kind stands in
+    const townWaits = wd === 1 && !newData && !have.has('town');
+    const slug = wd === 1 ? (townWaits ? fromList(PLACE, 2 * w + 2, have, tuesday) : 'town')
       : wd === 2 ? tuesday
       : wd === 3 ? fromList(WATER, w, have)
       : wd === 4 ? fromList(PLACE, 2 * w + 1, have, tuesday)
       : firstFriday && have.has('month') ? 'month' : fromList(NUMBERS, w, have);
-    const newData = d.getTime() >= nextRun;
     const known = bySlug.get(slug);
     const kind = known?.kind ?? KIND[slug] ?? 'Another post';
     const backupName = lower(kind);
@@ -105,6 +107,8 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       } else if (status === 'ahead') {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
+    } else if (townWaits && known) {
+      note = 'The town of the week is waiting for the weekly update, so this post stands in. Check again after it runs.';
     } else if (!known) {
       // After the next weekly run the post is made from its new data, so it may well exist by then
       note = newData ? 'It is made from the data that arrives on Monday morning, so it shows here from then.'
