@@ -1,63 +1,63 @@
 {
  "weekly": {
-  "last_attempt": "2026-11-02T14:53:01+00:00",
+  "last_attempt": "2026-11-09T13:50:29+00:00",
   "outcome": "ok",
-  "last_success": "2026-11-02T14:53:01+00:00",
-  "data_date": "2026-10-31",
+  "last_success": "2026-11-09T13:50:29+00:00",
+  "data_date": "2026-11-04",
   "tiles": {
    "T30NXM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXM_20261029T103551Z_20261031T210904Z_S2A_30_v1",
-    "data_date": "2026-10-29",
-    "patches": 1557
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXM_20261101T102159Z_20261103T054442Z_S2B_30_v1",
+    "data_date": "2026-11-01",
+    "patches": 1568
    },
    "T30NWM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWM_20261031T102810Z_20261102T045644Z_L8_30_v1",
-    "data_date": "2026-10-31",
-    "patches": 1994
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWM_20261104T103219Z_20261108T094038Z_S2B_30_v1",
+    "data_date": "2026-11-04",
+    "patches": 1997
    },
    "T30NXN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXN_20261031T102746Z_20261102T014944Z_L8_30_v1",
-    "data_date": "2026-10-31",
-    "patches": 1563
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXN_20261101T102159Z_20261103T054658Z_S2B_30_v1",
+    "data_date": "2026-11-01",
+    "patches": 1579
    },
    "T30NYM": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYM_20261029T103551Z_20261031T211102Z_S2A_30_v1",
-    "data_date": "2026-10-29",
-    "patches": 1017
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYM_20261103T101201Z_20261108T174231Z_S2C_30_v1",
+    "data_date": "2026-11-03",
+    "patches": 1085
    },
    "T30NYN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYN_20261029T103551Z_20261031T181301Z_S2A_30_v1",
-    "data_date": "2026-10-29",
-    "patches": 802
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NYN_20261102T101526Z_20261104T015400Z_L8_30_v1",
+    "data_date": "2026-11-02",
+    "patches": 1005
    },
    "T30NWN": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWN_20261031T102746Z_20261102T015450Z_L8_30_v1",
-    "data_date": "2026-10-31",
-    "patches": 523
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWN_20261104T103219Z_20261108T015133Z_S2B_30_v1",
+    "data_date": "2026-11-04",
+    "patches": 516
    },
    "T30NXL": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXL_20261029T103551Z_20261031T211017Z_S2A_30_v1",
-    "data_date": "2026-10-29",
-    "patches": 492
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NXL_20261101T102159Z_20261103T054407Z_S2B_30_v1",
+    "data_date": "2026-11-01",
+    "patches": 496
    },
    "T30NWL": {
-    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWL_20261031T102810Z_20261102T015503Z_L8_30_v1",
-    "data_date": "2026-10-31",
-    "patches": 300
+    "granule": "OPERA_L3_DIST-ALERT-HLS_T30NWL_20261104T103219Z_20261108T014945Z_S2B_30_v1",
+    "data_date": "2026-11-04",
+    "patches": 304
    }
   }
  },
  "method_version": "2026.10.3",
  "chips": {
-  "last_attempt": "2026-11-02T14:54:50+00:00",
+  "last_attempt": "2026-11-09T13:52:11+00:00",
   "outcome": "ok"
  },
  "trend": {
-  "last_attempt": "2026-11-02T15:40:32+00:00",
+  "last_attempt": "2026-11-09T15:03:13+00:00",
   "outcome": "ok"
  },
  "signs": {
-  "last_attempt": "2026-11-02T15:39:15+00:00",
+  "last_attempt": "2026-11-09T14:59:14+00:00",
   "outcome": "ok"
  }
 }
