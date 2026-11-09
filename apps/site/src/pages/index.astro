@@ -7,16 +7,19 @@ import LabelKey from '../components/LabelKey.astro';
 import WaterMap from '../components/WaterMap.astro';
 import Src from '../components/Src.astro';
 import { PLANTS } from '../lib/plants';
+import { plantOnRiver, rivers, thumbnail, tileUrl } from '../lib/rivers';
 import { active, doorstep, summary, townsNear, water, where } from '../lib/data';
-import { Count, LICENCES, count, LICENCE_SENTENCE, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
+import { Count, LICENCES, count, LICENCE_SENTENCE, haNum, hectares, longDate, num, pct, tidyDistrict } from '../lib/format';
 
 const [lead, ...villages] = doorstep(10);
 const districts = summary?.top_districts.slice(0, 8) ?? [];
 const districtMax = Math.max(...districts.map((d) => d.ha), 1);
 const tidy = (d: string | null) => (d ? tidyDistrict(d) : null);
-const haText = (ha: number) => (ha < 10 ? ha.toFixed(1) : num(ha));
 const pra = water.find((w) => w.plant === 'Daboase');
 const total = summary?.total_ha ?? 0;
+// The Pra walk's picture on the way in to the river walks
+const praWalk = rivers.find((r) => r.slug === 'pra');
+const plantWalk = new Map(water.map((w) => [w.plant, plantOnRiver(w.plant)]));
 ---
 <Base description={summary ? `${num(summary.total_ha)} hectares of land cleared in 12 months ${where}. ${pct(summary.no_licence_to_mine.share)} of it has no licence to mine.` : undefined}>
   <div class="wrap">
@@ -61,7 +64,7 @@ const total = summary?.total_ha ?? 0;
               <h3 class="town"><a href={`/places/${p.id}`}>{town.name}</a><span>, {tidy(town.district)}</span></h3>
               <Pair place={p} variant="row">
                 <figcaption class="card">
-                  <span>{haText(town.ha)} ha cleared within 1 km</span>
+                  <span>{haNum(town.ha)} ha cleared within 1 km</span>
                   <span class="tags"><LicenceTag licence={p.licence} />{p.likely_galamsey && <LikelyTag />}</span>
                 </figcaption>
               </Pair>
@@ -113,10 +116,17 @@ const total = summary?.total_ha ?? 0;
                 {PLANTS[w.plant]?.news.map((n) => (
                   <span class="n"><span class="when">{n.when}</span> {n.text} <Src id={n.src}>{n.outlet}</Src></span>
                 ))}
+                {plantWalk.get(w.plant) && <a class="follow" href={plantWalk.get(w.plant)!.href}>Follow the {w.river} to this plant</a>}
               </li>
             ))}
           </ul>
           <p class="muted small">Hectares cleared in the last 12 months on the land that drains to each plant. Smaller water works on these rivers are not listed.</p>
+          {praWalk && (
+            <a class="walks" href="/rivers/">
+              <img src={tileUrl(praWalk, thumbnail(praWalk))} alt="" width="48" height="96" loading="lazy" />
+              <span><strong>Follow {rivers.length === 1 ? 'the Pra' : `${count(rivers.length)} rivers`} to the sea</strong> Walk down each river as satellites saw it, with the land cleared along it.</span>
+            </a>
+          )}
         </div>
         <div class="look"><WaterMap praHa={pra.ha} /></div>
       </section>
@@ -267,6 +277,11 @@ const total = summary?.total_ha ?? 0;
   .plants .t { grid-column: 1 / -1; color: var(--muted); font-size: 0.9375rem; }
   .plants .n { grid-column: 1 / -1; font-size: 0.9375rem; line-height: 1.45; margin-top: 4px; }
   .plants .when { font-weight: 700; }
+  .plants .follow { grid-column: 1 / -1; font-size: 0.9375rem; font-weight: 700; padding: 6px 0; justify-self: start; }
+  .walks { display: flex; gap: 14px; align-items: center; margin: 20px 0 0; padding: 12px; border: 1px solid var(--ink); border-radius: 6px; text-decoration: none; max-width: 560px; }
+  .walks:hover strong { text-decoration: underline; }
+  .walks img { width: 48px; height: 96px; object-fit: cover; object-position: top; border-radius: 3px; flex: none; background: #3d4a37; }
+  .walks strong { display: block; font-size: 1.0625rem; }
   @media (min-width: 1000px) { .water { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 48px; align-items: start; } .water .look { position: sticky; top: 16px; } }
 
   .districts { border-collapse: collapse; width: 100%; max-width: 720px; margin-bottom: 24px; }

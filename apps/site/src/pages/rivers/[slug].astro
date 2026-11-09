@@ -1,0 +1,562 @@
+---
+import Base from '../../layouts/Base.astro';
+import LikelyTag from '../../components/LikelyTag.astro';
+import base from '../../data/water-map.json';
+import { PLANTS } from '../../lib/plants';
+import { endText, rivers, parentOf, pictureSpan, tileUrl, toSea, totals, walkHref, type River } from '../../lib/rivers';
+import { chipSrc, count, Count, hectares, LICENCE_SHORT, longDate, nearText, NO_PICTURE, noLicenceToMine, noPicture, shortDate } from '../../lib/format';
+import { hasPair } from '../../lib/data';
+
+export function getStaticPaths() {
+  return rivers.map((r) => ({ params: { slug: r.slug }, props: { r } }));
+}
+const { r } = Astro.props as { r: River };
+const { places, ha, likely } = totals(r.slug);
+const parent = parentOf(r);
+const sea = toSea(r);
+const span = pictureSpan(r.dates);
+// within 1 km of the water itself
+const near = r.towns.filter((t) => t.water_m <= 1000);
+// Small coastal rivers start lower down (pipeline/rivers.json visible_km2), where they are still narrow
+const narrow = r.visible_km2 < 500;
+const title = sea ? `The ${r.name}, all the way to the sea` : `The ${r.name}, down to ${r.ends}`;
+const stops = [
+  { km: 0, label: 'Where it becomes a river' },
+  ...r.joins.filter((j) => j.name).map((j) => ({ km: j.km, label: `The ${j.name} joins` })),
+  ...r.towns.filter((t) => t.place !== 'village' && Math.abs(t.off_m) <= 2000).map((t) => ({ km: t.km, label: t.name })),
+  ...r.plants.map((p) => ({ km: p.km, label: `${p.name} water plant` })),
+  { km: r.length_km, label: sea ? 'The sea' : `Where it joins ${r.ends}` },
+].sort((a, b) => a.km - b.km);
+
+// Everything the walk's script needs, in one block of JSON
+const data = {
+  end: endText(r), length_km: r.length_km, river_km: r.river_km, km_left: r.km_left, half_m: r.half_m,
+  towns: r.towns.map(({ name, place, km, off_m, water_m }) => ({ name, place, km, off_m, water_m })), // lon/lat stay out
+  joins: r.joins, zone_end_km: r.zone_end_km, course: r.course,
+  plants: r.plants.map((p) => ({ ...p, supplies: PLANTS[p.name]?.supplies ?? null })),
+  others: rivers.filter((o) => o.slug !== r.slug).map((o) => ({ slug: o.slug, name: o.name, course: o.course })),
+  land: base.land, faint: (base.rivers as { lines: number[][][] }[]).map((x) => x.lines),
+  parent: parent && { name: parent.river.name, left: parent.left, course: parent.river.course },
+  rings: places.map((p) => ({
+    id: p.id, km: p.on.km, off: p.on.off_m, inside: p.on.in_picture, water: p.on.river_m, ha: p.ha, likely: !!p.likely_galamsey,
+    licence: LICENCE_SHORT[p.licence], alarm: noLicenceToMine(p.licence), where: nearText(p), first: longDate(p.first_seen),
+    pair: hasPair(p) ? { src: chipSrc(p.chips.before),
+      beforeLong: longDate(p.chips.before.date), afterLong: longDate(p.chips.after.date),
+      beforeShort: shortDate(p.chips.before.date), afterShort: shortDate(p.chips.after.date) } : null,
+    nopic: hasPair(p) ? null : NO_PICTURE[noPicture(p)], lat: p.lat, lon: p.lon,
+  })),
+};
+---
+<Base title={`The ${r.name}`} description={`Follow the ${r.name} for ${Math.round(r.river_km)} km, from where it becomes a river to ${r.ends}, as satellites saw it, with the land cleared along it.`} image={`/og/rivers/${r.slug}.jpg`}>
+  <section class="wrap intro">
+    <p class="crumb"><a href="/rivers/">Rivers</a></p>
+    <h1>{title}</h1>
+    <p class="lead">Follow the {r.name} for {Math.round(r.river_km)} km, from where it becomes a river to {r.ends}, as satellites saw it{span && ` from ${span}`}. Scroll down to travel downstream. Rings mark land first seen cleared in the 12 months up to the latest satellite data, within 1 km of the river. Bare ground without a ring was cleared earlier, or lies further from the water.</p>
+    <nav class="switch" aria-label="Other rivers">
+      <b>Rivers:</b>
+      {rivers.map((o) => <a href={`/rivers/${o.slug}/`} aria-current={o.slug === r.slug ? 'page' : undefined}>{o.name}</a>)}
+    </nav>
+    <p class="from" data-from hidden></p>
+    <dl class="facts">
+      <div><dt>River shown</dt><dd>{Math.round(r.river_km)} km</dd></div>
+      <div><dt>Towns and villages within 1 km</dt><dd>{count(near.length)}</dd></div>
+      <div><dt>Cleared in the last 12 months, within 1 km</dt><dd>{hectares(ha)}</dd></div>
+      <div><dt>Patches labelled Likely galamsey</dt><dd>{likely ? count(likely) : 'None'}</dd></div>
+    </dl>
+    <div class="tools-row">
+      <div class="key"><span><i></i>Cleared in the last 12 months</span><span><i class="likely"></i>Labelled Likely galamsey</span></div>
+      <label class="jump">Go to
+        <select data-jump>
+          <option value="">Choose a place</option>
+          {stops.map((s) => <option value={s.km}>{s.label}</option>)}
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <div class="walk">
+    <aside class="side" aria-label="Where you are">
+      <button class="locbtn" type="button" data-map-open aria-label={`Show the whole ${r.name} on a map`}><svg class="loc" data-loc="300"></svg></button>
+      <div class="km" aria-live="off"><b data-km></b> <span data-to></span></div>
+      <p class="near" data-near></p>
+    </aside>
+
+    <div class="middle">
+      <div class="bar">
+        <div class="where"><div class="km"><b data-km></b> <span data-to></span></div><div class="near" data-near></div></div>
+        <button class="locbtn small" type="button" data-map-open aria-label={`Show the whole ${r.name} on a map`}><svg class="loc" data-loc="64"></svg></button>
+      </div>
+      <div class="end start">
+        <button class="locbtn wide" type="button" data-map-open aria-label={`Show the whole ${r.name} on a map`}><svg class="loc" data-loc="360"></svg></button>
+        {r.streams_km
+          ? <><h2>Where the {r.name} becomes a river</h2><p>The {r.name} starts as streams in the hills, about {r.streams_km} km further up. They are too narrow to see from space, so we start here, {Math.round(r.river_km)} km from {r.ends}.</p></>
+          : <><h2>The {r.name} starts here</h2><p>{Math.round(r.river_km)} km to {r.ends}.</p></>}
+        <p>The picture follows the river's valley down the page, so the river winds inside it as it does from above. North is roughly up.</p>
+        {narrow && <p>The {r.name} is narrow. In many places it is hidden under the trees or too thin to see in these pictures, so you often see its valley rather than the water. Where it shows, look for a thin dark line winding through the green, never more than about 500 m from the middle of the picture.</p>}
+      </div>
+      <div class="river" data-river role="img" aria-label={`Satellite picture of the ${r.name} from top to bottom, ${Math.round(r.river_km)} km of river, 2 km wide`}>
+        {r.tiles.map((t, i) => <img src={tileUrl(r, i)} width={r.width} height={t.rows} alt="" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" />)}
+        <div class="marks" data-marks></div>
+      </div>
+      <div class="end finish">
+        <h2>{sea ? `The ${r.name} meets the sea` : `The ${r.name} joins ${r.ends}`}</h2>
+        <p>{places.length === 1 ? 'One patch' : `${Count(places.length)} patches`} of land first seen cleared in the last 12 months lie within 1 km of it on the way, {hectares(ha)} in all.</p>
+        {parent && <>
+          <p>From here the water runs {Math.round(parent.left)} km down the {parent.river.name} to the sea.</p>
+          <a class="btn primary" href={walkHref(parent.river.slug, parent.km).replace('/#', `/?from=${r.slug}#`)}>Carry on down the {parent.river.name} to the sea</a>
+        </>}
+      </div>
+    </div>
+
+    <aside class="stretch" aria-label="On this stretch">
+      <div data-card-slot></div>
+      <h2>On this stretch</h2>
+      <p class="muted small" data-stretch-range></p>
+      <ul data-stretch></ul>
+    </aside>
+  </div>
+
+  <div class="wrap note">
+    <h2>How this picture is made</h2>
+    <p>A smooth line follows the river's valley, and every 10 m along it a line 2 km across is cut from a Copernicus Sentinel-2 picture. Laid one under the other, the cuts make one long picture with the river winding down it. Distances are measured along the river itself.</p>
+    <p>For every 2.5 km we use the newest day from the last 12 months that was clear over that stretch, so the river looks as recent as the weather allows{span && `. These are from ${span}`}. Where two pictures from different days meet, they are blended over 500 m, so the colour can change there. Where a picture still had cloud, it is filled from clear pictures of other days. We look for newer pictures every three months.</p>
+    <p class="muted small">Contains modified Copernicus Sentinel data. River course from HydroSHEDS and OpenStreetMap. <a href="/method#rivers">How the river walks work</a></p>
+  </div>
+
+  <div class="card" data-card hidden></div>
+  <dialog class="mapsheet" data-map aria-label={`The ${r.name} on a map`}>
+    <div class="mhead"><h2>The {r.name}</h2><button class="btn" type="button" data-map-close>Close</button></div>
+    <p class="muted small">Tap the river to go to that spot.</p>
+    <svg class="loc" data-loc="600"></svg>
+    <div class="km"><b data-km></b> <span data-to></span></div>
+    <p class="near" data-near></p>
+  </dialog>
+  <LikelyTag hidden />
+  <script type="application/json" id="walk-data" set:html={JSON.stringify(data)} />
+</Base>
+
+<script>
+  import { labelOnLeft, leftOf, pictureKm, kmText, TOWN_ORDER } from '../../lib/rivers-geo';
+  import { hectares, pictureAlt } from '../../lib/format';
+
+  type Ring = { id: string; km: number; off: number; inside: boolean; water: number; ha: number; likely: boolean; licence: string; alarm: boolean;
+    where: string | null; first: string; lat: number; lon: number; nopic: string | null;
+    pair: null | { src: string; beforeLong: string; afterLong: string; beforeShort: string; afterShort: string } };
+  const D = JSON.parse(document.getElementById('walk-data')!.textContent!) as {
+    end: string; length_km: number; river_km: number; km_left: number[]; half_m: number;
+    towns: { name: string; place: string; km: number; off_m: number; water_m: number }[]; joins: { name: string | null; slug: string | null; km: number; side: string }[];
+    plants: { name: string; km: number; supplies: string | null }[]; zone_end_km: number | null; course: number[][];
+    others: { slug: string; name: string; course: number[][] }[]; land: number[][][][]; faint: number[][][][];
+    parent: null | { name: string; left: number; course: number[][] }; rings: Ring[];
+  };
+  const L = D.length_km, RK = D.river_km;
+  const left = (km: number) => leftOf(D, km);
+  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const $$ = <T extends Element = HTMLElement>(s: string) => [...document.querySelectorAll<T>(s)];
+  const river = $('[data-river]');
+  const marks = $('[data-marks]');
+  const endText = D.end;
+
+  // ------------------------------------------------------------------ markers on the picture
+  const y = (km: number) => `${(km / L) * 100}%`;
+  const x = (off: number) => `${50 - (off / (2 * D.half_m)) * 100}%`;
+  function add(cls: string, km: number, text = '', off?: number, tag = 'span') {
+    const e = document.createElement(tag);
+    e.className = cls;
+    e.style.top = y(km);
+    if (off !== undefined) e.style.left = x(off);
+    if (text) e.textContent = text;
+    marks.append(e);
+    return e;
+  }
+  // River km still to go, every 10 km, like the bar
+  for (let k = Math.floor(RK / 10) * 10; k > 0; k -= 10) add('tick', pictureKm(D, k), `${k} km`);
+  // Towns and villages: towns first, then villages where there is room
+  const shown: number[] = [];
+  [...D.towns].filter((t) => Math.abs(t.off_m) <= D.half_m).sort((a, b) => TOWN_ORDER[a.place] - TOWN_ORDER[b.place]).forEach((t) => {
+    if (shown.some((k) => Math.abs(k - t.km) < (t.place === 'village' ? 2 : 0.8))) return;
+    shown.push(t.km);
+    const onLeft = labelOnLeft(t.off_m);
+    const e = add(`town ${onLeft ? 'l' : 'r'}${t.place !== 'village' ? ' big' : ''}`, t.km, t.name, t.off_m);
+    e.style.left = `calc(${x(t.off_m)} ${onLeft ? '- 10px' : '+ 10px'})`;
+  });
+  // Towns just outside the picture: pinned to its edge on their side, with how far they are
+  D.towns.filter((t) => Math.abs(t.off_m) > D.half_m && t.place !== 'village').forEach((t) => {
+    if (shown.some((k) => Math.abs(k - t.km) < 0.8)) return;
+    shown.push(t.km);
+    add(`edge ${t.off_m > 0 ? 'l' : 'r'}`, t.km, `${t.name}, ${Math.round(Math.abs(t.off_m) / 1000)} km`);
+  });
+  // Rivers joining, on the side they come in from, with a short blue line. Rivers we walk are links
+  D.joins.filter((j) => j.name).forEach((j) => {
+    const n = j.name!;
+    const side = j.side === 'right' ? 'r' : 'l';
+    const st = add('stub', j.km);
+    st.style[side === 'l' ? 'left' : 'right'] = '0';
+    st.setAttribute('aria-hidden', 'true');
+    if (j.slug) {
+      const a = add(`tag ${side}`, j.km, `The ${n} joins here. Follow the ${n}`, undefined, 'a') as HTMLAnchorElement;
+      a.href = `/rivers/${j.slug}/`;
+    } else add(`tag ${side}`, j.km, `The ${n} joins here`);
+  });
+  D.plants.forEach((p) => add('tag plant', p.km, `${p.name} water plant takes ${p.supplies ? `water for ${p.supplies}` : 'its water'} here`));
+  if (D.zone_end_km != null) {
+    const z = add('zone', D.zone_end_km);
+    const s = document.createElement('span');
+    s.textContent = 'Below here we do not count clearing. It is outside the forest zone we cover.';
+    z.append(s);
+  }
+  // Rings, the size of the patch (a circle of the same area), at least 24 px to tap. A patch can be within 1 km of
+  // the water but just past the picture's edge where the river swings (the pipeline marks it `inside: false`): it is
+  // pinned to that edge, not hidden
+  const edge = D.half_m - 30;
+  const rings = D.rings.map((p) => {
+    const b = add(`ring${p.likely ? ' likely' : ''}`, p.km, '', p.inside ? p.off : Math.sign(p.off) * edge, 'button') as HTMLButtonElement;
+    b.type = 'button';
+    b.setAttribute('aria-label', `${hectares(p.ha)} cleared${p.likely ? ', labelled Likely galamsey' : ''}, ${kmText(left(p.km))} before ${endText}`);
+    b.addEventListener('click', () => show(p, b));
+    return { b, p };
+  });
+  const size = () => {
+    const pxPerM = river.clientWidth / (2 * D.half_m);
+    rings.forEach(({ b, p }) => { const d = Math.max(24, 2 * Math.sqrt((p.ha * 1e4) / Math.PI) * pxPerM); b.style.width = b.style.height = `${d}px`; });
+  };
+  size();
+  addEventListener('resize', size);
+
+  // ------------------------------------------------------------------ moving along
+  const scrollToKm = (km: number, smooth = true) => {
+    const r = river.getBoundingClientRect();
+    scrollTo({ top: scrollY + r.top + (km / L) * r.height - innerHeight / 3, behavior: smooth && !still() ? 'smooth' : 'auto' });
+  };
+  const jump = $<HTMLSelectElement>('[data-jump]');
+  jump.addEventListener('change', () => { if (jump.value !== '') scrollToKm(+jump.value); });
+
+  // ------------------------------------------------------------------ the locator maps
+  // Southern Ghana around this river (and the river it flows into), every river faint, the walked ones stronger,
+  // this one strong, the part already passed in ink, and a dot where you are
+  const frameOf = D.parent ? D.course.concat(D.parent.course) : D.course;
+  const xs = frameOf.map((c) => c[0]), ys = frameOf.map((c) => c[1]);
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const half = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2 + 0.2;
+  const view = [cx - half, cy - half, cx + half, cy + half];
+  const P = ([lon, lat]: number[], W: number) => [((lon - view[0]) / (view[2] - view[0])) * W, ((view[3] - lat) / (view[3] - view[1])) * W];
+  const path = (pts: number[][], W: number) => `M${pts.map((p) => P(p, W).map((v) => v.toFixed(1)).join(',')).join('L')}`;
+  const cum = [0];
+  for (let i = 1; i < D.course.length; i++) {
+    const [a, b] = [D.course[i - 1], D.course[i]];
+    cum.push(cum[i - 1] + Math.hypot((b[0] - a[0]) * 111.32 * Math.cos((a[1] * Math.PI) / 180), (b[1] - a[1]) * 110.57));
+  }
+  const scale = RK / cum[cum.length - 1];
+  const at = (km: number) => {
+    const t = (RK - left(km)) / scale;
+    const i = cum.findIndex((c) => c >= t);
+    if (i < 0) return D.course.at(-1)!;   // past the last point by rounding: the mouth
+    if (i === 0) return D.course[0];
+    const f = (t - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+    return [D.course[i - 1][0] + f * (D.course[i][0] - D.course[i - 1][0]), D.course[i - 1][1] + f * (D.course[i][1] - D.course[i - 1][1])];
+  };
+  const locs = $$<SVGSVGElement>('[data-loc]').map((svg) => {
+    const W = +svg.dataset.loc!;
+    svg.setAttribute('viewBox', `0 0 ${W} ${W}`);
+    svg.setAttribute('aria-hidden', 'true');
+    const land = D.land.map((poly) => poly.map((ring) => `${path(ring, W)}Z`).join('')).join('');
+    const faint = D.faint.map((lines) => lines.map((l) => path(l, W)).join('')).join('');
+    const walked = D.others.map((o) => path(o.course, W)).join('');
+    const dot = W > 100 ? 7 : 4.5;
+    svg.innerHTML = `<rect class="sea" width="${W}" height="${W}"/><path class="land" d="${land}"/><path class="other" d="${faint}"/>`
+      + `<path class="walked" d="${walked}"/>${D.parent ? `<path class="next" d="${path(D.parent.course, W)}"/>` : ''}`
+      + `<path class="this" d="${path(D.course, W)}"/><path class="seen" d=""/><circle class="dot" r="${dot}"/>`;
+    return { svg, W, seen: svg.querySelector('.seen')!, dot: svg.querySelector('.dot')! };
+  });
+  // Tapping the big map goes to the nearest spot on the river
+  const kmFromMap = (svg: SVGSVGElement, e: MouseEvent) => {
+    const r = svg.getBoundingClientRect();
+    const lon = view[0] + ((e.clientX - r.left) / r.width) * (view[2] - view[0]);
+    const lat = view[3] - ((e.clientY - r.top) / r.height) * (view[3] - view[1]);
+    let best = 0, bd = Infinity;
+    D.course.forEach((c, i) => { const d = (c[0] - lon) ** 2 + (c[1] - lat) ** 2; if (d < bd) { bd = d; best = i; } });
+    return pictureKm(D, RK - cum[best] * scale);
+  };
+
+  // The map sheet: the whole river, large. On a desktop the side map opens it too
+  const sheet = $<HTMLDialogElement>('[data-map]');
+  $$('[data-map-open]').forEach((b) => b.addEventListener('click', () => sheet.showModal?.()));
+  $('[data-map-close]').addEventListener('click', () => sheet.close());
+  const sheetSvg = sheet.querySelector<SVGSVGElement>('svg')!;
+  sheetSvg.addEventListener('click', (e) => { sheet.close(); scrollToKm(kmFromMap(sheetSvg, e), false); });
+  sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.close(); });
+
+  // ------------------------------------------------------------------ where you are (a line a third down the screen)
+  const named = D.towns.filter((t) => t.place !== 'village');
+  const stretchList = $('[data-stretch]');
+  const stretchRange = $('[data-stretch-range]');
+  let lastStretch = -1;
+  function stretch(km: number) {
+    // What lies within 2.5 km above and below the line you are reading, rebuilt only when you move 0.5 km
+    const k0 = Math.round(km * 2) / 2;
+    if (k0 === lastStretch) return;
+    lastStretch = k0;
+    const lo = Math.max(0, k0 - 2.5), hi = Math.min(L, k0 + 2.5);
+    stretchRange.textContent = `From ${kmText(left(lo))} to ${kmText(left(hi))} before ${endText}`;
+    const items: { km: number; el: HTMLElement }[] = [];
+    const li = (km: number, text: string, cls = '') => { const e = document.createElement('li'); e.className = cls; e.textContent = text; items.push({ km, el: e }); return e; };
+    D.towns.filter((t) => t.km >= lo && t.km <= hi && t.water_m <= 1000).forEach((t) => li(t.km, t.name, 'town'));
+    D.joins.filter((j) => j.name && j.km >= lo && j.km <= hi).forEach((j) => li(j.km, `The ${j.name} joins`, 'join'));
+    D.plants.filter((p) => p.km >= lo && p.km <= hi).forEach((p) => li(p.km, `${p.name} water plant`, 'plant'));
+    rings.filter(({ p }) => p.km >= lo && p.km <= hi).forEach(({ b, p }) => {
+      const e = li(p.km, '', 'patch');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = `${hectares(p.ha)} cleared${p.likely ? ', Likely galamsey' : ''}`;
+      btn.addEventListener('click', () => { scrollToKm(p.km); show(p, b); });
+      e.append(btn);
+    });
+    stretchList.replaceChildren(...items.sort((a, b) => a.km - b.km).map((i) => i.el));
+    if (!items.length) stretchList.replaceChildren(Object.assign(document.createElement('li'), { className: 'none', textContent: 'Forest, farms and the river. Nothing marked here.' }));
+  }
+  const kmEls = $$('[data-km]'), toEls = $$('[data-to]'), nearEls = $$('[data-near]');
+  let raf = 0;
+  function update() {
+    raf = 0;
+    const r = river.getBoundingClientRect();
+    const km = Math.min(L, Math.max(0, ((innerHeight / 3 - r.top) / r.height) * L));
+    const pool = named.filter((t) => Math.abs(t.km - km) < 4);
+    const near = (pool.length ? pool : D.towns).reduce<typeof D.towns[0] | undefined>((a, b) => (!a || Math.abs(b.km - km) < Math.abs(a.km - km) ? b : a), undefined);
+    const nearWords = (near && Math.abs(near.km - km) < 6 ? `Near ${near.name}.` : 'Between towns.')
+      + (D.parent ? ` Then ${Math.round(D.parent.left)} km down the ${D.parent.name} to the sea.` : '');
+    const k = left(km);
+    kmEls.forEach((e) => { e.textContent = k < 0.5 ? 'Here' : kmText(k); });
+    toEls.forEach((e) => { e.textContent = k < 0.5 ? `at ${endText}` : `to ${endText}`; });
+    nearEls.forEach((e) => { e.textContent = nearWords; });
+    const done = RK - k;
+    const here = at(km);
+    const passed: number[][] = [];
+    for (let i = 0; i < D.course.length && cum[i] * scale <= done; i++) passed.push(D.course[i]);
+    passed.push(here);
+    locs.forEach(({ W, seen, dot }) => {
+      const [px, py] = P(here, W);
+      dot.setAttribute('cx', px.toFixed(1)); dot.setAttribute('cy', py.toFixed(1));
+      seen.setAttribute('d', passed.length > 1 ? path(passed, W) : '');
+    });
+    stretch(km);
+  }
+  addEventListener('scroll', () => { raf ||= requestAnimationFrame(update); }, { passive: true });
+  update();
+
+  // Arriving from a river that flows into this one: a way back, for this visit only
+  const from = new URLSearchParams(location.search).get('from');
+  const fromRiver = D.others.find((o) => o.slug === from);
+  if (fromRiver) {
+    const f = $('[data-from]');
+    const a = document.createElement('a');
+    a.href = `/rivers/${fromRiver.slug}/#km-end`;
+    a.textContent = `Back up the ${fromRiver.name}`;
+    f.append(a);
+    f.hidden = false;
+  }
+  // #km-12.5 opens at that point of the picture, #km-end at the bottom
+  const hk = location.hash.match(/^#km-(end|[\d.]+)$/);
+  if (hk) requestAnimationFrame(() => scrollToKm(hk[1] === 'end' ? L : Math.min(L, +hk[1]), false));
+
+  // ------------------------------------------------------------------ the place card
+  const card = $('[data-card]');
+  const slot = $('[data-card-slot]');
+  const likelyTag = $('.tag.likely');
+  let opener: HTMLElement | null = null;
+  function close() {
+    card.hidden = true;
+    rings.forEach(({ b }) => b.classList.remove('open'));
+    opener?.focus();
+  }
+  function show(p: Ring, from: HTMLElement) {
+    opener = from;
+    rings.forEach(({ b }) => b.classList.toggle('open', b === from));
+    // Beside the picture on a wide screen, over its foot on a phone
+    (matchMedia('(min-width: 1180px)').matches ? slot : document.body).append(card);
+    card.replaceChildren();
+    const head = document.createElement('div');
+    head.className = 'chead';
+    const h = document.createElement('h3');
+    h.textContent = `${hectares(p.ha)} cleared`;
+    const x = document.createElement('button');
+    x.type = 'button'; x.className = 'btn'; x.textContent = 'Close';
+    x.addEventListener('click', close);
+    head.append(h, x);
+    const tags = document.createElement('p');
+    tags.className = 'tags';
+    const lic = document.createElement('span');
+    lic.className = `tag ${p.alarm ? 'alarm' : 'plain'}`;
+    lic.textContent = p.licence;
+    tags.append(lic);
+    if (p.likely) { const t = likelyTag.cloneNode(true) as HTMLElement; t.hidden = false; tags.append(t); }
+    const where = document.createElement('p');
+    const dist = p.water < 60 ? 'on the river itself' : `${Math.round(p.water / 10) * 10} m from the water`;
+    where.textContent = `${p.where ? `${p.where.charAt(0).toUpperCase()}${p.where.slice(1)}. ` : ''}${kmText(left(p.km))} before ${endText}, ${dist}. First seen ${p.first}.`;
+    card.append(head, tags, where);
+    if (p.pair) {
+      // A pair the picture viewer understands (components/Viewer.astro), so a tap opens it large
+      const fig = document.createElement('figure');
+      fig.className = 'mini';
+      Object.assign(fig.dataset, { pair: '', title: h.textContent, href: `/places/${p.id}/`, lat: String(p.lat), lon: String(p.lon),
+        before: p.pair.src, after: p.pair.src, beforeDate: p.pair.beforeLong, afterDate: p.pair.afterLong });
+      for (const side of ['before', 'after'] as const) {
+        const a = document.createElement('a');
+        a.href = p.pair.src; a.dataset.open = side;
+        const frame = document.createElement('span');
+        frame.className = 'chip-frame';
+        const img = document.createElement('img');
+        img.src = p.pair.src; img.width = 720; img.height = 720; img.dataset.half = side;
+        img.alt = pictureAlt(side, side === 'before' ? p.pair.beforeLong : p.pair.afterLong);
+        const spot = document.createElement('i');
+        spot.className = 'spot'; spot.setAttribute('aria-hidden', 'true');
+        frame.append(img, spot);
+        const cap = document.createElement('span');
+        cap.className = 'when';
+        cap.textContent = `${side === 'before' ? 'Before' : 'After'}, ${side === 'before' ? p.pair.beforeShort : p.pair.afterShort}`;
+        a.append(frame, cap);
+        fig.append(a);
+      }
+      card.append(fig);
+    } else if (p.nopic) {
+      const none = document.createElement('p');
+      none.className = 'muted small';
+      none.textContent = p.nopic;
+      card.append(none);
+    }
+    const go = document.createElement('a');
+    go.className = 'btn primary'; go.href = `/places/${p.id}/`; go.textContent = 'See this place';
+    card.append(go);
+    card.hidden = false;
+    x.focus();
+  }
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !card.hidden && !document.querySelector('dialog[open]')) close(); });
+</script>
+
+<style>
+  .intro { padding-top: 20px; }
+  .crumb { margin: 0 0 4px; font-size: 0.9375rem; }
+  h1 { font-size: clamp(1.75rem, 5vw, 2.6rem); line-height: 1.1; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .lead { max-width: 62ch; margin: 0 0 16px; }
+  .switch { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 16px; font-size: 0.9375rem; }
+  .switch b { font-weight: 700; }
+  .switch a { padding: 6px 0; }
+  .switch a[aria-current] { font-weight: 700; text-decoration: none; }
+  .from { margin: 0 0 16px; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; margin: 0 0 20px; max-width: 820px; }
+  .facts div { border-top: 2px solid var(--ink); padding-top: 6px; }
+  .facts dt { font-size: 0.875rem; color: var(--muted); }
+  .facts dd { margin: 0; font-weight: 800; font-size: 1.375rem; }
+  .tools-row { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-bottom: 24px; }
+  .key { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.9375rem; color: var(--muted); }
+  .key span { display: inline-flex; gap: 8px; align-items: center; }
+  .key i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #000, inset 0 0 0 1px #000; background: #6b7a5e; }
+  .key i.likely { border-color: #FF3D8B; }
+  .jump { display: inline-flex; gap: 8px; align-items: center; font-weight: 700; }
+  select { font: inherit; min-height: 44px; padding: 0 10px; border: 1px solid var(--ink); border-radius: 6px; background: var(--paper); color: var(--ink); max-width: 100%; }
+
+  /* Phone: one column with a sticky reading bar. 1180 px and up: map | picture | what is on this stretch */
+  .walk { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .side, .stretch { display: none; }
+  .bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-block: 1px solid var(--line); display: flex; align-items: center; gap: 12px; padding: 8px var(--gutter); }
+  .bar .where { flex: 1; min-width: 0; }
+  .km b { font-size: 1.5rem; line-height: 1.1; font-weight: 800; }
+  .km span { color: var(--muted); }
+  .near { margin: 0; font-size: 0.9375rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .locbtn { padding: 0; border: 1px solid var(--line); border-radius: 6px; background: none; cursor: pointer; display: block; line-height: 0; }
+  .locbtn:hover { border-color: var(--ink); }
+  .locbtn.small { width: 64px; height: 64px; flex: none; }
+  .locbtn.wide { width: 100%; max-width: 420px; margin: 0 auto 16px; }
+  .loc { width: 100%; height: auto; display: block; }
+  :global(.loc .land) { fill: var(--paper-2); stroke: var(--line); stroke-width: 0.6; }
+  :global(.loc .sea) { fill: var(--sea); }
+  :global(.loc .other) { fill: none; stroke: var(--river); stroke-opacity: 0.3; stroke-width: 0.8; }
+  :global(.loc .walked) { fill: none; stroke: var(--river); stroke-opacity: 0.6; stroke-width: 1.4; }
+  :global(.loc .next) { fill: none; stroke: var(--river); stroke-opacity: 0.85; stroke-width: 2; stroke-dasharray: 5 3; }
+  :global(.loc .this) { fill: none; stroke: var(--river); stroke-width: 2.4; stroke-linejoin: round; }
+  :global(.loc .seen) { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  :global(.loc .dot) { fill: var(--signal); stroke: var(--paper); stroke-width: 1.5; }
+
+  .river { position: relative; overflow: clip; max-width: 520px; margin: 0 auto; width: 100%; background: #3d4a37; }
+  .river img { display: block; width: 100%; height: auto; }
+  .marks { position: absolute; inset: 0; pointer-events: none; }
+  .marks > :global(*) { position: absolute; pointer-events: auto; }
+  /* Labels sit on the picture, so their colours are fixed: the pictures look the same in both themes */
+  .marks :global(.town) { transform: translateY(-50%); font-size: 0.8125rem; font-weight: 700; color: #000; background: #fff; padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+  .marks :global(.town.big) { font-size: 0.9375rem; }
+  .marks :global(.town.l) { transform: translate(-100%, -50%); }
+  .marks :global(.town::before) { content: ''; position: absolute; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px #000; }
+  .marks :global(.town.r::before) { left: -10px; }
+  .marks :global(.town.l::before) { right: -10px; }
+  .marks :global(.edge) { transform: translateY(-50%); font-size: 0.8125rem; font-weight: 700; color: #000; background: #fff; padding: 1px 6px; white-space: nowrap; }
+  .marks :global(.edge.l) { left: 0; border-radius: 0 3px 3px 0; }
+  .marks :global(.edge.r) { right: 0; border-radius: 3px 0 0 3px; }
+  .marks :global(.tag) { left: 8px; transform: translateY(-50%); font-size: 0.875rem; font-weight: 700; padding: 3px 8px; border-radius: 3px; background: #1D5C8C; color: #fff; max-width: calc(100% - 16px); white-space: normal; line-height: 1.35; }
+  .marks :global(.tag.r) { left: auto; right: 8px; }
+  .marks :global(.tag.plant) { background: #000; }
+  .marks :global(a.tag) { text-decoration: underline; min-height: 32px; display: inline-flex; align-items: center; }
+  .marks :global(.stub) { height: 3px; width: 30%; background: #7DB8E8; transform: translateY(-50%); }
+  .marks :global(.tick) { left: 4px; transform: translateY(-50%); font-size: 0.75rem; font-weight: 700; color: #fff; background: rgba(0, 0, 0, 0.72); padding: 1px 6px; border-radius: 3px; }
+  .marks :global(.zone) { left: 0; right: 0; height: 0; border-top: 2px dashed #fff; }
+  .marks :global(.zone span) { position: absolute; left: 8px; right: 8px; top: 4px; font-size: 0.8125rem; font-weight: 700; background: #000; color: #fff; padding: 2px 8px; border-radius: 3px; }
+  .marks :global(.ring) { transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #000, inset 0 0 0 1px #000; background: none; padding: 0; cursor: pointer; min-width: 24px; min-height: 24px; }
+  .marks :global(.ring.likely) { border-color: #FF3D8B; }
+  .marks :global(.ring.open) { border-width: 4px; }
+  .marks :global(.ring:focus-visible) { outline: 3px solid #fff; outline-offset: 2px; }
+
+  .end { max-width: 520px; margin: 0 auto; padding: 20px var(--gutter) 24px; background: var(--paper-2); }
+  .end h2 { margin: 0 0 6px; font-size: 1.375rem; }
+  .end p { margin: 0 0 8px; color: var(--muted); }
+  .end .btn { margin-top: 8px; }
+  .note { padding-top: 32px; }
+  .note h2 { font-size: 1.25rem; margin: 0 0 8px; }
+  .note p { max-width: 65ch; }
+
+  /* The place card: over the foot of the screen on phones, in the right column on wide screens */
+  .card { position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 8; max-width: 440px; max-height: 78dvh; overflow: auto; margin: 0 auto;
+    background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; padding: 12px 14px 16px; }
+  .card :global(.chead) { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .card :global(h3) { margin: 0; font-size: 1.25rem; }
+  .card :global(p) { margin: 8px 0; }
+  .card :global(.tags) { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card :global(.mini) { margin: 8px 0 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .card :global(.mini a) { text-decoration: none; display: block; }
+  .card :global(.mini img) { width: 100%; background: var(--paper-2); }
+  .card :global(.when) { display: block; font-size: 0.875rem; margin-top: 4px; }
+  .card :global(.mini a:hover .when) { text-decoration: underline; }
+
+  .mapsheet { width: min(100vw, 640px); max-width: 100vw; max-height: 100dvh; padding: 12px var(--gutter) 20px; border: 0; border-radius: 0; background: var(--paper); color: var(--ink); }
+  .mapsheet::backdrop { background: rgba(0, 0, 0, 0.6); }
+  .mapsheet .mhead { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .mapsheet h2 { margin: 0; font-size: 1.25rem; }
+  .mapsheet p { margin: 4px 0 10px; }
+  .mapsheet .km { margin-top: 12px; }
+  .mapsheet .near { white-space: normal; }
+  /* Square, so a tap's position maps straight onto the drawing */
+  .mapsheet svg { aspect-ratio: 1; width: min(100%, calc(100dvh - 140px)); height: auto; margin: 0 auto; cursor: crosshair; border: 1px solid var(--line); }
+  @media (max-width: 719px) { .mapsheet { width: 100vw; height: 100dvh; margin: 0; } }
+
+  @media (min-width: 960px) {
+    .bar { display: none; }
+    .locbtn.wide { display: none; }
+    .walk { grid-template-columns: 280px minmax(0, 520px); justify-content: center; column-gap: 32px; max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+    .side { display: block; position: sticky; top: 16px; align-self: start; }
+    .side .locbtn { width: 280px; margin-bottom: 12px; }
+    .side .km b { font-size: 2.4rem; }
+    .side .near { white-space: normal; font-size: 1rem; }
+    .river, .end { margin: 0; }
+  }
+  @media (min-width: 1180px) {
+    .walk { grid-template-columns: 260px 520px 260px; }
+    .stretch { display: block; position: sticky; top: 16px; align-self: start; max-height: calc(100dvh - 32px); overflow: auto; }
+    .stretch h2 { font-size: 1.125rem; margin: 0 0 2px; }
+    .stretch p { margin: 0 0 8px; }
+    .stretch ul { list-style: none; margin: 0; padding: 0; }
+    .stretch :global(li) { border-top: 1px solid var(--line); padding: 8px 0; }
+    .stretch :global(li.town) { font-weight: 700; }
+    .stretch :global(li.join), .stretch :global(li.plant) { color: var(--river); font-weight: 700; }
+    .stretch :global(li.none) { color: var(--muted); }
+    .stretch :global(li button) { font: inherit; color: inherit; background: none; border: 0; padding: 4px 0; text-align: left; text-decoration: underline; cursor: pointer; min-height: 32px; }
+    .card { position: static; max-width: none; max-height: none; margin: 0 0 20px; }
+  }
+</style>

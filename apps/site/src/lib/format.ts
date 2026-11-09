@@ -27,6 +27,12 @@ export function monthName(ym: string) {
   return `${MONTHS[m - 1]} ${y}`;
 }
 
+// "Jan 2026", where space is short
+export function shortMonth(ym: string) {
+  const [y, m] = ym.split('-').map(Number);
+  return `${MONTHS[m - 1].slice(0, 3)} ${y}`;
+}
+
 // Every licence label, in the order pages list them (summaries made before November 2026 lack 'restricted lease')
 export const LICENCES = Object.keys({
   'no licence': 0, 'prospecting only': 0, 'restricted lease': 0, 'small-scale licence': 0, 'large-scale lease': 0,
@@ -86,7 +92,9 @@ export function coords(p: Pick<Place, 'lat' | 'lon'>) {
   return `${Math.abs(p.lat).toFixed(4)}° ${p.lat >= 0 ? 'N' : 'S'}, ${Math.abs(p.lon).toFixed(4)}° ${p.lon >= 0 ? 'E' : 'W'}`;
 }
 
-export const hectares = (ha: number) => (ha < 10 ? `${ha.toFixed(1)} hectares` : `${num(ha)} hectares`);
+// One decimal under 10 hectares, whole numbers above
+export const haNum = (ha: number) => (ha < 10 ? ha.toFixed(1) : num(ha));
+export const hectares = (ha: number) => `${haNum(ha)} hectares`;
 
 const CHIPS = (import.meta.env.CHIPS_BASE_URL ?? '').replace(/\/$/, '');
 export const chipUrl = (rel: string) => `${CHIPS}/${rel}`;

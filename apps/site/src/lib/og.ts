@@ -26,17 +26,27 @@ async function download(url: string) {
   return Buffer.from(await res.arrayBuffer());
 }
 
-// One side of a place's pictures: the single file when it is on disk (the weekly run has them, as does a local
-// copy of pipeline/out), else that half of the published pair (lib/format.ts chipSrc)
+// A file of the pictures site, from wherever it is: pipeline/out (the weekly run restores it, as does a local copy),
+// public/ (a local build copies it there), else downloaded from the pictures site
+async function pictureFile(rel: string) {
+  const local = [path.join(process.cwd(), '../../pipeline/out', rel), path.join(process.cwd(), 'public', rel)].find((f) => fs.existsSync(f));
+  return local ? fs.readFileSync(local) : download(chipUrl(rel));
+}
+
+// JPEG as a data URI: satori cannot read WebP or AVIF
+export async function jpegUri(img: ReturnType<typeof sharp>, quality = 82) {
+  return `data:image/jpeg;base64,${(await img.jpeg({ quality }).toBuffer()).toString('base64')}`;
+}
+
+// One side of a place's pictures: the single file when it is on disk, else that half of the published pair
+// (lib/format.ts chipSrc)
 async function picture(chip: Chip) {
   const rel = chip.files['720.webp'];
   const single = path.join(process.cwd(), '../../pipeline/out', rel);
   if (fs.existsSync(single)) return fs.readFileSync(single);
-  const pairRel = pairOf(chip);
-  const local = path.join(process.cwd(), 'public', pairRel);
   let pair: Buffer;
   try {
-    pair = fs.existsSync(local) ? fs.readFileSync(local) : await download(chipUrl(pairRel));
+    pair = await pictureFile(pairOf(chip));
   } catch (e) {
     // Until the weekly run of 9 November 2026 publishes the first pairs, the pictures site has single files only.
     // Remove this fallback with KEEP_SINGLES in weekly.yml after that run.
@@ -46,10 +56,8 @@ async function picture(chip: Chip) {
   return sharp(pair).extract({ left: halfOf(chip) === 'before' ? 0 : side, top: 0, width: side, height: side }).toBuffer();
 }
 
-// Satori cannot read WebP or AVIF, so each picture is re-encoded as JPEG
 export async function jpeg(chip: Chip) {
-  const out = await sharp(await picture(chip)).jpeg({ quality: 82 }).toBuffer();
-  return `data:image/jpeg;base64,${out.toString('base64')}`;
+  return jpegUri(sharp(await picture(chip)));
 }
 
 // JPEG, not PNG: a card is mostly satellite photo, and as PNG it came to about 700 KB, past what WhatsApp
@@ -92,4 +100,20 @@ export async function homeCard(o: { line: string; sub: string; before?: Chip; af
         h('div', { fontSize: 52, fontWeight: 700, lineHeight: 1.1, letterSpacing: -1 }, o.line),
         h('div', { fontSize: 30, lineHeight: 1.3 }, o.sub))),
     ...pics));
+}
+
+// One 5 km tile of a river walk, as a file and as JPEG
+export const riverTileFile = pictureFile;
+export const riverTile = async (rel: string) => jpegUri(sharp(await pictureFile(rel)));
+
+// A river walk's card: three 5 km pieces of the picture side by side, beside the river's name
+export async function riverCard(o: { name: string; line: string; tiles: string[] }) {
+  const pics = await Promise.all(o.tiles.map(riverTile));
+  return card(h('div', { display: 'flex', width: 1200, height: 630, background: '#F5F6F3', color: '#000', fontFamily: 'Atkinson', padding: 40, gap: 48 },
+    h('div', { display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: 600, height: 550 },
+      h('div', { fontSize: 30, fontWeight: 700 }, 'Galamsey Tracker'),
+      h('div', { display: 'flex', flexDirection: 'column', gap: 20 },
+        h('div', { fontSize: 64, fontWeight: 700, lineHeight: 1.05, letterSpacing: -1 }, `Follow the ${o.name}`),
+        h('div', { fontSize: 30, lineHeight: 1.3 }, o.line))),
+    h('div', { display: 'flex', gap: 8 }, ...pics.map((src) => img(src, { width: 160, height: 550, objectFit: 'cover', objectPosition: 'center top' })))));
 }

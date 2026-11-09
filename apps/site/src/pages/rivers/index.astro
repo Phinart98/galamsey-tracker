@@ -1,0 +1,129 @@
+---
+import Base from '../../layouts/Base.astro';
+import base from '../../data/water-map.json';
+import { rivers, parentOf, pictureSpan, thumbnail, tileUrl, toSea, totals, type River } from '../../lib/rivers';
+import { count, hectares } from '../../lib/format';
+
+// One map of southern Ghana framing all the walks, every other river faint
+const pts = rivers.flatMap((r) => r.course);
+const [x0, x1] = [Math.min(...pts.map((p) => p[0])) - 0.25, Math.max(...pts.map((p) => p[0])) + 0.25];
+const [y0, y1] = [Math.min(...pts.map((p) => p[1])) - 0.2, Math.max(...pts.map((p) => p[1])) + 0.2];
+const COS = Math.cos((6 * Math.PI) / 180);
+const W = 520;
+const k = W / Math.max((x1 - x0) * COS, y1 - y0);
+const H = Math.round((y1 - y0) * k);
+const P = ([lon, lat]: number[]) => [((lon - x0) * COS * k).toFixed(1), ((y1 - lat) * k).toFixed(1)];
+const path = (l: number[][]) => `M${l.map((p) => P(p).join(',')).join('L')}`;
+const land = (base.land as number[][][][]).map((poly) => poly.map((ring) => `${path(ring)}Z`).join('')).join('');
+const faint = (base.rivers as { lines: number[][][] }[]).map((r) => r.lines.map(path).join('')).join('');
+const CITIES: [string, number, number][] = [['Kumasi', -1.62, 6.69], ['Accra', -0.19, 5.6], ['Takoradi', -1.76, 4.9]];
+
+const item = (r: River) => {
+  const t = totals(r.slug);
+  const parent = parentOf(r);
+  // A few towns spread down the river, the ones readers know
+  const big = r.towns.filter((x) => x.place !== 'village' && Math.abs(x.off_m) < 2000);
+  const names = big.length <= 3 ? big.map((x) => x.name)
+    : [...new Set([0.15, 0.5, 0.85].map((f) => big.reduce((a, x) => (Math.abs(x.km - f * r.length_km) < Math.abs(a.km - f * r.length_km) ? x : a)).name))];
+  return { r, t, parent, names, thumb: tileUrl(r, thumbnail(r)), label: toSea(r) ? `To ${r.ends}` : `Into ${r.ends}` };
+};
+const family = rivers.filter((r) => r.slug === 'pra' || r.joins_to === 'pra').map(item);
+const alone = rivers.filter((r) => r.slug !== 'pra' && r.joins_to !== 'pra').map(item);
+const span = pictureSpan(rivers.flatMap((r) => r.dates).sort());
+---
+<Base title="Rivers" description={`Follow ${count(rivers.length)} of Ghana's mining rivers from where they become rivers to the sea, as satellites saw them, with the land cleared along them.`}>
+  <div class="wrap">
+    <h1>Follow Ghana's mining rivers</h1>
+    <p class="lead">Walk each river from where it becomes a river to the sea, as satellites saw it{span && ` from ${span}`}, with the land cleared along it. The Offin and the Birim flow into the Pra, so their walks carry on down the Pra.</p>
+    {rivers.length === 0 ? <p>The river pictures have not been made yet.</p> : (
+      <div class="layout">
+        <figure class="mapbox">
+          <svg class="map" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Map of southern Ghana with the ${count(rivers.length)} rivers you can follow`}>
+            <path class="land" d={land} />
+            <path class="faint" d={faint} />
+            {rivers.map((r) => {
+              const [mx, my] = P(r.course[Math.floor(r.course.length * 0.45)]);
+              return (
+                <a href={`/rivers/${r.slug}/`} aria-label={`Follow the ${r.name}`}>
+                  <path class="hit" d={path(r.course)} />
+                  <path class="walk" d={path(r.course)} />
+                  <text x={+mx + 8} y={my}>{r.name}</text>
+                </a>
+              );
+            })}
+            {CITIES.map(([n, lo, la]) => { const [cx, cy] = P([lo, la]); return <><circle class="city" cx={cx} cy={cy} r="3.5" /><text class="cityname" x={+cx + 6} y={+cy + 4}>{n}</text></>; })}
+          </svg>
+          <figcaption class="muted small">Tap a river to follow it. Faint lines are other rivers.</figcaption>
+        </figure>
+        <div>
+          {[{ title: 'The Pra and the rivers that join it', text: 'The Offin from north of Kumasi and the Birim from the Atewa hills flow into the Pra, which reaches the sea at Shama.', list: family },
+            { title: 'Rivers that run to the sea on their own', text: null, list: alone }].filter((g) => g.list.length).map((g) => (
+            <section class="group">
+              <h2>{g.title}</h2>
+              {g.text && <p class="muted">{g.text}</p>}
+              <ul class="list">
+                {g.list.map(({ r, t, parent, names, thumb, label }) => (
+                  <li class:list={{ sub: !!parent }}>
+                    <a href={`/rivers/${r.slug}/`}>
+                      <img class="thumb" src={thumb} alt="" loading="lazy" width="56" height="112" />
+                      <div>
+                        <h3>The {r.name}</h3>
+                        <p class="ends">{label}{names.length > 0 && `, past ${names.join(', ')}`}. {Math.round(r.river_km)} km.</p>
+                        <dl>
+                          <div><dt>Cleared in 12 months, within 1 km</dt><dd>{hectares(t.ha)}</dd></div>
+                          <div><dt>Likely galamsey</dt><dd>{t.likely ? count(t.likely) : 'none'}</dd></div>
+                          {r.plants.length > 0 && <div><dt>Water plant</dt><dd>{r.plants.map((p) => p.name).join(', ')}</dd></div>}
+                        </dl>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+          <p class="muted small note">Counts are for each river on its own. Near where two rivers meet, a patch can be within 1 km of both, so the rivers are not added up.</p>
+        </div>
+      </div>
+    )}
+  </div>
+</Base>
+
+<style>
+  h1 { font-size: clamp(1.75rem, 5vw, 2.6rem); line-height: 1.1; margin: 28px 0 12px; letter-spacing: -0.01em; }
+  .lead { max-width: 60ch; margin: 0 0 24px; }
+  .layout { display: grid; gap: 32px; padding-bottom: 16px; }
+  @media (min-width: 960px) {
+    .layout { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; column-gap: 48px; }
+    .mapbox { position: sticky; top: 16px; }
+  }
+  /* On a phone the map uses the full width: it is the quickest way in */
+  @media (max-width: 719px) { .mapbox { margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); } .mapbox figcaption { padding: 0 var(--gutter); } }
+  .mapbox { margin-top: 0; margin-bottom: 0; }
+  .mapbox figcaption { margin-top: 6px; }
+  .map { width: 100%; height: auto; display: block; background: var(--sea); border: 1px solid var(--line); }
+  .map .land { fill: var(--paper-2); stroke: var(--line); stroke-width: 0.8; }
+  .map .faint { fill: none; stroke: var(--river); stroke-opacity: 0.25; stroke-width: 1; }
+  .map .walk { fill: none; stroke: var(--river); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; }
+  .map .hit { fill: none; stroke: transparent; stroke-width: 24; cursor: pointer; }
+  .map a:hover .walk, .map a:focus-visible .walk { stroke: var(--signal); }
+  .map text { font: 700 16px 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--paper-2); stroke-width: 4px; }
+  .map .city { fill: var(--ink); }
+  .map .cityname { font-weight: 400; font-size: 13px; fill: var(--muted); }
+  @media (max-width: 719px) { .map text { font-size: 19px; } .map .cityname { font-size: 15px; } }
+  .group + .group { margin-top: 28px; }
+  .group h2 { font-size: 1.25rem; margin: 0 0 4px; }
+  .group > p { margin: 0 0 12px; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { border-top: 1px solid var(--line); }
+  .list a { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; padding: 14px 0; text-decoration: none; }
+  .list a:hover h3 { text-decoration: underline; }
+  .list .sub { margin-left: 28px; }
+  .thumb { width: 56px; height: 112px; object-fit: cover; object-position: top; background: #3d4a37; border-radius: 3px; }
+  .list h3 { margin: 0; font-size: 1.125rem; }
+  .ends { color: var(--muted); margin: 0 0 6px; font-size: 0.9375rem; }
+  .list dl { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; font-size: 0.9375rem; }
+  .list dl div { display: flex; flex-wrap: wrap; column-gap: 4px; }
+  .list dt { color: var(--muted); }
+  .list dd { margin: 0; font-weight: 700; white-space: nowrap; }
+  .note { margin-top: 20px; max-width: 60ch; }
+</style>

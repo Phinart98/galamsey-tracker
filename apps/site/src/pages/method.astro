@@ -8,6 +8,8 @@ import { coverage, lastSuccessDate, summary, trendNow } from '../lib/data';
 import { WEEKLY } from '../lib/site';
 import { count, longDate } from '../lib/format';
 import { CONTACT_EMAIL } from '../lib/site';
+import { rivers } from '../lib/rivers';
+const riverCount = count(rivers.length);
 ---
 <Base title="How it works" description="How the Galamsey Tracker finds cleared land from satellite data, what the licence labels mean, what it can and cannot tell you, and what we tried that did not work.">
   <article class="wrap prose">
@@ -88,6 +90,14 @@ import { CONTACT_EMAIL } from '../lib/site';
     </ul>
     {summary && <p>Satellite data up to {longDate(summary.data_date)}.</p>}
 
+    {rivers.length > 0 && <>
+    <h2 id="rivers">How the river walks are made</h2>
+    <p>The <a href="/rivers/">river walks</a> follow {riverCount} rivers from where they become rivers to the sea. Each river's course comes from <Src id="hydrorivers">HydroRIVERS</Src>, pulled onto the river's line in <Src id="openstreetmap">OpenStreetMap</Src>. A river starts as streams too narrow to see from space, so each walk starts where the river drains enough land to be wider than the satellite's 10 metre squares.</p>
+    <p>A smooth line follows each river's valley. Every 10 metres along it, a line 2 km across is cut from a <Src id="sentinel2">Sentinel-2</Src> picture, and the cuts are laid one under the other. So the river is drawn straight down the page, winding inside its valley as it does from above. The picture is shorter than the river, because the bends are not pulled out, so every distance on the walk is measured along the river itself.</p>
+    <p>For every 2.5 km of river we use the newest day in the last 12 months that was clear over that stretch. In the rainy season few days are clear, so most stretches keep the picture they had. We look for newer pictures every three months. Where a picture still had cloud, it is filled from clear pictures of other days.</p>
+    <p>The rings on the walk are the same patches as on the map, updated every week: every patch first seen cleared in the last 12 months whose edge is within 1 km of the water.</p>
+    </>}
+
     <h2>What we tried that did not work</h2>
     <ul>
       <li><strong>Radar to see through clouds.</strong> We tested a published method that spots mining ponds in Sentinel-1 radar images. Checked against a published map of mining in Ghana, only about 6% of the pixels it flagged were mining. We do not use it.</li>
@@ -106,6 +116,7 @@ import { CONTACT_EMAIL } from '../lib/site';
       <dt>Names</dt><dd>An <Src id="openstreetmap">OpenStreetMap</Src> town or village within 1 km of the patch, closest first. Otherwise the nearest town within 15 km or village within 8 km, called near it only within 2 km, else with the distance. Districts from <Src id="geoboundaries-gha-adm2">geoBoundaries</Src>.</dd>
       <dt>Pictures</dt><dd>Copernicus Sentinel-2 Level 2A from <Src id="sentinel2-earth-search">Earth Search</Src>. The clearest picture in the 15 months before the patch was first seen, and the clearest since its last change. Pictures with more than 10% cloud or shadow are not used.</dd>
       <dt>Rivers</dt><dd>Water plant catchments and rivers from HydroSHEDS: <Src id="hydrobasins">HydroBASINS</Src> and <Src id="hydrorivers">HydroRIVERS</Src>.</dd>
+      <dt>River walks</dt><dd>The HydroRIVERS main stem, walked up from near the mouth and moved onto <Src id="openstreetmap">OpenStreetMap</Src>'s river line where it lies within 1 km, then smoothed. It starts where the river drains 500 km² (200 km² for the Densu and the Ayensu). The picture is cut along the course smoothed over about 2 km, 2 km wide at 10 metres, from Sentinel-2 Level 2A on <Src id="sentinel2-earth-search">Earth Search</Src>: for each 2.5 km, the newest day in the last 365 days with at least 97% of the crop's middle clear, else the clearest day, with cloud filled from other days. Pictures meeting are blended over 500 metres. Remade every three months.</dd>
       <dt>Place references</dt><dd>Each patch keeps a permanent reference made from the month it was first seen and its location. When two patches grow into one, the older reference is kept and the other redirects to it.</dd>
     </dl>
   </article>

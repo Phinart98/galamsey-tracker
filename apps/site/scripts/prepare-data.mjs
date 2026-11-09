@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { writePairs } from './pairs.mjs';
+import { copyRiverTiles } from './rivers.mjs';
 
 const site = path.resolve(import.meta.dirname, '..');
 const out = path.join(site, '.data');
@@ -20,11 +21,14 @@ if (process.env.PLACES_INDEX_URL) {
   index = JSON.parse(fs.readFileSync(path.join(local, 'places/index.json'), 'utf8'));
   // Clear old copies first, so pictures published on their own site (CHIPS_BASE_URL) are never also deployed here
   fs.rmSync(path.join(site, 'public/chips'), { recursive: true, force: true });
+  fs.rmSync(path.join(site, 'public/rivers'), { recursive: true, force: true });
   if (!process.env.CHIPS_BASE_URL && fs.existsSync(path.join(local, 'chips'))) {
     const latest = path.resolve(site, '../../data/summary/latest.json');
     const dataDate = fs.existsSync(latest) ? JSON.parse(fs.readFileSync(latest, 'utf8')).data_date : null;
     const { written } = await writePairs(local, index, path.join(site, 'public'), dataDate);
     console.log(`prepare-data: ${written} picture pairs in public/chips`);
+    const tiles = copyRiverTiles(local, path.join(site, 'public'));
+    console.log(`prepare-data: ${tiles} river tiles in public/rivers`);
   }
 } else {
   console.warn('prepare-data: no place index found, building without places');

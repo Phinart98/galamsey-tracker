@@ -6,6 +6,7 @@ import LikelyTag from '../../components/LikelyTag.astro';
 import LabelKey from '../../components/LabelKey.astro';
 import Share from '../../components/Share.astro';
 import { CONTACT_EMAIL, mailto } from '../../lib/site';
+import { onRiver } from '../../lib/rivers';
 import { hasCard, hasPair, places, redirects, type Place } from '../../lib/data';
 import { GOOGLE_NOTE, LICENCE_SENTENCE, NO_PICTURE, noLicenceToMine, noPicture, coords, district, googleEarth, googleMaps, hectares, longDate, placeName } from '../../lib/format';
 
@@ -20,6 +21,8 @@ const title = place ? `${hectares(place.ha)} cleared ${placeName(place)}` : 'Thi
 // Why a place has no Likely galamsey label: licensed land never gets it, otherwise it depends on the water reading
 const licensed = place ? !noLicenceToMine(place.licence) : false;
 const reading = place?.signs && !('missing' in place.signs) ? place.signs : null;
+// Patches within 1 km of a river we walk link to their spot on the walk (the weekly run keeps this current)
+const river = place?.active ? onRiver(place) : null;
 ---
 {to ? (
   <html lang="en-GH">
@@ -77,6 +80,7 @@ const reading = place?.signs && !('missing' in place.signs) ? place.signs : null
             <dt>Location</dt><dd>{coords(place)}</dd>
             <dt>Reference</dt><dd>{place.id}</dd>
           </dl>
+          {river && <p class="onriver">{river.text}. <a href={river.href}>See it on the {river.river.name} river walk</a></p>}
           <div class="actions">
             <Share title={title} />
             {place.active && <a class="btn" href={`/map#${place.id}`}>Show on the map</a>}

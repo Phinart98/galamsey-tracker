@@ -964,6 +964,36 @@
    ],
    "status": "measured",
    "checked": "2026-11-05"
+  },
+  {
+   "id": "river-walks",
+   "text": "Each river walk follows the river from where it drains enough land to be wider than a 10 m pixel (500 km2, 200 km2 for the Densu and Ayensu) to the sea or the river it joins, along the HydroRIVERS main stem moved onto OpenStreetMap's river line, with the river km stated on the page",
+   "where": "/rivers/, /rivers/<slug>/, /method#rivers",
+   "evidence": [
+    "hydrorivers",
+    "openstreetmap",
+    "own-spike-log rivers pilot (pipeline/out/checks/rivers)"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "river-walk-pictures",
+   "text": "River walk pictures: Sentinel-2, for each 2.5 km the newest day in the last 365 days with at least 97% of the crop's middle clear, else the clearest, cloud filled from other days, remade every three months",
+   "where": "/rivers/<slug>/, /method#rivers",
+   "evidence": [
+    "sentinel2-earth-search",
+    "sentinel2"
+   ],
+   "status": "measured"
+  },
+  {
+   "id": "river-walk-rings",
+   "text": "Rings on a river walk are the weekly patches whose edge lies within 1 km of the walked river's course",
+   "where": "/rivers/<slug>/, place pages",
+   "evidence": [
+    "opera-dist-alert"
+   ],
+   "status": "measured"
   }
  ]
 }

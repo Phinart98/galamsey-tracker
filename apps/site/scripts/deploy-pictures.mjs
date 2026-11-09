@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { writePairs } from './pairs.mjs';
+import { copyRiverTiles } from './rivers.mjs';
 
 const project = process.argv[2] ?? 'galamsey-tracker-pictures';
 const LIMIT = 19000; // Pages refuses more than 20,000: stop with a clear message before that happens
@@ -22,7 +23,8 @@ const index = JSON.parse(fs.readFileSync(path.join(out, 'places/index.json'), 'u
 const dataDate = JSON.parse(fs.readFileSync(path.resolve(site, '../../data/summary/latest.json'), 'utf8')).data_date;
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pictures-'));
 const { written, missing } = await writePairs(out, index, dir, dataDate);
-let files = written;
+const tiles = copyRiverTiles(out, dir);
+let files = written + tiles;
 // KEEP_SINGLES=1 also publishes the single before/after files, for the one run that switches the site to pairs: the
 // site still live while this runs links to single files, and keeps working if the new site fails to publish
 if (process.env.KEEP_SINGLES === '1') {
@@ -40,13 +42,14 @@ if (process.env.KEEP_SINGLES === '1') {
     files += singles.length;
   }
 }
-console.log(`pictures: ${written} pairs, ${files} files to publish, ${missing} places listed with pictures not on disk`);
+console.log(`pictures: ${written} pairs, ${tiles} river tiles, ${files} files to publish, ${missing} places listed with pictures not on disk`);
 // A warning on the run page long before the hard stop
 if (files > 16000) console.log(`::warning::${files} picture files, close to Cloudflare Pages' 20,000. Retire places sooner (src/lib/pictures.mjs RETIRE_YEARS).`);
 if (files > LIMIT) throw new Error(`${files} picture files is over ${LIMIT}: Cloudflare Pages takes at most 20,000 per site`);
 
-// Pictures are never meant for search results. A retake overwrites the same file name, so no long cache.
-fs.writeFileSync(path.join(dir, '_headers'), '/*\n  X-Robots-Tag: noindex, nofollow\n');
+// Pictures are never meant for search results. A retake overwrites the same file name, so no long cache, except
+// river tiles: a new set gets a new folder, so a tile never changes once published.
+fs.writeFileSync(path.join(dir, '_headers'), '/*\n  X-Robots-Tag: noindex, nofollow\n/rivers/*\n  Cache-Control: public, max-age=31536000, immutable\n');
 fs.writeFileSync(path.join(dir, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 
 execSync(`${wrangler} pages deploy "${dir}" --project-name ${project} --branch main --commit-dirty=true`, { stdio: 'inherit' });

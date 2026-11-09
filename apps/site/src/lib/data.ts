@@ -39,7 +39,13 @@ export interface Place {
   // Set here: the closest town or village with this patch within 1 km of it (data/towns.json)
   close?: string;
   signs?: { water: number; scene: string } | { missing: true; checked: string };
+  // Set by the weekly run: the river walks whose water is within 1 km, nearest first (pipeline tracker/rivers.py)
+  rivers?: PlaceOnRiver[];
 }
+
+// km is picture km on the walk (its #km-N link), off_m metres across (positive: the left of the picture), river_m
+// how far the patch is from the water, in_picture whether it lies inside the walk's 2 km picture
+export interface PlaceOnRiver { slug: string; km: number; off_m: number; river_m: number; in_picture: boolean }
 
 export interface Summary {
   total_ha: number;

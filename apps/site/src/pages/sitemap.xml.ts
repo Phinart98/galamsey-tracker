@@ -1,4 +1,5 @@
 import { bulletins, places, redirects } from '../lib/data';
+import { rivers } from '../lib/rivers';
 
 // Every page search engines should find, in the same form as the canonical links (with the trailing slash).
 // The map builds its list in the browser, so without this file crawlers would miss most place pages.
@@ -6,6 +7,7 @@ import { bulletins, places, redirects } from '../lib/data';
 export function GET() {
   const paths = [
     '/', '/map/', '/method/', '/data/', '/about/',
+    ...(rivers.length ? ['/rivers/', ...rivers.map((r) => `/rivers/${r.slug}/`)] : []),
     ...bulletins.map((b) => `/bulletins/${b.month}/`),
     ...places.filter((p) => !redirects.has(p.id)).map((p) => `/places/${p.id}/`),
   ];
