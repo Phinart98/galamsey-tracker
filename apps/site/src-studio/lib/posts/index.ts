@@ -5,6 +5,7 @@
 // rules.ts      what a post may show, and the shared lists and rankings (start here)
 // town.ts       town of the week, the one-place sample, a place in the news
 // water.ts      the cities' water and all five plants
+// rivers.ts     a 5 km slice of each river walk
 // places.ts     new clearing, shapes, check it yourself, licensed to explore, ten towns, newest patches
 // numbers.ts    pitches a day, licence split, districts, patch sizes, the map, the water test, month in review
 // explainers.ts how to read the pictures, the licence and the satellites
@@ -12,6 +13,7 @@
 import { explainerPosts } from './explainers';
 import { numberPosts } from './numbers';
 import { placePosts } from './places';
+import { riverPosts } from './rivers';
 import { townPosts } from './town';
 import { waterPosts } from './water';
 
@@ -19,4 +21,4 @@ export type { Pictured, Post } from './rules';
 export { showable } from './rules';
 export { newsPlacePost } from './town';
 
-export const sharePosts = [...townPosts, ...waterPosts, ...numberPosts, ...placePosts, ...explainerPosts];
+export const sharePosts = [...townPosts, ...waterPosts, ...riverPosts, ...numberPosts, ...placePosts, ...explainerPosts];

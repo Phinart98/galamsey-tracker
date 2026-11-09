@@ -4,7 +4,8 @@
 // a big number in signal red, and the same brand footer on every post so the feed reads as one voice.
 import type { Chip } from '../../src/lib/data';
 import { shortDate } from '../../src/lib/format';
-import { card, h, img, jpeg as encode, type Node } from '../../src/lib/og';
+import { card, h, img, jpeg as encode, jpegUri, type Node } from '../../src/lib/og';
+import sharp from 'sharp';
 
 // Several posts show the same picture (the town of the week also heads the picture explainer), so each is
 // downloaded and re-encoded once per build
@@ -420,6 +421,34 @@ export async function townsPost(o: { title: string; line: string; rows: { name: 
             h('div', { fontSize: 22, color: '#555' }, r.district)),
           h('div', { width: INNER - 84 - 640, textAlign: 'right', fontSize: i === 0 ? 46 : 32, fontWeight: 700 }, r.ha)))),
       h('div', { width: INNER, fontSize: 24, lineHeight: 1.35, color: '#333', marginTop: 18 }, o.sub)),
+    footer()),
+    PW, PH, 85);
+}
+
+// A river walk slice (5 km of river from the walk's tiles): the river standing tall on the left with its towns and
+// rings (placed in RIVER_W x RIVER_H pixels), the number and words on the right
+export const RIVER_W = 400, RIVER_H = 1000;
+export async function riverPost(o: {
+  title: string; big: string; line: string; sub: string; caption: string;
+  slice: Buffer; towns: { name: string; y: number; x: number; left: boolean }[]; rings: { x: number; y: number; d: number }[];
+}) {
+  const W = RIVER_W, H = RIVER_H, X = PAD, Y = 150;
+  const pic = await jpegUri(sharp(o.slice).resize(W, H), 84);
+  return card(h('div', { display: 'flex', position: 'relative', width: PW, height: PH, background: PAPER, fontFamily: 'Atkinson', color: INK },
+    h('div', { position: 'absolute', left: PAD, top: 56, width: INNER, fontSize: 52, fontWeight: 700, letterSpacing: -1 }, o.title),
+    // The picture with its rings and labels, cut at its edges, and the caption inside its bottom corner
+    h('div', { display: 'flex', position: 'absolute', left: X, top: Y, width: W, height: H, overflow: 'hidden' },
+      img(pic, { position: 'absolute', left: 0, top: 0, width: W, height: H }),
+      ...o.rings.map((r) => img(ring(r.d), { position: 'absolute', left: r.x - r.d / 2, top: r.y - r.d / 2, width: r.d, height: r.d })),
+      // Town names, white like the site's, on the side of the river they are on
+      ...o.towns.map((t) => h('div', { position: 'absolute', top: t.y - 18, ...(t.left ? { right: W - t.x + 8 } : { left: t.x + 8 }),
+        background: '#fff', color: INK, fontSize: 24, fontWeight: 700, padding: '2px 8px', borderRadius: 3 }, t.name)),
+      h('div', { position: 'absolute', left: 0, bottom: 0, maxWidth: W, background: INK, color: '#fff', fontSize: 24, fontWeight: 700, padding: '6px 12px' }, o.caption)),
+    h('div', { display: 'flex', flexDirection: 'column', position: 'absolute', left: X + W + 48, top: Y, width: INNER - W - 48 },
+      h('div', { fontSize: 128, fontWeight: 700, lineHeight: 0.95, letterSpacing: -4, color: SIGNAL }, o.big),
+      h('div', { fontSize: 40, fontWeight: 700, color: SIGNAL }, 'hectares'),
+      h('div', { fontSize: 32, lineHeight: 1.3, marginTop: 20 }, o.line),
+      h('div', { fontSize: 28, lineHeight: 1.35, marginTop: 28, color: '#333' }, o.sub)),
     footer()),
     PW, PH, 85);
 }

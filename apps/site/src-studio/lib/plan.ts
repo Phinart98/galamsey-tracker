@@ -1,13 +1,14 @@
 // The posting calendar: one post every weekday at 13:00 GMT, worked out from the date so it needs no upkeep.
 // Monday the town of the week (after the weekly run). Tuesday and Thursday a place in the news, or else the next
-// kind from the PLACE list. Wednesday a city's water in turn. Friday the next kind from the NUMBERS list, and on the
+// kind from the PLACE list. Wednesday a city's water or a river walk in turn. Friday the next kind from the NUMBERS list, and on the
 // first Friday of a month the month in review. Weekends off. Each list moves on a step a week, so a kind returns
-// only after the whole list has gone round (PLACE every 3 weeks, NUMBERS every 11).
+// only after the whole list has gone round (PLACE every 3 weeks, WATER and NUMBERS every 11).
 import { status as runs } from '../../src/lib/data';
 import { DAY_MS } from '../../src/lib/format';
 import { sharePosts, type Post } from './posts';
 
-const WATER = ['water-accra', 'water-kumasi', 'water-takoradi', 'water-winneba', 'plants'];
+// The cities' water, then a slice of each river walk (a river with no Likely galamsey patch by it is skipped)
+const WATER = ['water-accra', 'river-pra', 'water-kumasi', 'river-offin', 'water-takoradi', 'river-birim', 'water-winneba', 'river-ankobra', 'plants', 'river-densu', 'river-ayensu'];
 const PLACE = ['new', 'shape', 'find', 'explore', 'sheet', 'towns'];
 const NUMBERS = ['rate', 'licence', 'districts', 'explain-pictures', 'sizes', 'map', 'district', 'water-test', 'plate', 'explain-licence', 'explain-satellites'];
 const NEWS_DAYS = new Set([2, 4]);
@@ -16,6 +17,8 @@ const KIND: Record<string, string> = {
   town: 'Town of the week', month: 'Month in review',
   'water-accra': 'City water: Accra', 'water-kumasi': 'City water: Kumasi', 'water-takoradi': 'City water: Takoradi',
   'water-winneba': 'City water: Winneba', plants: 'All five water plants',
+  'river-pra': 'River walk: the Pra', 'river-offin': 'River walk: the Offin', 'river-birim': 'River walk: the Birim',
+  'river-ankobra': 'River walk: the Ankobra', 'river-densu': 'River walk: the Densu', 'river-ayensu': 'River walk: the Ayensu',
   new: 'New clearing', shape: 'The shape of it', find: 'Check it yourself', explore: 'Licensed to explore, not to mine',
   sheet: 'Newest patches', towns: 'Ten towns', rate: 'Football pitches a day', licence: 'Licence split',
   districts: 'Districts compared', 'explain-pictures': 'How to read the pictures', sizes: 'Patch sizes', map: 'Where it is',
