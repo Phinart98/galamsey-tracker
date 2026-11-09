@@ -3,8 +3,9 @@ name: Weekly update
 on:
   schedule:
     # Mondays 05:17 UTC. Off the hour: GitHub delays runs set on the hour most. It can still start them many hours
-    # late or drop them (2 Nov 2026 started 9 h late, 9 Nov 2026 not at all by 13:45), so three more chances before
+    # late or drop them (2 Nov 2026 started 9 h late, 9 Nov 2026 not at all by 13:45), so four more chances around it before
     # the 13:00 post. The gate job below skips any of them once that Monday's run has succeeded
+    - cron: "17 3 * * 1"
     - cron: "17 5 * * 1"
     - cron: "47 7 * * 1"
     - cron: "47 9 * * 1"
