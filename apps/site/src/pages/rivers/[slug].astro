@@ -132,7 +132,8 @@ const data = {
     <p class="near" data-near></p>
   </dialog>
   <LikelyTag hidden />
-  <script type="application/json" id="walk-data" set:html={JSON.stringify(data)} />
+  <!-- Town and river names come from OpenStreetMap: escaped so no name can close this script tag -->
+  <script type="application/json" id="walk-data" set:html={JSON.stringify(data).replace(/[<>&]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)} />
 </Base>
 
 <script>
