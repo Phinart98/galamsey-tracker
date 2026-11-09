@@ -42,6 +42,18 @@ jobs:
           else
             echo "list=$(jq -c '[.[].slug]' pipeline/rivers.json)" >> "$GITHUB_OUTPUT"
           fi
+      # The town names the weekly run keeps, taken out of its archive once and handed to the six runners, so each
+      # downloads a few MB instead of the whole archive or all of Ghana's map data
+      - name: Town and village names
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/restore-release.sh "$STATE_TAG" "$STATE_FILE" pipeline/out '*cache/places/*' || echo "No saved names, so each runner downloads them"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: town-names
+          path: pipeline/out/cache/places/
+          if-no-files-found: ignore
+          retention-days: 1
 
   build:
     needs: rivers
@@ -59,11 +71,11 @@ jobs:
           enable-cache: true
       - run: uv sync
         working-directory: pipeline
-      # The town names the weekly run keeps, so six runners do not each download all of Ghana's map data
-      - name: Town and village names
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: bash .github/scripts/restore-release.sh "$STATE_TAG" "$STATE_FILE" pipeline/out '*cache/places/*' || echo "No saved names, so they are downloaded"
+      - uses: actions/download-artifact@v4
+        continue-on-error: true   # without it the names are downloaded
+        with:
+          name: town-names
+          path: pipeline/out/cache/places
       - name: Pictures for the ${{ matrix.river }}
         working-directory: pipeline
         run: uv run python -m tracker.run rivers --river "${{ matrix.river }}"
@@ -76,8 +88,9 @@ jobs:
           retention-days: 7
 
   publish:
-    needs: build
-    if: always() && needs.build.result != 'cancelled'
+    needs: [rivers, build]
+    # also after some rivers failed (fail-fast is off), but not after a bad river name or a cancel
+    if: ${{ !cancelled() && needs.rivers.result == 'success' }}
     runs-on: ubuntu-latest
     # Its own group: in the weekly run's group a newer queued weekly run would cancel it while it waits, and the new
     # tiles would be lost with the artifacts. Only this job writes the release. A weekly run reading it meanwhile gets
@@ -99,17 +112,23 @@ jobs:
         run: |
           new="$RUNNER_TEMP/new"
           ls "$new"/*.json >/dev/null 2>&1 || { echo "::error::No river was built"; exit 1; }
-          if gh release view "$RIVERS_TAG" >/dev/null 2>&1; then
+          assets=$(gh release view "$RIVERS_TAG" --json assets --jq '.assets[].name' 2>/dev/null) || {
+            gh release create "$RIVERS_TAG" --title "River walk pictures" --notes "Tiles and data for the river walks, kept between runs. Replaced every run."
+            assets=""
+          }
+          if grep -qx -e "$RIVERS_FILE" -e "spare-$RIVERS_FILE" <<<"$assets"; then
             # The rivers not rebuilt this run are only in the archive: without it they would be lost, so stop
             bash .github/scripts/restore-release.sh "$RIVERS_TAG" "$RIVERS_FILE" pipeline/out
           else
-            gh release create "$RIVERS_TAG" --title "River walk pictures" --notes "Tiles and data for the river walks, kept between runs. Replaced every run."
+            echo "::warning::The release has no archive yet, so this run starts the river pictures afresh"
           fi
           mkdir -p pipeline/out/rivers && cp -r "$new"/. pipeline/out/rivers/
-          # Each river keeps its two newest sets: the new one, and the one the site still live links to until the
-          # weekly run publishes the new site (the pictures site serves both until then)
+          # Each river keeps every set made in the last 8 days and the newest older one. The site still live links to
+          # one of those until a weekly run publishes the new site (within the week), so it never loses its tiles, even
+          # when rivers.yml runs twice in a few days
+          cutoff=$(date -u -d '8 days ago' +%Y%m%d%H%M)
           for river in pipeline/out/rivers/*/; do
-            ls -1d "$river"*/ | sort -r | tail -n +3 | while read -r old; do rm -rf "${old:?}"; done
+            ls -1d "$river"*/ | sort -r | awk -v c="$cutoff" '{ v = $0; sub(/\/$/, "", v); sub(/.*\//, "", v); if (v >= c) next; if (kept++) print }'               | while read -r old; do rm -rf "${old:?}"; done
           done
           bash .github/scripts/save-release.sh "$RIVERS_TAG" "$RIVERS_FILE" pipeline/out rivers
 

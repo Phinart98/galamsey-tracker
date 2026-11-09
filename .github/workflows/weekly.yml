@@ -145,6 +145,11 @@ jobs:
 
       # Always commit status.json, even after a failure: it keeps the repo active so GitHub
       # does not disable this schedule, and it lets the site say when an update is late.
+      # New river pictures may follow a new course: place each patch on the courses now restored
+      - name: Places on the new river pictures
+        if: ${{ inputs.publish_only }}
+        run: uv run python -m tracker.run rivers --places
+
       - name: Commit data
         if: always() && !inputs.publish_only
         working-directory: .
