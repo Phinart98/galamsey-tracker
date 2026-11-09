@@ -72,6 +72,7 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
   const bySlug = new Map(sharePosts.map((p) => [p.slug, p]));
   // The weekly run on the next Monday brings new data. Posts that name a place are made from it then
   const nextRun = today.getTime() + (((8 - today.getUTCDay()) % 7) || 7) * DAY;
+  const used = new Set<string>(); // kinds already given to a day, so a stand-in does not repeat one
   const fresh = stories.filter((s) => today.getTime() + DAY - Date.parse(s.date) <= FRESH_HOURS * 3600e3);
   return [0, 1, 2, 3, 4].map((i): Slot => {
     const d = new Date(monday.getTime() + i * DAY);
@@ -82,13 +83,18 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
     const tuesday = fromList(PLACE, 2 * w, have);
     const firstFriday = wd === 5 && d.getUTCDate() <= 7;
     const newData = d.getTime() >= nextRun;
-    // A Monday is never empty: if this week's data could not make the town post, the next PLACE kind stands in
-    const townWaits = wd === 1 && !newData && !have.has('town');
-    const slug = wd === 1 ? (townWaits ? fromList(PLACE, 2 * w + 2, have, tuesday) : 'town')
+    const planned = wd === 1 ? 'town'
       : wd === 2 ? tuesday
       : wd === 3 ? fromList(WATER, w, have)
       : wd === 4 ? fromList(PLACE, 2 * w + 1, have, tuesday)
       : firstFriday && have.has('month') ? 'month' : fromList(NUMBERS, w, have);
+    // No day this week is left empty: if the data could not make the planned kind, one that can be made stands in
+    const standIn = !newData && !have.has(planned)
+      ? [...PLACE, ...NUMBERS].map((_, k, all) => all[(w + k) % all.length]).find((s) => have.has(s) && !used.has(s))
+      : undefined;
+    const slug = standIn ?? planned;
+    used.add(slug);
+    const plannedKind = KIND[planned] ?? 'The planned post';
     const known = bySlug.get(slug);
     const kind = known?.kind ?? KIND[slug] ?? 'Another post';
     const backupName = lower(kind);
@@ -107,8 +113,8 @@ export function week(monday: Date, today: Date, stories: Story[]): Slot[] {
       } else if (status === 'ahead') {
         note = `Decided that morning from the news. If no story names a place we cover, post ${backupName}${post ? ', shown here' : ", made from Monday's new data"}.`;
       }
-    } else if (townWaits && known) {
-      note = 'The town of the week is waiting for the weekly update, so this post stands in. Check again after it runs.';
+    } else if (standIn) {
+      note = `${plannedKind} is not ready from the latest data, so this post stands in. It may change after the next weekly update.`;
     } else if (!known) {
       // After the next weekly run the post is made from its new data, so it may well exist by then
       note = newData ? 'It is made from the data that arrives on Monday morning, so it shows here from then.'
