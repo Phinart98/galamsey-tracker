@@ -1,0 +1,121 @@
+name: River walks
+
+# The six river walks' pictures, every three months: the newest clear day for every 2.5 km of each river (most of
+# a rainy-season run keeps the pictures it had). Each river is built on its own runner at the same time. Its tiles
+# and the data that names them (pipeline/out/rivers/<slug>.json) are kept together on the `rivers-state` release,
+# so they can never point at each other wrongly. The weekly run, which this workflow starts when it is done (publish
+# only), publishes them with the place pictures and builds the river pages from them. River courses are not remade here:
+# see `tracker.run rivers --course`.
+on:
+  schedule:
+    - cron: "17 4 20 1,4,7,10 *"  # 20 Jan, Apr, Jul, Oct. April brings in the dry season just ended
+  workflow_dispatch:
+    inputs:
+      river:
+        description: "One river's slug (pra, offin, birim, ankobra, densu, ayensu), or empty for all six"
+        default: ""
+
+permissions:
+  contents: write  # the release that keeps the tiles
+  actions: write   # to start the weekly run, which publishes the new pictures
+
+env:
+  STATE_TAG: pipeline-state
+  STATE_FILE: pipeline-state.tar.gz
+  RIVERS_TAG: rivers-state
+  RIVERS_FILE: rivers.tar.gz
+
+jobs:
+  rivers:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.list.outputs.list }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: list
+        env:
+          RIVER: ${{ inputs.river }}
+        run: |
+          if [ -n "$RIVER" ]; then
+            jq -e --arg r "$RIVER" 'any(.[]; .slug == $r)' pipeline/rivers.json >/dev/null || { echo "::error::No river '$RIVER'"; exit 1; }
+            echo "list=[\"$RIVER\"]" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=$(jq -c '[.[].slug]' pipeline/rivers.json)" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    needs: rivers
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false   # a river that fails keeps its last pictures; the others still update
+      matrix:
+        river: ${{ fromJSON(needs.rivers.outputs.list) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync
+        working-directory: pipeline
+      # The town names the weekly run keeps, so six runners do not each download all of Ghana's map data
+      - name: Town and village names
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/restore-release.sh "$STATE_TAG" "$STATE_FILE" pipeline/out '*cache/places/*' || echo "No saved names, so they are downloaded"
+      - name: Pictures for the ${{ matrix.river }}
+        working-directory: pipeline
+        run: uv run python -m tracker.run rivers --river "${{ matrix.river }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: river-${{ matrix.river }}
+          path: |
+            pipeline/out/rivers/${{ matrix.river }}.json
+            pipeline/out/rivers/${{ matrix.river }}/
+          retention-days: 7
+
+  publish:
+    needs: build
+    if: always() && needs.build.result != 'cancelled'
+    runs-on: ubuntu-latest
+    # Its own group: in the weekly run's group a newer queued weekly run would cancel it while it waits, and the new
+    # tiles would be lost with the artifacts. Only this job writes the release. A weekly run reading it meanwhile gets
+    # the old or the new archive whole (each run starts by restoring it) and publishes that set with its pages
+    concurrency:
+      group: rivers-publish
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: river-*
+          path: ${{ runner.temp }}/new
+          merge-multiple: true
+
+      - name: Keep the tiles and their data on the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          new="$RUNNER_TEMP/new"
+          ls "$new"/*.json >/dev/null 2>&1 || { echo "::error::No river was built"; exit 1; }
+          if gh release view "$RIVERS_TAG" >/dev/null 2>&1; then
+            # The rivers not rebuilt this run are only in the archive: without it they would be lost, so stop
+            bash .github/scripts/restore-release.sh "$RIVERS_TAG" "$RIVERS_FILE" pipeline/out
+          else
+            gh release create "$RIVERS_TAG" --title "River walk pictures" --notes "Tiles and data for the river walks, kept between runs. Replaced every run."
+          fi
+          mkdir -p pipeline/out/rivers && cp -r "$new"/. pipeline/out/rivers/
+          # Each river keeps its two newest sets: the new one, and the one the site still live links to until the
+          # weekly run publishes the new site (the pictures site serves both until then)
+          for river in pipeline/out/rivers/*/; do
+            ls -1d "$river"*/ | sort -r | tail -n +3 | while read -r old; do rm -rf "${old:?}"; done
+          done
+          bash .github/scripts/save-release.sh "$RIVERS_TAG" "$RIVERS_FILE" pipeline/out rivers
+
+      # The weekly run publishes pictures and site together, so the new tiles go live with the pages that use them.
+      # publish_only: it skips the pipeline steps and rebuilds from last week's saved data
+      - name: Start the weekly run to publish them
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run weekly.yml --ref "$GITHUB_REF_NAME" -f publish_only=true

@@ -17,6 +17,10 @@ on:
       trend_minutes:
         description: "Time limit in minutes for the trend step (switching on a new area recounts every month: give it 150, with chips_limit 300 so the run fits in 6 hours)"
         default: "45"
+      publish_only:
+        description: "Only publish the pictures, site and studio from the saved data (rivers.yml uses this after new river pictures)"
+        type: boolean
+        default: false
 
 concurrency:
   group: weekly-update
@@ -30,6 +34,8 @@ permissions:
 env:
   STATE_TAG: pipeline-state
   STATE_FILE: pipeline-state.tar.gz
+  RIVERS_TAG: rivers-state
+  RIVERS_FILE: rivers.tar.gz
   SITE_PROJECT: galamsey-tracker
   # The pictures have their own Pages project, so neither site passes Pages' 20,000-file limit
   PICTURES_PROJECT: galamsey-tracker-pictures
@@ -89,25 +95,33 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         # A missing archive must stop the run: starting from nothing would hand every place a new reference
-        # The spare copy is there for a save that failed halfway (see the save step)
-        run: |
-          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP" \
-            || { gh release download "$STATE_TAG" --pattern "spare-$STATE_FILE" --dir "$RUNNER_TEMP" \
-                 && mv "$RUNNER_TEMP/spare-$STATE_FILE" "$RUNNER_TEMP/$STATE_FILE"; }
-          mkdir -p out && tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C out
+        run: bash ../.github/scripts/restore-release.sh "$STATE_TAG" "$STATE_FILE" out
 
+      # Made every three months by rivers.yml: each river's tiles with the data that names them, published with the
+      # place pictures below. Without them (before the first river run, or a failed download) the site is built
+      # without river pages this week, rather than holding back the place pictures and the site
+      - name: Restore the river walk pictures
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ../.github/scripts/restore-release.sh "$RIVERS_TAG" "$RIVERS_FILE" out || echo "::warning::No river pictures restored, so this week's site has no river pages"
+
+      # The pipeline steps and the data commit are skipped on a publish_only run (new river pictures): the site is
+      # rebuilt from last week's saved data
       - name: Weekly patches, licences, names and summary
         id: weekly
+        if: ${{ !inputs.publish_only }}
         timeout-minutes: 30
         run: uv run python -m tracker.run weekly
 
       - name: Before/after images for places without them
+        if: ${{ !inputs.publish_only }}
         timeout-minutes: 130
         # Missing pictures are retried next week, so a failure here must not stop the trend or the upload
         continue-on-error: true
         run: uv run python -m tracker.run chips --limit "${{ inputs.chips_limit || '2000' }}"
 
       - name: Open-water readings for places with no licence to mine
+        if: ${{ !inputs.publish_only }}
         timeout-minutes: ${{ fromJSON(inputs.signs_minutes || '45') }}
         # Largest first; places not reached are measured in later weeks, so a failure here must not stop the rest
         continue-on-error: true
@@ -116,6 +130,7 @@ jobs:
       # The trend is written only when every month is done, so a timeout keeps last week's trend and must not
       # stop the site from being published
       - name: Monthly trend point
+        if: ${{ !inputs.publish_only }}
         timeout-minutes: ${{ fromJSON(inputs.trend_minutes || '45') }}
         continue-on-error: true
         run: uv run python -m tracker.run trend
@@ -125,19 +140,13 @@ jobs:
         if: always() && steps.weekly.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          # The town and district cache saves downloading all of Ghana's map data every week
-          tar -czf "$RUNNER_TEMP/$STATE_FILE" -C out places chips cache/places
-          # --clobber deletes the old file before uploading the new one, so an upload that fails halfway would
-          # leave nothing. The spare copy goes up first: at any moment one complete archive is on the release.
-          cp "$RUNNER_TEMP/$STATE_FILE" "$RUNNER_TEMP/spare-$STATE_FILE"
-          gh release upload "$STATE_TAG" "$RUNNER_TEMP/spare-$STATE_FILE" --clobber
-          gh release upload "$STATE_TAG" "$RUNNER_TEMP/$STATE_FILE" --clobber
+        # The town and district cache saves downloading all of Ghana's map data every week
+        run: bash ../.github/scripts/save-release.sh "$STATE_TAG" "$STATE_FILE" out places chips cache/places
 
       # Always commit status.json, even after a failure: it keeps the repo active so GitHub
       # does not disable this schedule, and it lets the site say when an update is late.
       - name: Commit data
-        if: always()
+        if: always() && !inputs.publish_only
         working-directory: .
         run: |
           git config user.name "galamsey-tracker-bot"

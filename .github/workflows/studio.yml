@@ -20,6 +20,8 @@ permissions:
 env:
   STATE_TAG: pipeline-state
   STATE_FILE: pipeline-state.tar.gz
+  RIVERS_TAG: rivers-state
+  RIVERS_FILE: rivers.tar.gz
   PICTURES_PROJECT: galamsey-tracker-pictures
 
 jobs:
@@ -36,18 +38,22 @@ jobs:
         run: |
           if [ -z "$STUDIO_PROJECT" ]; then echo "No STUDIO_PROJECT secret, studio skipped"; echo "go=false" >> "$GITHUB_OUTPUT"; else echo "go=true" >> "$GITHUB_OUTPUT"; fi
 
-      # Only the place list is needed. The pictures are read from the pictures site
+      # The place list and outlines only: place pictures are read from the pictures site
       - name: Get the place list from the last weekly run
         if: steps.check.outputs.go == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download "$STATE_TAG" --pattern "$STATE_FILE" --dir "$RUNNER_TEMP" \
-            || { gh release download "$STATE_TAG" --pattern "spare-$STATE_FILE" --dir "$RUNNER_TEMP" \
-                 && mv "$RUNNER_TEMP/spare-$STATE_FILE" "$RUNNER_TEMP/$STATE_FILE"; }
-          mkdir -p pipeline/out
-          tar -xzf "$RUNNER_TEMP/$STATE_FILE" -C pipeline/out --wildcards '*places/index.json' '*places/latest.geojson'
+          bash .github/scripts/restore-release.sh "$STATE_TAG" "$STATE_FILE" pipeline/out '*places/index.json' '*places/latest.geojson'
           ls -la pipeline/out/places
+
+      # The river posts cut their slice from the walk's tiles. A new set is on the release hours before the weekly run
+      # publishes it on the pictures site, so it is read from here. Without it the studio leaves the river posts out
+      - name: Get the river walk pictures
+        if: steps.check.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/restore-release.sh "$RIVERS_TAG" "$RIVERS_FILE" pipeline/out || echo "No river pictures, so no river posts today"
 
       - uses: actions/setup-node@v5
         if: steps.check.outputs.go == 'true'
