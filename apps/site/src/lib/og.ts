@@ -44,14 +44,7 @@ async function picture(chip: Chip) {
   const rel = chip.files['720.webp'];
   const single = path.join(process.cwd(), '../../pipeline/out', rel);
   if (fs.existsSync(single)) return fs.readFileSync(single);
-  let pair: Buffer;
-  try {
-    pair = await pictureFile(pairOf(chip));
-  } catch (e) {
-    // Until the weekly run of 9 November 2026 publishes the first pairs, the pictures site has single files only.
-    // Remove this fallback with KEEP_SINGLES in weekly.yml after that run.
-    return download(chipUrl(rel)).catch(() => { throw e; });
-  }
+  const pair = await pictureFile(pairOf(chip));
   const side = 720;
   return sharp(pair).extract({ left: halfOf(chip) === 'before' ? 0 : side, top: 0, width: side, height: side }).toBuffer();
 }

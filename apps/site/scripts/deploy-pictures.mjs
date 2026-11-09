@@ -24,24 +24,7 @@ const dataDate = JSON.parse(fs.readFileSync(path.resolve(site, '../../data/summa
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pictures-'));
 const { written, missing } = await writePairs(out, index, dir, dataDate);
 const tiles = copyRiverTiles(out, dir);
-let files = written + tiles;
-// KEEP_SINGLES=1 also publishes the single before/after files, for the one run that switches the site to pairs: the
-// site still live while this runs links to single files, and keeps working if the new site fails to publish
-if (process.env.KEEP_SINGLES === '1') {
-  const singles = Object.values(index).filter((p) => p.chips?.before && p.chips?.after)
-    .flatMap((p) => [p.chips.before.files?.['720.webp'], p.chips.after.files?.['720.webp']])
-    .filter((rel) => rel && fs.existsSync(path.join(out, rel)));
-  // Never at the cost of the limit: then the old site's pictures go for the few minutes until the new site is up
-  if (written + singles.length > LIMIT) {
-    console.log(`::warning::${written + singles.length} files with the single pictures is over ${LIMIT}: publishing the pairs only`);
-  } else {
-    for (const rel of singles) {
-      fs.mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true });
-      fs.copyFileSync(path.join(out, rel), path.join(dir, rel));
-    }
-    files += singles.length;
-  }
-}
+const files = written + tiles;
 console.log(`pictures: ${written} pairs, ${tiles} river tiles, ${files} files to publish, ${missing} places listed with pictures not on disk`);
 // A warning on the run page long before the hard stop
 if (files > 16000) console.log(`::warning::${files} picture files, close to Cloudflare Pages' 20,000. Retire places sooner (src/lib/pictures.mjs RETIRE_YEARS).`);
