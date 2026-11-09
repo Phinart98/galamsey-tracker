@@ -323,6 +323,11 @@ def river_places(geoms: gpd.GeoSeries, rivers: dict) -> list[list[dict]]:
     return [sorted(o, key=lambda r: r["river_m"]) for o in out]
 
 
+def places_by_id(shapes: gpd.GeoDataFrame, rivers: dict) -> dict[str, list[dict]]:
+    """river_places for saved outlines with an `id` column (out/places/latest.geojson), keyed by id."""
+    return dict(zip(shapes["id"], river_places(shapes.geometry, rivers)))
+
+
 def _plants(course: LineString, g: LineString) -> list[dict]:
     p = water.load()
     pts = gpd.GeoSeries(gpd.points_from_xy(p.plant_lon, p.plant_lat), crs=4326).to_crs(WORK_CRS)

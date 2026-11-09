@@ -147,3 +147,11 @@ def test_weekly_places_use_the_course_saved_with_the_published_pictures_not_a_ne
     course, _ = rivers.lines()["pra"]
     lon, _ = rivers.TO_LL.transform(*course.coords[0])
     assert abs(lon - -1.2) < 1e-6
+
+
+def test_river_fields_are_redone_from_saved_outlines_by_id():
+    shapes = gpd.GeoDataFrame({"id": ["a", "b"]}, geometry=[Point(599700, 610000).buffer(50),
+                              Point(560000, 610000).buffer(50)], crs=CRS)
+    got = rivers.places_by_id(shapes, {"south": (SOUTH, SOUTH)})
+    assert got["a"][0]["slug"] == "south" and abs(got["a"][0]["km"] - 10.0) < 0.1
+    assert got["b"] == []

@@ -110,6 +110,18 @@ def weekly(today: dt.date):
     return tile_status, data_date
 
 
+def river_fields():
+    """Each active place's walked rivers again, from the saved outlines and the courses of the river pictures now
+    restored: a publish-only run (new river pictures between weekly runs) has no weekly step to do it."""
+    index_path = os.path.join(OUT, "places", "index.json")
+    index = _read_json(index_path, {})
+    shapes = gpd.read_file(os.path.join(OUT, "places", "latest.geojson")).to_crs(WORK_CRS)
+    for pid, near in rivers.places_by_id(shapes, rivers.lines()).items():
+        if pid in index:
+            index[pid]["rivers"] = near
+    _write_json(index_path, index)
+
+
 def write_places(clusters, previous, new_aliases, to_ll, near_rivers):
     index_path = os.path.join(OUT, "places", "index.json")
     index = _read_json(index_path, {})
@@ -336,6 +348,8 @@ def main():
     p.add_argument("--river", help="rivers: one river's slug (default: all in pipeline/rivers.json)")
     p.add_argument("--course", action="store_true", help="rivers: remake the course instead of the pictures")
     p.add_argument("--cache", help="rivers: a folder of crops to reuse and add to (default: none, all downloaded)")
+    p.add_argument("--places", action="store_true",
+                   help="rivers: only redo each place's rivers from the saved outlines (for new pictures between weekly runs)")
     a = p.parse_args()
     today = dt.date.fromisoformat(a.today)
     status_path = os.path.join(DATA, "status.json")
@@ -357,6 +371,9 @@ def main():
             mine["outcome"] = "ok"
         elif a.command == "signs":
             make_signs(today, a.limit, a.workers)
+            mine["outcome"] = "ok"
+        elif a.command == "rivers" and a.places:
+            river_fields()
             mine["outcome"] = "ok"
         elif a.command == "rivers":
             for slug in [a.river] if a.river else list(rivers.config()):
