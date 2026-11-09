@@ -4,14 +4,14 @@
     uv run python -m tracker.run chips      # before/after images for large places that lack them
     uv run python -m tracker.run signs      # open-water reading for places with no licence to mine
     uv run python -m tracker.run trend      # same-date rolling 12-month totals, one point per month
+    uv run python -m tracker.run rivers --river pra   # river walk pictures (every three months, rivers.yml)
+    uv run python -m tracker.run rivers --river pra --course   # remake a river's course (by hand, rarely)
 
 Small JSON the site needs at build time goes to <repo>/data (committed). Larger files go to
 pipeline/out, which the workflow saves as an archive on the `pipeline-state` GitHub release.
 """
 import argparse
 import datetime as dt
-import json
-import math
 import os
 import time
 import traceback
@@ -23,10 +23,12 @@ import pandas as pd
 from pyproj import Transformer
 from pystac_client.exceptions import APIError
 
-from tracker import chips, licences, nasa, places, refresh, signs, summary, water, zone
+from tracker import chips, licences, nasa, places, refresh, rivers, signs, summary, water, zone
 from tracker.config import BELT_BBOX, CACHE, CHIP_HALF_KM, DATA, OUT, PIPELINE_DIR, WORK_CRS
 from tracker.dist import SETTLE_OFFSETS_MONTHS, cluster_polygons, loss_mask, reading_days, window_mask
 from tracker.identity import dedupe_tiles, match_ids, resolve_aliases
+from tracker.jsonio import read_json as _read_json
+from tracker.jsonio import write_json as _write_json
 
 METHOD_VERSION = "2026.10.3"  # .3: only clearing inside the forest zone counts (spike log s20)
 CHIP_RETRY_DAYS = 3  # under a week, so every weekly run retries every cloudy place
@@ -36,32 +38,6 @@ READING_LAG_DAYS = 7
 # Earth Search refused 3,725 of 4,866 readings in the first GitHub run (2026-10-28), so a refused place waits and tries again
 SIGNS_RETRY_WAITS = (20, 40, 80)
 
-
-
-def _read_json(path, default):
-    if not os.path.exists(path):
-        return default
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def _jsonable(v):
-    """pandas marks missing values as NaN, which is not valid JSON and breaks the site build."""
-    if isinstance(v, float) and math.isnan(v):
-        return None
-    if isinstance(v, dict):
-        return {k: _jsonable(x) for k, x in v.items()}
-    if isinstance(v, list | tuple):
-        return [_jsonable(x) for x in v]
-    return v
-
-
-def _write_json(path, obj):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    tmp = path + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(_jsonable(obj), f, ensure_ascii=False, indent=1, default=str, allow_nan=False)
-    os.replace(tmp, path)
 
 
 def enabled_tiles() -> dict:
@@ -120,7 +96,7 @@ def weekly(today: dt.date):
     to_ll = Transformer.from_crs(WORK_CRS, 4326, always_xy=True)
     clusters, new_aliases = match_ids(clusters, previous, to_ll.transform)
 
-    write_places(clusters, previous, new_aliases, to_ll.transform)
+    write_places(clusters, previous, new_aliases, to_ll.transform, rivers.river_places(clusters.geometry, rivers.lines()))
     data_date = max(v["data_date"] for v in tile_status.values())
     s = summary.summarise(clusters.drop(columns=["geometry", "seed"]), top=12)
     towns = places.towns_near(clusters, settlements, district_polys)
@@ -134,18 +110,20 @@ def weekly(today: dt.date):
     return tile_status, data_date
 
 
-def write_places(clusters, previous, new_aliases, to_ll):
+def write_places(clusters, previous, new_aliases, to_ll, near_rivers):
     index_path = os.path.join(OUT, "places", "index.json")
     index = _read_json(index_path, {})
     for rec in index.values():
         rec["active"] = False
-    for _, r in clusters.iterrows():
+    for i, (_, r) in enumerate(clusters.iterrows()):
         lon, lat = to_ll(r.seed.x, r.seed.y)
         rec = index.setdefault(r.id, {"chips": None})
         rec.update({"id": r.id, "active": True, "ha": round(float(r.ha), 2), "first_seen": r.first_seen,
                     "last_seen": r.last_seen, "licence": r.licence, "near": r.near, "near_km": r.near_km,
                     "district": r.district, "lon": round(lon, 5), "lat": round(lat, 5), "tile": r.tile})
         rec["likely_galamsey"] = signs.likely_galamsey(r.licence, (rec.get("signs") or {}).get("water"))
+        # walked rivers within 1 km of the place, nearest first: where it sits on each river walk
+        rec["rivers"] = near_rivers[i]
     _write_json(index_path, index)
 
     aliases_path = os.path.join(DATA, "places", "aliases.json")
@@ -351,10 +329,13 @@ def trend(today: dt.date, start: str = "2024-01"):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("command", choices=["weekly", "chips", "signs", "trend"])
+    p.add_argument("command", choices=["weekly", "chips", "signs", "trend", "rivers"])
     p.add_argument("--today", default=str(dt.date.today()))
     p.add_argument("--limit", type=int, default=60)
     p.add_argument("--workers", type=int, default=4)
+    p.add_argument("--river", help="rivers: one river's slug (default: all in pipeline/rivers.json)")
+    p.add_argument("--course", action="store_true", help="rivers: remake the course instead of the pictures")
+    p.add_argument("--cache", help="rivers: a folder of crops to reuse and add to (default: none, all downloaded)")
     a = p.parse_args()
     today = dt.date.fromisoformat(a.today)
     status_path = os.path.join(DATA, "status.json")
@@ -377,6 +358,13 @@ def main():
         elif a.command == "signs":
             make_signs(today, a.limit, a.workers)
             mine["outcome"] = "ok"
+        elif a.command == "rivers":
+            for slug in [a.river] if a.river else list(rivers.config()):
+                if a.course:
+                    rivers.make_course(slug)
+                else:
+                    rivers.build(slug, today, os.path.join(a.cache, slug) if a.cache else None)
+            mine.update({"last_success": mine["last_attempt"], "outcome": "ok"})
         else:
             trend(today)
             mine["outcome"] = "ok"

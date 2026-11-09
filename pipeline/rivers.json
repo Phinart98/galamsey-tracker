@@ -1,0 +1,8 @@
+[
+ {"slug": "pra", "name": "Pra", "aliases": ["Prah"], "seed": [-1.619, 5.027], "ends": "the sea at Shama", "visible_km2": 500},
+ {"slug": "offin", "name": "Offin", "aliases": ["Ofin"], "seed": [-1.783, 5.962], "ends": "the Pra", "joins_to": "pra", "visible_km2": 500},
+ {"slug": "birim", "name": "Birim", "seed": [-0.997, 5.920], "ends": "the Pra", "joins_to": "pra", "visible_km2": 500},
+ {"slug": "ankobra", "name": "Ankobra", "seed": [-2.281, 4.906], "ends": "the sea near Axim", "visible_km2": 500},
+ {"slug": "densu", "name": "Densu", "seed": [-0.315, 5.510], "ends": "the sea west of Accra", "visible_km2": 200},
+ {"slug": "ayensu", "name": "Ayensu", "seed": [-0.590, 5.360], "ends": "the sea east of Winneba", "visible_km2": 200}
+]
