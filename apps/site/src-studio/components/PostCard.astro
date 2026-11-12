@@ -31,14 +31,17 @@ const fields: [string, string][] = [
 </article>
 
 <style>
+  /* Grid items default to min-width: auto, so one long link (news links run 300 characters) would set the
+     column width and push the page wider than a phone. min-width: 0 plus overflow-wrap lets it wrap. */
   .card { display: grid; gap: 12px; align-content: start; }
+  .card > *, .story > *, .copy > * { min-width: 0; }
   .card-title { margin: 0; }
   .pic img { display: block; width: 100%; height: auto; border: 1px solid var(--line); }
   .save { margin: 0; }
-  .story { margin: 0; padding: 12px; border: 2px solid var(--ink); display: grid; gap: 8px; }
+  .story { margin: 0; padding: 12px; border: 2px solid var(--ink); display: grid; gap: 8px; overflow-wrap: anywhere; }
   .story p { margin: 0; }
   .copy { display: grid; gap: 6px; }
   .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .label { font-weight: 700; }
-  [data-text] { white-space: pre-line; margin: 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
+  [data-text] { white-space: pre-line; overflow-wrap: anywhere; margin: 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
 </style>

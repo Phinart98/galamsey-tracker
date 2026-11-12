@@ -186,6 +186,7 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
     .day.done .what { color: var(--muted); }
     .extra { color: var(--signal); font-weight: 700; }
     .body { padding: 0 12px 24px 40px; display: grid; gap: 16px; }
+    .body > *, .copy > * { min-width: 0; }
     .card-wrap { max-width: 420px; }
     .note { margin: 0; color: var(--muted); max-width: 60ch; }
 
@@ -199,7 +200,8 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
     .copy { display: grid; gap: 6px; margin-top: 12px; max-width: 70ch; }
     .head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .label { font-weight: 700; }
-    [data-text] { white-space: pre-line; margin: 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
+    /* The monthly email boxes (PostCard has its own scoped copy of this rule) */
+    [data-text] { white-space: pre-line; overflow-wrap: anywhere; margin: 0; padding: 12px; border: 1px solid var(--line); font-size: 0.9375rem; }
     .foot { color: var(--muted); font-size: 0.9375rem; margin-top: 24px; }
   </style>
 </body>
