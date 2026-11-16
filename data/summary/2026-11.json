@@ -1,15 +1,15 @@
 {
- "total_ha": 18714,
- "football_pitches": 26210,
- "patches": 6837,
+ "total_ha": 18721,
+ "football_pitches": 26220,
+ "patches": 6844,
  "by_licence": {
   "no licence": {
-   "ha": 13663,
-   "share": 0.73
+   "ha": 13682,
+   "share": 0.731
   },
   "prospecting only": {
-   "ha": 2021,
-   "share": 0.108
+   "ha": 2005,
+   "share": 0.107
   },
   "restricted lease": {
    "ha": 9,
@@ -20,12 +20,12 @@
    "share": 0.005
   },
   "large-scale lease": {
-   "ha": 2930,
+   "ha": 2934,
    "share": 0.157
   }
  },
  "no_licence_to_mine": {
-  "ha": 15684,
+  "ha": 15687,
   "share": 0.838
  },
  "top_places": [
@@ -224,7 +224,7 @@
    "ha": 534
   }
  ],
- "data_date": "2026-11-04",
+ "data_date": "2026-11-05",
  "window_days": 365,
  "tiles": [
   "T30NWL",
@@ -239,15 +239,15 @@
  "method_version": "2026.10.3",
  "towns_near": {
   "radius_m": 1000,
-  "count": 753,
+  "count": 754,
   "with_5ha": 211
  },
  "water": [
   {
    "plant": "Weija",
    "river": "Densu",
-   "ha": 283.0,
-   "no_licence_ha": 283.0
+   "ha": 287.1,
+   "no_licence_ha": 287.1
   },
   {
    "plant": "Kwanyako",

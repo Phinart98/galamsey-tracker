@@ -1,5 +1,5 @@
 {
- "data_date": "2026-11-04",
+ "data_date": "2026-11-05",
  "radius_m": 1000,
  "towns": [
   {
@@ -3659,6 +3659,21 @@
    ]
   },
   {
+   "name": "Berekuso",
+   "place": "village",
+   "district": "Akwapem South",
+   "lat": 5.7594,
+   "lon": -0.225,
+   "ha": 4.7,
+   "no_licence_ha": 4.7,
+   "patches": 3,
+   "ids": [
+    "2026-03-5764n0228w",
+    "2026-10-5765n0231w",
+    "2026-03-5757n0219w"
+   ]
+  },
+  {
    "name": "Abrokofe",
    "place": "village",
    "district": "Juaboso",
@@ -4683,20 +4698,6 @@
    "ids": [
     "2025-12-6234n1715w",
     "2025-11-6234n1720w"
-   ]
-  },
-  {
-   "name": "Berekuso",
-   "place": "village",
-   "district": "Akwapem South",
-   "lat": 5.7594,
-   "lon": -0.225,
-   "ha": 3.2,
-   "no_licence_ha": 3.2,
-   "patches": 2,
-   "ids": [
-    "2026-03-5764n0228w",
-    "2026-03-5757n0219w"
    ]
   },
   {
@@ -5874,19 +5875,6 @@
    "patches": 1,
    "ids": [
     "2025-12-6790n1822w"
-   ]
-  },
-  {
-   "name": "Akwani Doboro",
-   "place": "village",
-   "district": "Nsawam Adoagyiri",
-   "lat": 5.8257,
-   "lon": -0.295,
-   "ha": 2.3,
-   "no_licence_ha": 2.3,
-   "patches": 1,
-   "ids": [
-    "2026-03-5830n0302w"
    ]
   },
   {
@@ -7951,6 +7939,20 @@
    ]
   },
   {
+   "name": "Akwani Doboro",
+   "place": "village",
+   "district": "Nsawam Adoagyiri",
+   "lat": 5.8257,
+   "lon": -0.295,
+   "ha": 1.4,
+   "no_licence_ha": 1.4,
+   "patches": 2,
+   "ids": [
+    "2026-03-5828n0304w",
+    "2026-03-5830n0302w"
+   ]
+  },
+  {
    "name": "Kwamekyekrom",
    "place": "village",
    "district": "Ahafo Ano South East",
@@ -8495,6 +8497,19 @@
    "patches": 1,
    "ids": [
     "2025-11-6092n1196w"
+   ]
+  },
+  {
+   "name": "Kwadwokurom",
+   "place": "village",
+   "district": "Akwapem South",
+   "lat": 5.7677,
+   "lon": -0.2387,
+   "ha": 1.2,
+   "no_licence_ha": 1.2,
+   "patches": 1,
+   "ids": [
+    "2026-10-5765n0231w"
    ]
   },
   {
