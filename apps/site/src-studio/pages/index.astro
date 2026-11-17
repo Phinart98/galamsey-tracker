@@ -49,7 +49,7 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
 
   <main class="wrap">
     <h1 data-built={today.toISOString().slice(0, 10)}>{todayName}</h1>
-    <p class="note stale" hidden>This page was made on {todayName}. The days below have moved on to today, but the news check for today runs later this morning, so a news day may change. Refresh after it runs.</p>
+    <p class="note stale" hidden>This page was made on {todayName}. The days below have moved on to today, but today's news check runs later this morning, so today's post may change. Refresh after it runs.</p>
     <p class="rule">One post every weekday at 13:00 from <strong>@GalamseyTracker</strong>. Tap a day to see its post.{weekend && <> No post today: weekends are off.</>}</p>
 
     {weeks.map((w) => (
@@ -99,7 +99,7 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
           <li><strong>Judge it after four weeks:</strong> followers, views per post, and visits from X in Cloudflare Web Analytics.</li>
         </ul>
       </details>
-      <p class="foot">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}, and the news checked this morning. </>}This page is private. Keep the address to yourself.</p>
+      <p class="foot">{summary && <>Made from the satellite data up to {longDate(summary.data_date)}, and the news checked on {todayName}. </>}This page is private. Keep the address to yourself.</p>
     </section>
   </main>
 
@@ -116,8 +116,9 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
     // A link to something inside a folded section opens it
     const open = () => { const t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))); const d = t && (t.tagName === 'DETAILS' ? t : t.closest('details')); if (d) d.open = true; };
     addEventListener('hashchange', open); open();
-    // The page is built a few times a day, but GitHub can start a build hours late. If it was built on an earlier
-    // day, move "Today" here: earlier days fold away as past, today opens. Ghana is on UTC all year.
+    // The page is built only on Monday and on news-day mornings (studio.yml), and GitHub can start a build hours
+    // late. If it was built on an earlier day, move "Today" here: earlier days fold away as past, today opens.
+    // Ghana is on UTC all year.
     const h1 = document.querySelector('h1[data-built]');
     const now = new Date().toISOString().slice(0, 10);
     if (h1 && now > h1.dataset.built) {
@@ -134,7 +135,9 @@ const todayName = today.toLocaleDateString('en-US', { weekday: 'long', month: 'l
         }
       }
       h1.textContent = new Date(now + 'T00:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
-      const note = document.querySelector('.stale'); if (note) note.hidden = false;
+      // Only a news day (Tuesday, Thursday) still has a build to come that morning: other days have nothing pending
+      const wd = new Date(now + 'T00:00:00Z').getUTCDay();
+      const note = document.querySelector('.stale'); if (note) note.hidden = !(wd === 2 || wd === 4);
     }
   </script>
   <script>

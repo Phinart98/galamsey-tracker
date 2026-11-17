@@ -1,13 +1,14 @@
 name: Daily posting studio
 
-# Rebuilds only the private posting studio several times a day, so its "News this week" list and the ready posts for
-# places in the news are fresh before the 13:00 GMT posting slot. Uses last Monday's data. The weekly update
-# also rebuilds the studio after its run.
+# Rebuilds only the private posting studio, and only when something can change. The posts come from Monday's data,
+# the weekly update rebuilds the studio after its run, and the page moves "Today" on by itself, so most days need
+# no build. What does need one:
+# - Monday morning, so the new week shows before the weekly update finishes (it can run until midday)
+# - Tuesday and Thursday mornings, the news days, so the news check is fresh before the 13:00 GMT post
 on:
   schedule:
-    # Six times a day (off the hour): GitHub starts schedules late or drops them, so there are several chances for
-    # the new day to show and the news to be fresh before the 13:00 post
-    - cron: "17 0,3,6,8,10,12 * * *"
+    # Two tries each (off the hour): GitHub starts schedules hours late or drops them
+    - cron: "17 3,7 * * 1,2,4"
   workflow_dispatch:
 
 concurrency:
