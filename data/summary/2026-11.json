@@ -1,14 +1,14 @@
 {
- "total_ha": 18721,
- "football_pitches": 26220,
- "patches": 6844,
+ "total_ha": 19325,
+ "football_pitches": 27065,
+ "patches": 7025,
  "by_licence": {
   "no licence": {
-   "ha": 13682,
-   "share": 0.731
+   "ha": 14202,
+   "share": 0.735
   },
   "prospecting only": {
-   "ha": 2005,
+   "ha": 2059,
    "share": 0.107
   },
   "restricted lease": {
@@ -16,36 +16,36 @@
    "share": 0.0
   },
   "small-scale licence": {
-   "ha": 91,
-   "share": 0.005
+   "ha": 79,
+   "share": 0.004
   },
   "large-scale lease": {
-   "ha": 2934,
-   "share": 0.157
+   "ha": 2975,
+   "share": 0.154
   }
  },
  "no_licence_to_mine": {
-  "ha": 15687,
-  "share": 0.838
+  "ha": 16262,
+  "share": 0.842
  },
  "top_places": [
   {
    "local_id": 1,
-   "ha": 124.11,
-   "first_seen": "2025-11-03",
+   "ha": 90.72,
+   "first_seen": "2025-11-26",
    "last_seen": "2026-04-15",
    "tile": "T30NXM",
    "licence": "large-scale lease",
    "near": "Obuasi",
-   "near_km": 3.5,
+   "near_km": 3.3,
    "district": "Obuasi Municipal",
-   "id": "2025-11-6208n1721w"
+   "id": "2025-11-6208n1719w"
   },
   {
    "local_id": 1,
-   "ha": 84.87,
-   "first_seen": "2025-11-14",
-   "last_seen": "2026-10-17",
+   "ha": 70.92,
+   "first_seen": "2025-11-26",
+   "last_seen": "2026-10-22",
    "tile": "T30NXN",
    "licence": "no licence",
    "near": "Kunso",
@@ -55,9 +55,9 @@
   },
   {
    "local_id": 1,
-   "ha": 69.3,
-   "first_seen": "2025-11-03",
-   "last_seen": "2026-10-22",
+   "ha": 69.12,
+   "first_seen": "2025-11-21",
+   "last_seen": "2026-10-29",
    "tile": "T30NXL",
    "licence": "no licence",
    "near": "Abuesi",
@@ -67,9 +67,9 @@
   },
   {
    "local_id": 1,
-   "ha": 49.68,
-   "first_seen": "2025-11-15",
-   "last_seen": "2026-10-17",
+   "ha": 49.41,
+   "first_seen": "2025-12-01",
+   "last_seen": "2026-11-01",
    "tile": "T30NYM",
    "licence": "no licence",
    "near": "Kibi",
@@ -78,31 +78,43 @@
    "id": "2025-10-6206n0527w"
   },
   {
-   "local_id": 3,
-   "ha": 40.68,
-   "first_seen": "2025-11-11",
-   "last_seen": "2026-10-22",
-   "tile": "T30NXN",
+   "local_id": 2,
+   "ha": 46.17,
+   "first_seen": "2026-10-17",
+   "last_seen": "2026-11-08",
+   "tile": "T30NYN",
    "licence": "no licence",
-   "near": "Mpasatia",
+   "near": "Timesu Sisi",
    "near_km": 13.0,
-   "district": "Atwima Mponua",
-   "id": "2025-11-6696n1954w"
+   "district": "Fanteakwa North",
+   "id": "2026-10-6533n0271w"
   },
   {
    "local_id": 1,
-   "ha": 38.34,
-   "first_seen": "2025-11-05",
-   "last_seen": "2026-04-30",
-   "tile": "T30NWN",
+   "ha": 41.22,
+   "first_seen": "2025-11-26",
+   "last_seen": "2026-11-08",
+   "tile": "T30NWM",
    "licence": "large-scale lease",
-   "near": "Babianiha",
-   "near_km": 7.2,
-   "district": "Dormaa Municipal",
-   "id": "2025-10-7226n2943w"
+   "near": "Samreboi",
+   "near_km": 1.9,
+   "district": "Wassa Amenfi West",
+   "id": "2025-11-5632n2553w"
   },
   {
-   "local_id": 4,
+   "local_id": 2,
+   "ha": 36.63,
+   "first_seen": "2026-01-26",
+   "last_seen": "2026-11-02",
+   "tile": "T30NYM",
+   "licence": "prospecting only",
+   "near": "Asamankese",
+   "near_km": 13.4,
+   "district": "Ayensuano",
+   "id": "2026-01-5944n0570w"
+  },
+  {
+   "local_id": 3,
    "ha": 35.82,
    "first_seen": "2026-02-19",
    "last_seen": "2026-05-10",
@@ -114,8 +126,20 @@
    "id": "2026-02-6737n1873w"
   },
   {
-   "local_id": 1,
-   "ha": 34.83,
+   "local_id": 4,
+   "ha": 35.55,
+   "first_seen": "2025-11-30",
+   "last_seen": "2026-10-22",
+   "tile": "T30NXN",
+   "licence": "no licence",
+   "near": "Mpasatia",
+   "near_km": 13.1,
+   "district": "Atwima Mponua",
+   "id": "2025-11-6696n1954w"
+  },
+  {
+   "local_id": 2,
+   "ha": 35.19,
    "first_seen": "2025-11-26",
    "last_seen": "2026-06-01",
    "tile": "T30NWM",
@@ -124,18 +148,6 @@
    "near_km": 2.3,
    "district": "Wassa Amenfi West",
    "id": "2025-10-5944n2466w"
-  },
-  {
-   "local_id": 2,
-   "ha": 34.11,
-   "first_seen": "2026-01-26",
-   "last_seen": "2026-10-02",
-   "tile": "T30NYM",
-   "licence": "prospecting only",
-   "near": "Asamankese",
-   "near_km": 13.4,
-   "district": "Ayensuano",
-   "id": "2026-01-5944n0570w"
   },
   {
    "local_id": 1,
@@ -148,18 +160,6 @@
    "near_km": 8.3,
    "district": "Tarkwa Nsuaem",
    "id": "2025-11-5368n2038w"
-  },
-  {
-   "local_id": 3,
-   "ha": 31.05,
-   "first_seen": "2025-11-03",
-   "last_seen": "2026-10-29",
-   "tile": "T30NYN",
-   "licence": "no licence",
-   "near": "Pankese",
-   "near_km": 2.9,
-   "district": "Birim North",
-   "id": "2025-11-6486n0851w"
   },
   {
    "local_id": 3,
@@ -177,54 +177,54 @@
  "top_districts": [
   {
    "district": "Wassa Amenfi East",
-   "ha": 1578
+   "ha": 1675
   },
   {
    "district": "Aowin",
-   "ha": 944
+   "ha": 1069
   },
   {
    "district": "Atiwa West",
+   "ha": 951
+  },
+  {
+   "district": "Wassa Amenfi West",
+   "ha": 929
+  },
+  {
+   "district": "Wassa Amenfi Central",
    "ha": 852
   },
   {
    "district": "Atwima Mponua",
-   "ha": 807
-  },
-  {
-   "district": "Wassa Amenfi Central",
-   "ha": 804
-  },
-  {
-   "district": "Wassa Amenfi West",
-   "ha": 742
-  },
-  {
-   "district": "Amansie South",
-   "ha": 716
-  },
-  {
-   "district": "Amansie Central",
-   "ha": 692
+   "ha": 738
   },
   {
    "district": "Ahafo Ano South East",
-   "ha": 687
+   "ha": 714
+  },
+  {
+   "district": "Amansie South",
+   "ha": 652
   },
   {
    "district": "Upper Denkyira West",
-   "ha": 621
+   "ha": 631
+  },
+  {
+   "district": "Amansie Central",
+   "ha": 586
   },
   {
    "district": "Prestea/huni Valley",
-   "ha": 540
+   "ha": 565
   },
   {
    "district": "Tarkwa Nsuaem",
-   "ha": 534
+   "ha": 555
   }
  ],
- "data_date": "2026-11-05",
+ "data_date": "2026-11-18",
  "window_days": 365,
  "tiles": [
   "T30NWL",
@@ -239,33 +239,33 @@
  "method_version": "2026.10.3",
  "towns_near": {
   "radius_m": 1000,
-  "count": 754,
-  "with_5ha": 211
+  "count": 761,
+  "with_5ha": 201
  },
  "water": [
   {
    "plant": "Weija",
    "river": "Densu",
-   "ha": 287.1,
-   "no_licence_ha": 287.1
+   "ha": 316.6,
+   "no_licence_ha": 316.6
   },
   {
    "plant": "Kwanyako",
    "river": "Ayensu",
-   "ha": 163.7,
-   "no_licence_ha": 144.6
+   "ha": 184.6,
+   "no_licence_ha": 165.7
   },
   {
    "plant": "Daboase",
    "river": "Pra",
-   "ha": 9872.4,
-   "no_licence_ha": 8393.1
+   "ha": 9435.8,
+   "no_licence_ha": 8061.8
   },
   {
    "plant": "Barekese",
    "river": "Offin",
-   "ha": 135.3,
-   "no_licence_ha": 126.7
+   "ha": 157.5,
+   "no_licence_ha": 149.0
   },
   {
    "plant": "Owabi",
